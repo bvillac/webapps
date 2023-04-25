@@ -10,9 +10,9 @@ bin-release/
 # Other files and folders
 .settings/
 1-Templates/
-Config/
-Log/
-Vendor/
+administrador/Config/
+administrador/Log/
+administrador/Vendor/
 
 # Executables
 *.swf
