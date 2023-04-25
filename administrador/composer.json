@@ -1,0 +1,29 @@
+{
+    "name": "root/vsoluciones",
+    "description": "Proyecto",
+    "authors": [
+        {
+            "name": "Byron Villacreses",
+            "email": "byron_villacresesf@hotmail.com"
+        }
+    ],
+    "require": {
+        "twbs/bootstrap": "5.0.2",
+        "mpdf/mpdf": "*",
+        "phpoffice/phpspreadsheet": "^1.12",
+        "phpoffice/phpword": "*",
+        "bower-asset/font-awesome": "*",
+        "phpmailer/phpmailer": "^6.5",
+        "tinymce/tinymce": ">= 5",
+        "spipu/html2pdf": "^5.2"
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "rm -rf Assets/bootstrap",
+            "cp -R vendor/twbs/bootstrap/dist Assets/bootstrap",
+            "rm -rf Assets/js/tinymce",
+            "cp -R vendor/tinymce/tinymce Assets/js/tinymce"
+           
+        ]
+    }
+}

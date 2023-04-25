@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "192.168.1.100",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "developer",
+            "database": "db_vsoluciones",
+            "username": "root",
+            "password": "Root$s34"
+        }
+    ]
+}

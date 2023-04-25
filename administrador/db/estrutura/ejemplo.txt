@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS `db_vsoluciones`.`contacto_correo`;
+CREATE TABLE IF NOT EXISTS `contacto_correo` (
+  `cont_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `cont_nombre` varchar(200)  NOT NULL,
+  `cont_email` varchar(200)  NOT NULL,
+  `cont_mensaje` text  NOT NULL,
+  `cont_ip` varchar(15) NOT NULL,
+  `cont_dispositivo` varchar(25)  NOT NULL,
+  `cont_useragent` text  NOT NULL,
+  `fecha_creacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cont_id`)
+) ENGINE=InnoDB;
