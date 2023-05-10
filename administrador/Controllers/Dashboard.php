@@ -9,7 +9,8 @@
 				header('Location: '.base_url().'/login');
 				die();
 			}
-			getPermisos(1);//Control de Permisos Segun el Ids de la base de Datos
+			//getPermisos(1);//Control de Permisos Segun el Ids de la base de Datos
+			//getGenerarMenu();
 		}
 
 		public function dashboard(){
@@ -26,13 +27,13 @@
 			$data['usuarios'] = $this->model->cantUsuarios();
 			$data['clientes'] = $this->model->cantClientes();
 			$data['proveedores'] = $this->model->cantProveedores();
-			$data['productos'] = $this->model->cantProductos();
-			$data['pedidos'] = $this->model->cantPedidos();
-			$data['lastOrders'] = $this->model->lastOrders();
-			$data['lastCompras'] = $this->model->lastCompras();
+			$data['productos'] = array();//$this->model->cantProductos();
+			$data['pedidos'] = array();//$this->model->cantPedidos();
+			$data['lastOrders'] = array();//$this->model->lastOrders();
+			$data['lastCompras'] = array();//$this->model->lastCompras();
 			$data['itemUtilidad'] = array();//$this->model->UtilidadItems();
 			$data['itemMarca'] = array();//$this->model->UtilidadItemsMarca();
-			$data['itemMinima'] = $this->model->ExistenciaMinima();
+			$data['itemMinima'] = array();//$this->model->ExistenciaMinima();
 			$data['productosTen'] = 0;//$this->model->productosTen();
 
 			$this->views->getView($this,"dashboard",$data);

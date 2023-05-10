@@ -9,6 +9,7 @@ var SPM = ",";
 	"use strict";
 
 	var treeviewMenu = $('.app-menu');
+    var treeviewMenu2 = $('.app-menu2');
 
 	// Toggle Sidebar
 	$('[data-toggle="sidebar"]').click(function(event) {
@@ -25,8 +26,20 @@ var SPM = ",";
 		$(this).parent().toggleClass('is-expanded');
 	});
 
+    // Activate sidebar treeview2 toggle
+	$("[data-toggle='treeview2']").click(function(event) {
+		event.preventDefault();
+		if(!$(this).parent().hasClass('is-expanded')) {
+			treeviewMenu2.find("[data-toggle='treeview2']").parent().removeClass('is-expanded');
+		}
+		$(this).parent().toggleClass('is-expanded');
+	});
+
 	// Set initial active toggle
 	$("[data-toggle='treeview.'].is-expanded").parent().toggleClass('is-expanded');
+
+    // Set initial active toggle
+	//$("[data-toggle='treeview2.'].is-expanded").parent().toggleClass('is-expanded');
 
 	//Activate bootstrip tooltips
 	$("[data-toggle='tooltip']").tooltip();

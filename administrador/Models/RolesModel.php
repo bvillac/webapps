@@ -63,16 +63,7 @@
 			return $request;
 		}
 
-		//Nueva Funciones 2023-04
-		public function selectRolesPermiso(int $usu_id,int $emp_id){
-			$sql = "SELECT distinct(a.rol_id) Ids,b.rol_nombre ";
-			$sql .= "	FROM ". $this->db_name .".permiso a ";
-			$sql .= "		INNER JOIN ". $this->db_name .".rol b ";
-			$sql .= "			ON a.rol_id=b.rol_id ";
-			$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id}; ";
-			$request = $this->select_all($sql);
-			return $request;
-		}
+		
 
 
 	}

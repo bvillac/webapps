@@ -1,5 +1,4 @@
 <?php 
-
 	class Login extends Controllers{
 		public function __construct(){
 			session_start();//iniciamos el uso de variables de session
@@ -22,7 +21,7 @@
 
 		public function loginUsuario(){
 			//dep($_POST);
-			putMessageLogFile("HOLA pli");
+			//putMessageLogFile("HOLA pli");
 			if($_POST){
 				if(empty($_POST['txt_Email']) || empty($_POST['txt_clave'])){
 					$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
@@ -38,11 +37,17 @@
 						if($arrData['Estado'] == 1){
 							//Variables de Session
 							$_SESSION['idsUsuario'] = $arrData['usu_id'];
+							$_SESSION['idEmpresa'] = ID_EMPRESA;//Cambiar por el retornado y seleccionado
 							$_SESSION['idsPersona'] = $arrData['per_id'];
 							$_SESSION['loginEstado'] = true;//estado de la Session Login
 							$arrData = $model->sessionLogin($_SESSION['idsUsuario']);
-							//$_SESSION['usuarioData']['RolID']=
-							sessionUsuario($_SESSION['idsUsuario']);							
+							//putMessageLogFile($_SESSION['usuarioData']);			
+							
+							sessionUsuario($_SESSION['idsUsuario']);
+							$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
+							$usuId = $_SESSION['idsUsuario'];
+							$empId = $_SESSION['idEmpresa'];
+							$_SESSION['menuData'] = $model->permisosModulo($usuId,$empId,$idrol);							
 							$arrResponse = array('status' => true, 'msg' => 'ok');
 						}else{
 							$arrResponse = array('status' => false, 'msg' => 'Usuario inactivo.');

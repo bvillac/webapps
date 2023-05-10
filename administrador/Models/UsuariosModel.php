@@ -27,7 +27,7 @@
 					$arrDataUsu = array($PerIds,$Correo,$Clave,$Alias,$idsUsuCre);
 					$UsuIds=$this->insertarUsuario($con,$db_name,$arrDataUsu);
 					$arrDataEmp = array($idsEmpresa,$UsuIds,$rol_id,$idsUsuCre);
-					$UsuIds=$this->insertarEmpresaUsuario($con,$db_name,$arrDataEmp);
+					//$UsuIds=$this->insertarEmpresaUsuario($con,$db_name,$arrDataEmp);
 					$con->commit();
 					return true;
 				}catch(Exception $e) {
@@ -153,15 +153,16 @@ public function consultarReporteUsuarioPDF(string $idUsuario, $idpersona = NULL)
 
 		public function consultarDatos(){
 			$db_name=$this->getDbNameMysql();
-			$idsEmpresa=1;
-			$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,b.per_cedula,b.per_nombre,b.per_apellido, ";
-			$sql .= "	d.rol_nombre,a.estado_logico Estado  ";
+			$idsEmpresa=$_SESSION['idEmpresa'];
+			$sql = "SELECT distinct(a.usu_id) Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,p.per_cedula,p.per_nombre,p.per_apellido,"; 	
+			$sql .= "		r.rol_nombre,a.estado_logico Estado  ";	
 			$sql .= "	FROM ". $db_name .".usuario a ";
-			$sql .= "		INNER JOIN ". $db_name .".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
-			$sql .= "			INNER JOIN (". $db_name .".empresa_usuario c ";
-			$sql .= "				INNER JOIN ". $db_name .".rol d ON c.rol_id=d.rol_id ) ";
-			$sql .= "		ON a.usu_id=c.usu_id AND c.estado_logico!=0 ";
-			$sql .= "	WHERE a.estado_logico!=0 AND c.emp_id='{$idsEmpresa}' ";
+			$sql .= "		INNER JOIN ". $db_name .".persona p ";
+			$sql .= "			ON a.per_id=p.per_id AND p.estado_logico!=0 ";
+			$sql .= "		INNER JOIN (". $db_name .".permiso c ";
+			$sql .= "				INNER JOIN ". $db_name .".rol r ON c.rol_id=r.rol_id) ";
+			$sql .= "			ON a.usu_id=c.usu_id AND c.estado_logico!=0 ";
+			$sql .= "	WHERE a.estado_logico!=0 AND c.emp_id='{$idsEmpresa}'; ";
 			$request = $this->select_all($sql);
 			return $request;
 		}
@@ -170,21 +171,27 @@ public function consultarReporteUsuarioPDF(string $idUsuario, $idpersona = NULL)
 			$db_name=$this->getDbNameMysql();
 			$sql = "SELECT rol_id Ids, rol_nombre Nombre ";
 			$sql .= " FROM ". $db_name .".rol WHERE estado_logico!=0 ORDER BY rol_nombre ASC";
+			//putMessageLogFile($sql);
 			$request = $this->select_all($sql);
 			return $request;
 		}
 
 		public function consultarDatosId(int $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsEmpresa=1;
-			$sql = "SELECT a.usu_id Ids,a.per_id,c.eusu_id,a.usu_correo,a.usu_alias Alias,b.per_cedula Dni,b.per_nombre Nombre,b.per_apellido Apellido,b.per_fecha_nacimiento FechaNac, ";
-			$sql .= "	d.rol_nombre Rol,b.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,b.per_telefono Telefono,b.per_direccion Direccion,c.rol_id RolID ";
-			$sql .= "	FROM ". $db_name .".usuario a ";
-			$sql .= "		INNER JOIN ". $db_name .".persona b ON a.per_id=b.per_id AND b.estado_logico!=0 ";
-			$sql .= "			INNER JOIN (". $db_name .".empresa_usuario c ";
-			$sql .= "				INNER JOIN ". $db_name .".rol d ON c.rol_id=d.rol_id ) ";
+			$idsEmpresa=$_SESSION['idEmpresa'];
+			
+
+
+			$sql = "SELECT distinct(a.usu_id) Ids,a.per_id,a.usu_correo,a.usu_alias Alias,p.per_cedula Dni,p.per_nombre Nombre,p.per_apellido Apellido,p.per_fecha_nacimiento FechaNac, ";
+			$sql .= "	r.rol_nombre Rol,p.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,p.per_telefono Telefono,p.per_direccion Direccion,c.rol_id RolID "; 	
+			$sql .= " FROM ". $db_name .".usuario a ";
+			$sql .= "	INNER JOIN ". $db_name .".persona p ";
+			$sql .= "		ON a.per_id=p.per_id AND p.estado_logico!=0 ";
+			$sql .= "	INNER JOIN (". $db_name .".permiso c ";
+			$sql .= "			INNER JOIN ". $db_name .".rol r ON c.rol_id=r.rol_id) ";
 			$sql .= "		ON a.usu_id=c.usu_id AND c.estado_logico!=0 ";
-			$sql .= "	WHERE a.estado_logico!=0 AND c.emp_id='{$idsEmpresa}'  AND a.usu_id='{$Ids}' ";
+			$sql .= " WHERE a.estado_logico!=0 AND c.emp_id='{$idsEmpresa}' AND a.usu_id={$Ids} ";
+			putMessageLogFile($sql);
 			$request = $this->select($sql);
 			return $request;
 		}

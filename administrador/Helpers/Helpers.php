@@ -1,6 +1,9 @@
 <?php 
 
 	//Retorla la url del proyecto
+
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
+
 	function base_url()
 	{
 		return BASE_URL_ADMIN;
@@ -197,18 +200,23 @@
     }
 
     function getPermisos(int $modIds){
-        require_once ("Models/PermisosModel.php");
-        $objPermisos = new PermisosModel();
-        $idrol = 1;//$_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
-        $arrPermisos = $objPermisos->permisosModulo($idrol);
-        $permisos = '';
+        //require_once ("Models/PermisosModel.php");
+        //$objPermisos = new PermisosModel();
+        //$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
+        //$usuId = $_SESSION['usuarioData']['UsuId'];
+        //$empId = 1;
+        //$arrPermisos = $objPermisos->permisosModulo($usuId,$empId,$idrol);
+        /*$permisos = '';
         $permisosMod = '';
         if(count($arrPermisos) > 0 ){
             $permisos = $arrPermisos;
             $permisosMod = isset($arrPermisos[$modIds]) ? $arrPermisos[$modIds] : "";
-        }
-        $_SESSION['permisos'] = $permisos;
-        $_SESSION['permisosMod'] = $permisosMod;
+        }*/
+        //$_SESSION['permisos'] = $permisos;
+        //$_SESSION['permisosMod'] = $permisosMod;
+        
+			$_SESSION['permisos'] = 0;
+        	$_SESSION['permisosMod'] = 0;
     }
 
     function sessionUsuario(int $idsUsuario){
@@ -343,6 +351,74 @@
         }else{
             return false;
         }
+    }
+
+    function getGenerarMenu(){
+        $menuApp=$_SESSION['menuData'];
+        $menu='<ul class="app-menu">';
+        foreach ($menuApp as $val) {
+            $mod_id=$val['mod_id'];
+            if(strlen($mod_id)==2){
+                if(!existeSubMenu($menuApp,$mod_id)){
+                    $menu .='<li>';
+                    $menu .='<a class="app-menu__item active" href="'.base_url().'/dashboard">';
+                    $menu .='<i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">'.$val['mod_nombre'].'</span>';
+                    $menu .='</a>';
+                    $menu .='</li>';
+                }else{
+                    $menu .='<li class="treeview">';
+                    $menu .='<a class="app-menu__item" href="#" data-toggle="treeview">';
+                    $menu .='<i class="app-menu__icon fa fa-laptop"></i>';
+                    $menu .='<span class="app-menu__label">UI Elements</span>';
+                    $menu .='<i class="treeview-indicator fa fa-angle-right"></i>';
+                    $menu .='</a>';
+                    $menu .='<ul class="treeview-menu">';
+                    $menu .='<li>';
+                    $menu .='<a class="treeview-item" href="bootstrap-components.html">';
+                    $menu .='<i class="icon fa fa-circle-o"></i> Bootstrap Elements';
+                    $menu .='</a>';
+                    $menu .='</li>';
+                    $menu .='<li><a class="treeview-item" href="https://fontawesome.com/v4.7.0/icons/" target="_blank" rel="noopener"><i class="icon fa fa-circle-o"></i> Font Icons</a></li>';
+                    $menu .='<li><a class="treeview-item" href="ui-cards.html"><i class="icon fa fa-circle-o"></i> Cards</a></li>';
+                    $menu .='<li><a class="treeview-item" href="widgets.html"><i class="icon fa fa-circle-o"></i> Widgets</a></li>';
+                    $menu .='</ul>';
+                    $menu .='</li>';
+
+
+                }
+                
+                
+            }
+            
+            
+            //putMessageLogFile($val['mod_id']);
+        }
+        $menu .='</ul>';
+        //echo $menu;
+    }
+
+    function getSubMenu(array $menuApp,string $menuRef,int $largo){
+        foreach ($menuApp as $val) {
+            $menu_id=$val['mod_id'];
+            if($menuRef==substr($menu_id, 0, $largo)){
+
+            }
+            if(strlen($menu_id)>2){//Tiene Submen
+
+            }
+        }
+    }
+    function existeSubMenu(array $menuApp,string $menuRef){
+        $largo=strlen($menuRef);//Extraigo el Tamaño
+        foreach ($menuApp as $val) {
+            $mod_id=$val['mod_id'];            
+            if(strlen($mod_id)>$largo){//Tiene Submenu
+                if($menuRef==substr($mod_id, 0, $largo)){
+                    return true;//Existe SubMenu
+                }
+            }
+        }
+        return false;//Retorna Falso si no encuentra SubMenu
     }
 
     

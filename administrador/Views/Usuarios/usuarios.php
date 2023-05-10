@@ -8,9 +8,9 @@
       <div class="app-title">
         <div>
             <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
-              <?php if($_SESSION['permisosMod']['w']){ ?>
+              <?php //if($_SESSION['permisosMod']['w']){ ?>
                 <button class="btn btn-primary" type="button" onclick="openModal();" ><i class="fa fa-plus"></i> Nuevo</button>
-              <?php } ?>
+              <?php //} ?>
          
    
             </h1>

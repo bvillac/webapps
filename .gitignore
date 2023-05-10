@@ -12,7 +12,7 @@ bin-release/
 1-Templates/
 administrador/Config/
 administrador/Log/
-administrador/Vendor/
+administrador/vendor/
 
 # Executables
 *.swf

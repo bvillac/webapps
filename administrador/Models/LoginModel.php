@@ -34,7 +34,7 @@
 			$sql .= "	WHERE a.estado_logico!=0 AND c.emp_id={$idsEmpresa}  AND a.usu_id={$IdsUser} ";*/
 
 
-			$sql = "SELECT a.usu_correo,a.usu_alias Alias,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres,";
+			$sql = "SELECT a.usu_id UsuId,a.usu_correo,a.usu_alias Alias,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres,";
 			$sql .= "	b.per_fecha_nacimiento FechaNac,b.per_nombre,b.per_apellido,b.per_genero Genero,a.estado_logico Estado,";
 			$sql .= "	date(a.fecha_creacion) FechaIng,b.per_telefono Telefono,b.per_direccion Direccion";
 			$sql .= "		FROM ". $db_name .".usuario a";
@@ -43,7 +43,11 @@
 			$sql .= "	WHERE a.estado_logico=1 AND a.usu_id={$IdsUser}";
 			$request = $this->select($sql);
 			$_SESSION['usuarioData'] = $request;
-			
+			//Obtener el Rol de la Persona
+			$resulRol=$this->selectRolesPermiso($_SESSION['idsUsuario'],1);//IMPLMENTAR LO DE EMPRESAS
+			$_SESSION['usuarioData']['RolID']=$resulRol['Ids'];	
+			$_SESSION['usuarioData']['Rol']=$resulRol['rol_nombre'];
+
 			return $request;
 		}
 
@@ -83,5 +87,38 @@
 			$request = $this->update($sql,$arrData);
 			return $request;
 		}
+
+		//Nueva Funciones 2023-04
+		public function selectRolesPermiso(int $usu_id,int $emp_id){
+			$db_name=$this->getDbNameMysql();
+			$sql = "SELECT distinct(a.rol_id) Ids,b.rol_nombre ";
+			$sql .= "	FROM ". $db_name .".permiso a ";
+			$sql .= "		INNER JOIN ". $db_name .".rol b ";
+			$sql .= "			ON a.rol_id=b.rol_id ";
+			$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id}; ";
+			//$request = $this->select_all($sql);//Devuelve mas de 1
+			$request = $this->select($sql);//Devuelve solo 1
+			return $request;
+		}
+
+		public function permisosModulo(int $rolId,int $usu_id,int $emp_id){
+			$db_name=$this->getDbNameMysql();
+			$sql = "SELECT a.mod_id,b.mod_nombre,b.mod_url,a.r,a.w,a.u,a.d ";
+			$sql .= "	FROM ". $db_name .".permiso a ";
+			$sql .= "		INNER JOIN ". $db_name .".modulo b ";
+			$sql .= "			ON a.mod_id=b.mod_id ";
+			$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id} AND a.rol_id={$rolId} ";
+			$sql .= "		ORDER BY a.mod_id ASC; ";
+			
+			$request = $this->select_all($sql);
+			
+			$arrPermisos = array();
+			for ($i=0; $i < count($request); $i++) { 
+				$arrPermisos[$request[$i]['mod_id']] = $request[$i];
+			}
+			//putMessageLogFile($arrPermisos);
+			return $arrPermisos;
+		}
+
 	}
  ?>

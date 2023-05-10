@@ -12,7 +12,8 @@ class Conexion{
 		    //echo "conexión exitosa";
 		}catch(PDOException $e){
 			$this->conect = 'Error de conexión';
-		    echo "ERROR: " . $e->getMessage();
+		    //echo "ERROR: " . $e->getMessage();
+			putMessageLogFile("ERROR: " . $e->getMessage());
 		}
 	}
 
