@@ -49,19 +49,20 @@
 		}
 
 		public function setUsuario(){
+			
 			if($_POST){//Recibe los datos Post
 				$model=new UsuariosModel();
-				if(empty($_POST['txt_dni']) || empty($_POST['txt_nombre']) || empty($_POST['txt_apellido']) ||  empty($_POST['txt_fec_nacimiento']) || 
+				if(empty($_POST['txt_dni']) || empty($_POST['txt_nombre']) || empty($_POST['txt_apellido']) ||  empty($_POST['dtp_fecha_nacimiento']) || 
 					empty($_POST['txt_direccion']) || empty($_POST['txt_alias']) || empty($_POST['cmb_genero']) ||	
-					empty($_POST['txt_telefono']) || empty($_POST['txt_correo']) || empty($_POST['cmb_rol']) || empty($_POST['cmb_estado']) ){
-					$arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+					empty($_POST['txt_telefono']) || empty($_POST['txt_correo']) ||  empty($_POST['cmb_estado']) ){//empty($_POST['cmb_rol']) ||
+					$arrResponse = array("status" => false, "msg" => 'Datos Ingresados incorrectos.');
 				}else{ 
 					$usu_id = intval($_POST['txth_ids']);
 					$per_id = intval($_POST['txth_perids']);
 					$eusu_id = intval($_POST['txth_eusuids']);
 
 					$Dni = strClean($_POST['txt_dni']);
-					$FecNaci = strClean($_POST['txt_fec_nacimiento']);
+					$FecNaci = strClean($_POST['dtp_fecha_nacimiento']);
 					$Nombre = ucwords(strClean($_POST['txt_nombre']));
 					$Apellido = ucwords(strClean($_POST['txt_apellido']));
 					$Telefono = intval(strClean($_POST['txt_telefono']));

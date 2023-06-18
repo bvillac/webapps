@@ -23,7 +23,8 @@
 				$con->beginTransaction();
 				try{					
 					$arrDataPer = array($Dni,$Nombre,$Apellido,$FecNaci, $Telefono,$Direccion,$Genero,$idsUsuCre);
-					$PerIds=$this->insertarPersona($con,$db_name,$arrDataPer);			
+					$PerIds=$this->insertarPersona($con,$db_name,$arrDataPer);
+					putMessageLogFile($PerIds);			
 					$arrDataUsu = array($PerIds,$Correo,$Clave,$Alias,$idsUsuCre);
 					$UsuIds=$this->insertarUsuario($con,$db_name,$arrDataUsu);
 					$arrDataEmp = array($idsEmpresa,$UsuIds,$rol_id,$idsUsuCre);

@@ -195,6 +195,7 @@
 .linkw:hover{
 	text-decoration: none;
 }
+/*Estilo DatePiker*/
 .container-title{
 	display: flex;
 	justify-content: space-between;
@@ -211,9 +212,9 @@
 	justify-content: space-around;
 	align-items: center;
 }
-.ui-datepicker-calendar {
+/*.ui-datepicker-calendar {
     display: none;
-}
+}*/
 
 
 /*ESTILOS PARA FOMATO VENTAS*/

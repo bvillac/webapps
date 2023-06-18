@@ -60,7 +60,7 @@
 			die();
 		}
 
-		public function setRol(){
+	public function setRol(){
 			//dep($_POST);
 			//$model=new RolesModel();
 			if ($_POST) {			
@@ -120,4 +120,3 @@
 		
 
 	}
- ?>

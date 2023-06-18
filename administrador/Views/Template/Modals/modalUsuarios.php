@@ -21,7 +21,11 @@
               <input type="text" class="form-control valid validarNumber " id="txt_dni" name="txt_dni" required="">            </div>
             <div class="form-group col-md-6">
               <label for="txt_fec_nacimiento">Fecha Nacimiento</label>
-              <input type="text" class="form-control valid validText" id="txt_fec_nacimiento" name="txt_fec_nacimiento" placeholder="1988/01/01" pattern="^\d{4}\/\d{2}\/\d{2}$" required="" >
+              <div class="dflex">
+                    <input class="date-picker form-control valid" id="dtp_fecha_nacimiento" name="dtp_fecha_nacimiento" placeholder="yyyy-mm-dd">
+                    
+                </div>
+              <!--<input type="text" class="form-control valid validText" id="txt_fec_nacimiento" name="txt_fec_nacimiento" placeholder="1988/01/01" pattern="^\d{4}\/\d{2}\/\d{2}$" required="" >-->
             </div>
            
           </div>

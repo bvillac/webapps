@@ -552,6 +552,7 @@ function guardarOrden() {
                     "accion": accion
                 },
                 success: function (data) {
+                    console.log("resp "+ data.status);
                     if (data.status) {
                         sessionStorage.removeItem('cabeceraOrden');
                         sessionStorage.removeItem('dts_detalleData');

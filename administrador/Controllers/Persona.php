@@ -1,71 +1,78 @@
-<?php 
-	class Persona extends Controllers{
-	
-		public function __construct(){
-			parent::__construct();
-			session_start();
-			session_regenerate_id(true);
-			if(empty($_SESSION['loginEstado'])){
-				header('Location: '.base_url().'/login');
-				die();
-			}
+<?php
+class Persona extends Controllers
+{
+	public function __construct()
+	{
+		parent::__construct();
+		session_start();
+		session_regenerate_id(true);
+		if (empty($_SESSION['loginEstado'])) {
+			header('Location: ' . base_url() . '/login');
+			die();
 		}
+	}
 
-		public function persona(){
-			if(empty($_SESSION['permisosMod']['r'])){
-				header("Location:".base_url().'/dashboard');
-			}
-			$data['page_tag'] = "Persona";
-			$data['page_name'] = "Persona";
-			$data['page_title'] = "Persona <small> ".TITULO_EMPRESA ."</small>";
-			$data['fileJS'] = "funcionesPersona.js";
-			$this->views->getView($this,"persona",$data);
+	public function persona()
+	{
+		if (empty($_SESSION['permisosMod']['r'])) {
+			header("Location:" . base_url() . '/dashboard');
 		}
+		$data['page_tag'] = "Persona";
+		$data['page_name'] = "Persona";
+		$data['page_title'] = "Persona <small> " . TITULO_EMPRESA . "</small>";
+		$data['fileJS'] = "funcionesPersona.js";
+		$this->views->getView($this, "persona", $data);
+	}
 
-		public function getPersonas(){
-			$model=new PersonaModel();
-			$arrData = $model->consultarDatos();
-			for ($i=0; $i < count($arrData); $i++) {
-				if($arrData[$i]['Estado'] == 1){
-					$arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
-				}else{
-					$arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>';
-				}
+	public function getPersonas()
+	{
+		$model = new PersonaModel();
+		$arrData = $model->consultarDatos();
+		for ($i = 0; $i < count($arrData); $i++) {
+			if ($arrData[$i]['Estado'] == 1) {
+				$arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
+			} else {
+				$arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>';
+			}
 
-				$arrData[$i]['options'] = '<div class="text-center">
-				<button class="btn btn-info btn-sm btnViewPersona" onClick="fntViewPersona('.$arrData[$i]['Ids'].')" title="Ver Datos"><i class="fa fa-eye"></i></button>
-				<button class="btn btn-primary  btn-sm btnEditPersona" onClick="fntEditPersona('.$arrData[$i]['Ids'].')" title="Editar Datos"><i class="fa fa-pencil"></i></button>
-				<button class="btn btn-danger btn-sm btnDelPersona" onClick="fntDelPersona('.$arrData[$i]['Ids'].')" title="Eliminar Registro"><i class="fa fa-trash"></i></button>
+			$arrData[$i]['options'] = '<div class="text-center">
+				<button class="btn btn-info btn-sm btnViewPersona" onClick="fntViewPersona(' . $arrData[$i]['Ids'] . ')" title="Ver Datos"><i class="fa fa-eye"></i></button>
+				<button class="btn btn-primary  btn-sm btnEditPersona" onClick="fntEditPersona(' . $arrData[$i]['Ids'] . ')" title="Editar Datos"><i class="fa fa-pencil"></i></button>
+				<button class="btn btn-danger btn-sm btnDelPersona" onClick="fntDelPersona(' . $arrData[$i]['Ids'] . ')" title="Eliminar Registro"><i class="fa fa-trash"></i></button>
 				</div>';
-			}
-			echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
-			die();
 		}
-	
+		echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+		die();
+	}
 
-		public function getPersona(int $ids){
-			$ids = intval(strClean($ids));
-			$model=new PersonaModel();
-			if($ids > 0){
-				$arrData = $model->consultarDatosId($ids);
-				//dep($arrData);
-				if(empty($arrData)){
-					$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-				}else{
-					$arrResponse = array('status' => true, 'data' => $arrData);
-				}
-				
-				echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+
+	public function getPersona(int $ids)
+	{
+		$ids = intval(strClean($ids));
+		$model = new PersonaModel();
+		if ($ids > 0) {
+			$arrData = $model->consultarDatosId($ids);
+			//dep($arrData);
+			if (empty($arrData)) {
+				$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+			} else {
+				$arrResponse = array('status' => true, 'data' => $arrData);
 			}
-			die();
-		}
 
-	public function setPersona(){
+			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+		}
+		die();
+	}
+
+	public function setPersona()
+	{
 		//dep($_POST);
-		if ($_POST) {			
+		if ($_POST) {
 			$model = new PersonaModel();
-			if ( empty($_POST['txt_per_cedula']) || empty($_POST['txt_per_nombre']) || empty($_POST['txt_per_apellido'])
-				|| empty($_POST['txt_per_fecha_nacimiento']) || empty($_POST['txt_per_telefono']) || empty($_POST['txt_per_direccion']) || empty($_POST['txt_per_genero']) || empty($_POST['cmb_estado'])) {
+			if (
+				empty($_POST['txt_per_cedula']) || empty($_POST['txt_per_nombre']) || empty($_POST['txt_per_apellido'])
+				|| empty($_POST['txt_per_fecha_nacimiento']) || empty($_POST['txt_per_telefono']) || empty($_POST['txt_per_direccion']) || empty($_POST['txt_per_genero']) || empty($_POST['cmb_estado'])
+			) {
 				$arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
 			} else {
 				$Ids = intval($_POST['txth_ids']);
@@ -103,21 +110,50 @@
 	}
 
 
-	
-		public function delPersona(){
-			if($_POST){
-				$model = new PersonaModel();
-				$ids = intval($_POST['ids']);
-				$request = $model->deleteRegistro($ids);
-				if($request){
-					$arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
-				}else{
-					$arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
-				}
-				echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
-			}
-			die();
-		}
 
+	public function delPersona()
+	{
+		if ($_POST) {
+			$model = new PersonaModel();
+			$ids = intval($_POST['ids']);
+			$request = $model->deleteRegistro($ids);
+			if ($request) {
+				$arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
+			} else {
+				$arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
+			}
+			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+		}
+		die();
 	}
- ?>
+
+
+	public function getPersonabuscar()
+	{
+		$arrData = $arrData = $this->model->consultarDatos();
+		for ($i = 0; $i < count($arrData); $i++) {
+			$btnOpciones = "";
+			$btnOpciones .= '<button class="btn btn-info btn-sm btnView" onClick="buscarPersonaDni(\'' . $arrData[$i]['Ids'] . '\')" title="Agregar"><i class="fa fa-plus"></i></button>';
+			$arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
+		}
+		//dep($arrData);
+		echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+		die();
+	}
+
+	public function getPersonaIdDni()
+	{
+		if ($_POST) {
+			$Codigo = isset($_POST['codigo']) ? $_POST['codigo'] : "";
+			$request = $this->model->consultarDatosIdCedula($Codigo);
+			if ($request) {
+				$arrResponse = array('status' => true, 'data' => $request, 'msg' => 'Datos Retornados correctamente.');
+			} else {
+				$arrResponse = array("status" => false, "msg" => 'No Existen Datos');
+			}
+			//putMessageLogFile($arrResponse);	
+			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+		}
+		die();
+	}
+}

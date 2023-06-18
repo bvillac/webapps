@@ -421,6 +421,11 @@ use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
         return false;//Retorna Falso si no encuentra SubMenu
     }
 
+    function retornaUser(){
+        $dataSession = $_SESSION['usuarioData'];
+		return strstr($dataSession['usu_correo'], '@', true);
+    }
+
     
  
 
