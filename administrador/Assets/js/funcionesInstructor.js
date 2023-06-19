@@ -242,36 +242,6 @@ function fntViewInstructor(ids) {
 
 
 
-//Editar Registro
-function fntEditInstructor(ids) {
-    window.location = base_url + '/Instructor/editar/'+ ids;//Retorna al Portal Principal
-    /*
-    document.querySelector('#titleModal').innerHTML = "Actualizar Registro";
-    document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
-    document.querySelector('#btnActionForm').classList.replace("btn-primary", "btn-info");
-    document.querySelector('#btnText').innerHTML = "Actualizar";
-    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    var ajaxUrl = base_url + '/Instructor/getInstructor/' + ids;
-    request.open("GET", ajaxUrl, true);
-    request.send();
-    request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
-            var objData = JSON.parse(request.responseText);
-            if (objData.status) {
-                document.querySelector("#txth_ids").value = objData.data.Ids;
-                document.querySelector("#txt_lin_nombre").value = objData.data.Nombre;
-                if (objData.data.Estado == 1) {
-                    document.querySelector("#cmb_estado").value = 1;
-                } else {
-                    document.querySelector("#cmb_estado").value = 2;
-                }
-                $('#cmb_estado').selectpicker('render');
-            }
-        }
-        $('#modalFormInstructor').modal('show');
-    }*/
-}
-
 function fntDeleteInstructor(ids) {
     var ids = ids;
     swal({
@@ -568,9 +538,6 @@ function guardarInstructor(accion) {
         },
         dataType: "json"
     });
-
-
-
 }
 
 
