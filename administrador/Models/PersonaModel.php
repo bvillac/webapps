@@ -76,4 +76,21 @@ class PersonaModel extends Mysql
 		$request = $this->update($sql, $arrData);
 		return $request;
 	}
+
+	public function consultarDatosCedulaNombres(string $parametro){
+		$sql = "SELECT a.per_id Ids,a.per_cedula Cedula,a.per_nombre Nombre, ";
+		$sql .= "   a.per_apellido Apellido,a.per_fecha_nacimiento FechaNacimiento, a.per_telefono Telefono, a.per_direccion Direccion,  a.per_genero Genero, a.estado_logico Estado,date(a.fecha_creacion) FechaIng ";
+		$sql .= "   FROM " . $this->db_name . ".persona a  ";
+		$sql .= " WHERE a.estado_logico!=0  ";
+		if($parametro!=''){
+			if (is_numeric($parametro)) {
+				//$sql .= " AND (a.per_id LIKE '%{$parametro}%' OR a.per_cedula LIKE '%{$parametro}%'); ";
+				$sql .= " AND a.per_cedula = {$parametro} ";
+			}else{
+				$sql .= " AND (a.per_nombre LIKE '%{$parametro}%' OR a.per_apellido LIKE '%{$parametro}%') ";
+			}
+		}
+		$request = $this->select_all($sql);
+		return $request;
+	}
 }

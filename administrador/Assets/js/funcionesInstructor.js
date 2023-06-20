@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
             request.send(formData);
             request.onreadystatechange = function () {
                 if (request.readyState == 4 && request.status == 200) {//Responde  
-                    console.log(request.responseText); //Ver el Retorno             
+                    //console.log(request.responseText); //Ver el Retorno             
                     var objData = JSON.parse(request.responseText);//Casting Object
                     if (objData.status) {
 

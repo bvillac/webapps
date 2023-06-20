@@ -48,7 +48,7 @@ class Instructor extends Controllers
 			if ($arrData[$i]['Estado'] == 1) {
 				$arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
 			} else {
-				$arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>';
+				$arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>';//target="_blanck"
 			}
 
 			/*if ($_SESSION['permisosMod']['r']) {
@@ -62,7 +62,7 @@ class Instructor extends Controllers
 				}*/
 			$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
 			//$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditInstructor" onClick="fntEditInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-			$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Instructor/editar/' . $arrData[$i]['Ids'] . '" target="_blanck" class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+			$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Instructor/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
 			$btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteInstructor(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
 			$arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
 		}
