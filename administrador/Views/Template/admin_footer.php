@@ -34,8 +34,8 @@
     <script src="<?= media();?>/js/datepicker/jquery-ui.min.js"></script>
     <!-- Funciones de Objetos Metodos-->
     <script src="<?= media() ?>/js/funcionesAdmin.js"></script>
-    <script src="<?= media(); ?>/js/<?= $data['fileJS']; ?>"></script>
 
+    <?= incluirJs() ?>
 
   </body>
 </html>

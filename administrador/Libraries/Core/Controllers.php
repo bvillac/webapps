@@ -10,7 +10,7 @@
 			//HomeModel.php
 			$model = get_class($this)."Model";
 			$routClass = "Models/".$model.".php";
-			putMessageLogFile($routClass);
+			//putMessageLogFile($routClass);
 			if(file_exists($routClass)){
 				require_once($routClass);
 				$this->model = new $model();

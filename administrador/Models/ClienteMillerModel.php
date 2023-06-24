@@ -6,7 +6,7 @@ class ClienteMillerModel extends Mysql{
 		parent::__construct();
 		$this->db_name = $this->getDbNameMysql();
 	
-	}
+	}//$_SESSION['idEmpresa']
 
     public function consultarDatos(){
         $sql = "SELECT a.cli_codigo Ids,b.fpag_nombre Pago,a.cli_tipo_dni Tipo, ";

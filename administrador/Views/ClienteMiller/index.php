@@ -2,7 +2,7 @@
     adminHeader($data);
     adminMenu($data); 
     //filelang(Setlanguage,"general") 
-    getModal('modalCliente',$data);
+    getModal('modalClienteMiller',$data);
 ?>
     <div id="contentAjax"></div> 
     <main class="app-content">

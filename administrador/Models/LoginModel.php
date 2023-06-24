@@ -109,7 +109,6 @@
 			$sql .= "			ON a.mod_id=b.mod_id ";
 			$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id} AND a.rol_id={$rolId} ";
 			$sql .= "		ORDER BY a.mod_id ASC; ";
-			
 			$request = $this->select_all($sql);
 			
 			$arrPermisos = array();

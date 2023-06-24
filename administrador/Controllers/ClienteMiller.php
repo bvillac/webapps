@@ -22,7 +22,7 @@ class ClienteMiller extends Controllers
         $data['page_tag'] = "Cliente";
         $data['page_name'] = "Cliente";
         $data['page_title'] = "Cliente <small> " . TITULO_EMPRESA . "</small>";
-        $data['fileJS'] = "funcionesClienteMiller.js";
+        //$data['fileJS'] = "funcionesClienteMiller.js";
         $this->views->getView($this, "index", $data);
     }
 

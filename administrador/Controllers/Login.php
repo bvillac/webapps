@@ -21,7 +21,6 @@
 
 		public function loginUsuario(){
 			//dep($_POST);
-			//putMessageLogFile("HOLA pli");
 			if($_POST){
 				if(empty($_POST['txt_Email']) || empty($_POST['txt_clave'])){
 					$arrResponse = array('status' => false, 'msg' => 'Error de datos' );

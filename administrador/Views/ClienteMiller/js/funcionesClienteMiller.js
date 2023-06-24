@@ -1,3 +1,4 @@
+document.write(`<script src="${base_url}/Assets/js/cedulaRucPass.js"></script>`);//
 var tableCliente;
 document.addEventListener('DOMContentLoaded', function () {
     tableCliente = $('#tableCliente').dataTable({
@@ -11,8 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
             "dataSrc": ""
         },
         "columns": [
-            //{"data":"Ids"},
-            //{"data":"Tipo"},
             { "data": "Cedula" },
             { "data": "Nombre" },
             { "data": "Direccion" },
@@ -34,14 +33,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 "className": "btn btn-secondary"
             }, */
 
-            {
+            /*{
                 "extend": "excelHtml5",
                 "text": "<i class='fas fa-file-excel'></i> Excel",
                 "titleAttr": "Esportar a Excel",
                 "title": "REPORTE DE USUARIOS REGISTRADOS",
                 "order": [[0, "asc"]],
                 "className": "btn btn-success"
-            },
+            },*/
 
 
         ],
@@ -59,3 +58,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 });
+
+
+function openModal(){
+    document.querySelector('#txth_ids').value ="";//IDS oculto hiden
+    document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
+    document.querySelector('#btnActionForm').classList.replace("btn-info", "btn-primary");
+    document.querySelector('#btnText').innerHTML ="Guardar";
+    document.querySelector('#titleModal').innerHTML = "Cliente";
+    document.querySelector("#formCliente").reset();
+	$('#modalFormCliente').modal('show');
+}
