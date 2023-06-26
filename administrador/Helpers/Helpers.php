@@ -69,7 +69,9 @@ function incluirJs()
     $uriData = explode("/", $_SERVER["REQUEST_URI"]);
     $controller = ucwords($uriData[3]); //Obtiene el Controlador
     $directorio = "Views/" . $controller . "/js/";
-    if (!is_dir($directorio)) {return;}//Sale de la funcion si el direcctorio no existe.
+    if (!is_dir($directorio)) {
+        return;
+    } //Sale de la funcion si el direcctorio no existe.
     $archivos = scandir($directorio);
     foreach ($archivos as $archivo) {
         if (pathinfo($archivo, PATHINFO_EXTENSION) == 'js') {
@@ -433,109 +435,74 @@ function viewPage(int $idpagina)
     }
 }
 
+
+
 function getGenerarMenu()
 {
     $menuApp = $_SESSION['menuData'];
-    putMessageLogFile($menuApp);
+    //putMessageLogFile($menuApp);
     $menu = '<ul class="app-menu">';
-    foreach ($menuApp as $val) {
-        $mod_id = $val['mod_id'];
-        //if (!empty($val['mod_id']) == "01") { //dashboard
-        if ($val['mod_id'] == "01") { //dashboard
+    foreach ($menuApp as $itemN1) {
+        //putMessageLogFile($itemN1['id']);
+        if ($itemN1['id'] == "01") { //dashboard
             $menu .= '<li>';
-            $menu .= '<a class="app-menu__item" href="' . base_url() . '/' . $val['mod_url'] . '">';
-            $menu .= '<i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">' . $val['mod_nombre'] . '</span>';
+            $menu .= '<a class="app-menu__item" href="' . base_url() . '/' . $itemN1['enlace'] . '">';
+            $menu .= '<i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">' . $itemN1['titulo'] . '</span>';
             $menu .= '</a>';
             $menu .= '</li>';
+        }
+        if (!empty($itemN1['hijos'])) {
+            //putMessageLogFile($itemN1['id'] . " hijo");
+            $menu .= '<li class="treeview">';
+            $menu .= menuPadre($itemN1);
+            $menu .= '<ul class="treeview-menu">';
+            foreach ($itemN1['hijos'] as $itemN2) {//Nivel 2
+                //putMessageLogFile($itemN2['id'] . " hijo");
+                $menu .= menuHijoLink($itemN2);
+                //if (!empty($itemN2['hijos'])) {
+                //    foreach ($itemN2['hijos'] as $itemN3) {
+                //        putMessageLogFile($itemN3['id'] . " hijo");
+                //    }
+                //}
+            }
+            $menu .= '</ul>';
+            $menu .= '</li>';
         } else {
-            putMessageLogFile($val);
-            if (!existeSubMenu($menuApp, $mod_id)) {
-                putMessageLogFile("NO tiene hijos");
-                //$menu .= menuPadre($val);
+            //Link Normal
+            if ($itemN1['id'] <> '01') {
                 $menu .= '<li>';
-                $menu .= '<a class="app-menu__item" href="' . base_url() . '/' . $val['mod_url'] . '">
-                            <i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">' . $val['mod_nombre'] . '</span>
-                          </a>';
-                $menu .= '</li>';
-            } else {
-                putMessageLogFile("SI tiene hijos");
-                $menu .= '<li class="treeview">';
-                $menu .= '<a class="app-menu__item" href="#" data-toggle="treeview">';
-                $menu .= '<i class="app-menu__icon fa fa-laptop"></i>';
-                $menu .= '<span class="app-menu__label">UI Elements</span>';
-                $menu .= '<i class="treeview-indicator fa fa-angle-right"></i>';
-                $menu .= '</a>';
-                $menu .= '<ul class="treeview-menu">';
-                $menu .= '<li>';
-                $menu .= '<a class="treeview-item" href="bootstrap-components.html">';
-                $menu .= '<i class="icon fa fa-circle-o"></i> Bootstrap Elements';
-                $menu .= '</a>';
-                $menu .= '</li>';
-                $menu .= '<li><a class="treeview-item" href="https://fontawesome.com/v4.7.0/icons/" target="_blank" rel="noopener"><i class="icon fa fa-circle-o"></i> Font Icons</a></li>';
-                $menu .= '<li><a class="treeview-item" href="ui-cards.html"><i class="icon fa fa-circle-o"></i> Cards</a></li>';
-                $menu .= '<li><a class="treeview-item" href="widgets.html"><i class="icon fa fa-circle-o"></i> Widgets</a></li>';
-                $menu .= '</ul>';
+                $menu .= '  <a class="app-menu__item" href="' . base_url() . '/' . $itemN1['enlace'] . '">
+                                <i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">' . $itemN1['titulo'] . '</span>
+                            </a>';
                 $menu .= '</li>';
             }
         }
-
-
-        /*if(strlen($mod_id)==2){
-                if(!existeSubMenu($menuApp,$mod_id)){
-                    $menu .='<li>';
-                    $menu .='<a class="app-menu__item active" href="'.base_url().'/dashboard">';
-                    $menu .='<i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">'.$val['mod_nombre'].'</span>';
-                    $menu .='</a>';
-                    $menu .='</li>';
-                }else{
-                    $menu .='<li class="treeview">';
-                    $menu .='<a class="app-menu__item" href="#" data-toggle="treeview">';
-                    $menu .='<i class="app-menu__icon fa fa-laptop"></i>';
-                    $menu .='<span class="app-menu__label">UI Elements</span>';
-                    $menu .='<i class="treeview-indicator fa fa-angle-right"></i>';
-                    $menu .='</a>';
-                    $menu .='<ul class="treeview-menu">';
-                    $menu .='<li>';
-                    $menu .='<a class="treeview-item" href="bootstrap-components.html">';
-                    $menu .='<i class="icon fa fa-circle-o"></i> Bootstrap Elements';
-                    $menu .='</a>';
-                    $menu .='</li>';
-                    $menu .='<li><a class="treeview-item" href="https://fontawesome.com/v4.7.0/icons/" target="_blank" rel="noopener"><i class="icon fa fa-circle-o"></i> Font Icons</a></li>';
-                    $menu .='<li><a class="treeview-item" href="ui-cards.html"><i class="icon fa fa-circle-o"></i> Cards</a></li>';
-                    $menu .='<li><a class="treeview-item" href="widgets.html"><i class="icon fa fa-circle-o"></i> Widgets</a></li>';
-                    $menu .='</ul>';
-                    $menu .='</li>';
-
-
-                }
-                
-                
-            }*/
     }
     $menu .= '</ul>';
     echo $menu;
 }
 
+
+
 function menuPadre($val)
 {
-
-    return $menu;
+    return '<a class="app-menu__item" href="#" data-toggle="treeview">
+                <i class="app-menu__icon fa fa-laptop"></i>
+                    <span class="app-menu__label">' . $val['titulo'] . '</span>
+                <i class="treeview-indicator fa fa-angle-right"></i>
+            </a>';
 }
 
-
-function existeSubMenu(array $menuApp, string $menuRef)
+function menuHijoLink($val)
 {
-    $largo = strlen($menuRef); //Extraigo el Tamaño
-    foreach ($menuApp as $val) {
-        $mod_id = $val['mod_id'];
-        if (strlen($mod_id) > $largo) { //Tiene Submenu
-            if ($menuRef == substr($mod_id, 0, $largo)) {
-                return true; //Existe SubMenu
-            }
-        }
-    }
-    return false; //Retorna Falso si no encuentra SubMenu
+    return  '<li>
+        <a class="treeview-item" href="' . base_url() . '/' . $val['enlace'] . '">
+            <i class="icon fa fa-circle-o"></i> ' . $val['titulo'] . '
+        </a></li>';
 }
+
+
+
 
 function retornaUser()
 {
