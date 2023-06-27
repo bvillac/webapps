@@ -1,5 +1,4 @@
 <?php
-//require_once("Libraries/Core/Conexion.php");
 class InstructorModel extends MysqlAcademico
 {
 	private $db_name;

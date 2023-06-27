@@ -33,6 +33,7 @@
 						$arrResponse = array('status' => false, 'msg' => 'El usuario o la contraseña es incorrecto.' ); 
 					}else{
 						$arrData = $request;
+						//putMessageLogFile($arrData);
 						if($arrData['Estado'] == 1){
 							//Variables de Session
 							$_SESSION['idsUsuario'] = $arrData['usu_id'];

@@ -41,7 +41,7 @@
                             ?>
                               <tr>
                                 <td>
-                                    <?= $numero; ?>
+                                    <?= $idmod; ?>
                                     <input type="hidden" name="modulos[<?= $i; ?>][mod_id]" value="<?= $idmod ?>" required >
                                 </td>
                                 <td>
