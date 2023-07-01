@@ -1,11 +1,12 @@
 <?php 
 	//namespace Models;
 	require_once("Models/EmpresaModel.php");
-	require_once("Libraries/Core/Conexion.php");
+	//require_once("Libraries/Core/Conexion.php");
 	class UsuariosModel extends Mysql{
-
+		private $db_name;
 		public function __construct(){
 			parent::__construct();
+			$this->db_name = $this->getDbNameMysql();
 		}
 
 
@@ -13,10 +14,10 @@
 								string $Clave,string $Genero,string $Direccion,string $Alias, int $rol_id, int $estado){
 			$db_name=$this->getDbNameMysql();
 			$return = 0;
-			$idsUsuCre= $_SESSION['idsUsuario'];
-			$idsEmpresa=1;
+			$idsEmpresa = $_SESSION['idEmpresa'];
+			$idsUsuCre = retornaUser();
 			//Verifica que el correo no existe
-			$sql = "SELECT * FROM ". $db_name .".persona WHERE per_cedula = '{$Dni}' AND per_nombre = '{$Nombre}' AND per_apellido = '{$Apellido}'   ";
+			$sql = "SELECT * FROM " . $this->db_name . ".persona WHERE per_cedula = '{$Dni}' AND per_nombre = '{$Nombre}' AND per_apellido = '{$Apellido}'   ";
 			$request = $this->select_all($sql);
 			if(empty($request)){//Si no hay resultado Inserta los datos
 				$con=$this->getConexion();
@@ -24,7 +25,7 @@
 				try{					
 					$arrDataPer = array($Dni,$Nombre,$Apellido,$FecNaci, $Telefono,$Direccion,$Genero,$idsUsuCre);
 					$PerIds=$this->insertarPersona($con,$db_name,$arrDataPer);
-					putMessageLogFile($PerIds);			
+					//putMessageLogFile($PerIds);			
 					$arrDataUsu = array($PerIds,$Correo,$Clave,$Alias,$idsUsuCre);
 					$UsuIds=$this->insertarUsuario($con,$db_name,$arrDataUsu);
 					$arrDataEmp = array($idsEmpresa,$UsuIds,$rol_id,$idsUsuCre);
@@ -74,19 +75,6 @@
 	        return $lastInsert; 
 		}
 
-		private function insertarEmpresaUsuario($con,$db_name,$arrData){
-			$SqlQuery  = "INSERT INTO ". $db_name .".empresa_usuario ";
-			$SqlQuery .= "(emp_id,usu_id,rol_id,usuario_creacion,estado_logico) ";
-			$SqlQuery .= " VALUES(?,?,?,?,1) ";
-			$insert = $con->prepare($SqlQuery);
-        	$resInsert = $insert->execute($arrData);
-        	if($resInsert){
-	        	$lastInsert = $con->lastInsertId();
-	        }else{
-	        	$lastInsert = 0;
-	        }
-	        return $lastInsert; 
-		}
 
 public function consultarReporteUsuarioPDF(string $idUsuario, $idpersona = NULL){
 			$busqueda = "";
@@ -298,4 +286,3 @@ public function consultarReporteUsuarioPDF(string $idUsuario, $idpersona = NULL)
 
 
 	}
- ?>

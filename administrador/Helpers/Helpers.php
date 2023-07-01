@@ -263,26 +263,6 @@ function enviarEmail($data, $template)
     return $send;
 }
 
-function getPermisos(int $modIds)
-{
-    //require_once ("Models/PermisosModel.php");
-    //$objPermisos = new PermisosModel();
-    //$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
-    //$usuId = $_SESSION['usuarioData']['UsuId'];
-    //$empId = 1;
-    //$arrPermisos = $objPermisos->permisosModulo($usuId,$empId,$idrol);
-    /*$permisos = '';
-        $permisosMod = '';
-        if(count($arrPermisos) > 0 ){
-            $permisos = $arrPermisos;
-            $permisosMod = isset($arrPermisos[$modIds]) ? $arrPermisos[$modIds] : "";
-        }*/
-    //$_SESSION['permisos'] = $permisos;
-    //$_SESSION['permisosMod'] = $permisosMod;
-
-    $_SESSION['permisos'] = 0;
-    $_SESSION['permisosMod'] = 0;
-}
 
 function sessionUsuario(int $idsUsuario)
 {
@@ -435,12 +415,48 @@ function viewPage(int $idpagina)
     }
 }
 
+function getPermisos()
+{
+    $uriData = explode("/", $_SERVER["REQUEST_URI"]);
+    //putMessageLogFile($_SERVER["REQUEST_URI"]);
+    $controller = strtolower($uriData[3]); //Obtiene el Controlador
+    $menuApp = $_SESSION['menuData'];
+    $claveEncontrada = buscarEnArray($menuApp, $controller);
+    //putMessageLogFile($claveEncontrada);
+    if ($claveEncontrada !== false) {
+        $_SESSION['permisosMod'] = $claveEncontrada;
+    } else {
+        $_SESSION['permisosMod'] = 0;
+    }
+    $_SESSION['permisos'] = 0;
+}
 
+function buscarEnArray($menu, $cadena)
+{
+    foreach ($menu as $item) {
+        if (!empty($item['hijos'])) {
+            foreach ($item['hijos'] as $itemN2) {
+                if (!empty($itemN2['hijos'])) {
+                    //Revison del 3 NIVEL
+                } else {
+                    if (strtolower($itemN2['enlace']) == $cadena) {
+                        return $itemN2;
+                    }
+                }
+            }
+        } else {
+            if (strtolower($item['enlace']) == $cadena) {
+                //putMessageLogFile($item);  
+                return $item;
+            }
+        }
+    }
+    return false;
+}
 
 function getGenerarMenu()
 {
     $menuApp = $_SESSION['menuData'];
-    //putMessageLogFile($menuApp);
     $menu = '<ul class="app-menu">';
     foreach ($menuApp as $itemN1) {
         //putMessageLogFile($itemN1['id']);
@@ -456,7 +472,7 @@ function getGenerarMenu()
             $menu .= '<li class="treeview">';
             $menu .= menuPadre($itemN1);
             $menu .= '<ul class="treeview-menu">';
-            foreach ($itemN1['hijos'] as $itemN2) {//Nivel 2
+            foreach ($itemN1['hijos'] as $itemN2) { //Nivel 2
                 //putMessageLogFile($itemN2['id'] . " hijo");
                 $menu .= menuHijoLink($itemN2);
                 //if (!empty($itemN2['hijos'])) {

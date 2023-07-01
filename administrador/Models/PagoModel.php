@@ -16,6 +16,12 @@ require_once("Libraries/Core/Conexion.php");
 			$request = $this->select_all($sql);
 			return $request;
 		}
+		public function consultarPago(){
+			$sql = "SELECT fpag_id Ids, fpag_nombre Nombre ";
+			$sql .= " FROM ". $this->db_name .".forma_pago WHERE estado_logico!=0 ORDER BY fpag_nombre ASC ";
+			$request = $this->select_all($sql);
+			return $request;
+		}
 
 		
 		public function consultarDatosId(int $Ids){

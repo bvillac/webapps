@@ -40,10 +40,8 @@
 							$_SESSION['idEmpresa'] = ID_EMPRESA;//Cambiar por el retornado y seleccionado
 							$_SESSION['idsPersona'] = $arrData['per_id'];
 							$_SESSION['loginEstado'] = true;//estado de la Session Login
-							$arrData = $model->sessionLogin($_SESSION['idsUsuario']);
-							//putMessageLogFile($_SESSION['usuarioData']);			
-							
-							sessionUsuario($_SESSION['idsUsuario']);
+							$arrData = $model->sessionLogin($_SESSION['idsUsuario']);								
+							//sessionUsuario($_SESSION['idsUsuario']);
 							$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
 							$usuId = $_SESSION['idsUsuario'];
 							$empId = $_SESSION['idEmpresa'];

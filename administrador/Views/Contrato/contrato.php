@@ -9,10 +9,10 @@ getModal('modalInstructor', $data);
     <div class="app-title">
         <div>
             <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
-                <?php //if ($_SESSION['permisosMod']['w']) { 
+                <?php if ($_SESSION['permisosMod']['w']) {
                 ?>
-                <button class="btn btn-primary" type="button" id="btn_nuevo" ><i class="fa fa-plus"></i> Nuevo</button>
-                <?php //} 
+                    <button class="btn btn-primary" type="button" id="btn_nuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                <?php }
                 ?>
             </h1>
         </div>
@@ -22,10 +22,10 @@ getModal('modalInstructor', $data);
         </ul>
     </div>
 
-    
+
 
     <div class="row">
-    
+
 
         <div class="col-md-12">
             <div class="tile">

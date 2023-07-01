@@ -23,13 +23,12 @@
 			//control de Acceso por Roles
 			
 			if(empty($_SESSION['permisosMod']['r'])){//si no existe lo redirecciona
-				//header("Location:".base_url().'/dashboard');//Redirecciona al dashboard
+				header("Location:".base_url().'/dashboard');//Redirecciona al dashboard
 			}
 			
 			$data['page_tag'] = "Usuarios";
 			$data['page_name'] = "Usuarios";
 			$data['page_title'] = "Usuarios <small> ".TITULO_EMPRESA ."</small>";
-			$data['fileJS'] = "funcionesUsuarios.js";
 			$this->views->getView($this,"usuarios",$data);
 			
 		}

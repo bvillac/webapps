@@ -98,4 +98,18 @@ class Mysql extends Conexion
 			putMessageLogFile("ERROR: " . $e->getMessage() . $e);
 		}
 	}
+
+	//Insertar Datos con la Conexion datos
+	public function insertConTrasn($con,string $query, array $arrValues){
+		$this->strquery = $query;
+		$this->arrValues = $arrValues;
+		$insert = $con->prepare($this->strquery);
+		$resInsert = $insert->execute($this->arrValues);
+		if($resInsert){
+			$lastInsert = $con->lastInsertId();
+		}else{
+			$lastInsert = 0;
+		}
+		return $lastInsert; 
+	}
 }

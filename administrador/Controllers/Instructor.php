@@ -12,30 +12,28 @@ class Instructor extends Controllers
 			header('Location: ' . base_url() . '/login');
 			die();
 		}
-		//getPermisos(4);
+		getPermisos();
 	}
 
 	public function instructor()
 	{
-		/*if(empty($_SESSION['permisosMod']['r'])){
+		if(empty($_SESSION['permisosMod']['r'])){
 				header("Location:".base_url().'/dashboard');
-			}*/
+			}
 		$data['page_tag'] = "Instructor";
 		$data['page_name'] = "Instructor";
 		$data['page_title'] = "Instructor <small> " . TITULO_EMPRESA . "</small>";
-		$data['fileJS'] = "funcionesInstructor.js";
 		$this->views->getView($this, "instructor", $data);
 	}
 
 	public function nuevo()
 	{
-		/*if(empty($_SESSION['permisosMod']['r'])){
+		if(empty($_SESSION['permisosMod']['r'])){
 				header("Location:".base_url().'/dashboard');
-			}*/
+			}
 		$data['page_tag'] = "Nuevo Instructor";
 		$data['page_name'] = "Nuevo Instructor";
 		$data['page_title'] = "Nuevo Instructor <small> " . TITULO_EMPRESA . "</small>";
-		$data['fileJS'] = "funcionesInstructor.js";
 		$this->views->getView($this, "nuevo", $data);
 	}
 
