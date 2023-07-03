@@ -3,9 +3,8 @@ class ClienteMiller extends Controllers
 {
     public function __construct()
     {
+        sessionStart();
         parent::__construct();
-        session_start();
-        session_regenerate_id(true);
         if (empty($_SESSION['loginEstado'])) {
             header('Location: ' . base_url() . '/login');
             die();
@@ -16,7 +15,6 @@ class ClienteMiller extends Controllers
 
     public function clientemiller()
     {
-        //putMessageLogFile($_SESSION['permisosMod']['r']);
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
@@ -29,7 +27,7 @@ class ClienteMiller extends Controllers
     public function getClientes()
     {
         //putMessageLogFile($_SESSION['permisosMod']['r']);
-        //if ($_SESSION['permisosMod']['r']) {
+        if ($_SESSION['permisosMod']['r']) {
         $arrData = $this->model->consultarDatos();
         for ($i = 0; $i < count($arrData); $i++) {
             $btnOpciones = "";
@@ -40,7 +38,7 @@ class ClienteMiller extends Controllers
             }
 
             if ($_SESSION['permisosMod']['r']) {
-                $btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+                //$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
             }
             if ($_SESSION['permisosMod']['u']) {
                 //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditInstructor" onClick="fntEditInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
@@ -55,7 +53,7 @@ class ClienteMiller extends Controllers
             $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
         }
         echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
-        //}
+        }
         die();
     }
 
@@ -78,7 +76,6 @@ class ClienteMiller extends Controllers
 
     public function nuevo()
     {
-        //putMessageLogFile($_SESSION['permisosMod']['r']);
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
@@ -93,7 +90,7 @@ class ClienteMiller extends Controllers
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
                 $data = $this->model->consultarDatosId($ids);
-               
+
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
@@ -124,14 +121,14 @@ class ClienteMiller extends Controllers
                 $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
                 if ($accion == "Create") {
                     $option = 1;
-                    //if($_SESSION['permisosMod']['w']){
-                    $request = $this->model->insertData($datos);
-                    //}
+                    if ($_SESSION['permisosMod']['w']) {
+                        $request = $this->model->insertData($datos);
+                    }
                 } else {
                     $option = 2;
-                    //if($_SESSION['permisosMod']['u']){
-                    $request = $this->model->updateData($datos);
-                    //}
+                    if ($_SESSION['permisosMod']['u']) {
+                        $request = $this->model->updateData($datos);
+                    }
                 }
                 if ($request["status"]) {
                     if ($option == 1) {
@@ -140,7 +137,7 @@ class ClienteMiller extends Controllers
                         $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
                     }
                 } else {
-                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
+                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos: ' . $request["message"]);
                 }
             }
             echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
@@ -149,21 +146,19 @@ class ClienteMiller extends Controllers
     }
 
     public function delCliente()
-	{
-		if ($_POST) {
-			//if ($_SESSION['permisosMod']['d']) {
-				$ids = intval($_POST['ids']);
-				$request = $this->model->deleteRegistro($ids);
-				if ($request) {
-					$arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
-				} else {
-					$arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
-				}
-				echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-			//}
-		}
-		die();
-	}
-
-
+    {
+        if ($_POST) {
+            if ($_SESSION['permisosMod']['d']) {
+            $ids = intval($_POST['ids']);
+            $request = $this->model->deleteRegistro($ids);
+            if ($request) {
+                $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
+            } else {
+                $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        die();
+    }
 }

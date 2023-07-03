@@ -272,6 +272,21 @@ function sessionUsuario(int $idsUsuario)
     return $request;
 }
 
+function sessionStart(){
+    session_start();
+    $inactive=720;//usuario va a permanercer logueado en segundos 60segundos 60=>30s 360>3minustos 120x1minut
+    if(isset($_SESSION['timeout'])){
+        $session_in = time()-$_SESSION['inicio'];
+        //putMessageLogFile($session_in);
+        if($session_in>$inactive){//paso el tiempo en que usuario permanece logueado
+            putMessageLogFile($session_in);
+            header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducasdo
+        }
+    }else{
+        header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducasdo
+    }
+}
+
 function uploadImage(array $data, string $name)
 {
     //Nota Otorgar los Permisos a la Caperta Uploads en el servidor

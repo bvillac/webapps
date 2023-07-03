@@ -2,7 +2,6 @@
 	class Login extends Controllers{
 		public function __construct(){
 			session_start();//iniciamos el uso de variables de session
-			session_regenerate_id(true);
 			if(isset($_SESSION['loginEstado'])){//Veifica si existe la seesion
 				header('Location: '.base_url().'/dashboard');//Lo direciona al  dashboard
 				die();
@@ -40,8 +39,13 @@
 							$_SESSION['idEmpresa'] = ID_EMPRESA;//Cambiar por el retornado y seleccionado
 							$_SESSION['idsPersona'] = $arrData['per_id'];
 							$_SESSION['loginEstado'] = true;//estado de la Session Login
+							//Para que la Session no se cierre en algunos navegadores.
+							$_SESSION['timeout'] = true;
+							$_SESSION['inicio'] = time();//Devuelve la hora en numero entero
+
+							
 							$arrData = $model->sessionLogin($_SESSION['idsUsuario']);								
-							//sessionUsuario($_SESSION['idsUsuario']);
+							sessionUsuario($_SESSION['idsUsuario']);//Actualiza la Session del usuario.
 							$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
 							$usuId = $_SESSION['idsUsuario'];
 							$empId = $_SESSION['idEmpresa'];

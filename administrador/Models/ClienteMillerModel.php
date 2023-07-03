@@ -85,6 +85,7 @@ class ClienteMillerModel extends Mysql
             }
         } else {
             $arroout["status"] = false;
+            $arroout["message"] = "Ya exite Persona asignada al Cliente.";
             return $arroout;
         }
     }

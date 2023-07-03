@@ -26,11 +26,6 @@ class LoginModel extends Mysql
 
 	public function sessionLogin(int $IdsUser)
 	{
-		//BUSCAR ROLE 
-		//$db_name = $this->getDbNameMysql();
-		//$idsEmpresa = 1;
-
-
 		$sql = "SELECT a.usu_id UsuId,a.usu_correo,a.usu_alias Alias,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres,";
 		$sql .= "	b.per_fecha_nacimiento FechaNac,b.per_nombre,b.per_apellido,b.per_genero Genero,a.estado_logico Estado,";
 		$sql .= "	date(a.fecha_creacion) FechaIng,b.per_telefono Telefono,b.per_direccion Direccion";
@@ -41,7 +36,7 @@ class LoginModel extends Mysql
 		$request = $this->select($sql);
 		$_SESSION['usuarioData'] = $request;
 		//Obtener el Rol de la Persona
-		$resulRol = $this->selectRolesPermiso($_SESSION['idsUsuario'], 1); //IMPLMENTAR LO DE EMPRESAS
+		$resulRol = $this->selectRolesPermiso($_SESSION['idsUsuario'], $_SESSION['idEmpresa']); //IMPLMENTAR LO DE EMPRESAS
 		$_SESSION['usuarioData']['RolID'] = $resulRol['Ids'];
 		$_SESSION['usuarioData']['Rol'] = $resulRol['rol_nombre'];
 
