@@ -141,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 window.addEventListener('load', function () {
-    fntRolAsig();
-    fntPago();
+    //fntRolAsig();
+    //fntPago();
 }, false);
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -291,7 +291,7 @@ function openModalPersona() {
     $('#modalFormUsu').modal('show');
 }
 
-function fntRolAsig() {
+/*function fntRolAsig() {
     var ajaxUrl = base_url + '/Usuarios/getRolesUsu';
     var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
     request.open("GET", ajaxUrl, true);
@@ -323,7 +323,7 @@ function fntPago() {
         }
     }
 
-}
+}*/
 
 function guardarCliente(accion) {
     //let accion=($('#cmd_guardar').html()=="Guardar")?'Create':'edit';  
@@ -334,28 +334,20 @@ function guardarCliente(accion) {
     let txt_cli_tipo_dni = document.querySelector('#txt_cli_tipo_dni').value;
     let txt_cli_cedula_ruc = document.querySelector('#txt_cli_cedula_ruc').value;
     let txt_cli_razon_social = document.querySelector('#txt_cli_razon_social').value;
-    let txt_cli_telefono = document.querySelector('#txt_cli_telefono').value;
     let txt_cli_direccion = document.querySelector('#txt_cli_direccion').value;
-    let cmb_pago = document.querySelector('#cmb_pago').value;
+    let txt_cli_telefono = document.querySelector('#txt_cli_telefono').value;
+    let txt_cli_telefono_oficina = document.querySelector('#txt_cli_telefono_oficina').value;
     let txt_cli_correo = document.querySelector('#txt_cli_correo').value;
+    let txt_cli_referencia_bancaria = document.querySelector('#txt_cli_referencia_bancaria').value;
+    let txt_cli_cargo = document.querySelector('#txt_cli_cargo').value;
+    let txt_cli_antiguedad = document.querySelector('#txt_cli_antiguedad').value;
+    let cmb_pago = document.querySelector('#cmb_pago').value;
+    let cmb_ocupacion = document.querySelector('#cmb_ocupacion').value;
+    let cli_ingreso_mensual = document.querySelector('#txt_cli_ingreso_mensual').value;   
     let cmb_estado = document.querySelector('#cmb_estado').value;
 
-    /*console.log("txth_ids "+txth_ids);
-    console.log("txth_per_id "+txth_per_id);
-    console.log("txt_codigo "+txt_codigo);
-    console.log("txt_cli_tipo_dni "+txt_cli_tipo_dni);
-    console.log("txt_cli_cedula_ruc "+txt_cli_cedula_ruc);
-    console.log("txt_cli_razon_social "+txt_cli_razon_social);
-    console.log("txt_cli_telefono "+txt_cli_telefono);
-    console.log("txt_cli_direccion "+txt_cli_direccion);
-    console.log("cmb_pago "+cmb_pago);
-    console.log("txt_cli_correo "+txt_cli_correo);
-    console.log("cmb_estado "+cmb_estado);*/
-
-
-
     if (txth_per_id == '' || txt_codigo == '' || txt_cli_cedula_ruc == '' || txt_cli_razon_social == '' || txt_cli_telefono == '' || txt_cli_direccion == ''
-        || cmb_pago == 0 || txt_cli_correo == '') {
+        || cmb_pago == 0 || cmb_ocupacion == 0 || txt_cli_correo == '' || txt_cli_referencia_bancaria == '' || txt_cli_cargo == '' || cli_ingreso_mensual == '') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;
     }
@@ -379,6 +371,13 @@ function guardarCliente(accion) {
     dataObj.cli_direccion = txt_cli_direccion;
     dataObj.pago = cmb_pago;
     dataObj.cli_correo = txt_cli_correo;
+
+    dataObj.cli_telefono_oficina = txt_cli_telefono_oficina;
+    dataObj.cli_referencia_bancaria = txt_cli_referencia_bancaria;
+    dataObj.cli_cargo = txt_cli_cargo;
+    dataObj.cli_antiguedad = txt_cli_antiguedad;
+    dataObj.ocupacion = cmb_ocupacion;
+    dataObj.cli_ingreso_mensual = cli_ingreso_mensual;
     dataObj.estado = cmb_estado;
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
 

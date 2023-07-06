@@ -92,13 +92,13 @@ class LoginModel extends Mysql
 		$sql .= "	FROM " . $db_name . ".permiso a ";
 		$sql .= "		INNER JOIN " . $db_name . ".rol b ";
 		$sql .= "			ON a.rol_id=b.rol_id ";
-		$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id}; ";
+		$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id} ";
 		//$request = $this->select_all($sql);//Devuelve mas de 1
 		$request = $this->select($sql); //Devuelve solo 1
 		return $request;
 	}
 
-	public function permisosModulo(int $rolId, int $usu_id, int $emp_id)
+	public function permisosModulo(int $usu_id, int $emp_id,int $rolId)
 	{
 		//$db_name = $this->getDbNameMysql();
 		$sql = "SELECT a.mod_id,SUBSTRING(a.mod_id, 1, LENGTH(a.mod_id) - 2) idPadre,b.mod_nombre,b.mod_url,a.r,a.w,a.u,a.d ";
@@ -106,7 +106,7 @@ class LoginModel extends Mysql
 		$sql .= "		INNER JOIN " . $this->db_name . ".modulo b ";
 		$sql .= "			ON a.mod_id=b.mod_id ";
 		$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id} AND a.rol_id={$rolId} ";
-		$sql .= "		ORDER BY a.mod_id ASC; ";
+		$sql .= "		ORDER BY a.mod_id ASC ";
 		$request = $this->select_all($sql);
 		$menuArray = $this->construirMenu($request,"");
 		//putMessageLogFile($menuArray);

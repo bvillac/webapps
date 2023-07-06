@@ -263,6 +263,14 @@ function enviarEmail($data, $template)
     return $send;
 }
 
+function datosEmpresaEstablePunto(int $IdEmpresa)
+{
+    require_once("Models/EmpresaModel.php");
+    $objData = new EmpresaModel();
+    $request = $objData->consultarEmpresaEstPunto($IdEmpresa);
+    return $request;
+}
+
 
 function sessionUsuario(int $idsUsuario)
 {
@@ -274,7 +282,7 @@ function sessionUsuario(int $idsUsuario)
 
 function sessionStart(){
     session_start();
-    $inactive=720;//usuario va a permanercer logueado en segundos 60segundos 60=>30s 360>3minustos 120x1minut
+    $inactive=TIMESESSION;//usuario va a permanercer logueado en segundos 60segundos 60=>30s 360>3minustos 120x1minut
     if(isset($_SESSION['timeout'])){
         $session_in = time()-$_SESSION['inicio'];
         //putMessageLogFile($session_in);

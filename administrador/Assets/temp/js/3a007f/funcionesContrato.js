@@ -1,10 +1,14 @@
 let tableContrato;
 let tablePersonaBuscar;
 
+window.addEventListener('load', function () {
 
+
+}, false);
 
 
 $(document).ready(function () {
+    $('#cmb_profesion').selectpicker('render');
     //Nueva Orden
     $("#btn_nuevo").click(function () {
         //eliminarStores();
@@ -110,3 +114,7 @@ function limpiarAutocompletar() {
     //$('#lbl_Ruc').text("");
 
 }
+
+
+
+

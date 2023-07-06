@@ -115,12 +115,24 @@
 
 		//Nuevo 23-04-2023
 		public function consultarEmpresaPermiso(int $Ids){
-			$db_name=$this->getDbNameMysql();
 			$sql = "SELECT distinct(a.emp_id) Ids,b.emp_razon_social ";
-			$sql = "	FROM ". $db_name .".permiso a ";
-			$sql = "		INNER JOIN ". $db_name .".empresa b ";
+			$sql = "	FROM ". $this->db_name .".permiso a ";
+			$sql = "		INNER JOIN ". $this->db_name .".empresa b ";
 			$sql = "			ON a.emp_id=b.emp_id ";
 			$sql = "	WHERE a.estado_logico!=0 AND a.usu_id={$Ids} ";
+			$request = $this->select($sql);
+			return $request;
+		}
+
+		public function consultarEmpresaEstPunto(int $Ids){
+			$sql = "SELECT a.emp_id EmpIds,a.emp_ruc Ruc,a.emp_nombre_comercial NombreComercial,b.est_id EstableId,
+						c.pemi_id PuntoEmisId 
+						FROM ". $this->db_name .".empresa a 
+							inner join (". $this->db_name .".establecimiento b 
+									inner join ". $this->db_name .".punto_emision c 
+										on b.est_id=c.est_id)
+								on a.emp_id=b.emp_id
+						where a.estado_logico!=0 and a.emp_id={$Ids} ";
 			$request = $this->select($sql);
 			return $request;
 		}

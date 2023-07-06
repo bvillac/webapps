@@ -18,21 +18,22 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_dni">Identificación Dni</label>
-              <input type="text" class="form-control valid validarNumber " id="txt_dni" name="txt_dni" required="">            </div>
+              <input type="text" class="form-control valid validarNumber " id="txt_dni" name="txt_dni" required="">
+            </div>
             <div class="form-group col-md-6">
               <label for="txt_fec_nacimiento">Fecha Nacimiento</label>
               <div class="dflex">
-                    <input class="date-picker form-control valid" id="dtp_fecha_nacimiento" name="dtp_fecha_nacimiento" placeholder="yyyy-mm-dd">
-                    
-                </div>
+                <input class="date-picker form-control valid" id="dtp_fecha_nacimiento" name="dtp_fecha_nacimiento" placeholder="yyyy-mm-dd">
+
+              </div>
               <!--<input type="text" class="form-control valid validText" id="txt_fec_nacimiento" name="txt_fec_nacimiento" placeholder="1988/01/01" pattern="^\d{4}\/\d{2}\/\d{2}$" required="" >-->
             </div>
-           
+
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_nombre">Nombre</label>
-              <input type="text" class="form-control valid validarTexto" id="txt_nombre" name="txt_nombre" onkeyup="TextMayus(this);" required="" >
+              <input type="text" class="form-control valid validarTexto" id="txt_nombre" name="txt_nombre" onkeyup="TextMayus(this);" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="txt_apellido">Apellido</label>
@@ -42,7 +43,7 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_telefono">Teléfono/Celular</label>
-              <input type="text" maxlength="10" class="form-control valid validarNumber" id="txt_telefono" name="txt_telefono" placeholder="0999999999" required="" >                      
+              <input type="text" maxlength="10" class="form-control valid validarNumber" id="txt_telefono" name="txt_telefono" placeholder="0999999999" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="txt_direccion">Dirección Domiciliaria</label>
@@ -52,7 +53,7 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_alias">Alias</label>
-              <input type="text" class="form-control valid validarTexto" id="txt_alias" name="txt_alias" onkeyup="TextMayus(this);"  required="" >
+              <input type="text" class="form-control valid validarTexto" id="txt_alias" name="txt_alias" onkeyup="TextMayus(this);" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="cmb_genero">Género</label>
@@ -63,23 +64,28 @@
             </div>
           </div>
           <div class="form-row">
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-6">
               <label for="txt_correo">Usuario/Correo Electrónico</label>
-              <input type="email" class="form-control valid validarEmail" id="txt_correo" name="txt_correo" placeholder="ejemplo@gmail.com" required="" >
+              <input type="email" class="form-control valid validarEmail" id="txt_correo" name="txt_correo" placeholder="ejemplo@gmail.com" required="">
             </div>
-            </div>
-           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_Password">Clave</label>
-              <input type="password" class="form-control" id="txt_Password" name="txt_Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="La contraseña debe contener 8 o más caracteres que son de por lo menos un número, una mayúscula y minúscula" placeholder="Abcdef123" >
-              <span class="mdi mdi-eye" id="mostrar"> <span class="pwdtxt" style="cursor:pointer;">Mostrar contraseña</span></span>     
+              <input type="password" class="form-control" id="txt_Password" name="txt_Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="La contraseña debe contener 8 o más caracteres que son de por lo menos un número, una mayúscula y minúscula" placeholder="Abcdef123">
+              <span class="mdi mdi-eye" id="mostrar"> <span class="pwdtxt" style="cursor:pointer;">Mostrar contraseña</span></span>
             </div>
-           
           </div>
+
           <div class="form-row">
-          <div class="form-group col-md-6">
+            <div class="form-group col-md-6">
               <label for="cmb_rol">Rol Asignado</label>
               <select class="form-control" data-live-search="true" id="cmb_rol" name="cmb_rol" required="">
+                <?php
+                // Recorre el array y genera las opciones del select
+                echo '<option value="0">SELECCIONAR</option>';
+                foreach ($data['usuario_rol'] as $opcion) {
+                  echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
+                }
+                ?>
               </select>
             </div>
             <div class="form-group col-md-6">
@@ -107,7 +113,7 @@
 
 <!-- Modal View -->
 <div class="modal fade" id="modalViewUsu" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" >
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header header-primary">
         <h5 class="modal-title" id="titleModal">Usuarios</h5>
@@ -134,7 +140,7 @@
               <td>Dirección Domiciliaria:</td>
               <td id="lbl_direccion"></td>
             </tr>
-            
+
             <tr>
               <td>Alias:</td>
               <td id="lbl_alias"></td>
@@ -168,4 +174,3 @@
     </div>
   </div>
 </div>
-

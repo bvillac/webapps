@@ -83,16 +83,14 @@
 		public function newSecuence(string $TipoSec, int $puntoEmision,$executeSecuence = false) {
 			$numero = 0;
 			$strPad = 10;
-			$db_name=$this->getDbNameMysql();
 			$con=$this->getConexion();
 			//$con->beginTransaction();
-			//$puntoEmision=1;
 			try{
 				$sql = "
 					SELECT 
 						IFNULL(CAST(sec_numero AS UNSIGNED), 0) secuencia 
 					FROM 
-						" . $db_name . ".secuencias 
+						" . $this->db_name . ".secuencias 
 					WHERE 
 						sec_tipo = '{$TipoSec}' AND
 						estado_logico = 1 AND pemi_id = {$puntoEmision}";
@@ -104,7 +102,7 @@
 					$numero = str_pad( intval($rawData['secuencia']) + 1, $strPad, "0", STR_PAD_LEFT);
 					if(!$executeSecuence)   return $numero; //Si es True Devuelve solo el numero
 					$sql = "
-						UPDATE " . $db_name . ".secuencias 
+						UPDATE " . $this->db_name . ".secuencias 
 							SET sec_numero = '{$numero}' 
 						WHERE 
 							sec_tipo = '{$TipoSec}' AND

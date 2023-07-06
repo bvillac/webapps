@@ -1,4 +1,6 @@
 <?php
+require_once("Models/PagoModel.php");
+require_once("Models/UsuariosModel.php");
 class ClienteMiller extends Controllers
 {
     public function __construct()
@@ -28,36 +30,36 @@ class ClienteMiller extends Controllers
     {
         //putMessageLogFile($_SESSION['permisosMod']['r']);
         if ($_SESSION['permisosMod']['r']) {
-        $arrData = $this->model->consultarDatos();
-        for ($i = 0; $i < count($arrData); $i++) {
-            $btnOpciones = "";
-            if ($arrData[$i]['Estado'] == 1) {
-                $arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
-            } else {
-                $arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>'; //target="_blanck"
-            }
+            $arrData = $this->model->consultarDatos();
+            for ($i = 0; $i < count($arrData); $i++) {
+                $btnOpciones = "";
+                if ($arrData[$i]['Estado'] == 1) {
+                    $arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
+                } else {
+                    $arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>'; //target="_blanck"
+                }
 
-            if ($_SESSION['permisosMod']['r']) {
+                if ($_SESSION['permisosMod']['r']) {
+                    //$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+                }
+                if ($_SESSION['permisosMod']['u']) {
+                    //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditInstructor" onClick="fntEditInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+                    $btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/ClienteMiller/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+                }
+                if ($_SESSION['permisosMod']['d']) {
+                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteCliente(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+                }
                 //$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
-            }
-            if ($_SESSION['permisosMod']['u']) {
                 //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditInstructor" onClick="fntEditInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-                $btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/ClienteMiller/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+                //$btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteInstructor(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+                $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
             }
-            if ($_SESSION['permisosMod']['d']) {
-                $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteCliente(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
-            }
-            //$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
-            //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditInstructor" onClick="fntEditInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-            //$btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteInstructor(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
-            $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
-        }
-        echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+            echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
         }
         die();
     }
 
-    public function getPago()
+    /*public function getPago()
     {
         require_once("Models/PagoModel.php");
         $model = new PagoModel();
@@ -71,7 +73,7 @@ class ClienteMiller extends Controllers
         }
         echo $htmlOptions;
         die();
-    }
+    }*/
 
 
     public function nuevo()
@@ -79,6 +81,11 @@ class ClienteMiller extends Controllers
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
+        $formaPago = new PagoModel();
+        $usuarioRol = new UsuariosModel();
+        $data['ocupacion'] = $this->model->consultarProfesion();
+        $data['usuario_rol'] = $usuarioRol->consultarRoles();
+        $data['forma_pago'] = $formaPago->consultarPago();
         $data['page_tag'] = "Cliente";
         $data['page_name'] = "Cliente";
         $data['page_title'] = "Cliente <small> " . TITULO_EMPRESA . "</small>";
@@ -94,6 +101,10 @@ class ClienteMiller extends Controllers
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
+                    $formaPago = new PagoModel();
+                    $usuarioRol = new UsuariosModel();
+                    $data['ocupacion'] = $this->model->consultarProfesion();
+                    $data['forma_pago'] = $formaPago->consultarPago();
                     $data['page_tag'] = "Editar Cliente";
                     $data['page_name'] = "Editar Cliente";
                     $data['page_title'] = "Editar Cliente <small> " . TITULO_EMPRESA . "</small>";
@@ -149,14 +160,14 @@ class ClienteMiller extends Controllers
     {
         if ($_POST) {
             if ($_SESSION['permisosMod']['d']) {
-            $ids = intval($_POST['ids']);
-            $request = $this->model->deleteRegistro($ids);
-            if ($request) {
-                $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
-            } else {
-                $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
-            }
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+                $ids = intval($_POST['ids']);
+                $request = $this->model->deleteRegistro($ids);
+                if ($request) {
+                    $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
+                } else {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
             }
         }
         die();

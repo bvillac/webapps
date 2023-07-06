@@ -27,11 +27,17 @@ getModal('modalUsuarios', $data);
                 <div class="tile-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><h5>CONTRATO DEL PROGRAMA DE IDIOMAS MILLER TRAINING</h5> </p>
-                            <p><h4>R.U.C. 0920010154001</h4></p>
+                            <p>
+                            <h5>CONTRATO DEL PROGRAMA DE IDIOMAS MILLER TRAINING</h5>
+                            </p>
+                            <p>
+                            <h4>R.U.C. <?= $data['Ruc'] ?></h4>
+                            </p>
                         </div>
                         <div class="col-md-3">
-                            <p><h4>N° 000001</h4></p>
+                            <p>
+                            <h4 id="lbl_secuencia">N° <?= $data['secuencia'] ?></h4>
+                            </p>
                         </div>
                         <div class="form-group col-md-3">
                             <label class="control-label">Fecha del Contrato</label>
@@ -40,34 +46,125 @@ getModal('modalUsuarios', $data);
                             </div>
                         </div>
                     </div>
-                    <h3 class="mb-3 line-head" id="type-blockquotes"></h3>
-
+                    <h3 class="mb-3 line-head" id="type-blockquotes">Cliente</h3>
                     <div class="row">
                         <div class="form-group col-md-3">
-                            <label class="control-label">Buscar Persona DNI</label>
+                            <label class="control-label">Buscar Persona <span class="required">*</span></label>
                             <div class="input-group">
-                                <input class="form-control" id="txt_CodigoPersona" name="txt_CodigoPersona" type="text" required="" placeholder="Buscar">                                
+                                <input class="form-control" id="txt_CodigoPersona" name="txt_CodigoPersona" type="text" required="" placeholder="Buscar por Nombre o DNI">
                             </div>
                         </div>
-                        <div class="form-group col-md-3">
-                         
 
-
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Titular</label>
+                            <input class="form-control" type="text" id="txt_nombres" name="txt_nombres" placeholder="" disabled>
                         </div>
-
-                    </div>
-                    <div class="row">
                         <div class="form-group col-md-3">
                             <label class="control-label">DNI</label>
                             <input class="form-control" type="text" id="txt_cedula" name="txt_cedula" placeholder="" disabled>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Nombres</label>
-                            <input class="form-control" type="text" id="txt_nombres" name="txt_nombres" placeholder="" disabled>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#info">Información</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#beneficiarios">Beneficiarios</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#totales">Totales</a></li>
+                                <!-- <li class="nav-item"><a class="nav-link disabled" href="#detalle">Detalle</a></li> -->
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade active show" id="info">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_razon_social">Nombre Empresa <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_razon_social" name="txt_razon_social" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_cargo">Cargo <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_cargo" name="txt_cargo" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_ingreso_mensual">Ingreso Mensual <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_ingreso_mensual" name="txt_ingreso_mensual" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_antiguedad">Antiguedad <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_antiguedad" name="txt_antiguedad" type="text" >
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_dir_domicilio">Dirección Domicilio <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_dir_domicilio" name="txt_dir_domicilio" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_tel_domicilio">Teléfono Domicilio <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_tel_domicilio" name="txt_tel_domicilio" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_dir_trabajo">Dirección Trabajo <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_dir_trabajo" name="txt_dir_trabajo" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_tel_trabajo">Teléfono Trabajo <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_tel_trabajo" name="txt_tel_trabajo" type="text" >
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_dir_domicilio">Dirección Domicilio <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_dir_domicilio" name="txt_dir_domicilio" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_tel_domicilio">Teléfono Domicilio <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_tel_domicilio" name="txt_tel_domicilio" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_dir_trabajo">Dirección Trabajo <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_dir_trabajo" name="txt_dir_trabajo" type="text" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_tel_trabajo">Teléfono Trabajo <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_tel_trabajo" name="txt_tel_trabajo" type="text" >
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                                <div class="tab-pane fade active show" id="beneficiarios">
+
+                                </div>
+                                <div class="tab-pane fade active show" id="totales">
+
+                                </div>
+                            </div>
                         </div>
+
                     </div>
 
 
+
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="cmb_profesion">Ocupación <span class="required">*</span></label>
+                            <select class="form-control" data-live-search="true" id="cmb_profesion" name="cmb_profesion" required="">
+                                <?php
+                                // Recorre el array y genera las opciones del select
+                                echo '<option value="0">SELECCIONAR</option>';
+                                foreach ($data['ocupacion'] as $opcion) {
+                                    echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="txt_nom">Nombre Empresa <span class="required">*</span></label>
+                            <input class="form-control" id="txtPercha" name="txtPercha" type="text" onkeyup="TextMayus(this);" required="">
+                        </div>
+                    </div>
                     <h3 class="mb-3 line-head" id="type-blockquotes">Horarios</h3>
                     <div class="row">
                         <div class="form-group col-md-3">

@@ -34,9 +34,12 @@
 						$arrData = $request;
 						//putMessageLogFile($arrData);
 						if($arrData['Estado'] == 1){
+							//Obtener datos empresa 
+							$arrEmpresa=datosEmpresaEstablePunto(ID_EMPRESA);
+							$_SESSION['empresaData']=$arrEmpresa;
 							//Variables de Session
 							$_SESSION['idsUsuario'] = $arrData['usu_id'];
-							$_SESSION['idEmpresa'] = ID_EMPRESA;//Cambiar por el retornado y seleccionado
+							$_SESSION['idEmpresa'] = $arrEmpresa['EmpIds'];//Cambiar por el retornado y seleccionado
 							$_SESSION['idsPersona'] = $arrData['per_id'];
 							$_SESSION['loginEstado'] = true;//estado de la Session Login
 							//Para que la Session no se cierre en algunos navegadores.
