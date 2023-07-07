@@ -68,9 +68,9 @@ getModal('modalUsuarios', $data);
                     <div class="row">
                         <div class="col-md-12">
                             <ul class="nav nav-tabs">
-                                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#info">Información</a></li>
-                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#beneficiarios">Beneficiarios</a></li>
-                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#totales">Totales</a></li>
+                                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#info">INFORMACIÓN</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#beneficiarios">BENEFICIARIOS</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#totales">TOTALES</a></li>
                                 <!-- <li class="nav-item"><a class="nav-link disabled" href="#detalle">Detalle</a></li> -->
                             </ul>
                             <div class="tab-content" id="myTabContent">
@@ -78,106 +78,209 @@ getModal('modalUsuarios', $data);
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_razon_social">Nombre Empresa <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_razon_social" name="txt_razon_social" type="text" >
+                                            <input class="form-control" id="txt_razon_social" name="txt_razon_social" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_cargo">Cargo <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_cargo" name="txt_cargo" type="text" >
+                                            <input class="form-control" id="txt_cargo" name="txt_cargo" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_ingreso_mensual">Ingreso Mensual <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_ingreso_mensual" name="txt_ingreso_mensual" type="text" >
+                                            <input class="form-control" id="txt_ingreso_mensual" name="txt_ingreso_mensual" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_antiguedad">Antiguedad <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_antiguedad" name="txt_antiguedad" type="text" >
+                                            <input class="form-control" id="txt_antiguedad" name="txt_antiguedad" type="text">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_dir_domicilio">Dirección Domicilio <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_dir_domicilio" name="txt_dir_domicilio" type="text" >
+                                            <input class="form-control" id="txt_dir_domicilio" name="txt_dir_domicilio" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_tel_domicilio">Teléfono Domicilio <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_tel_domicilio" name="txt_tel_domicilio" type="text" >
+                                            <input class="form-control" id="txt_tel_domicilio" name="txt_tel_domicilio" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_dir_trabajo">Dirección Trabajo <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_dir_trabajo" name="txt_dir_trabajo" type="text" >
+                                            <input class="form-control" id="txt_dir_trabajo" name="txt_dir_trabajo" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_tel_trabajo">Teléfono Trabajo <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_tel_trabajo" name="txt_tel_trabajo" type="text" >
+                                            <input class="form-control" id="txt_tel_trabajo" name="txt_tel_trabajo" type="text">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
-                                            <label for="txt_dir_domicilio">Dirección Domicilio <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_dir_domicilio" name="txt_dir_domicilio" type="text" >
+                                            <label for="txt_referencia">Referencía Bancaria <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_referencia" name="txt_referencia" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_tel_domicilio">Teléfono Domicilio <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_tel_domicilio" name="txt_tel_domicilio" type="text" >
+                                            <label for="txt_profesion">Profesión <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_profesion" name="txt_profesion" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_dir_trabajo">Dirección Trabajo <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_dir_trabajo" name="txt_dir_trabajo" type="text" >
+                                            <label for="txt_forma_pago">Forma de Pago <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_forma_pago" name="txt_forma_pago" type="text">
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_tel_trabajo">Teléfono Trabajo <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_tel_trabajo" name="txt_tel_trabajo" type="text" >
+
                                         </div>
                                     </div>
 
 
 
                                 </div>
-                                <div class="tab-pane fade active show" id="beneficiarios">
+                                <div class="tab-pane fade" id="beneficiarios">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_CodigoBeneficirio">Buscar Nombre o DNI <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_CodigoBeneficirio" name="txt_CodigoBeneficirio" type="text" required="" placeholder="Buscar por Nombre o DNI">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_NombreBeneficirio" name="txt_NombreBeneficirio" type="text">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_EdadBeneficirio">Edad <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_EdadBeneficirio" name="txt_EdadBeneficirio" type="text">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_TelefonoBeneficirio">Teléfono <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_TelefonoBeneficirio" name="txt_TelefonoBeneficirio" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="cmb_CentroAtencion">Centro Atención</label>
+                                            <select class="form-control" data-live-search="true" id="cmb_CentroAtencion" name="cmb_CentroAtencion" required="">
+                                                <?php
+                                                // Recorre el array y genera las opciones del select
+                                                echo '<option value="0">SELECCIONAR</option>';
+                                                foreach ($data['centroAtencion'] as $opcion) {
+                                                    echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="cmb_PaqueteEstudios">Paquete/Estudios</label>
+                                            <select class="form-control" data-live-search="true" id="cmb_PaqueteEstudios" name="cmb_PaqueteEstudios" required="">
+                                                <?php
+                                                // Recorre el array y genera las opciones del select
+                                                echo '<option value="0">SELECCIONAR</option>';
+                                                foreach ($data['paqueteEstudios'] as $opcion) {
+                                                    echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="cmb_ModalidadEstudios">Modalidad/Estudios</label>
+                                            <select class="form-control" data-live-search="true" id="cmb_ModalidadEstudios" name="cmb_ModalidadEstudios" required="">
+                                                <?php
+                                                // Recorre el array y genera las opciones del select
+                                                echo '<option value="0">SELECCIONAR</option>';
+                                                foreach ($data['modalidadEstudios'] as $opcion) {
+                                                    echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="cmb_Idioma">Idioma</label>
+                                            <select class="form-control" data-live-search="true" id="cmb_Idioma" name="cmb_Idioma" required="">
+                                                <?php
+                                                // Recorre el array y genera las opciones del select
+                                                echo '<option value="0">SELECCIONAR</option>';
+                                                foreach ($data['idioma'] as $opcion) {
+                                                    echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button id="cmd_agregarBeneficiario" class="btn btn-success" type="button" onclick="guardarInstructor('Create');"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Agregar Beneficiario</button>
+                                    </div>
+                                    <h5 class="mb-3 line-head" id="type-blockquotes">Datos Beneficiarios</h5>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-bordered" id="TbG_tableBeneficiario">
+                                            <thead>
+                                                <tr>
+                                                    <th>Dni</th>
+                                                    <th>Nombres</th>
+                                                    <th>Centro</th>
+                                                    <th>Paquete</th>
+                                                    <th>Modalidad</th>
+                                                    <th>Idioma</th>
+                                                    <th>Edad</th>
+                                                    <th>Teléfono</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="listaBeneficiarios">
+                                                <!-- <tr>
+                          <td>1</td>
+                          <td colspan="2">lapiz</td>
+                          <td>1</td>
+                          <td class="textright">100.00</td>
+                          <td class="textright">100-00</td>
+                          <td>
+                            <a href="#" id="cmd_delete" class="link_delete" onclick="event.preventDefault();eliminarDetalle(1);"><i class="fa fa-trash"></i>
+                            </a>
+                          </td>
+                        </tr> -->
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
 
                                 </div>
-                                <div class="tab-pane fade active show" id="totales">
+                                <div class="tab-pane fade" id="totales">
+                                                <BR>
+                                    <h5 class="mb-3 line-head" id="type-blockquotes">VALORES DE PAGO</h5>
+                                    <div class="mb-3 row">
 
+                                        <label for="txt_valor" class="col-sm-2 col-form-label text-right">Valor US$</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control" id="txt_valor">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="txt_CuotaInicial" class="col-sm-2 col-form-label text-right">Cuota Inicial/Anticipo</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control" id="txt_CuotaInicial">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="txt_SaldoTotal" class="col-sm-2 col-form-label text-right">Saldo</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control" id="txt_SaldoTotal" disabled>
+                                        </div>
+                                    </div>
+                                    <h5 class="mb-3 line-head" id="type-blockquotes">CUOTAS</h5>
+                                    <div class="mb-3 row">
+                                        <label for="txt_NumeroCuota" class="col-sm-2 col-form-label text-right">Número de Cuotas</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control" id="txt_NumeroCuota">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="txt_ValorMensual" class="col-sm-2 col-form-label text-right">Mensualidades</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control" id="txt_ValorMensual" disabled>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
-
-
-
-
-                    <div class="row">
-                        <div class="form-group col-md-3">
-                            <label for="cmb_profesion">Ocupación <span class="required">*</span></label>
-                            <select class="form-control" data-live-search="true" id="cmb_profesion" name="cmb_profesion" required="">
-                                <?php
-                                // Recorre el array y genera las opciones del select
-                                echo '<option value="0">SELECCIONAR</option>';
-                                foreach ($data['ocupacion'] as $opcion) {
-                                    echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="txt_nom">Nombre Empresa <span class="required">*</span></label>
-                            <input class="form-control" id="txtPercha" name="txtPercha" type="text" onkeyup="TextMayus(this);" required="">
-                        </div>
-                    </div>
-                    <h3 class="mb-3 line-head" id="type-blockquotes">Horarios</h3>
-                    <div class="row">
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Laborables</label>
-                            <input class="form-control valid validText" type="text" id="txt_horas_asignadas" name="txt_horas_asignadas" placeholder="" required="">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Extras</label>
-                            <input class="form-control valid validText" type="text" id="txt_horas_extras" name="txt_horas_extras" placeholder="" required="">
-                        </div>
-
-                    </div>
-
 
 
 
