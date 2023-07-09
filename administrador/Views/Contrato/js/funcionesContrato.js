@@ -21,14 +21,14 @@ $(document).ready(function () {
     });
 
     //Buscar Persona
-    $("#txtCodigoPersona").keyup(function (e) {
+    /*$("#txtCodigoPersona").keyup(function (e) {
         e.preventDefault();
         let codigo = $(this).val();
         if (codigo.length >= 4 && codigo != "") {
             buscarPersonaDni(codigo);
         }
 
-    });
+    });*/
 
     $("#txt_dni").blur(function () {
         /*let valor = document.querySelector('#txt_dni').value;
@@ -58,6 +58,74 @@ $(document).ready(function () {
 
     $("#txt_CodigoPersona").autocomplete({
         source: function (request, response) {
+            let link = base_url + '/ClienteMiller/buscarAutoCliente';
+            $.ajax({
+                type: 'POST',
+                url: link,
+                dataType: "json",
+                data: {
+                    buscar: request.term
+                },
+                success: function (data) {
+                    var arrayList = new Array;
+                    var c = 0;
+                    if (data.status) {
+                        var result = data.data;
+                        console.log(data.data);
+                        for (var i = 0; i < result.length; i++) {
+                            var objeto = result[i];
+                            var rowResult = new Object();
+                            rowResult.label = objeto.NombreTitular + " - " + objeto.RazonSocial;
+                            rowResult.value = objeto.CedulaRuc;
+                            rowResult.id = objeto.Ids;
+                            rowResult.FpagoNombre = objeto.FpagoNombre;
+                            rowResult.OcupaNombre = objeto.OcupaNombre;
+                            rowResult.CedulaRuc = objeto.CedulaRuc;
+                            rowResult.RazonSocial = objeto.RazonSocial;
+                            rowResult.DireccionCliente = objeto.DireccionCliente;
+                            rowResult.TelefCliente = objeto.TelefCliente;
+                            rowResult.TelfOficina = objeto.TelfOficina;
+                            rowResult.Cargo = objeto.Cargo;
+                            rowResult.Antiguedad = objeto.Antiguedad;
+                            rowResult.IngMensual = objeto.IngMensual;
+                            rowResult.NombreTitular = objeto.NombreTitular;
+                            rowResult.DireccionDomicilio = objeto.DireccionDomicilio;
+                            rowResult.TelfCelular = objeto.TelfCelular;
+                            rowResult.RefBanco = objeto.RefBanco;
+                            arrayList[c] = rowResult;
+                            c += 1;
+                        }
+                        //console.log(arrayList);
+                        response(arrayList);
+                    } else {
+                        //response(data.msg);
+                        limpiarAutocompletar();
+                        swal("Atención!", data.msg, "info");
+
+                    }
+                }
+            });
+        },
+        minLength: minLengthGeneral,
+        select: function (event, ui) {
+            $('#txt_cedula').val(ui.item.CedulaRuc);
+            $('#txt_nombres').val(ui.item.NombreTitular);
+            $('#txt_razon_social').val(ui.item.RazonSocial);
+            $('#txt_cargo').val(ui.item.Cargo);
+            $('#txt_ingreso_mensual').val(ui.item.IngMensual);
+            $('#txt_antiguedad').val(ui.item.Antiguedad);
+            $('#txt_dir_domicilio').val(ui.item.DireccionDomicilio);
+            $('#txt_tel_domicilio').val(ui.item.TelfCelular);
+            $('#txt_dir_trabajo').val(ui.item.DireccionCliente);
+            $('#txt_tel_trabajo').val(ui.item.TelfOficina);
+            $('#txt_referencia').val(ui.item.RefBanco);
+            $('#txt_forma_pago').val(ui.item.FpagoNombre);
+            $('#txt_ocupacion').val(ui.item.OcupaNombre);
+        }
+    });
+
+    $("#txt_CodigoBeneficiario").autocomplete({
+        source: function (request, response) {
             let link = base_url + '/Persona/buscarAutoPersona';
             $.ajax({
                 type: 'POST',
@@ -68,40 +136,48 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     var arrayList = new Array;
-                    var c=0;
-                    if(data.status){
-                        var result = data.data;                                                
+                    var c = 0;
+                    if (data.status) {
+                        var result = data.data;
+
                         for (var i = 0; i < result.length; i++) {
                             var objeto = result[i];
                             var rowResult = new Object();
-                            rowResult.label=objeto.Nombre + " " + objeto.Apellido;
-                            rowResult.value=objeto.Nombre + " " + objeto.Apellido;
-                            rowResult.id=objeto.Ids;
-                            rowResult.cedula=objeto.Cedula;
+                            rowResult.label = objeto.Cedula + " " + objeto.Nombre + " " + objeto.Apellido;
+                            rowResult.value = objeto.Cedula ;
+                            
+                            rowResult.id = objeto.Ids;
+                            rowResult.Cedula = objeto.Cedula;
+                            rowResult.Nombres = objeto.Nombre + " " + objeto.Apellido;;
+                            rowResult.FechaNacimiento = objeto.FechaNacimiento;
+                            rowResult.Telefono = objeto.Telefono;
+                            rowResult.Edad = objeto.Edad;
+                            
                             arrayList[c] = rowResult;
                             c += 1;
                         }
-                        //console.log(arrayList);
                         response(arrayList);
-                    }else{
+                    } else {
                         //response(data.msg);
-                        limpiarAutocompletar();
+                        //limpiarAutocompletarBenficiario();
                         swal("Atención!", data.msg, "info");
 
                     }
                 }
             });
         },
-        minLength: 2,
+        minLength: minLengthGeneral,
         select: function (event, ui) {
-            $('#txt_cedula').val(ui.item.cedula);
-            $('#txt_nombres').val(ui.item.value);
+            $('#txt_NombreBeneficirio').val(ui.item.Nombres);
+            //$('#txth_per_id').val(ui.item.id);
+            $('#txt_EdadBeneficirio').val(ui.item.Edad);
+            $('#txt_TelefonoBeneficirio').val(ui.item.Telefono);
             //console.log(ui);
-            //console.log("Selected: " + ui.item.value + " aka " + ui.item.id);
-            //console.log("Selected: " + ui.item.value + " aka " + ui.item.cedula);
+            //console.log(ui);
         }
     });
 
+    
 
 });
 
@@ -111,10 +187,106 @@ function limpiarAutocompletar() {
     //$('#txth_per_id').val("");
     $('#txt_cedula').val("");
     $('#txt_nombres').val("");
+    $('#txt_razon_social').val("");
+    $('#txt_cargo').val("");
+    $('#txt_ingreso_mensual').val("");
+    $('#txt_antiguedad').val("");
+    $('#txt_dir_domicilio').val("");
+    $('#txt_tel_domicilio').val("");
+    $('#txt_dir_trabajo').val("");
+    $('#txt_tel_trabajo').val("");
+    $('#txt_referencia').val("");
+    $('#txt_forma_pago').val("");
+    $('#txt_ocupacion').val("");
     //$('#lbl_Ruc').text("");
 
 }
 
+
+
+
+function buscarPersonaId(codigo) {
+    console.log(codigo);
+    let link = base_url + '/Persona/consultarPersonaId';
+    $.ajax({
+        type: 'POST',
+        url: link,
+        data: {
+            "codigo": codigo,
+        },
+        success: function (data) {
+            if (data.status) {//Iva
+                console.log(data.data['Cedula'])
+
+                $('#txt_razon_social').val(data.data['Codigo']);
+                //$('#txtDetalleItem').val(data.data['Nombre']);
+
+                //$('#txtCantidadItem').removeAttr("disabled");
+                //$('#txtPrecioItem').removeAttr("disabled");
+
+            } else {
+                //limpiarProducto();
+                //$('#txtPrecioItem').attr("disabled","disabled");
+                //$('#txtCantidadItem').attr("disabled","disabled");
+                swal("Atención!", "No Existen Datos", "error");
+            }
+        },
+        dataType: "json"
+    });
+}
+
+
+/*######################### AGREGAR BENEFICIARIOS ###################################*/
+function agregarItemsDoc() {
+    let opAccion=($('#cmd_agregar').html()=="Agregar")?'new':'edit';
+    var tGrid = 'TbG_tableBeneficiario';
+    var nombre = $('#txt_cedula').val();
+    if ($('#txt_cedula').val() != "") {
+        var valor = $('#txt_cedula').val();
+        if (opAccion != "edit") {
+            //*********   AGREGAR ITEMS *********
+            var arr_Grid = new Array();
+            if (sessionStorage.dts_detalleData) {
+                /*Agrego a la Sesion*/
+                arr_Grid = JSON.parse(sessionStorage.dts_detalleData);
+                var size = arr_Grid.length;
+                if (size > 0) {
+                    //Varios Items
+                    if (codigoExiste(nombre, 'DetalleItem', sessionStorage.dts_detalleData)) {//Verifico si el Codigo Existe  para no Dejar ingresar Repetidos
+                        arr_Grid[size] = objDataRow();
+                        sessionStorage.dts_detalleData = JSON.stringify(arr_Grid);
+                        addVariosItem(tGrid, arr_Grid, -1);
+                        limpiarTexbox();
+                    } else {
+                        swal("Atención!", "Item ya existe en su lista" , "error");
+                    }
+                } else {
+                    /*Agrego a la Sesion*/
+                    //Primer Items
+                    arr_Grid[0] = objDataRow();
+                    sessionStorage.dts_detalleData = JSON.stringify(arr_Grid);
+                    addPrimerItem(tGrid, arr_Grid, 0);
+                    limpiarTexbox();
+                }
+            } else {
+                //No existe la Session
+                //Primer Items
+                arr_Grid[0] = objDataRow();
+                sessionStorage.dts_detalleData = JSON.stringify(arr_Grid);
+                addPrimerItem(tGrid, arr_Grid, 0);
+                limpiarTexbox();
+            }
+
+        } else {
+            //Actualizar Items
+            $('#cmd_agregar').html("Agregar");
+            actualizarItemsDetalle(nombre,tGrid);
+            limpiarTexbox();
+        }
+    } else {
+        swal("Atención!", "No Existen Información" , "error");
+    }
+}
 
 
 

@@ -1,4 +1,4 @@
-var numPaginado=10;
+
 
 //Bloque todas las teclas y permite el ingrso de numeros
 function controlTagEvent(e) {

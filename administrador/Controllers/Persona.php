@@ -173,4 +173,24 @@ class Persona extends Controllers
 		}
 		die();
 	}
+
+	public function consultarPersonaId()
+	{
+		if ($_POST) {
+			$Codigo = isset($_POST['codigo']) ? $_POST['codigo'] : "0";
+			$Codigo = intval(strClean($Codigo));
+			$arrData = $this->model->consultarDatosId($Codigo);
+			if (empty($arrData)) {
+				$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+			} else {
+				$arrResponse = array('status' => true, 'data' => $arrData);
+			}
+			
+			//putMessageLogFile($arrResponse);	
+			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+		}
+		die();
+	}
+
+
 }

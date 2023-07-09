@@ -2,6 +2,7 @@
 class ClienteMillerModel extends Mysql
 {
     private $db_name;
+
     public function __construct()
     {
         parent::__construct();
@@ -170,4 +171,39 @@ class ClienteMillerModel extends Mysql
         $request = $this->select_all($sql);
         return $request;
     }
+
+    public function consultarDatosCedulaNombres(string $parametro){
+		/*$sql = "SELECT a.per_id Ids,a.per_cedula Cedula,a.per_nombre Nombre, ";
+		$sql .= "   a.per_apellido Apellido,a.per_fecha_nacimiento FechaNacimiento, a.per_telefono Telefono, a.per_direccion Direccion,  a.per_genero Genero, a.estado_logico Estado,date(a.fecha_creacion) FechaIng ";
+		$sql .= "   FROM " . $this->db_name . ".persona a  ";
+		$sql .= " WHERE a.estado_logico!=0  ";*/
+
+        $sql = "SELECT a.cli_id Ids,a.per_id,c.fpag_nombre FpagoNombre,d.ocu_nombre OcupaNombre,a.cli_tipo_dni TipoDni,a.cli_cedula_ruc CedulaRuc,
+                    a.cli_razon_social RazonSocial,a.cli_direccion DireccionCliente,a.cli_correo CorreoCliente,a.cli_telefono TelefCliente,
+                    a.cli_telefono_oficina TelfOficina,a.cli_cargo Cargo,a.cli_antiguedad Antiguedad,a.cli_ingreso_mensual IngMensual,
+                    a.cli_referencia_bancaria RefBanco,CONCAT(b.per_nombre,'',b.per_apellido) NombreTitular,b.per_telefono TelfCelular,
+                    b.per_direccion DireccionDomicilio
+                FROM " . $this->db_name . ".cliente a
+                    INNER JOIN " . $this->db_name . ".persona b
+                        ON a.per_id=b.per_id AND b.estado_logico!=0
+                    INNER JOIN " . $this->db_name . ".forma_pago c
+                        ON c.fpag_id=a.fpag_id
+                    INNER JOIN " . $this->db_name . ".ocupacion d
+                        ON d.ocu_id=a.ocu_id
+                WHERE a.estado_logico!=0 ";
+
+		if($parametro!=''){
+			if (is_numeric($parametro)) {
+				//$sql .= " AND (a.per_id LIKE '%{$parametro}%' OR a.per_cedula LIKE '%{$parametro}%'); ";
+				$sql .= " AND a.cli_cedula_ruc LIKE '%{$parametro}%' ";
+			}else{
+				$sql .= " AND (b.per_nombre LIKE '%{$parametro}%' OR b.per_apellido LIKE '%{$parametro}%' OR a.cli_razon_social LIKE '%{$parametro}%') ";
+			}
+		}
+        $sql .= LIMIT;
+		$request = $this->select_all($sql);
+		return $request;
+	}
+
+
 }

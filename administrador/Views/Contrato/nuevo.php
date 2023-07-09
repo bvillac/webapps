@@ -78,51 +78,51 @@ getModal('modalUsuarios', $data);
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_razon_social">Nombre Empresa <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_razon_social" name="txt_razon_social" type="text">
+                                            <input class="form-control" id="txt_razon_social" name="txt_razon_social" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_cargo">Cargo <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_cargo" name="txt_cargo" type="text">
+                                            <input class="form-control" id="txt_cargo" name="txt_cargo" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_ingreso_mensual">Ingreso Mensual <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_ingreso_mensual" name="txt_ingreso_mensual" type="text">
+                                            <input class="form-control" id="txt_ingreso_mensual" name="txt_ingreso_mensual" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_antiguedad">Antiguedad <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_antiguedad" name="txt_antiguedad" type="text">
+                                            <input class="form-control" id="txt_antiguedad" name="txt_antiguedad" type="text" disabled>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_dir_domicilio">Dirección Domicilio <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_dir_domicilio" name="txt_dir_domicilio" type="text">
+                                            <input class="form-control" id="txt_dir_domicilio" name="txt_dir_domicilio" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_tel_domicilio">Teléfono Domicilio <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_tel_domicilio" name="txt_tel_domicilio" type="text">
+                                            <input class="form-control" id="txt_tel_domicilio" name="txt_tel_domicilio" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_dir_trabajo">Dirección Trabajo <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_dir_trabajo" name="txt_dir_trabajo" type="text">
+                                            <input class="form-control" id="txt_dir_trabajo" name="txt_dir_trabajo" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_tel_trabajo">Teléfono Trabajo <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_tel_trabajo" name="txt_tel_trabajo" type="text">
+                                            <input class="form-control" id="txt_tel_trabajo" name="txt_tel_trabajo" type="text" disabled>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_referencia">Referencía Bancaria <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_referencia" name="txt_referencia" type="text">
+                                            <input class="form-control" id="txt_referencia" name="txt_referencia" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_profesion">Profesión <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_profesion" name="txt_profesion" type="text">
+                                            <label for="txt_ocupacion">Ocupación <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_ocupacion" name="txt_ocupacion" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_forma_pago">Forma de Pago <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_forma_pago" name="txt_forma_pago" type="text">
+                                            <input class="form-control" id="txt_forma_pago" name="txt_forma_pago" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
 
@@ -135,20 +135,20 @@ getModal('modalUsuarios', $data);
                                 <div class="tab-pane fade" id="beneficiarios">
                                     <div class="row">
                                         <div class="form-group col-md-3">
-                                            <label for="txt_CodigoBeneficirio">Buscar Nombre o DNI <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_CodigoBeneficirio" name="txt_CodigoBeneficirio" type="text" required="" placeholder="Buscar por Nombre o DNI">
+                                            <label for="txt_CodigoBeneficiario">Buscar Persona por Nombre  <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text" required="" placeholder="Buscar por Nombre o DNI">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_NombreBeneficirio" name="txt_NombreBeneficirio" type="text">
+                                            <input class="form-control" id="txt_NombreBeneficirio" name="txt_NombreBeneficirio" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_EdadBeneficirio">Edad <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_EdadBeneficirio" name="txt_EdadBeneficirio" type="text">
+                                            <input class="form-control" id="txt_EdadBeneficirio" name="txt_EdadBeneficirio" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_TelefonoBeneficirio">Teléfono <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_TelefonoBeneficirio" name="txt_TelefonoBeneficirio" type="text">
+                                            <input class="form-control" id="txt_TelefonoBeneficirio" name="txt_TelefonoBeneficirio" type="text" disabled>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -212,6 +212,7 @@ getModal('modalUsuarios', $data);
                                                 <tr>
                                                     <th>Dni</th>
                                                     <th>Nombres</th>
+                                                    <th>Tipo</th>
                                                     <th>Centro</th>
                                                     <th>Paquete</th>
                                                     <th>Modalidad</th>

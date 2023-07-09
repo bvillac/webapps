@@ -1,6 +1,5 @@
 (function () {
 	"use strict";
-
 	var treeviewMenu = $('.app-menu');
     var treeviewMenu2 = $('.app-menu2');
 
