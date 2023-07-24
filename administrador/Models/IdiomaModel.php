@@ -11,7 +11,6 @@ class IdiomaModel extends MysqlAcademico
     public function consultarIdioma(){
         $sql = "SELECT idi_id Ids, idi_nombre Nombre ";
         $sql .= " FROM ". $this->db_name .".idioma WHERE idi_estado_logico!=0  ORDER BY idi_nombre ASC";
-        putMessageLogFile($sql);
         $request = $this->select_all($sql);
         return $request;
     }

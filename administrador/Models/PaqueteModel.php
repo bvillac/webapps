@@ -9,9 +9,8 @@ class PaqueteModel extends MysqlAcademico
     }
 
     public function consultarPaquete(){
-        $sql = "SELECT paq_id Ids, paq_nombre Nombre ";
+        $sql = "SELECT paq_id Ids, paq_nombre Nombre,concat(paq_id,'-',paq_meses) IdsMes ";
         $sql .= " FROM ". $this->db_name .".paquete WHERE paq_estado_logico!=0  ORDER BY paq_nombre ASC";
-        putMessageLogFile($sql);
         $request = $this->select_all($sql);
         return $request;
     }

@@ -14,7 +14,6 @@ class CentroAtencionModel extends MysqlAcademico
         $idsEmpresa=$_SESSION['idEmpresa'];
         $sql = "SELECT cat_id Ids, cat_nombre Nombre ";
         $sql .= " FROM ". $this->db_name .".centro_atencion WHERE cat_estado_logico!=0 and emp_id='{$idsEmpresa}' ORDER BY cat_nombre ASC";
-        putMessageLogFile($sql);
         $request = $this->select_all($sql);
         return $request;
     }

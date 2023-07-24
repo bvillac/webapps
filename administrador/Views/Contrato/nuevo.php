@@ -3,7 +3,7 @@ adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
 getModal('modalPersonaBuscar', $data);
-getModal('modalUsuarios', $data);
+//getModal('modalUsuarios', $data);
 ?>
 <div id="contentAjax"></div>
 <main class="app-content">
@@ -21,6 +21,8 @@ getModal('modalUsuarios', $data);
     <div class="row">
         <input type="hidden" id="txth_ids" name="txth_ids" value="">
         <input type="hidden" id="txth_per_id" name="txth_per_id" value="">
+        <input type="hidden" id="txth_idsFPago" name="txth_idsFPago" value="">
+        <input type="hidden" id="txth_per_idBenef" name="txth_per_idBenef" value="">
 
         <div class="col-md-12">
             <div class="tile">
@@ -128,6 +130,17 @@ getModal('modalUsuarios', $data);
 
                                         </div>
                                     </div>
+                                    <h5 class="mb-3 line-head" id="type-blockquotes"></h5>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_numero_recibo">Número de Recibo Inscripción <span class="required">*</span></label>
+                                            <input class="form-control valid validarNumber" id="txt_numero_recibo" name="txt_numero_recibo" type="text" maxlength="10">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_numero_deposito">Número de Deposito <span class="required">*</span></label>
+                                            <input class="form-control valid validarNumber" id="txt_numero_deposito" name="txt_numero_deposito" type="text" maxlength="10">
+                                        </div>
+                                    </div>
 
 
 
@@ -135,7 +148,7 @@ getModal('modalUsuarios', $data);
                                 <div class="tab-pane fade" id="beneficiarios">
                                     <div class="row">
                                         <div class="form-group col-md-3">
-                                            <label for="txt_CodigoBeneficiario">Buscar Persona por Nombre  <span class="required">*</span></label>
+                                            <label for="txt_CodigoBeneficiario">Buscar Persona por Nombre <span class="required">*</span></label>
                                             <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text" required="" placeholder="Buscar por Nombre o DNI">
                                         </div>
                                         <div class="form-group col-md-3">
@@ -171,11 +184,22 @@ getModal('modalUsuarios', $data);
                                                 // Recorre el array y genera las opciones del select
                                                 echo '<option value="0">SELECCIONAR</option>';
                                                 foreach ($data['paqueteEstudios'] as $opcion) {
-                                                    echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
+                                                    echo '<option value="' . $opcion['IdsMes'] . '">' . $opcion['Nombre'] . '</option>';
                                                 }
                                                 ?>
                                             </select>
                                         </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_numero_meses">Número de Meses <span class="required">*</span></label>
+                                            <input class="form-control valid validarNumber" id="txt_numero_meses" name="txt_numero_meses" type="text" value="0" required="" onkeypress="return controlTagEvent(event);">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_numero_horas">Número de Horas <span class="required">*</span></label>
+                                            <input class="form-control valid validarNumber" id="txt_numero_horas" name="txt_numero_horas" type="text" value="0" required="" onkeypress="return controlTagEvent(event);">
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="cmb_ModalidadEstudios">Modalidad/Estudios</label>
                                             <select class="form-control" data-live-search="true" id="cmb_ModalidadEstudios" name="cmb_ModalidadEstudios" required="">
@@ -200,9 +224,17 @@ getModal('modalUsuarios', $data);
                                                 ?>
                                             </select>
                                         </div>
+
+                                        
+                                        <div class="form-group col-md-3 toggle-flip">                                           
+                                            <label for="chk_tipoBeneficiario">Titular
+                                            
+                                                <input class="form-control"  type="checkbox" id="chk_tipoBeneficiario"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                                                </label>
+                                        </div>
                                     </div>
                                     <div class="text-center">
-                                        <button id="cmd_agregarBeneficiario" class="btn btn-success" type="button" onclick="guardarInstructor('Create');"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Agregar Beneficiario</button>
+                                        <button id="cmd_agregarBeneficiario" class="btn btn-success" type="button" onclick="agregarItemsDoc();"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Agregar Beneficiario</button>
                                     </div>
                                     <h5 class="mb-3 line-head" id="type-blockquotes">Datos Beneficiarios</h5>
 
@@ -215,6 +247,8 @@ getModal('modalUsuarios', $data);
                                                     <th>Tipo</th>
                                                     <th>Centro</th>
                                                     <th>Paquete</th>
+                                                    <th>Meses</th>
+                                                    <th>Horas</th>
                                                     <th>Modalidad</th>
                                                     <th>Idioma</th>
                                                     <th>Edad</th>
@@ -223,19 +257,6 @@ getModal('modalUsuarios', $data);
                                                 </tr>
                                             </thead>
                                             <tbody id="listaBeneficiarios">
-                                                <!-- <tr>
-                          <td>1</td>
-                          <td colspan="2">lapiz</td>
-                          <td>1</td>
-                          <td class="textright">100.00</td>
-                          <td class="textright">100-00</td>
-                          <td>
-                            <a href="#" id="cmd_delete" class="link_delete" onclick="event.preventDefault();eliminarDetalle(1);"><i class="fa fa-trash"></i>
-                            </a>
-                          </td>
-                        </tr> -->
-
-
                                             </tbody>
                                         </table>
                                     </div>
@@ -243,38 +264,38 @@ getModal('modalUsuarios', $data);
 
                                 </div>
                                 <div class="tab-pane fade" id="totales">
-                                                <BR>
+                                    <BR>
                                     <h5 class="mb-3 line-head" id="type-blockquotes">VALORES DE PAGO</h5>
                                     <div class="mb-3 row">
 
                                         <label for="txt_valor" class="col-sm-2 col-form-label text-right">Valor US$</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="txt_valor">
+                                            <input type="text" class="form-control" id="txt_valor" value="0.00">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label for="txt_CuotaInicial" class="col-sm-2 col-form-label text-right">Cuota Inicial/Anticipo</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="txt_CuotaInicial">
+                                            <input type="text" class="form-control" id="txt_CuotaInicial" value="0.00">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label for="txt_SaldoTotal" class="col-sm-2 col-form-label text-right">Saldo</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="txt_SaldoTotal" disabled>
+                                            <input type="text" class="form-control" id="txt_SaldoTotal" value="0.00" disabled>
                                         </div>
                                     </div>
                                     <h5 class="mb-3 line-head" id="type-blockquotes">CUOTAS</h5>
                                     <div class="mb-3 row">
                                         <label for="txt_NumeroCuota" class="col-sm-2 col-form-label text-right">Número de Cuotas</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="txt_NumeroCuota">
+                                            <input type="text" class="form-control" id="txt_NumeroCuota" value="0">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label for="txt_ValorMensual" class="col-sm-2 col-form-label text-right">Mensualidades</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="txt_ValorMensual" disabled>
+                                            <input type="text" class="form-control" id="txt_ValorMensual" value="0.00" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -286,7 +307,7 @@ getModal('modalUsuarios', $data);
 
 
                     <div class="text-center">
-                        <button id="cmd_guardar" class="btn btn-success" type="button" onclick="guardarInstructor('Create');"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
+                        <button id="cmd_guardar" class="btn btn-success" type="button" onclick="guardarContrato();"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
                         <button id="cmd_retornar" class="btn btn-danger" type="button" data-dismiss="modal"><i class="app-menu__icon fas fa-sign-out-alt" aria-hidden="true"></i> Retornar</button>
                     </div>
 

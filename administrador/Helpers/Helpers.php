@@ -287,7 +287,7 @@ function sessionStart(){
         $session_in = time()-$_SESSION['inicio'];
         //putMessageLogFile($session_in);
         if($session_in>$inactive){//paso el tiempo en que usuario permanece logueado
-            putMessageLogFile($session_in);
+            //putMessageLogFile($session_in);
             header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducasdo
         }
     }else{

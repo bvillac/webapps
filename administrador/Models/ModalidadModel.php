@@ -11,7 +11,6 @@ class ModalidadModel extends MysqlAcademico
     public function consultarModalidad(){
         $sql = "SELECT mas_id Ids, mas_nombre Nombre ";
         $sql .= " FROM ". $this->db_name .".modalidad_asistencia WHERE mas_estado_logico!=0  ORDER BY mas_nombre ASC";
-        putMessageLogFile($sql);
         $request = $this->select_all($sql);
         return $request;
     }

@@ -80,10 +80,14 @@
 			return $request;
 		}
 
-		public function newSecuence(string $TipoSec, int $puntoEmision,$executeSecuence = false) {
+		public function newSecuence(string $TipoSec, int $puntoEmision,$executeSecuence = false,$con = false) {
 			$numero = 0;
 			$strPad = 10;
-			$con=$this->getConexion();
+			if(!$con){
+				putMessageLogFile("crea una conexion SecuenciasModel");
+				$con=$this->getConexion();
+			}
+			
 			//$con->beginTransaction();
 			try{
 				$sql = "
