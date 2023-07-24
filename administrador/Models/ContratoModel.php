@@ -13,35 +13,22 @@ class ContratoModel extends MysqlAcademico
 
     public function consultarDatos()
     {
-        $sql = "SELECT a.cli_id Ids,a.per_id PerIds,b.fpag_nombre Pago,a.cli_tipo_dni Tipo, ";
-        $sql .= "   a.cli_cedula_ruc Cedula,a.cli_razon_social Nombre,a.cli_direccion Direccion,a.cli_correo Correo,a.cli_telefono Telefono, a.cli_distribuidor Distribuidor,a.cli_tipo_precio Precio,a.cli_ruta_certificado_ruc Certificado,a.estado_logico Estado ";
-        $sql .= "   FROM " . $this->db_name . ".cliente a  ";
-        $sql .= "      INNER JOIN " . $this->db_name . ".forma_pago b ON a.fpag_id=b.fpag_id  ";
-        $sql .= "WHERE a.estado_logico!=0  ";
+        $sql = "SELECT a.con_id Ids,a.con_numero Numero,date(a.con_fecha_inicio) FechaIni,b.cli_razon_social RazonSocial,a.con_valor Total,a.con_valor_cuota_inicial CuoInicial, ";
+		$sql .= "(a.con_valor-a.con_valor_cuota_inicial) Saldo,a.con_numero_pagos Npagos,a.con_valor_cuota_mensual Vmensual,a.con_estado_logico Estado ";
+		$sql .= "FROM " . $this->db_name . ".contrato a ";
+		$sql .= "	INNER JOIN 	" . $this->db_nameAdmin . ".cliente b ";
+		$sql .= "		ON a.cli_id=b.cli_id and b.estado_logico!=0 ";
+        $sql .= "   WHERE a.con_estado_logico!=0 ";
         $request = $this->select_all($sql);
         return $request;
     }
 
-    public function consultarDatosId(int $Ids)
-    {
-        $sql = "SELECT a.cli_id Ids,a.cli_codigo Codigo,a.per_id PerIds,b.fpag_nombre Pago,a.cli_tipo_dni Tipo,a.fpag_id, ";
-        $sql .= "   a.cli_cedula_ruc Cedula,a.cli_razon_social Nombre,a.cli_direccion Direccion,a.cli_correo Correo, ";
-        $sql .= "   a.cli_telefono Telefono, a.cli_distribuidor Distribuidor,a.cli_tipo_precio Precio, ";
-        $sql .= "   a.cli_ruta_certificado_ruc Certificado,a.estado_logico Estado ";
-        $sql .= "   FROM " . $this->db_name . ".cliente a  ";
-        $sql .= "      INNER JOIN " . $this->db_name . ".forma_pago b ON a.fpag_id=b.fpag_id  ";
-        $sql .= "WHERE a.estado_logico!=0 AND a.cli_id={$Ids} ";
-        $request = $this->select($sql);
-        return $request;
-    }
+ 
 
     public function insertData($Cabecera, $Detalle)
     {
-        //$strPerID = $dataObj['per_id'];
-        
         $con = $this->getConexion();
         $con->beginTransaction();
-
         try {
             $PuntoEmision=$_SESSION['empresaData']['PuntoEmisId'];
             $objSecuencia=new SecuenciasModel;
@@ -178,4 +165,46 @@ class ContratoModel extends MysqlAcademico
         $request = $this->update($sql, $arrData);
         return $request;
     }
+
+    public function consultarContratoPDF(int $Ids){
+        $request = array();
+        $requestContrato=$this->consultarContratoId($Ids);		
+        if(!empty($requestContrato)){
+            $requestBenef=$this->consultarBeneficiarioContrato($requestContrato['Ids']);			
+            $request = array('cabData' => $requestContrato,
+                             'detData' => $requestBenef,
+                             'empData' => "");
+        }
+        return $request;
+    }
+
+    public function consultarContratoId(int $codigo){
+        $sql = "SELECT a.con_id Ids,a.con_numero Numero,date(a.con_fecha_inicio) FechaIni,b.cli_razon_social RazonSocial,a.con_valor Total,a.con_valor_cuota_inicial CuoInicial, ";
+		$sql .= "(a.con_valor-a.con_valor_cuota_inicial) Saldo,a.con_numero_pagos Npagos,a.con_valor_cuota_mensual Vmensual,a.con_estado_logico Estado ";
+		$sql .= "FROM " . $this->db_name . ".contrato a ";
+		$sql .= "	INNER JOIN 	" . $this->db_nameAdmin . ".cliente b ";
+		$sql .= "		ON a.cli_id=b.cli_id and b.estado_logico!=0 ";
+        $sql .= "   WHERE a.con_estado_logico=1 AND a.con_id  = {$codigo}  ";
+        $request = $this->select($sql);
+        return $request;
+    }
+
+    public function consultarBeneficiarioContrato(int $codigo){
+        $sql = "SELECT a.ben_tipo,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres, ";
+        $sql .= "  c.apr_numero_meses NMeses,c.apr_numero_horas NHoras,c.apr_examen_internacional Examen, ";
+        $sql .= "  FLOOR(DATEDIFF(CURDATE(),b.per_fecha_nacimiento) / 365.25) Edad , ";
+        $sql .= "  (SELECT paq_nombre FROM db_academico.paquete where paq_id=c.paq_id) Paquete, ";
+        $sql .= "  (SELECT idi_nombre FROM db_academico.idioma where idi_id=c.idi_id) Idioma, ";
+        $sql .= "  (SELECT mas_nombre FROM db_academico.modalidad_asistencia where mas_id=c.mas_id) Modalidad, ";
+        $sql .= "  (SELECT cat_nombre FROM db_academico.centro_atencion where cat_id=c.cat_id) CentroAtencion ";
+        $sql .= "  FROM " . $this->db_name . ".beneficiario a ";
+		$sql .= "    INNER JOIN " . $this->db_nameAdmin . ".persona b ";
+		$sql .= "	    ON a.per_id=b.per_id ";
+        $sql .= "    INNER JOIN " . $this->db_name . ".aprendisaje c ";
+		$sql .= "	    ON c.ben_id=a.ben_id ";
+        $sql .= "  WHERE a.ben_estado_logico!=0 AND a.con_id={$codigo} ";
+        $request = $this->select_all($sql);
+        return $request;
+    }
+
 }

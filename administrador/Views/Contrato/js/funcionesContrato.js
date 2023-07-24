@@ -33,12 +33,74 @@ function findAndRemove(array, property, value) {
     return array;
 }
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    tableContrato = $('#tableContrato').dataTable({
+        "aProcessing": true,
+        "aServerSide": true,
+        "language": {
+            "url": cdnTable
+        },
+        "ajax": {
+            "url": " " + base_url + "/Contrato/consultarContrato",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "Numero" },
+            { "data": "FechaIni" },
+            { "data": "RazonSocial" },
+            { "data": "Total" },
+            { "data": "CuoInicial" },
+            { "data": "Saldo" },
+            { "data": "Npagos" },
+            { "data": "Vmensual" },
+            { "data": "Estado" },
+            { "data": "options" }
+        ],
+        "columnDefs": [
+            { 'className': "textright", "targets": [0] },
+            { 'className': "textcenter", "targets": [1] },//Agregamos la clase que va a tener la columna
+            { 'className': "textleft", "targets": [2] },
+            { 'className': "textright", "targets": [3] },
+            { 'className': "textright", "targets": [4] },
+            { 'className': "textright", "targets": [5] },
+            { 'textcenter': "textcenter", "targets": [6] },
+            { 'className': "textright", "targets": [7] }
+        ],
+        'dom': 'lBfrtip',
+        'buttons': [
+            /* {
+                "extend": "copyHtml5",
+                "text": "<i class='far fa-copy'></i> Copiar",
+                "titleAttr":"Copiar",
+                "className": "btn btn-secondary"
+            }, */
+
+            /*{
+                "extend": "excelHtml5",
+                "text": "<i class='fas fa-file-excel'></i> Excel",
+                "titleAttr": "Esportar a Excel",
+                "title": "REPORTE DE USUARIOS REGISTRADOS",
+                "order": [[0, "asc"]],
+                "className": "btn btn-success"
+            },*/
+
+
+        ],
+        "resonsieve": "true",
+        "bDestroy": true,
+        "iDisplayLength": 10,//Numero Items Retornados
+        "order": [[0, "asc"]]  //Orden por defecto 1 columna
+    });
+
+});
+
 //Recargar el sistio
 window.addEventListener('load', function () {
     recargarGridDetalle();
 }, false);
 
-function eliminarStores(){
+function eliminarStores() {
     sessionStorage.removeItem('cabeceraContrato');
     sessionStorage.removeItem('dts_detalleData');
 }
@@ -57,9 +119,9 @@ $(document).ready(function () {
         window.location = base_url + '/Contrato';//Retorna al Portal Principal
     });
 
-    
 
-    
+
+
 
     //https://api.jqueryui.com/datepicker/
     $('.date-picker').datepicker({
@@ -149,7 +211,7 @@ $(document).ready(function () {
             $('#txt_referencia').val(ui.item.RefBanco);
             $('#txt_forma_pago').val(ui.item.FpagoNombre);
             $('#txt_ocupacion').val(ui.item.OcupaNombre);
-            
+
         }
     });
 
@@ -267,11 +329,11 @@ $(document).ready(function () {
         recalculaTotal();
     });
 
-    
 
-    $('#cmb_PaqueteEstudios').change(function () {        
-        if ($('#cmb_PaqueteEstudios').val() != 0) { 
-            let idsMes=$('#cmb_PaqueteEstudios').val();           
+
+    $('#cmb_PaqueteEstudios').change(function () {
+        if ($('#cmb_PaqueteEstudios').val() != 0) {
+            let idsMes = $('#cmb_PaqueteEstudios').val();
             let arrayDeCadenas = idsMes.split("-");
             $('#txt_numero_meses').val(arrayDeCadenas[1]);
         } else {
@@ -279,7 +341,7 @@ $(document).ready(function () {
             //$('#cmb_punto').selectpicker('refresh')
             $('#txt_numero_meses').val("0");
             $('#txt_numero_horas').val("0");
-            swal("Error", "Selecione Paquete Aprendisaje" , "error");
+            swal("Error", "Selecione Paquete Aprendisaje", "error");
         }
     });
 
@@ -433,9 +495,9 @@ function objDataRow() {
     rowGrid.CentroAtencionID = $('#cmb_CentroAtencion').val();
     rowGrid.CentroAtencion = $('select[id="cmb_CentroAtencion"] option:selected').text();
     //Separa el String Codigo y Meses
-    let idsPaq=$('#cmb_PaqueteEstudios').val();
+    let idsPaq = $('#cmb_PaqueteEstudios').val();
     let arrayPaquet = idsPaq.split("-");
-    rowGrid.PaqueteEstudiosID = arrayPaquet[0];    
+    rowGrid.PaqueteEstudiosID = arrayPaquet[0];
     rowGrid.PaqueteEstudios = $('select[id="cmb_PaqueteEstudios"] option:selected').text();
 
     rowGrid.ModalidadEstudiosID = $('#cmb_ModalidadEstudios').val();
@@ -480,7 +542,7 @@ function retornaFilaData(c, Grid, TbGtable, op) {
     strFila += '<td>' + Grid[c]['ModalidadEstudios'] + '</td>';
     strFila += '<td>' + Grid[c]['Idioma'] + '</td>';
     strFila += '<td>' + Grid[c]['EdadBeneficirio'] + '</td>';
-    strFila += '<td>' + Grid[c]['TelefonoBeneficirio'] + '</td>';    
+    strFila += '<td>' + Grid[c]['TelefonoBeneficirio'] + '</td>';
     strFila += '<td>';
     //strFila += ' <a href="#" class="link_delete" onclick="event.preventDefault();editarItemsDetalle(\'' + Grid[c]['CodigoBeneficiario'] + '\',\'' + TbGtable + '\');"><i class="fa fa-pencil"></i></a>';
     strFila += ' <a href="#" class="link_delete" onclick="event.preventDefault();eliminarItemsDetalle(\'' + Grid[c]['CodigoBeneficiario'] + '\',\'' + TbGtable + '\');"><i class="fa fa-trash"></i></a>';
@@ -526,55 +588,55 @@ function eliminarItemsDetalle(codigo, TbGtable) {
 /**************** GUARDAR DATOS CONTRATO  ******************/
 function guardarContrato() {
     //let accion=($('#cmd_guardar').html()=="Guardar")?'Create':'edit';
-    let accion='Create';
+    let accion = 'Create';
     var vSaldoTotal = parseFloat($('#txt_SaldoTotal').val());
-    if ($('#txt_cedula').val() != "" && vSaldoTotal > 0) {      
-            //$("#cmd_guardar").attr('disabled', true);
-            //var ID = (accion == "edit") ? $('#txth_PedID').val() : 0;
-            let link = base_url + '/Contrato/ingresarContrato';
-            $.ajax({
-                type: 'POST',
-                url: link,
-                data: {
-                    "cabecera": listaCabecera(),
-                    "dts_detalle": listaDetalle(),
-                    "accion": accion
-                },
-                success: function (data) {
-                    console.log("resp "+ data.status);
-                    if (data.status) {
-                        //sessionStorage.removeItem('cabeceraContrato');
-                        //sessionStorage.removeItem('dts_detalleData');
-                        swal("Contrato", data.msg ,"success");
-                        window.location = base_url+'/Contrato'; 
-                        
-                    } else {
-                        swal("Error", data.msg , "error");
-                    }
-                },
-                dataType: "json"
-            });
-   
+    if ($('#txt_cedula').val() != "" && vSaldoTotal > 0) {
+        //$("#cmd_guardar").attr('disabled', true);
+        //var ID = (accion == "edit") ? $('#txth_PedID').val() : 0;
+        let link = base_url + '/Contrato/ingresarContrato';
+        $.ajax({
+            type: 'POST',
+            url: link,
+            data: {
+                "cabecera": listaCabecera(),
+                "dts_detalle": listaDetalle(),
+                "accion": accion
+            },
+            success: function (data) {
+                console.log("resp " + data.status);
+                if (data.status) {
+                    sessionStorage.removeItem('cabeceraContrato');
+                    sessionStorage.removeItem('dts_detalleData');
+                    swal("Contrato", data.msg, "success");
+                    window.location = base_url + '/Contrato';
+
+                } else {
+                    swal("Error", data.msg, "error");
+                }
+            },
+            dataType: "json"
+        });
+
 
     } else {
-        swal("Atención!", "No Existen datos para Guardar" , "error");
+        swal("Atención!", "No Existen datos para Guardar", "error");
     }
 }
 
 
-function listaCabecera(){
-    var cabecera=new Object();
-    cabecera.cliIds=$('#txth_ids').val();   
-    cabecera.codigoPersona=$('#txt_CodigoPersona').val();    
-    cabecera.fecha_inicio=$('#dtp_fecha_inicio').val();
-    cabecera.numero_recibo=$('#txt_numero_recibo').val();
-    cabecera.numero_deposito=$('#txt_numero_deposito').val();
-    cabecera.idsFPago=$('#txth_idsFPago').val();
-    cabecera.valor=$('#txt_valor').val();
-    cabecera.cuotaInicial=$('#txt_CuotaInicial').val();
-    cabecera.numeroCuota=$('#txt_NumeroCuota').val();
-    cabecera.valorMensual=$('#txt_ValorMensual').val(); 
-    cabecera.estado='1';
+function listaCabecera() {
+    var cabecera = new Object();
+    cabecera.cliIds = $('#txth_ids').val();
+    cabecera.codigoPersona = $('#txt_CodigoPersona').val();
+    cabecera.fecha_inicio = $('#dtp_fecha_inicio').val();
+    cabecera.numero_recibo = $('#txt_numero_recibo').val();
+    cabecera.numero_deposito = $('#txt_numero_deposito').val();
+    cabecera.idsFPago = $('#txth_idsFPago').val();
+    cabecera.valor = $('#txt_valor').val();
+    cabecera.cuotaInicial = $('#txt_CuotaInicial').val();
+    cabecera.numeroCuota = $('#txt_NumeroCuota').val();
+    cabecera.valorMensual = $('#txt_ValorMensual').val();
+    cabecera.estado = '1';
     sessionStorage.cabeceraContrato = JSON.stringify(cabecera);
     //return JSON.stringify(JSON.stringify(cabecera));
     return cabecera;
@@ -582,19 +644,19 @@ function listaCabecera(){
 
 function listaDetalle() {
     var arrayList = new Array;
-    var c=0;
+    var c = 0;
     if (sessionStorage.dts_detalleData) {
         var Grid = JSON.parse(sessionStorage.dts_detalleData);
         if (Grid.length > 0) {
-            for (var i = 0; i < Grid.length; i++) {                
-                if(parseFloat(Grid[i]['PerIdBenef'])>0){
+            for (var i = 0; i < Grid.length; i++) {
+                if (parseFloat(Grid[i]['PerIdBenef']) > 0) {
                     let rowGrid = new Object();
                     rowGrid.PerIdBenef = Grid[i]['PerIdBenef'];
                     rowGrid.CodigoBeneficiario = Grid[i]['CodigoBeneficiario'];
                     rowGrid.TBenfId = Grid[i]['tipoBeneficiarioID'];
                     rowGrid.CentroAtencionID = Grid[i]['CentroAtencionID'];
 
-                    
+
 
                     rowGrid.PaqueteEstudiosID = Grid[i]['PaqueteEstudiosID'];
                     rowGrid.NMeses = Grid[i]['numero_meses'];
@@ -606,7 +668,7 @@ function listaDetalle() {
                     arrayList[c] = rowGrid;
                     c += 1;
                 }
-            }    
+            }
         }
     }
     //return JSON.stringify(arrayList);

@@ -2,7 +2,7 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
-getModal('modalInstructor', $data);
+//getModal('modalInstructor', $data);
 ?>
 <div id="contentAjax"></div>
 <main class="app-content">
@@ -26,18 +26,22 @@ getModal('modalInstructor', $data);
 
     <div class="row">
 
-
+    
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered" id="tableInstructor">
+                        <table class="table table-hover table-bordered" id="tableContrato">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Cédula</th>
-                                    <th>Nombre</th>
-                                    <th>Fecha</th>
+                                    <th>Número</th>
+                                    <th>F.Inicio</th>
+                                    <th>Razón Social</th>
+                                    <th>Total</th>
+                                    <th>C.Inicial</th>
+                                    <th>Saldo</th>
+                                    <th>N.Pagos</th>
+                                    <th>C.Mensual</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>

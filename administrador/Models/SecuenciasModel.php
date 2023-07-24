@@ -83,8 +83,8 @@
 		public function newSecuence(string $TipoSec, int $puntoEmision,$executeSecuence = false,$con = false) {
 			$numero = 0;
 			$strPad = 10;
-			if(!$con){
-				putMessageLogFile("crea una conexion SecuenciasModel");
+			if(!$con){//Si la conexion no existe crea una nueva
+				//putMessageLogFile("crea una conexion SecuenciasModel");
 				$con=$this->getConexion();
 			}
 			

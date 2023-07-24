@@ -1,4 +1,6 @@
 <?php
+use Spipu\Html2Pdf\Html2Pdf;
+require 'vendor/autoload.php';
 require_once("Models/SecuenciasModel.php");
 require_once("Models/CentroAtencionModel.php");
 require_once("Models/PaqueteModel.php");
@@ -28,6 +30,38 @@ class Contrato extends Controllers
 		$data['page_title'] = "Contrato <small> " . TITULO_EMPRESA . "</small>";
 		$this->views->getView($this, "contrato", $data);
 	}
+
+	public function consultarContrato()
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            $arrData = $this->model->consultarDatos();
+            for ($i = 0; $i < count($arrData); $i++) {
+                $btnOpciones = "";
+                if ($arrData[$i]['Estado'] == 1) {
+                    $arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
+                } else {
+                    $arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>'; //target="_blanck"  
+                }
+
+                if ($_SESSION['permisosMod']['r']) {
+                    //$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+                }
+				if($_SESSION['permisosMod']['r']){
+					$btnOpciones .=' <a title="Generar PDF" href="'.base_url().'/Contrato/generarContratoPDF/'.$arrData[$i]['Ids'].'" target="_blanck" class="btn btn-primary btn-sm"> <i class="fa fa-file-pdf-o"></i> </a> ';
+				}
+				
+                if ($_SESSION['permisosMod']['u']) {
+                    //$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/ClienteMiller/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+                }
+                if ($_SESSION['permisosMod']['d']) {
+                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteCliente(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+                }
+                $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
+            }
+            echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
 
 	public function nuevo()
 	{
@@ -89,4 +123,35 @@ class Contrato extends Controllers
 		}
 		die();
 	}
+
+	public function generarContratoPDF($idpedido){
+		if($_SESSION['permisosMod']['r']){
+			//putMessageLogFile($_SESSION['empresaData']);
+			if(is_numeric($idpedido)){
+				$idpersona = "";
+				//if($_SESSION['permisosMod']['r'] and $_SESSION['userData']['idrol'] == RCLIENTES){
+				//	$idpersona = $_SESSION['userData']['idpersona'];
+				//}
+				$data = $this->model->consultarContratoPDF($idpedido,$idpersona);
+				if(empty($data)){
+					echo "Datos no encontrados";
+				}else{
+					$idpedido = 1000;//$data['cabData']['com_id'];
+					ob_end_clean();
+					//$html =getFile("Template/Modals/ordenCompraPDF",$data);
+					$html =getFile("Contrato/contratoPDF",$data);
+					$html2pdf = new Html2Pdf('p','A4','es','true','UTF-8');
+					$html2pdf->writeHTML($html);
+					$html2pdf->output('CON_'.$idpedido.'.pdf');
+				}
+			}else{
+				echo "Dato no válido";
+			}
+		}else{
+			header('Location: '.base_url().'/login');
+			die();
+		}
+	}
+
+
 }
