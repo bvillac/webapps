@@ -190,7 +190,7 @@ class ContratoModel extends MysqlAcademico
 		$sql .= " (a.con_valor-a.con_valor_cuota_inicial) Saldo,a.con_numero_pagos Npagos,a.con_valor_cuota_mensual Vmensual,a.con_estado_logico Estado ";
 		$sql .= "FROM " . $this->db_name . ".contrato a ";
 		$sql .= "	INNER JOIN 	(" . $this->db_nameAdmin . ".cliente b ";
-        $sql .= "               INNER JOIN db_administrador.persona p ";
+        $sql .= "               INNER JOIN " . $this->db_nameAdmin . ".persona p ";
         $sql .= "                    ON b.per_id=p.per_id)  ";
 		$sql .= "		ON a.cli_id=b.cli_id and b.estado_logico!=0 ";
         $sql .= "   WHERE a.con_estado_logico=1 AND a.con_id  = {$codigo}  ";
@@ -202,10 +202,10 @@ class ContratoModel extends MysqlAcademico
         $sql = "SELECT a.ben_tipo,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres,b.per_telefono TelCelular, ";
         $sql .= "  c.apr_numero_meses NMeses,c.apr_numero_horas NHoras,c.apr_examen_internacional Examen, ";
         $sql .= "  FLOOR(DATEDIFF(CURDATE(),b.per_fecha_nacimiento) / 365.25) Edad , ";
-        $sql .= "  (SELECT paq_nombre FROM db_academico.paquete where paq_id=c.paq_id) Paquete, ";
-        $sql .= "  (SELECT idi_nombre FROM db_academico.idioma where idi_id=c.idi_id) Idioma, ";
-        $sql .= "  (SELECT mas_nombre FROM db_academico.modalidad_asistencia where mas_id=c.mas_id) Modalidad, ";
-        $sql .= "  (SELECT cat_nombre FROM db_academico.centro_atencion where cat_id=c.cat_id) CentroAtencion ";
+        $sql .= "  (SELECT paq_nombre FROM " . $this->db_name . ".paquete where paq_id=c.paq_id) Paquete, ";
+        $sql .= "  (SELECT idi_nombre FROM " . $this->db_name . ".idioma where idi_id=c.idi_id) Idioma, ";
+        $sql .= "  (SELECT mas_nombre FROM " . $this->db_name . ".modalidad_asistencia where mas_id=c.mas_id) Modalidad, ";
+        $sql .= "  (SELECT cat_nombre FROM " . $this->db_name . ".centro_atencion where cat_id=c.cat_id) CentroAtencion ";
         $sql .= "  FROM " . $this->db_name . ".beneficiario a ";
 		$sql .= "    INNER JOIN " . $this->db_nameAdmin . ".persona b ";
 		$sql .= "	    ON a.per_id=b.per_id ";
