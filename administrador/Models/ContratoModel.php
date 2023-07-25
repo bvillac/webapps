@@ -179,10 +179,19 @@ class ContratoModel extends MysqlAcademico
     }
 
     public function consultarContratoId(int $codigo){
-        $sql = "SELECT a.con_id Ids,a.con_numero Numero,date(a.con_fecha_inicio) FechaIni,b.cli_razon_social RazonSocial,a.con_valor Total,a.con_valor_cuota_inicial CuoInicial, ";
-		$sql .= "(a.con_valor-a.con_valor_cuota_inicial) Saldo,a.con_numero_pagos Npagos,a.con_valor_cuota_mensual Vmensual,a.con_estado_logico Estado ";
+        $sql = "SELECT a.con_id Ids,a.con_numero Numero,date(a.con_fecha_inicio) FechaIni,b.cli_razon_social RazonSocial, ";
+        $sql .= " concat(p.per_nombre,' ',p.per_apellido) NombresCliente,b.cli_cargo Cargo,b.cli_ingreso_mensual IngMensual, ";
+        $sql .= " b.cli_antiguedad Antiguedad,b.cli_referencia_bancaria RefBanco,a.con_num_recibo_inscripcion NumRecibo, ";
+        $sql .= " a.con_num_deposito NumDeposito,b.cli_direccion DirTrabajo,b.cli_telefono_oficina TelOficina,b.cli_telefono TelDomicilio, ";
+		$sql .= " p.per_direccion DirDomicilio,p.per_telefono TelCelular, ";
+		$sql .= " (SELECT ocu_nombre FROM " . $this->db_nameAdmin . ".ocupacion where ocu_id=b.ocu_id) Ocupacion, ";
+        $sql .= " (SELECT fpag_nombre FROM " . $this->db_nameAdmin . ".forma_pago where fpag_id=b.fpag_id) FormaPago, ";
+        $sql .= " a.con_valor Total,a.con_valor_cuota_inicial CuoInicial, ";
+		$sql .= " (a.con_valor-a.con_valor_cuota_inicial) Saldo,a.con_numero_pagos Npagos,a.con_valor_cuota_mensual Vmensual,a.con_estado_logico Estado ";
 		$sql .= "FROM " . $this->db_name . ".contrato a ";
-		$sql .= "	INNER JOIN 	" . $this->db_nameAdmin . ".cliente b ";
+		$sql .= "	INNER JOIN 	(" . $this->db_nameAdmin . ".cliente b ";
+        $sql .= "               INNER JOIN db_administrador.persona p ";
+        $sql .= "                    ON b.per_id=p.per_id)  ";
 		$sql .= "		ON a.cli_id=b.cli_id and b.estado_logico!=0 ";
         $sql .= "   WHERE a.con_estado_logico=1 AND a.con_id  = {$codigo}  ";
         $request = $this->select($sql);
@@ -190,7 +199,7 @@ class ContratoModel extends MysqlAcademico
     }
 
     public function consultarBeneficiarioContrato(int $codigo){
-        $sql = "SELECT a.ben_tipo,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres, ";
+        $sql = "SELECT a.ben_tipo,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres,b.per_telefono TelCelular, ";
         $sql .= "  c.apr_numero_meses NMeses,c.apr_numero_horas NHoras,c.apr_examen_internacional Examen, ";
         $sql .= "  FLOOR(DATEDIFF(CURDATE(),b.per_fecha_nacimiento) / 365.25) Edad , ";
         $sql .= "  (SELECT paq_nombre FROM db_academico.paquete where paq_id=c.paq_id) Paquete, ";
