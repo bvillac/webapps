@@ -124,25 +124,20 @@ class Contrato extends Controllers
 		die();
 	}
 
-	public function generarContratoPDF($idpedido){
+	public function generarContratoPDF($idContrato){
 		if($_SESSION['permisosMod']['r']){
-			//putMessageLogFile($_SESSION['empresaData']);
-			if(is_numeric($idpedido)){
-				$idpersona = "";
-				//if($_SESSION['permisosMod']['r'] and $_SESSION['userData']['idrol'] == RCLIENTES){
-				//	$idpersona = $_SESSION['userData']['idpersona'];
-				//}
-				$data = $this->model->consultarContratoPDF($idpedido,$idpersona);
+			if(is_numeric($idContrato)){			
+				$data = $this->model->consultarContratoPDF($idContrato);
 				if(empty($data)){
 					echo "Datos no encontrados";
 				}else{
-					$idpedido = 1000;//$data['cabData']['com_id'];
+					$numeroSecuencia = $data['cabData']['Numero'];
 					ob_end_clean();
 					//$html =getFile("Template/Modals/ordenCompraPDF",$data);
 					$html =getFile("Contrato/contratoPDF",$data);
 					$html2pdf = new Html2Pdf('p','A4','es','true','UTF-8');
 					$html2pdf->writeHTML($html);
-					$html2pdf->output('CON_'.$idpedido.'.pdf');
+					$html2pdf->output('CONTRATO_'.$numeroSecuencia.'.pdf');
 				}
 			}else{
 				echo "Dato no válido";

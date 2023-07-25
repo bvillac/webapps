@@ -232,6 +232,12 @@ getModal('modalPersonaBuscar', $data);
                                                 <input class="form-control"  type="checkbox" id="chk_tipoBeneficiario"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
                                                 </label>
                                         </div>
+                                        <div class="form-group col-md-3 toggle-flip">                                           
+                                            <label for="chk_ExamenInter">Exámen Internacional
+                                            
+                                                <input class="form-control"  type="checkbox" id="chk_ExamenInter"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                                                </label>
+                                        </div>
                                     </div>
                                     <div class="text-center">
                                         <button id="cmd_agregarBeneficiario" class="btn btn-success" type="button" onclick="agregarItemsDoc();"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Agregar Beneficiario</button>

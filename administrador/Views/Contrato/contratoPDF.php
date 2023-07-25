@@ -1,5 +1,5 @@
 <?php
-setlocale(LC_ALL,"es_ES@euro","es_ES","esp");
+setlocale(LC_ALL, "es_ES@euro", "es_ES", "esp");
 //$empresa = $data['empData'];
 $cabContrato = $data['cabData'];
 $detBeneficiario = $data['detData'];
@@ -44,6 +44,14 @@ $fechaContrato = strftime("%d de %B de %Y", strtotime($cabContrato['FechaIni']))
 			padding: 5px;
 		}
 
+		.tituloLabel {
+			font-weight: bold;
+		}
+
+		.wd2 {
+			width: 2%;
+		}
+
 		.wd5 {
 			width: 5%;
 		}
@@ -82,6 +90,8 @@ $fechaContrato = strftime("%d de %B de %Y", strtotime($cabContrato['FechaIni']))
 		.tbl-detalle tfoot td {
 			padding: 5px;
 		}
+
+		
 	</style>
 </head>
 
@@ -98,17 +108,17 @@ $fechaContrato = strftime("%d de %B de %Y", strtotime($cabContrato['FechaIni']))
 					</p>
 				</td>
 				<td class="text-right wd33">
-					<p>
-						<h4><strong>R.U.C. </strong><?= $_SESSION['empresaData']['Ruc'] ?></h4>
-						<h4>CONTRATO N° <strong><?= $cabContrato['Numero'] ?></strong></h4><br>
-					</p>
+					
+					<h4><strong>R.U.C. </strong><?= $_SESSION['empresaData']['Ruc'] ?></h4>
+					<h4>CONTRATO N° <strong><?= $cabContrato['Numero'] ?></strong></h4><br>
+					
 				</td>
 			</tr>
 		</tbody>
 	</table>
 	<br>
 
-	<div class="text-left">
+	<div class="text-right">
 		<h4>Guayaquil, <?= $fechaContrato ?> </h4>
 	</div>
 
@@ -119,64 +129,71 @@ $fechaContrato = strftime("%d de %B de %Y", strtotime($cabContrato['FechaIni']))
 		</p>
 	</div>
 	<br>
-	<table>
+	<table class="table-responsive">
 		<tbody>
 			<tr>
-				<td class="wd10">Nombre Titular:</td>
-				<td class="wd40"><?= $cabContrato['NombresCliente'] ?></td>
-				<td class="wd10">Ocupación:</td>
-				<td class="wd40"><?= $cabContrato['Ocupacion'] ?></td>
+				<td class="tituloLabel">Nombre Titular:</td>
+				<td><?= $cabContrato['NombresCliente'] ?></td>
+				<td class="wd2"></td>
+				<td class="tituloLabel">Ocupación:</td>
+				<td><?= $cabContrato['Ocupacion'] ?></td>
 			</tr>
 			<tr>
-				<td>Empresa:</td>
+				<td class="tituloLabel">Empresa:</td>
 				<td><?= $cabContrato['RazonSocial'] ?></td>
-				<td>Cargo:</td>
+				<td class="wd2"></td>
+				<td class="tituloLabel">Cargo:</td>
 				<td><?= $cabContrato['Cargo'] ?></td>
 			</tr>
 			<tr>
-				<td>Ingreso Mensual:</td>
+				<td class="tituloLabel">Ingreso Mensual:</td>
 				<td><?= $cabContrato['IngMensual'] ?></td>
-				<td>Antiguedad:</td>
+				<td class="wd2"></td>
+				<td class="tituloLabel">Antiguedad:</td>
 				<td><?= $cabContrato['Antiguedad'] ?></td>
 			</tr>
 			<tr>
-				<td>Dirección Domicilio:</td>
+				<td class="tituloLabel">Dirección Domicilio:</td>
 				<td><?= $cabContrato['DirDomicilio'] ?></td>
-				<td>Teléfono Domicilio:</td>
+				<td class="wd2"></td>
+				<td class="tituloLabel">Teléfono Domicilio:</td>
 				<td><?= $cabContrato['TelDomicilio'] ?></td>
 			</tr>
 			<tr>
-				<td>Dirección Oficina:</td>
+				<td class="tituloLabel">Dirección Oficina:</td>
 				<td><?= $cabContrato['DirTrabajo'] ?></td>
-				<td>Teléfono Oficina:</td>
+				<td class="wd2"></td>
+				<td class="tituloLabel">Teléfono Oficina:</td>
 				<td><?= $cabContrato['TelOficina'] ?></td>
 			</tr>
 			<tr>
-				<td>Referencía Bancaria:</td>
+				<td class="tituloLabel">Referencía Bancaria:</td>
 				<td><?= $cabContrato['RefBanco'] ?></td>
-				<td>Teléfono Celular:</td>
+				<td class="wd2"></td>
+				<td class="tituloLabel">Teléfono Celular:</td>
 				<td><?= $cabContrato['TelCelular'] ?></td>
 			</tr>
 			<tr>
-				<td>N° Recibo Inscripción:</td>
+				<td class="tituloLabel">N° Recibo Inscripción:</td>
 				<td><?= $cabContrato['NumRecibo'] ?></td>
-				<td>N° Deposito:</td>
+				<td class="wd2"></td>
+				<td class="tituloLabel">N° Deposito:</td>
 				<td><?= $cabContrato['NumDeposito'] ?></td>
 			</tr>
 		</tbody>
 	</table>
 
-    <p>Beneficiario (os):(Nombres y apellidos)</p>
+	<p>Beneficiario (os):(Nombres y apellidos)</p>
 	<div class="table-responsive-sm">
 		<table class="table tbl-detalle">
 			<thead>
 				<tr>
-					<th>C.I.</th>					
+					<th>C.I.</th>
 					<th>Nombres</th>
 					<th>Tipo</th>
 					<th>Edad</th>
 					<th>Teléfono</th>
-					<th>Teléfono</th>
+					<th>Examen Internacional</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -184,11 +201,12 @@ $fechaContrato = strftime("%d de %B de %Y", strtotime($cabContrato['FechaIni']))
 				foreach ($detBeneficiario as $beneficiario) {
 				?>
 					<tr>
-					    <td class="text-left"><?= $beneficiario['Dni'] ?></td>
+						<td class="text-left"><?= $beneficiario['Dni'] ?></td>
 						<td class="text-left"><?= strtoupper($beneficiario['Nombres']) ?></td>
 						<td class="text-center"><?= ($beneficiario['ben_tipo'] == "1") ? "T" : "B" ?></td>
 						<td class="text-center"><?= $beneficiario['Edad'] ?></td>
 						<td class="text-left"><?= $beneficiario['TelCelular'] ?></td>
+						<td class="text-center"><?= ($beneficiario['Examen'] == "1") ? "SI" : "NO" ?></td>
 					</tr>
 				<?php } ?>
 			</tbody>
@@ -205,7 +223,7 @@ $fechaContrato = strftime("%d de %B de %Y", strtotime($cabContrato['FechaIni']))
 	<div class="table-responsive-sm">
 		<table class="table tbl-detalle">
 			<thead>
-				<tr>				
+				<tr>
 					<th>Nombres</th>
 					<th>Centro</th>
 					<th>Paquete</th>
@@ -233,8 +251,78 @@ $fechaContrato = strftime("%d de %B de %Y", strtotime($cabContrato['FechaIni']))
 		</table>
 
 	</div>
+	<div>
+		<p>
+			Este contrato corresponde al costo total del material didáctico. Los pagos mensuales deben efectuarse a nuestro representante
+			de cobranza o en las oficinas de <strong>MILLER</strong> quien a su vez expedirá un recibo oficial.
+		</p>
+	</div>
+	<br>
+	<div>
+		<table class="tbl-detalle">
+			<tfoot>
+				<tr>
+					<td class="text-right"><strong>Total:</strong></td>
+					<td class="text-right"><?= SMONEY . ' ' . formatMoney($cabContrato['Total'], 2); ?></td>
+					<td class="wd2"></td>
+					<td class="text-right"><strong>Número Cuotas:</strong></td>
+					<td class="text-right"><?= $cabContrato['Npagos'] ?></td>
+				</tr>
+				<tr>
+					<td class="text-right"><strong>Cuota Inicial:</strong></td>
+					<td class="text-right"><?= SMONEY . ' ' . formatMoney($cabContrato['CuoInicial'], 2) ?></td>
+					<td class="wd2"></td>
+					<td class="text-right"><strong>Mensualidades:</strong></td>
+					<td class="text-right"><?= SMONEY . ' ' . formatMoney($cabContrato['Vmensual'], 2); ?></td>
+				</tr>
+				<tr>
+					<td class="text-right"><strong>Saldo:</strong></td>
+					<td class="text-right"><?= SMONEY . ' ' . formatMoney($cabContrato['Saldo'], 2); ?></td>
+					<td class="wd2"></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 
-	
+
+
+
+<br>
+
+
+	<table style="width: 100%;">
+		<tbody>
+			<tr style="height: 40px;">
+				<td style="width:10% ;"></td>
+				<td style="width:30% ;">
+					<div class="text-center">
+						
+						<br><br><br><br>
+						<hr style="border:0px; border-top: 1px dotted black;">
+						Titular: <?= $cabContrato['NombresCliente'] ?><br>
+							C.I. <?= $cabContrato['CedulaRucCli'] ?>
+						
+					</div>
+				</td>
+				<td style="width:20% ;"></td>
+				<td style="width:30% ;">
+					<div class="text-center">
+						
+						<br><br><br><br>
+						<hr style="border:0px; border-top: 1px dotted black;">
+						Firma Ejecutivo:<br>
+						C.I.........................          
+					</div>
+				</td>
+				<td style="width:10% ;"></td>
+			</tr>
+		</tbody>
+	</table>
+
+
+
 
 	<!--<div class="text-center">
 		<p>Si tienes preguntas sobre tu pedido, <br> pongase en contacto con nombre, teléfono y Email</p>

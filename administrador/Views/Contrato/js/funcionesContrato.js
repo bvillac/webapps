@@ -513,6 +513,11 @@ function objDataRow() {
         rowGrid.tipoBeneficiarioID = 0;
         rowGrid.tipoBeneficiario = "Beneficiario";
     }
+    if ($('#chk_ExamenInter').prop('checked')) {
+        rowGrid.ExamenInter = 1;
+    } else {
+        rowGrid.ExamenInter = 0;
+    }
 
     return rowGrid;
 }
@@ -655,16 +660,13 @@ function listaDetalle() {
                     rowGrid.CodigoBeneficiario = Grid[i]['CodigoBeneficiario'];
                     rowGrid.TBenfId = Grid[i]['tipoBeneficiarioID'];
                     rowGrid.CentroAtencionID = Grid[i]['CentroAtencionID'];
-
-
-
                     rowGrid.PaqueteEstudiosID = Grid[i]['PaqueteEstudiosID'];
                     rowGrid.NMeses = Grid[i]['numero_meses'];
                     rowGrid.NHoras = Grid[i]['numero_horas'];
                     rowGrid.ModalidadEstudiosID = Grid[i]['ModalidadEstudiosID'];
                     rowGrid.IdiomaID = Grid[i]['IdiomaID'];
                     rowGrid.Observaciones = "";
-                    rowGrid.ExaInternacional = 0;
+                    rowGrid.ExaInternacional = Grid[i]['ExamenInter'];
                     arrayList[c] = rowGrid;
                     c += 1;
                 }

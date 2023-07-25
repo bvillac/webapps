@@ -179,7 +179,7 @@ class ContratoModel extends MysqlAcademico
     }
 
     public function consultarContratoId(int $codigo){
-        $sql = "SELECT a.con_id Ids,a.con_numero Numero,date(a.con_fecha_inicio) FechaIni,b.cli_razon_social RazonSocial, ";
+        $sql = "SELECT a.con_id Ids,a.con_numero Numero,date(a.con_fecha_inicio) FechaIni,b.cli_razon_social RazonSocial,b.cli_cedula_ruc CedulaRucCli, ";
         $sql .= " concat(p.per_nombre,' ',p.per_apellido) NombresCliente,b.cli_cargo Cargo,b.cli_ingreso_mensual IngMensual, ";
         $sql .= " b.cli_antiguedad Antiguedad,b.cli_referencia_bancaria RefBanco,a.con_num_recibo_inscripcion NumRecibo, ";
         $sql .= " a.con_num_deposito NumDeposito,b.cli_direccion DirTrabajo,b.cli_telefono_oficina TelOficina,b.cli_telefono TelDomicilio, ";
