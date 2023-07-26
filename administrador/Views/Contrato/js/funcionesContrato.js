@@ -123,6 +123,8 @@ $(document).ready(function () {
 
 
 
+
+
     //https://api.jqueryui.com/datepicker/
     $('.date-picker').datepicker({
         autoSize: true,
@@ -590,6 +592,68 @@ function eliminarItemsDetalle(codigo, TbGtable) {
     }
 }
 
+/**************** GUARDAR DATOS PERSONA  ******************/
+function guardarPersona() {
+    //var Ids = document.querySelector('#txth_ids').value;
+    var per_cedula = document.querySelector('#txt_per_cedula').value;
+    var per_nombre = document.querySelector('#txt_per_nombre').value;
+    var per_apellido = document.querySelector('#txt_per_apellido').value;
+    var per_fecha_nacimiento = document.querySelector('#dtp_fecha_nacimiento').value;
+    var per_telefono = document.querySelector('#txt_per_telefono').value;
+    var per_direccion = document.querySelector('#txt_per_direccion').value;
+    var per_genero = document.querySelector('#txt_per_genero').value;
+    if (per_cedula == '' || per_nombre == '' || per_apellido == '' || per_fecha_nacimiento == '' || per_telefono == '' || per_direccion == '' || per_genero == '')//Validacin de Campos
+    {
+        swal("Atención", "Todos los campos son obligatorios.", "error");
+        return false;
+    }
+    //Verificas los elementos conl clase valid para controlar que esten ingresados
+    let elementsValid = document.getElementsByClassName("valid");
+    for (let i = 0; i < elementsValid.length; i++) {
+        if (elementsValid[i].classList.contains('is-invalid')) {
+            swal("Atención", "Por favor verifique los campos ingresados (Color Rojo).", "error");
+            return false;
+        }
+    }
+
+    var dataPersona = new Object();
+    //dataPersona.ids = Ids;
+    dataPersona.per_cedula = per_cedula;
+    dataPersona.per_nombre = per_nombre;
+    dataPersona.per_apellido = per_apellido;
+    dataPersona.per_fecha_nacimiento = per_fecha_nacimiento;
+    dataPersona.per_telefono = per_telefono;
+    dataPersona.per_direccion = per_direccion;
+    dataPersona.per_genero = per_genero;
+    //sessionStorage.dataPersona = JSON.stringify(dataPersona);
+    let link = base_url + '/Persona/ingresarPersonaContrato';
+    $.ajax({
+        type: 'POST',
+        url: link,
+        data: {
+            "persona": JSON.stringify(dataPersona),
+            "accion": "Create"
+        },
+        success: function (data) {
+            if (data.status) {
+                //sessionStorage.removeItem('dataPersona');
+                swal("Persona Contrato", data.msg, "success");
+                $('#txth_per_idBenef').val(data.numero);
+                $('#txt_CodigoBeneficiario').val(per_cedula);        
+                $('#txt_NombreBeneficirio').val(per_nombre+" "+per_apellido);
+                $('#txt_TelefonoBeneficirio').val(per_telefono);
+                //alert("IDS = " + data.numero);
+                $('#modalFormPersona').modal("hide");
+                formUsuario.reset();
+            } else {
+                swal("Error", data.msg, "error");
+            }
+        },
+        dataType: "json"
+    });
+
+}
+
 /**************** GUARDAR DATOS CONTRATO  ******************/
 function guardarContrato() {
     //let accion=($('#cmd_guardar').html()=="Guardar")?'Create':'edit';
@@ -677,5 +741,15 @@ function listaDetalle() {
     return arrayList;
 }
 
+
+
+
+function openModaladdPersona() {
+    document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+    document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
+    document.querySelector('#titleModal').innerHTML = "Nueva Persona";
+    document.querySelector("#formPersona").reset();
+    $('#modalFormPersona').modal('show');
+}
 
 

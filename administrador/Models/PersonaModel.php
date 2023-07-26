@@ -56,7 +56,6 @@ class PersonaModel extends Mysql
 		$arrData = array($per_cedula, $per_nombre, $per_apellido, $per_fecha_nacimiento, $per_telefono, $per_direccion, $per_genero, $estado);
 		$request_insert = $this->insert($query_insert, $arrData);
 		$return = $request_insert; //Retorna el Ultimo IDS(0) No inserta y si es >0 si inserto
-
 		return $return;
 	}
 
@@ -95,4 +94,50 @@ class PersonaModel extends Mysql
 		$request = $this->select_all($sql);
 		return $request;
 	}
+
+	public function insertDataPersona($dataObj)
+	{
+		$idsUsuario = retornaUser();
+		$perCedula = $dataObj['per_cedula'];
+		$con = $this->getConexion();
+		$sql = "SELECT * FROM " . $this->db_name . ".persona where per_cedula={$perCedula}";
+		$request = $this->select($sql);
+		if (empty($request)) {
+			$con->beginTransaction();
+			try {			
+				$arrData = array(
+					$dataObj['per_cedula'],
+					$dataObj['per_nombre'],
+					$dataObj['per_apellido'],
+					$dataObj['per_fecha_nacimiento'],
+					$dataObj['per_telefono'],
+					$dataObj['per_direccion'],
+					$dataObj['per_genero'],
+					$idsUsuario, 1
+				);
+				$SqlQuery  = "INSERT INTO " . $this->db_name . ".persona 
+								(per_cedula, per_nombre, per_apellido, per_fecha_nacimiento,per_telefono,per_direccion,per_genero,usuario_creacion ,estado_logico) 
+								VALUES(?,?,?,?,?,?,?,?,?) ";
+				$Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
+				$con->commit();
+				$arroout["status"] = true;
+				$arroout["numero"] = $Ids;
+				return $arroout;
+			} catch (Exception $e) {
+				$con->rollBack();
+				//throw $e;
+				$arroout["message"] = "Fallo: " . $e->getMessage();
+				$arroout["status"] = false;
+				return $arroout;
+			}
+		} else {
+			$arroout["status"] = false;
+			$arroout["message"] ="Persona con la Cédula o DNI ya Existe!!!";
+			return $arroout;
+		}
+	}
+
+
+
+
 }

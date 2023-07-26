@@ -59,21 +59,7 @@ class ClienteMiller extends Controllers
         die();
     }
 
-    /*public function getPago()
-    {
-        require_once("Models/PagoModel.php");
-        $model = new PagoModel();
-        $htmlOptions = "";
-        $arrData = $model->consultarPago();
-        if (count($arrData) > 0) {
-            $htmlOptions = '<option value="0">SELECCIONAR</option>';
-            for ($i = 0; $i < count($arrData); $i++) {
-                $htmlOptions .= '<option value="' . $arrData[$i]['Ids'] . '">' . $arrData[$i]['Nombre'] . '</option>';
-            }
-        }
-        echo $htmlOptions;
-        die();
-    }*/
+  
 
 
     public function nuevo()

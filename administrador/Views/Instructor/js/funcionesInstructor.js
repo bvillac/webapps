@@ -451,38 +451,6 @@ function fntRolAsig() {
 
 }
 
-/*function otros() {
-    var selecionados="";
-    $("#dts_horas tr td input[type='checkbox']:checked").each(function () {
-        selecionados += $(this).attr("id")+",";
-    });
-    selecionados = selecionados.slice(0, selecionados.length - 1);
-    console.log(selecionados);
-    /*seleccion = [];
-    var selec="";
-    $("#dts_horas tr td input[type='checkbox']:checked").each(function () {
-        //row = $(this).closest('tr');
-        var id = $(this).attr("id");
-        selec+=id+",";
-        //console.log(id);
-        /*seleccion.push({
-            hora: row.find('td:eq(0)').text(),
-            codigo: row.find('td:eq(3)').innerHTML,
-            descripcion: row.find('td:eq(4)').innerHTML,
-            tipo: row.find('td:eq(5)').innerHTML
-        });
-        seleccion.push({
-            ids: id
-        });
-        
-    });
-    console.log(seleccion);
-   
-    console.log(seleccion[0].ids);
-    selec = selec.slice(0, selec.length - 1);
-    console.log(selec);
-
-}*/
 
 function guardarInstructor(accion) {
     //let accion=($('#cmd_guardar').html()=="Guardar")?'Create':'edit';    
