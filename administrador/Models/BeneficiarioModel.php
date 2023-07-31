@@ -45,33 +45,62 @@ class BeneficiarioModel extends MysqlAcademico
         return $request;
     }
 
-    public function updateData($dataObj)
-	{
-		$Ids = $dataObj['ids'];
-		$arroout["status"] = false;
-		$arrData = array(
-			$dataObj['horas_asignadas'],
-			$dataObj['horas_extras'],
-			0,
-			$dataObj['semana_horas'],
-			retornaUser()
-		);
-		$sql = "UPDATE " . $this->db_name . ".instructor
-						SET					
-						`ins_horas_asignadas` = ?,
-						`ins_horas_extras` = ?,
-						`ins_semana_dias` = ?,
-						`ins_semana_horas` = ?,
-						`ins_usuario_modificacion` = ?,
-						`ins_fecha_modificacion` = CURRENT_TIMESTAMP()
-						WHERE `ins_id` = {$Ids}";
 
-		$request = $this->update($sql, $arrData);
-		if ($request) {
-			$arroout["status"] = true;
-		}
-		return $arroout;
-	}
+
+    public function updateData($dataObj)
+    {
+        $con = $this->getConexion();
+        $con->beginTransaction();
+        try {
+
+            $idsBenef = $dataObj['ids'];
+            $arrBeneficiario = array(
+                $dataObj['tiular'],
+                retornaUser()
+            );
+            $this->actualizarBeneficiario($con, $idsBenef, $arrBeneficiario);
+            $arrAprendisaje = array(
+                $dataObj['PaqueteEstudiosID'],
+                $dataObj['IdiomaID'],
+                $dataObj['ModalidadEstudiosID'],
+                $dataObj['CentroAtencionID'],
+                $dataObj['NMeses'],
+                $dataObj['NHoras'],
+                $dataObj['Observaciones'],
+                $dataObj['ExaInternacional'],
+                retornaUser()
+            );
+            $this->actualizarAprendisaje($con, $idsBenef, $arrAprendisaje);
+
+            $con->commit();
+            $arroout["status"] = true;
+            $arroout["numero"] = 0;
+            return $arroout;
+        } catch (Exception $e) {
+            $con->rollBack();
+            throw $e;
+            $arroout["status"] = false;
+            $arroout["message"] = "Fallo: " . $e->getMessage();
+            return $arroout;
+        }
+    }
+
+    public function actualizarAprendisaje($con, $Ids, $arrData)
+    {
+        $SqlQuery = "UPDATE " . $this->db_name . ".aprendisaje SET 
+                        paq_id=?,idi_id=?,mas_id=?,cat_id=?,apr_numero_meses=?,apr_numero_horas=?,apr_observaciones=?,apr_examen_internacional=?,
+                        apr_usuario_modificacion=?,apr_fecha_modificacion = CURRENT_TIMESTAMP() WHERE ben_id = {$Ids} ";
+        return $this->updateConTrasn($con, $SqlQuery, $arrData);
+    }
+
+
+    public function actualizarBeneficiario($con, $Ids, $arrData)
+    {
+        $SqlQuery = "UPDATE " . $this->db_name . ".beneficiario SET ben_tipo = ?,ben_usuario_modificacion=?,
+                        ben_fecha_modificacion = CURRENT_TIMESTAMP() WHERE ben_id = {$Ids} ";
+        return $this->updateConTrasn($con, $SqlQuery, $arrData);
+    }
+
 
     public function deleteRegistro(int $Ids)
     {

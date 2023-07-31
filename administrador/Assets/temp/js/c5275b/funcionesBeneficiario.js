@@ -79,38 +79,37 @@ function guardarBeneficiario(accion) {
     let tiular=($('#chk_tipoBeneficiario').prop('checked'))?1:0;
     let examen=($('#chk_ExamenInter').prop('checked'))?1:0;
     
-  
-
-    if (per_id == '' || txt_cedula == '' || txt_horas_asignadas == '' || txt_horas_extras == '' || selecionados == '') {
+    if (Ids == '' || centro_id == '0' || paquete_id == '0' || modalidad_id == '0' || idioma_id == '0') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;
     }
+    var dataBenef = new Object();
+    dataBenef.ids = Ids;
+    dataBenef.CentroAtencionID = centro_id;
+    dataBenef.PaqueteEstudiosID = paquete_id;
+    dataBenef.ModalidadEstudiosID = modalidad_id;
+    dataBenef.IdiomaID = idioma_id;
+    dataBenef.NMeses = numero_meses;
+    dataBenef.NHoras = numero_horas;
+    dataBenef.Observaciones = "";
+    dataBenef.tiular = tiular;
+    dataBenef.ExaInternacional = examen;
 
-   
-
-    var dataInstructor = new Object();
-    dataInstructor.ids = Ids;
-    dataInstructor.per_id = per_id;
-    dataInstructor.cedula = txt_cedula;
-    dataInstructor.horas_asignadas = txt_horas_asignadas;
-    dataInstructor.horas_extras = txt_horas_extras;
-    dataInstructor.semana_horas = selecionados;
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
 
-    let link = base_url + '/instructor/ingresarInstructor';
+    let link = base_url + '/Beneficiario/ingresarBeneficiario';
     $.ajax({
         type: 'POST',
         url: link,
         data: {
-            //"dts_detalle": (accion == "Create") ? listaDetalle() : listaPedidoDetTemp(),
-            "instructor": JSON.stringify(dataInstructor),
+            "beneficiario": JSON.stringify(dataBenef),
             "accion": accion
         },
         success: function (data) {
             if (data.status) {
                 //sessionStorage.removeItem('cabeceraOrden');
-                swal("Instructor", data.msg, "success");
-                window.location = base_url + '/instructor/instructor';
+                swal("Beneficiarios", data.msg, "success");
+                window.location = base_url + '/Beneficiario/beneficiario';
             } else {
                 swal("Error", data.msg, "error");
             }

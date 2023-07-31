@@ -18,7 +18,7 @@ adminMenu($data);
     </div>
     <div class="row">
         <input type="hidden" id="txth_ids" name="txth_ids" value="<?= $data['Ids'] ?>">
-        <input type="hidden" id="txth_per_id" name="txth_per_id" value="<?= $data['PerIds'] ?>">
+        <input type="hidden" id="txth_per_id" name="txth_per_id" >
 
         <div class="col-md-12">
             <div class="tile">

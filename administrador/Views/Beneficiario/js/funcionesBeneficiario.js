@@ -85,14 +85,15 @@ function guardarBeneficiario(accion) {
     }
     var dataBenef = new Object();
     dataBenef.ids = Ids;
-    dataBenef.centro_id = centro_id;
-    dataBenef.paquete_id = paquete_id;
-    dataBenef.modalidad_id = modalidad_id;
-    dataBenef.idioma_id = idioma_id;
-    dataBenef.numero_meses = numero_meses;
-    dataBenef.numero_horas = numero_horas;
+    dataBenef.CentroAtencionID = centro_id;
+    dataBenef.PaqueteEstudiosID = paquete_id;
+    dataBenef.ModalidadEstudiosID = modalidad_id;
+    dataBenef.IdiomaID = idioma_id;
+    dataBenef.NMeses = numero_meses;
+    dataBenef.NHoras = numero_horas;
+    dataBenef.Observaciones = "";
     dataBenef.tiular = tiular;
-    dataBenef.examen = examen;
+    dataBenef.ExaInternacional = examen;
 
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
 
@@ -101,14 +102,13 @@ function guardarBeneficiario(accion) {
         type: 'POST',
         url: link,
         data: {
-            //"dts_detalle": (accion == "Create") ? listaDetalle() : listaPedidoDetTemp(),
             "beneficiario": JSON.stringify(dataBenef),
             "accion": accion
         },
         success: function (data) {
             if (data.status) {
                 //sessionStorage.removeItem('cabeceraOrden');
-                swal("Instructor", data.msg, "success");
+                swal("Beneficiarios", data.msg, "success");
                 window.location = base_url + '/Beneficiario/beneficiario';
             } else {
                 swal("Error", data.msg, "error");
