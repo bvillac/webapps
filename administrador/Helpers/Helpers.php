@@ -26,7 +26,9 @@ function vendor()
 
 function cdnTableLink()
 {
-    return cdnTable;
+    //return cdnTable;
+    return  media()."/js/cdn/i18n/Spanish.json";
+
 }
 
 //Archivo de Idiomas

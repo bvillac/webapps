@@ -74,6 +74,7 @@ class Contrato extends Controllers
 		$modelModalidad = new ModalidadModel();
 		$modelIdioma = new IdiomaModel();
 		//putMessageLogFile($_SESSION['empresaData']);
+		$data['fechaActual'] = date('Y-m-d');
 		$data['secuencia'] = $modelSecuencia->newSecuence("CON", $_SESSION['empresaData']['PuntoEmisId']);
 		$data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
 		$data['paqueteEstudios'] = $modelPaquete->consultarPaquete();
@@ -92,17 +93,18 @@ class Contrato extends Controllers
 		if ($_POST) {
 			//dep($_POST);
 			if (empty($_POST['cabecera']) || empty($_POST['dts_detalle']) || empty($_POST['accion'])) {
-				$arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+				$arrResponse = array("status" => false, "msg" => 'Datos de Cliente y Beneficiarios son incorrectos.');
 			} else {
 				$request = "";
 				$Cabecera = isset($_POST['cabecera']) ? $_POST['cabecera'] : array();
 				$Detalle = isset($_POST['dts_detalle']) ? $_POST['dts_detalle'] : array();
+				$Referencia = isset($_POST['dts_referencia']) ? $_POST['dts_referencia'] : array();
 				$accion = isset($_POST['accion']) ? $_POST['accion'] : "";
 
 				if ($accion == "Create") {
 					$option = 1;
 					if ($_SESSION['permisosMod']['w']) {
-						$request = $this->model->insertData($Cabecera, $Detalle);
+						$request = $this->model->insertData($Cabecera, $Detalle,$Referencia);
 					}
 				} else {
 					$option = 2;

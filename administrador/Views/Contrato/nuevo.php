@@ -4,7 +4,6 @@ adminMenu($data);
 //filelang(Setlanguage,"general") 
 getModal('modalPersonaBuscar', $data);
 require_once "Views/Contrato/Modals/modalPersona.php";
-//getModal('modalUsuarios', $data);
 ?>
 <div id="contentAjax"></div>
 <main class="app-content">
@@ -42,17 +41,16 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                             <h4 id="lbl_secuencia">N° <?= $data['secuencia'] ?></h4>
                             </p>
                         </div>
+
                         <div class="form-group col-md-3">
-                            <label class="control-label">Fecha del Contrato</label>
-                            <div class="dflex">
-                                <input class="date-picker form-control valid" id="dtp_fecha_inicio" name="dtp_fecha_inicio" placeholder="yyyy-mm-dd">
-                            </div>
+                            <label for="dtp_fecha_inicio">Fecha del Contrato</label>
+                            <input type="date" class="form-control valid validText" id="dtp_fecha_inicio" name="dtp_fecha_inicio" placeholder="1988-01-01" value="<?= $data['fechaActual'] ?>" pattern="^\d{4}\/\d{2}\/\d{2}$" required="">
                         </div>
                     </div>
                     <h3 class="mb-3 line-head" id="type-blockquotes">Cliente</h3>
                     <div class="row">
                         <div class="form-group col-md-3">
-                            <label class="control-label">Buscar Persona <span class="required">*</span></label>
+                            <label class="control-label">Buscar Cliente <span class="required">*</span></label>
                             <div class="input-group">
                                 <input class="form-control" id="txt_CodigoPersona" name="txt_CodigoPersona" type="text" required="" placeholder="Buscar por Nombre o DNI">
                             </div>
@@ -73,11 +71,14 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                             <ul class="nav nav-tabs">
                                 <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#info">INFORMACIÓN</a></li>
                                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#beneficiarios">BENEFICIARIOS</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Referencias">REFERENCIAS</a></li>
                                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#totales">TOTALES</a></li>
                                 <!-- <li class="nav-item"><a class="nav-link disabled" href="#detalle">Detalle</a></li> -->
                             </ul>
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade active show" id="info">
+                                    <BR>
+                                    <h5 class="mb-3 line-head" id="type-blockquotes">DATOS DEL CLIENTE</h5>
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_razon_social">Nombre Empresa <span class="required">*</span></label>
@@ -135,11 +136,11 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_numero_recibo">Número de Recibo Inscripción <span class="required">*</span></label>
-                                            <input class="form-control valid validarNumber" id="txt_numero_recibo" name="txt_numero_recibo" type="text" maxlength="10">
+                                            <input class="form-control valid validarNumber" onkeyup="TextMayus(this);" id="txt_numero_recibo" name="txt_numero_recibo" type="text" maxlength="10">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_numero_deposito">Número de Deposito <span class="required">*</span></label>
-                                            <input class="form-control valid validarNumber" id="txt_numero_deposito" name="txt_numero_deposito" type="text" maxlength="10">
+                                            <input class="form-control valid validarNumber" onkeyup="TextMayus(this);" id="txt_numero_deposito" name="txt_numero_deposito" type="text" maxlength="10">
                                         </div>
                                     </div>
 
@@ -147,16 +148,23 @@ require_once "Views/Contrato/Modals/modalPersona.php";
 
                                 </div>
                                 <div class="tab-pane fade" id="beneficiarios">
+                                    <br>
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <button id="cmd_agregarPersona" class="btn btn-primary" onclick="openModaladdPersona();" type="button"><i class=" fa fa-user-plus"></i> Agregar Nueva Persona</button>
+                                        </div>
+
+                                    </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_CodigoBeneficiario">Buscar Persona por Nombre <span class="required">*</span></label>
                                             <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text" required="" placeholder="Buscar por Nombre o DNI">
-                                            <button id="cmd_agregarPersona" class="btn btn-primary" onclick="openModaladdPersona();" type="button"><i class=" fa fa-user-plus"></i></button>
                                         </div>
-                                        <!--<div class="input-group mb-3">
-  <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
-  <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
-</div>-->
+                                        <!--<div class="form-group col-md-3">
+                                            <label for="txt_CodigoBeneficiario">Buscar Persona por Nombre <span class="required">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                            <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class=" fa fa-user-plus"></i></button>
+                                        </div>-->
 
                                         <div class="form-group col-md-3">
                                             <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
@@ -232,18 +240,18 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                             </select>
                                         </div>
 
-                                        
-                                        <div class="form-group col-md-3 toggle-flip">                                           
+
+                                        <div class="form-group col-md-3 toggle-flip">
                                             <label for="chk_tipoBeneficiario">Titular
-                                            
-                                                <input class="form-control"  type="checkbox" id="chk_tipoBeneficiario"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
-                                                </label>
+
+                                                <input class="form-control" type="checkbox" id="chk_tipoBeneficiario"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                                            </label>
                                         </div>
-                                        <div class="form-group col-md-3 toggle-flip">                                           
+                                        <div class="form-group col-md-3 toggle-flip">
                                             <label for="chk_ExamenInter">Exámen Internacional
-                                            
-                                                <input class="form-control"  type="checkbox" id="chk_ExamenInter"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
-                                                </label>
+
+                                                <input class="form-control" type="checkbox" id="chk_ExamenInter"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="text-center">
@@ -283,13 +291,13 @@ require_once "Views/Contrato/Modals/modalPersona.php";
 
                                         <label for="txt_valor" class="col-sm-2 col-form-label text-right">Valor US$</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="txt_valor" value="0.00">
+                                            <input type="text" class="form-control valid validarNumber" id="txt_valor" value="0.00">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label for="txt_CuotaInicial" class="col-sm-2 col-form-label text-right">Cuota Inicial/Anticipo</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="txt_CuotaInicial" value="0.00">
+                                            <input type="text" class="form-control valid validarNumber" id="txt_CuotaInicial" value="0.00">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
@@ -302,7 +310,7 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                     <div class="mb-3 row">
                                         <label for="txt_NumeroCuota" class="col-sm-2 col-form-label text-right">Número de Cuotas</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="txt_NumeroCuota" value="0">
+                                            <input type="text" class="form-control valid validarNumber" id="txt_NumeroCuota" value="0">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
@@ -311,6 +319,68 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                             <input type="text" class="form-control" id="txt_ValorMensual" value="0.00" disabled>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="tab-pane fade" id="Referencias">
+                                    <BR>
+                                    <h5 class="mb-3 line-head" id="type-blockquotes">REFERENCIAS</h5>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refNombre0">Nombre</label>
+                                            <input class="form-control valid validText" maxlength="40" onkeyup="TextMayus(this);" id="txt_refNombre0" name="txt_refNombre0" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refDireccion0">Dirección</label>
+                                            <input class="form-control valid validText" maxlength="80" onkeyup="TextMayus(this);" id="txt_refDireccion0" name="txt_refDireccion0" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refTelefono0">Teléfono</label>
+                                            <input class="form-control valid validText" maxlength="20" onkeyup="TextMayus(this);" id="txt_refTelefono0" name="txt_refTelefono0" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refCiudad0">Ciudad</label>
+                                            <input class="form-control valid validText" maxlength="40" onkeyup="TextMayus(this);" id="txt_refCiudad0" name="txt_refCiudad0" type="text" value="" required="">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refNombre1">Nombre</label>
+                                            <input class="form-control valid validText" maxlength="40" onkeyup="TextMayus(this);" id="txt_refNombre1" name="txt_refNombre1" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refDireccion1">Dirección</label>
+                                            <input class="form-control valid validText" maxlength="80" onkeyup="TextMayus(this);" id="txt_refDireccion1" name="txt_refDireccion1" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refTelefono1">Teléfono</label>
+                                            <input class="form-control valid validText" maxlength="20" onkeyup="TextMayus(this);" id="txt_refTelefono1" name="txt_refTelefono1" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refCiudad1">Ciudad</label>
+                                            <input class="form-control valid validText" maxlength="40" onkeyup="TextMayus(this);" id="txt_refCiudad1" name="txt_refCiudad1" type="text" value="" required="">
+                                        </div>
+
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refNombre2">Nombre</label>
+                                            <input class="form-control valid validText" maxlength="40" onkeyup="TextMayus(this);" id="txt_refNombre2" name="txt_refNombre2" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refDireccion2">Dirección</label>
+                                            <input class="form-control valid validText" maxlength="80" onkeyup="TextMayus(this);" id="txt_refDireccion2" name="txt_refDireccion2" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refTelefono2">Teléfono</label>
+                                            <input class="form-control valid validText" maxlength="20" onkeyup="TextMayus(this);" id="txt_refTelefono2" name="txt_refTelefono2" type="text" value="" required="">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="txt_refCiudad2">Ciudad</label>
+                                            <input class="form-control valid validText" maxlength="40" onkeyup="TextMayus(this);" id="txt_refCiudad2" name="txt_refCiudad2" type="text" value="" required="">
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>

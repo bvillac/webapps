@@ -1,3 +1,4 @@
+document.write(`<script src="${base_url}/Assets/js/cedulaRucPass.js"></script>`);
 let tableContrato;
 let tablePersonaBuscar;
 
@@ -90,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         "resonsieve": "true",
         "bDestroy": true,
         "iDisplayLength": 10,//Numero Items Retornados
-        "order": [[0, "asc"]]  //Orden por defecto 1 columna
+        "order": [[1, "desc"]]  //Orden por defecto 1 columna
     });
 
 });
@@ -107,7 +108,7 @@ function eliminarStores() {
 
 
 $(document).ready(function () {
-    $('#cmb_profesion').selectpicker('render');
+    //$('#cmb_profesion').selectpicker('render');
     //Nueva Orden   
     $("#btn_nuevo").click(function () {
         //eliminarStores();
@@ -119,14 +120,19 @@ $(document).ready(function () {
         window.location = base_url + '/Contrato';//Retorna al Portal Principal
     });
 
-
+    $("#txt_per_cedula").blur(function () {
+        let valor = document.querySelector('#txt_per_cedula').value;
+        /*if(!validarDocumento(valor)){
+            swal("Error", "Error de DNI" , "error");
+        }*/
+    });
 
 
 
 
 
     //https://api.jqueryui.com/datepicker/
-    $('.date-picker').datepicker({
+    /*$('.date-picker').datepicker({
         autoSize: true,
         closeText: 'Cerrar',
         prevText: '<Ant',
@@ -141,7 +147,7 @@ $(document).ready(function () {
         onClose: function (dateText, inst) {
             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay));
         }
-    });
+    });*/
 
     $("#txt_CodigoPersona").autocomplete({
         source: function (request, response) {
@@ -480,11 +486,14 @@ function limpiarTexbox() {
     $('#txt_NombreBeneficirio').val("");
     $('#txt_EdadBeneficirio').val("0");
     $('#txt_TelefonoBeneficirio').val("0");
+    $('#txt_numero_meses').val("0");
+    $('#txt_numero_horas').val("0");
     $('#cmb_CentroAtencion').val("0");
     $('#cmb_PaqueteEstudios').val("0");
     $('#cmb_ModalidadEstudios').val("0");
     $('#cmb_Idioma').val("0");
     $('#chk_tipoBeneficiario').prop("checked", false);
+    $('#chk_ExamenInter').prop("checked", false);
 }
 
 function objDataRow() {
@@ -510,10 +519,10 @@ function objDataRow() {
     rowGrid.numero_horas = $('#txt_numero_horas').val();
     if ($('#chk_tipoBeneficiario').prop('checked')) {
         rowGrid.tipoBeneficiarioID = 1;
-        rowGrid.tipoBeneficiario = "Titular";
+        rowGrid.tipoBeneficiario = "TITULAR";
     } else {
         rowGrid.tipoBeneficiarioID = 0;
-        rowGrid.tipoBeneficiario = "Beneficiario";
+        rowGrid.tipoBeneficiario = "BENEFICIARIO";
     }
     if ($('#chk_ExamenInter').prop('checked')) {
         rowGrid.ExamenInter = 1;
@@ -639,12 +648,13 @@ function guardarPersona() {
                 //sessionStorage.removeItem('dataPersona');
                 swal("Persona Contrato", data.msg, "success");
                 $('#txth_per_idBenef').val(data.numero);
-                $('#txt_CodigoBeneficiario').val(per_cedula);        
-                $('#txt_NombreBeneficirio').val(per_nombre+" "+per_apellido);
+                $('#txt_CodigoBeneficiario').val(per_cedula);
+                $('#txt_NombreBeneficirio').val(per_nombre + " " + per_apellido);
                 $('#txt_TelefonoBeneficirio').val(per_telefono);
-                //alert("IDS = " + data.numero);
+                $('#dtp_fecha_nacimiento').val(calcularEdad(per_fecha_nacimiento));
+                //alert("IDS = " + data.numero);                
                 $('#modalFormPersona').modal("hide");
-                formUsuario.reset();
+                limpiarTexboxPersona();
             } else {
                 swal("Error", data.msg, "error");
             }
@@ -654,12 +664,23 @@ function guardarPersona() {
 
 }
 
+function limpiarTexboxPersona() {
+    $('#txt_per_cedula').val("");
+    $('#dtp_fecha_nacimiento').val("");
+    $('#txt_per_nombre').val("");
+    $('#txt_per_apellido').val("");
+    $('#txt_per_telefono').val("");
+    $('#txt_per_direccion').val("");
+    
+}
+
 /**************** GUARDAR DATOS CONTRATO  ******************/
 function guardarContrato() {
     //let accion=($('#cmd_guardar').html()=="Guardar")?'Create':'edit';
     let accion = 'Create';
     var vSaldoTotal = parseFloat($('#txt_SaldoTotal').val());
-    if ($('#txt_cedula').val() != "" && vSaldoTotal > 0) {
+    var vFecha = $('#dtp_fecha_inicio').val();
+    if ($('#txt_cedula').val() != "" && vSaldoTotal > 0 && vFecha != "") {
         //$("#cmd_guardar").attr('disabled', true);
         //var ID = (accion == "edit") ? $('#txth_PedID').val() : 0;
         let link = base_url + '/Contrato/ingresarContrato';
@@ -669,10 +690,11 @@ function guardarContrato() {
             data: {
                 "cabecera": listaCabecera(),
                 "dts_detalle": listaDetalle(),
+                "dts_referencia": listaReferencia(),
                 "accion": accion
             },
             success: function (data) {
-                console.log("resp " + data.status);
+                //console.log("resp " + data.status);
                 if (data.status) {
                     sessionStorage.removeItem('cabeceraContrato');
                     sessionStorage.removeItem('dts_detalleData');
@@ -688,7 +710,7 @@ function guardarContrato() {
 
 
     } else {
-        swal("Atención!", "No Existen datos para Guardar", "error");
+        swal("Atención!", "Ingresar datos del Cliente,Beneficiarios y Totales", "error");
     }
 }
 
@@ -741,8 +763,25 @@ function listaDetalle() {
     return arrayList;
 }
 
-
-
+function listaReferencia() {
+    var arrayList = new Array;
+    var c = 0;
+    for (var i = 0; i < 3; i++) {
+        if ($('#txt_refNombre' + i).val() != "") {
+            let rowRef = new Object();
+            rowRef.refNombre = $('#txt_refNombre' + i).val();
+            rowRef.refDireccion = $('#txt_refDireccion' + i).val();
+            rowRef.refTelefono = $('#txt_refTelefono' + i).val();
+            rowRef.refCiudad = $('#txt_refCiudad' + i).val();
+            arrayList[c] = rowRef;
+            c += 1;
+            sessionStorage.dts_referencia = JSON.stringify(arrayList);
+        }
+    }
+    
+    //return JSON.stringify(arrayList);
+    return arrayList;
+}
 
 function openModaladdPersona() {
     document.querySelector('#txth_ids').value = "";//IDS oculto hiden

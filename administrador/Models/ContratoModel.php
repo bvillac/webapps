@@ -18,14 +18,14 @@ class ContratoModel extends MysqlAcademico
 		$sql .= "FROM " . $this->db_name . ".contrato a ";
 		$sql .= "	INNER JOIN 	" . $this->db_nameAdmin . ".cliente b ";
 		$sql .= "		ON a.cli_id=b.cli_id and b.estado_logico!=0 ";
-        $sql .= "   WHERE a.con_estado_logico!=0 ";
+        $sql .= "   WHERE a.con_estado_logico!=0 ORDER BY a.con_numero ASC ";
         $request = $this->select_all($sql);
         return $request;
     }
 
  
 
-    public function insertData($Cabecera, $Detalle)
+    public function insertData($Cabecera, $Detalle,$Referencia)
     {
         $con = $this->getConexion();
         $con->beginTransaction();
@@ -57,6 +57,19 @@ class ContratoModel extends MysqlAcademico
                     );
                     $aprId=$this->insertarAprendisaje($con, $arrAprendisaje);
 				}
+
+                for ($i = 0; $i < sizeof($Referencia); $i++) {
+                   
+                    $arrReferencia = array(
+                        $contId,
+                        $Referencia[$i]['refNombre'],
+                        $Referencia[$i]['refDireccion'],
+                        $Referencia[$i]['refTelefono'],
+                        $Referencia[$i]['refCiudad'],
+                        retornaUser(),1
+                    ); 
+                    $this->insertarReferencia($con, $arrReferencia);
+                }
                 
                 $con->commit();
                 $arroout["status"] = true;
@@ -117,8 +130,13 @@ class ContratoModel extends MysqlAcademico
         return $this->insertConTrasn($con, $SqlQuery, $arrDetalle);
     }
 
-
-    
+    private function insertarReferencia($con, $arrReferencia):void{//No retorna valor 
+        $SqlQuery  = "INSERT INTO " . $this->db_name . ".referencia ";
+        $SqlQuery .= "(`con_id`,`ref_nombre`,`ref_direccion`,`ref_telefono`,`ref_ciudad`,`ref_usuario_creacion`,`ref_estado_logico`) ";
+        $SqlQuery .= " VALUES (?,?,?,?,?,?,?) ";
+        $this->insertConTrasn($con, $SqlQuery, $arrReferencia);
+    }
+ 
     public function updateData($dataObj)
     {
         $Ids = $dataObj['ids'];

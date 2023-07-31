@@ -1,60 +1,60 @@
 (function () {
-	"use strict";
-	var treeviewMenu = $('.app-menu');
+    "use strict";
+    var treeviewMenu = $('.app-menu');
     var treeviewMenu2 = $('.app-menu2');
 
-	// Toggle Sidebar
-	$('[data-toggle="sidebar"]').click(function(event) {
-		event.preventDefault();
-		$('.app').toggleClass('sidenav-toggled');
-	});
+    // Toggle Sidebar
+    $('[data-toggle="sidebar"]').click(function (event) {
+        event.preventDefault();
+        $('.app').toggleClass('sidenav-toggled');
+    });
 
-	// Activate sidebar treeview toggle
-	$("[data-toggle='treeview']").click(function(event) {
-		event.preventDefault();
-		if(!$(this).parent().hasClass('is-expanded')) {
-			treeviewMenu.find("[data-toggle='treeview']").parent().removeClass('is-expanded');
-		}
-		$(this).parent().toggleClass('is-expanded');
-	});
+    // Activate sidebar treeview toggle
+    $("[data-toggle='treeview']").click(function (event) {
+        event.preventDefault();
+        if (!$(this).parent().hasClass('is-expanded')) {
+            treeviewMenu.find("[data-toggle='treeview']").parent().removeClass('is-expanded');
+        }
+        $(this).parent().toggleClass('is-expanded');
+    });
 
     // Activate sidebar treeview2 toggle
-	$("[data-toggle='treeview2']").click(function(event) {
-		event.preventDefault();
-		if(!$(this).parent().hasClass('is-expanded')) {
-			treeviewMenu2.find("[data-toggle='treeview2']").parent().removeClass('is-expanded');
-		}
-		$(this).parent().toggleClass('is-expanded');
-	});
-
-	// Set initial active toggle
-	$("[data-toggle='treeview.'].is-expanded").parent().toggleClass('is-expanded');
+    $("[data-toggle='treeview2']").click(function (event) {
+        event.preventDefault();
+        if (!$(this).parent().hasClass('is-expanded')) {
+            treeviewMenu2.find("[data-toggle='treeview2']").parent().removeClass('is-expanded');
+        }
+        $(this).parent().toggleClass('is-expanded');
+    });
 
     // Set initial active toggle
-	//$("[data-toggle='treeview2.'].is-expanded").parent().toggleClass('is-expanded');
+    $("[data-toggle='treeview.'].is-expanded").parent().toggleClass('is-expanded');
 
-	//Activate bootstrip tooltips
-	$("[data-toggle='tooltip']").tooltip();
+    // Set initial active toggle
+    //$("[data-toggle='treeview2.'].is-expanded").parent().toggleClass('is-expanded');
+
+    //Activate bootstrip tooltips
+    $("[data-toggle='tooltip']").tooltip();
 
 })();
 
 /*
  * Valida la Entrada del Enter
  */
-function isEnter(e){
+function isEnter(e) {
     //retornar verdadereo si presiona Enter
     var key;
-    if(window.event) // IE
+    if (window.event) // IE
     {
         key = e.keyCode;
-        if (key == 13 || key == 9 ){
+        if (key == 13 || key == 9) {
             return true;
         }
-    }else if(e.which){ // Netscape/Firefox/Opera
+    } else if (e.which) { // Netscape/Firefox/Opera
         key = e.which;
         // NOTE: Backspace = 8, Enter = 13, '0' = 48, '9' = 57	
         //var key = nav4 ? evt.which : evt.keyCode;	
-        if (key == 13 || key == 9 ){
+        if (key == 13 || key == 9) {
             return true;
         }
     }
@@ -93,20 +93,35 @@ function redondea(sVal, nDec) {
     return s;
 }
 
-function number_format(number,decimals,dec_point,thousands_sep) {
-    number  = number*1;//makes sure `number` is numeric value
-    var str = number.toFixed(decimals?decimals:0).toString().split('.');
+function number_format(number, decimals, dec_point, thousands_sep) {
+    number = number * 1;//makes sure `number` is numeric value
+    var str = number.toFixed(decimals ? decimals : 0).toString().split('.');
     var parts = [];
-    for ( var i=str[0].length; i>0; i-=3 ) {
-        parts.unshift(str[0].substring(Math.max(0,i-3),i));
+    for (var i = str[0].length; i > 0; i -= 3) {
+        parts.unshift(str[0].substring(Math.max(0, i - 3), i));
     }
-    str[0] = parts.join(thousands_sep?thousands_sep:',');
-    return str.join(dec_point?dec_point:'.');
+    str[0] = parts.join(thousands_sep ? thousands_sep : ',');
+    return str.join(dec_point ? dec_point : '.');
 }
 
-function calculoCostos(costo,margen,numDecimal){
+function calculoCostos(costo, margen, numDecimal) {
     //Aplica para los decuentos sin tener perdidas
-    precio = (costo/((100-margen)/100));
-    return  number_format(precio,numDecimal,SPD,SPM);
+    precio = (costo / ((100 - margen) / 100));
+    return number_format(precio, numDecimal, SPD, SPM);
+}
+
+function calcularEdad(inputFechaNacimiento) {
+    //const inputFechaNacimiento = document.getElementById('fechaNacimiento');
+    const fechaNacimiento = new Date(inputFechaNacimiento);
+    const fechaActual = new Date();
+
+    // Calcular la diferencia en milisegundos entre las dos fechas
+    const diferenciaMilisegundos = fechaActual - fechaNacimiento;
+
+    // Calcular la edad dividiendo la diferencia en milisegundos por la cantidad de milisegundos en un año
+    const edad = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24 * 365.25));
+
+    //document.getElementById('resultado').innerText = `La edad actual es: ${edad} años`;
+    return edad;
 }
 

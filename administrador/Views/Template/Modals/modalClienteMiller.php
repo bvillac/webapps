@@ -11,90 +11,91 @@
       </div>
       <div class="modal-body">
         <form id="formCliente" name="formCliente" class="form-horizontal">
-        <input type="hidden" id="txth_ids" name="txth_ids" value=""> 
-        <p class="text-primary">Todos los campos son obligatorios.</p>
+          <input type="hidden" id="txth_ids" name="txth_ids" value="">
+          <p class="text-primary">Todos los campos son obligatorios.</p>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_codigo">Código</label>
               <input type="text" class="form-control valid validText " id="txt_codigo" name="txt_codigo" onkeyup="TextMayus(this);" required="">
             </div>
             <div class="form-group col-md-6">
-            <label class="control-label">Buscar Persona DNI</label>
-                            <div class="input-group">
-                                <input class="form-control" id="txt_CodigoPersona" name="txt_CodigoPersona" type="text" required="" placeholder="Buscar">                                
-                            </div>
+              <label class="control-label">Buscar Persona DNI</label>
+              <div class="input-group">
+                <input class="form-control" id="txt_CodigoPersona" name="txt_CodigoPersona" type="text" required="" placeholder="Buscar">
+              </div>
 
             </div>
           </div>
           <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="txt_cli_tipo_dni">Tipo DNI</label>
-                <select class="form-control" id="txt_cli_tipo_dni" name="txt_cli_tipo_dni" required="">
-                  <option value="01">Cédula</option>
-                  <option value="02">Ruc</option>
-                  <option value="03">Pasaporte</option>
-                </select>
-                </div>
-                <div class="form-group col-md-6">
+            <div class="form-group col-md-6">
+              <label for="txt_cli_tipo_dni">Tipo DNI</label>
+              <select class="form-control" id="txt_cli_tipo_dni" name="txt_cli_tipo_dni" required="">
+                <option value="01">Cédula</option>
+                <option value="02">Ruc</option>
+                <option value="03">Pasaporte</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
               <label for="txt_cli_cedula_ruc">Identificación Dni</label>
               <input type="text" class="form-control valid validarNumber " id="txt_cli_cedula_ruc" name="txt_cli_cedula_ruc" required="">
             </div>
-            
+
           </div>
-          <div class="form-row">           
-            <div class="form-group col-md-6"> 
+          <div class="form-row">
+            <div class="form-group col-md-6">
               <label for="txt_cli_nombre">Apellidos y Nombres</label>
-              <input type="text" class="form-control valid validText" id="txt_cli_nombre" name="txt_cli_nombre" onkeyup="TextMayus(this);" required="" >
-            </div>                 
+              <input type="text" class="form-control valid validText" id="txt_cli_nombre" name="txt_cli_nombre" onkeyup="TextMayus(this);" required="">
+            </div>
             <div class="form-group col-md-6">
               <label for="txt_cli_direccion">Dirección Domiciliaria</label>
               <input type="text" class="form-control valid validText " id="txt_cli_direccion" name="txt_cli_direccion" onkeyup="TextMayus(this);" required="">
             </div>
-            </div>
-            <div class="form-row">  
-                <div class="form-group col-md-6">
-                <label for="txt_cli_correo">Correo Electrónico</label>
-                <input type="text" class="form-control valid validarEmail " id="txt_cli_correo" name="txt_cli_correo" placeholder="ejemplo@gmail.com"  required="">
-              </div>  
-              <div class="form-group col-md-6">
-                <label for="txt_cli_telefono">Teléfono/Celular</label>
-                <input type="text" maxlength="10" class="form-control valid validarNumber" id="txt_cli_telefono" name="txt_cli_telefono" placeholder="0999999999" required="" >              </div>         
-            </div>
-            <div class="form-row">  
+          </div>
+          <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="cmb_distribuidor">Distribuidor</label>
-                <select class="form-control" id="cmb_distribuidor" name="cmb_distribuidor" required="">                  
-                  <option value="0">No</option>
-                  <option value="1">Si</option>
-                </select>
-              </div> 
-              <div class="form-group col-md-6">
-                <label for="cmb_tipo_precio">Tipo de Precio</label>
-                <select class="form-control" id="cmb_tipo_precio" name="cmb_tipo_precio" required="">
-                  <option value="1">Precio 1</option>
-                  <option value="2">Precio 2</option>
-                  <option value="3">Precio 3</option>
-                  <option value="4">Precio 4</option>
-                </select>
-              </div>         
-              <!-- <div class="form-group col-md-6">
+              <label for="txt_cli_correo">Correo Electrónico</label>
+              <input type="text" class="form-control valid validarEmail " id="txt_cli_correo" name="txt_cli_correo" placeholder="ejemplo@gmail.com" required="">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="txt_cli_telefono">Teléfono/Celular</label>
+              <input type="text" maxlength="10" class="form-control valid validarNumber" id="txt_cli_telefono" name="txt_cli_telefono" placeholder="0999999999" required="">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="cmb_distribuidor">Distribuidor</label>
+              <select class="form-control" id="cmb_distribuidor" name="cmb_distribuidor" required="">
+                <option value="0">No</option>
+                <option value="1">Si</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="cmb_tipo_precio">Tipo de Precio</label>
+              <select class="form-control" id="cmb_tipo_precio" name="cmb_tipo_precio" required="">
+                <option value="1">Precio 1</option>
+                <option value="2">Precio 2</option>
+                <option value="3">Precio 3</option>
+                <option value="4">Precio 4</option>
+              </select>
+            </div>
+            <!-- <div class="form-group col-md-6">
                 <label for="txt_ruta_certificado">Ruta de Certificado</label>
                 <input type="text" class="form-control valid validText " id="txt_ruta_certificado" name="txt_ruta_certificado" required="">
               </div>   -->
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="cmb_pago">Forma de Pago</label>
+              <select class="form-control" data-live-search="true" id="cmb_pago" name="cmb_pago" required="">
+              </select>
             </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="cmb_pago">Forma de Pago</label>
-                <select class="form-control" data-live-search="true" id="cmb_pago" name="cmb_pago" required="">
-                </select>
-              </div>
-              <div class="form-group col-md-6">
-                <label for="cmb_estado">Estado</label>
-                <select class="form-control" id="cmb_estado" name="cmb_estado" required="">
-                  <option value="1">Activo</option>
-                  <option value="2">Inactivo</option>
-                </select>
-              </div>           
+            <div class="form-group col-md-6">
+              <label for="cmb_estado">Estado</label>
+              <select class="form-control" id="cmb_estado" name="cmb_estado" required="">
+                <option value="1">Activo</option>
+                <option value="2">Inactivo</option>
+              </select>
+            </div>
           </div>
           <div class="tile-footer">
             <button id="btnActionForm" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
@@ -107,7 +108,7 @@
 </div>
 <!-- Modal View -->
 <div class="modal fade" id="modalViewCliente" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" >
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header header-primary">
         <h5 class="modal-title" id="titleModal">Cliente</h5>

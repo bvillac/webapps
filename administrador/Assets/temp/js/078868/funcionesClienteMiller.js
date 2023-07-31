@@ -291,39 +291,7 @@ function openModalPersona() {
     $('#modalFormUsu').modal('show');
 }
 
-/*function fntRolAsig() {
-    var ajaxUrl = base_url + '/Usuarios/getRolesUsu';
-    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    request.open("GET", ajaxUrl, true);
-    request.send();
-    request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
-            if (document.querySelector("#cmb_rol")) {//Control para Vista de Perfil y Usurior no error
-                document.querySelector('#cmb_rol').innerHTML = request.responseText;
-                document.querySelector('#cmb_rol').value = 9;//Usuario por defecto.
-                $('#cmb_rol').attr("disabled", "disabled");
-                $('#cmb_rol').selectpicker('render');
-            }
 
-        }
-    }
-
-}
-
-function fntPago() {
-    var ajaxUrl = base_url + '/clienteMiller/getPago';
-    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    request.open("GET", ajaxUrl, true);
-    request.send();
-    request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
-            document.querySelector('#cmb_pago').innerHTML = request.responseText;
-            document.querySelector('#cmb_pago').value = 0;
-            $('#cmb_pago').selectpicker('render');
-        }
-    }
-
-}*/
 
 function guardarCliente(accion) {
     //let accion=($('#cmd_guardar').html()=="Guardar")?'Create':'edit';  
