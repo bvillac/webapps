@@ -160,11 +160,7 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                             <label for="txt_CodigoBeneficiario">Buscar Persona por Nombre <span class="required">*</span></label>
                                             <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text" required="" placeholder="Buscar por Nombre o DNI">
                                         </div>
-                                        <!--<div class="form-group col-md-3">
-                                            <label for="txt_CodigoBeneficiario">Buscar Persona por Nombre <span class="required">*</span></label>
-                                            <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
-                                            <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class=" fa fa-user-plus"></i></button>
-                                        </div>-->
+                                   
 
                                         <div class="form-group col-md-3">
                                             <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
