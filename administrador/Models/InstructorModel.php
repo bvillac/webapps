@@ -119,4 +119,15 @@ class InstructorModel extends MysqlAcademico
 		$request = $this->update($sql, $arrData);
 		return $request;
 	}
+
+	public function consultarInstructores(){
+		$sql = "SELECT  A.ins_id Ids,B.per_cedula Cedula, concat(B.per_nombre,' ',B.per_apellido) Nombre ";
+		$sql .= "	FROM " . $this->db_name . ".instructor A";
+		$sql .= "		INNER JOIN " . $this->db_nameAdmin . ".persona B";
+		$sql .= "			ON A.per_id=B.per_id AND B.estado_logico!=0";
+		$sql .= "	WHERE A.ins_estado_logico!=0 ORDER BY Nombre DESC ";
+		$request = $this->select_all($sql);
+		return $request;
+        
+    }
 }

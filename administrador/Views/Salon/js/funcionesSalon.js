@@ -21,32 +21,14 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         "columnDefs": [
             { 'className': "textleft", "targets": [0] },
-            { 'className': "textcenter", "targets": [1] },//Agregamos la clase que va a tener la columna
+            { 'className': "textleft", "targets": [1] },//Agregamos la clase que va a tener la columna
             { 'className': "textleft", "targets": [2] },
             { 'className': "textleft", "targets": [3] },
             { 'className': "textcenter", "targets": [4] },
             { 'className': "textcenter", "targets": [5] }
         ],
         'dom': 'lBfrtip',
-        'buttons': [
-            /* {
-                "extend": "copyHtml5",
-                "text": "<i class='far fa-copy'></i> Copiar",
-                "titleAttr":"Copiar",
-                "className": "btn btn-secondary"
-            }, */
-
-            /*{
-                "extend": "excelHtml5",
-                "text": "<i class='fas fa-file-excel'></i> Excel",
-                "titleAttr": "Esportar a Excel",
-                "title": "REPORTE DE USUARIOS REGISTRADOS",
-                "order": [[0, "asc"]],
-                "className": "btn btn-success"
-            },*/
-
-
-        ],
+        'buttons': [],
         "resonsieve": "true",
         "bDestroy": true,
         "iDisplayLength": 10,//Numero Items Retornados
@@ -57,12 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 $(document).ready(function () {
-
-    $("#cmd_retornar").click(function () {
-        //eliminarStores();
-        window.location = base_url + '/Beneficiario/beneficiario';//Retorna al Portal Principal
-    });
-
     $("#cmd_guardar").click(function () {
         guardarSalon();
     });
@@ -76,7 +52,7 @@ function openModal() {
     document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
     document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
     document.querySelector('#btnText').innerHTML = "Guardar";
-    document.querySelector('#titleModal').innerHTML = "Nueva Salon";
+    document.querySelector('#titleModal').innerHTML = "Nuevo Salón";
     document.querySelector("#formSalon").reset();
     $('#modalFormSalon').modal('show');
 }
@@ -91,7 +67,6 @@ function limpiarText() {
 }
 
 function guardarSalon() {
-    console.log($('#btnText').html());
     let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
     let Ids = document.querySelector('#txth_ids').value;
     let centro_id = $('#cmb_CentroAtencion').val();
@@ -142,7 +117,7 @@ function guardarSalon() {
 
 //Editar Registro
 function editarSalon(ids) {
-    document.querySelector('#titleModal').innerHTML = "Actualizar Línea";
+    document.querySelector('#titleModal').innerHTML = "Actualizar Salón";
     document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
     document.querySelector('#cmd_guardar').classList.replace("btn-primary", "btn-info");
     document.querySelector('#btnText').innerHTML = "Actualizar";
@@ -170,10 +145,6 @@ function editarSalon(ids) {
         $('#modalFormSalon').modal('show');
     }
 }
-
-
-
-
 
 function fntDeleteSalon(ids) {
     swal({
@@ -212,4 +183,32 @@ function fntDeleteSalon(ids) {
     });
 
 }
+
+//FUNCION PARA VISTA DE REGISTRO
+function fntViewSalon(ids){
+    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+    var ajaxUrl = base_url+'/Salon/consultarSalonId/'+ids;
+    request.open("GET",ajaxUrl,true);
+    request.send();
+    request.onreadystatechange = function(){
+        if(request.readyState == 4 && request.status == 200){
+            var objData = JSON.parse(request.responseText);
+            if(objData.status){
+               var estadoReg = objData.data.Estado == 1 ? 
+                '<span class="badge badge-success">Activo</span>' : 
+                '<span class="badge badge-danger">Inactivo</span>';
+                document.querySelector("#lbl_centro").innerHTML = objData.data.NombreCentro;
+                document.querySelector("#lbl_nombre").innerHTML = objData.data.NombreSalon;
+                document.querySelector("#lbl_cupominimo").innerHTML = objData.data.CupoMinimo;
+                document.querySelector("#lbl_cupomaximo").innerHTML = objData.data.CupoMaximo;
+                document.querySelector("#lbl_estado").innerHTML = estadoReg;
+                document.querySelector("#lbl_fecIng").innerHTML = objData.data.FechaIngreso; 
+                $('#modalViewSalon').modal('show');
+            }else{
+                swal("Error", objData.msg , "error");
+            }
+        }
+    }
+}
+
 

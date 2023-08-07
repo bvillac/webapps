@@ -16,7 +16,6 @@ class Beneficiario extends Controllers
         getPermisos();
     }
 
-
     public function beneficiario()
     {
         if (empty($_SESSION['permisosMod']['r'])) {

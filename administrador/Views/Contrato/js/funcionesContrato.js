@@ -131,23 +131,6 @@ $(document).ready(function () {
 
 
 
-    //https://api.jqueryui.com/datepicker/
-    /*$('.date-picker').datepicker({
-        autoSize: true,
-        closeText: 'Cerrar',
-        prevText: '<Ant',
-        nextText: 'Sig>',
-        currentText: 'Hoy',
-        monthNames: monthNames,
-        //changeMonth: true,
-        //changeYear: true,
-        showButtonPanel: true,
-        dateFormat: "yy-mm-dd",
-        showDays: false,
-        onClose: function (dateText, inst) {
-            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay));
-        }
-    });*/
 
     $("#txt_CodigoPersona").autocomplete({
         source: function (request, response) {

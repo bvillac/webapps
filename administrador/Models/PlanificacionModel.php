@@ -1,5 +1,5 @@
 <?php
-class SalonModel extends MysqlAcademico
+class PlanificacionModel extends MysqlAcademico
 {
     private $db_name;
     private $db_nameAdmin;
@@ -23,7 +23,6 @@ class SalonModel extends MysqlAcademico
         return $request;
     }
 
-    
     public function consultarDatosId(int $Ids)
     {
         $sql = "SELECT a.sal_id Ids,a.cat_id,b.cat_nombre NombreCentro,a.sal_nombre NombreSalon, ";
@@ -120,12 +119,4 @@ class SalonModel extends MysqlAcademico
         $request = $this->update($sql, $arrData);
         return $request;
     }
-
-    public function consultarSalones(int $idsCentro){
-        $sql = "SELECT sal_id Ids, sal_nombre Nombre ";
-        $sql .= " FROM ". $this->db_name .".salon WHERE sal_estado_logico!=0 and cat_id='{$idsCentro}' ORDER BY sal_nombre ASC";
-        $request = $this->select_all($sql);
-        return $request;
-    }
-
 }

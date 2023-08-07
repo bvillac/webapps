@@ -1,9 +1,10 @@
 .app-sidebar__user-avatar {
-    width: 48px;
-    background: gray;
-    padding: 6px;
+	width: 48px;
+	background: gray;
+	padding: 6px;
 }
-.app-sidebar__toggle{
+
+.app-sidebar__toggle {
 	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
@@ -13,31 +14,40 @@
 	align-items: center;
 	font-size: 15pt;
 }
-.app-sidebar__toggle::before{
+
+.app-sidebar__toggle::before {
 	display: none;
 }
-.headerRegister, .header-primary{
+
+.headerRegister,
+.header-primary {
 	background: #009688;
 	color: #FFF;
 }
-.headerUpdate{
+
+.headerUpdate {
 	background: #007bff;
 	color: #FFF;
 }
-.textcenter{
+
+.textcenter {
 	text-align: center;
 }
-.textright{
+
+.textright {
 	text-align: right;
 }
-.textleft{
+
+.textleft {
 	text-align: left;
 }
-.bootstrap-select > .dropdown-toggle{
+
+.bootstrap-select>.dropdown-toggle {
 	border: 1px solid #CCC;
 }
+
 /*Estilos login*/
-#divLoading{
+#divLoading {
 	position: fixed;
 	top: 0;
 	width: 100%;
@@ -45,35 +55,39 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: rgba(254,254,255, .65);
+	background: rgba(254, 254, 255, .65);
 	z-index: 9999;
 	display: none;
 }
-#divLoading img{
+
+#divLoading img {
 	width: 50px;
 	height: 50px;
 }
-.required{
+
+.required {
 	color: red;
 	font-size: 13pt;
 	font-weight: bold;
 }
+
 /* style portada categoría */
 .prevPhoto {
-    display: flex;
-    justify-content: space-between;
-    width: 300px;
-    height: 200px;
-    border: 1px solid #CCC;
-    position: relative;
-    cursor: pointer;
-    background: url(../images/uploads/portada_categoria.png);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    margin: auto;
+	display: flex;
+	justify-content: space-between;
+	width: 300px;
+	height: 200px;
+	border: 1px solid #CCC;
+	position: relative;
+	cursor: pointer;
+	background: url(../images/uploads/portada_categoria.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center center;
+	margin: auto;
 }
-.prevPhoto label{
+
+.prevPhoto label {
 	cursor: pointer;
 	width: 100%;
 	height: 100%;
@@ -82,22 +96,27 @@
 	left: 0;
 	z-index: 2;
 }
-.prevPhoto img{
+
+.prevPhoto img {
 	width: 100%;
 	height: 100%;
 }
-.upimg, .notblock{
+
+.upimg,
+.notblock {
 	display: none !important;
 }
-.errorArchivo{
+
+.errorArchivo {
 	font-size: 16px;
 	font-family: arial;
 	color: #cc0000;
 	text-align: center;
-	font-weight: bold; 
+	font-weight: bold;
 	margin-top: 10px;
 }
-.delPhoto{
+
+.delPhoto {
 	color: #FFF;
 	display: -webkit-flex;
 	display: -moz-flex;
@@ -115,33 +134,38 @@
 	top: -10px;
 	z-index: 10;
 }
-#tbl_list_productos img{
+
+#tbl_list_productos img {
 	width: 50px;
 }
-.imgProductoDelete{
+
+.imgProductoDelete {
 	width: 175px;
 }
 
-#imgCategoria{
+#imgCategoria {
 	text-align: center;
 }
-#imgCategoria img{
+
+#imgCategoria img {
 	width: 200px;
 	margin: auto;
 }
 
 /* Upload fotos*/
-#containerImages{
+#containerImages {
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
 	flex-wrap: wrap;
 }
-#containerImages > div{
+
+#containerImages>div {
 	margin-right: 10px;
 	margin-bottom: 8px;
 }
-.prevImage{
+
+.prevImage {
 	border: 1px solid #CCC;
 	width: 120px;
 	height: 148px;
@@ -149,13 +173,17 @@
 	justify-content: center;
 	align-items: center;
 }
-.prevImage img{
+
+.prevImage img {
 	width: 100%;
 }
-.inputUploadfile{
+
+.inputUploadfile {
 	display: none;
 }
-.btnUploadfile, .btnDeleteImage{
+
+.btnUploadfile,
+.btnDeleteImage {
 	border: 0;
 	background-color: #009688;
 	text-align: center;
@@ -165,53 +193,65 @@
 	cursor: pointer;
 	width: 100%;
 }
-.btnDeleteImage{
+
+.btnDeleteImage {
 	background-color: #dc3545;
 }
-.prevImage .loading{
+
+.prevImage .loading {
 	width: 30px;
 	height: 30px;
 }
-#celFotos img{
+
+#celFotos img {
 	width: 150px;
 	margin: 10px;
 }
 
 /* TIENDA VIRTUAL */
-.divmetodpago label, #divCondiciones{
+.divmetodpago label,
+#divCondiciones {
 	width: 100%;
 	display: flex;
 }
-.divmetodpago label input, #divCondiciones input{
+
+.divmetodpago label input,
+#divCondiciones input {
 	margin-right: 15px;
 }
-#divCondiciones a{
+
+#divCondiciones a {
 	margin-left: 5px;
 }
 
-#divCondiciones  label{
+#divCondiciones label {
 	margin-bottom: 0;
 }
-.linkw:hover{
+
+.linkw:hover {
 	text-decoration: none;
 }
+
 /*Estilo DatePiker*/
-.container-title{
+.container-title {
 	display: flex;
 	justify-content: space-between;
 	flex-wrap: wrap;
 }
-.container-title input{
+
+.container-title input {
 	border: 1px solid #CCC;
 	padding: 4px;
 	border-radius: 5px;
 	margin-right: 5px;
 }
-.dflex{
+
+.dflex {
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
 }
+
 /*.ui-datepicker-calendar {
     display: none;
 }*/
@@ -220,19 +260,24 @@
 /*ESTILOS PARA FOMATO VENTAS*/
 /*============ Ventas ============*/
 
-.datos_cliente, .datos_venta, .title_page{
+.datos_cliente,
+.datos_venta,
+.title_page {
 	width: 100%;
 	max-width: 900px;
 	margin: auto;
 	margin-bottom: 20px;
 }
-#detalle_venta tr{
+
+#detalle_venta tr {
 	background-color: #FFF !important;
 }
-#detalle_venta td{
+
+#detalle_venta td {
 	border-bottom: 1px solid #CCC;
 }
-.datos{
+
+.datos {
 	background-color: #e3ecef;
 	display: -webkit-flex;
 	display: -moz-flex;
@@ -240,14 +285,15 @@
 	display: -o-flex;
 	display: flex;
 	display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    border: 2px solid #78909C;
-    padding: 10px;
-    border-radius: 10px;
-    margin-top: 10px;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	border: 2px solid #78909C;
+	padding: 10px;
+	border-radius: 10px;
+	margin-top: 10px;
 }
-.action_cliente{
+
+.action_cliente {
 	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
@@ -256,50 +302,65 @@
 	align-items: center;
 }
 
-.datos label{
+.datos label {
 	margin: 5px auto;
 }
-.wd20{
+
+.wd20 {
 	width: 20%;
 }
-.wd25{
+
+.wd25 {
 	width: 25%;
 }
-.wd30{
+
+.wd30 {
 	width: 30%;
 }
-.wd40{
+
+.wd40 {
 	width: 40%;
 }
-.wd60{
+
+.wd60 {
 	width: 60%;
 }
-.wd100{
+
+.wd100 {
 	width: 100%;
 }
-#div_registro_cliente, #add_product_venta{
+
+#div_registro_cliente,
+#add_product_venta {
 	display: none;
 }
-.displayN{
+
+.displayN {
 	display: none;
 }
-.tbl_venta{
+
+.tbl_venta {
 	max-width: 900px;
 	margin: auto;
 }
-.tbl_venta tfoot td{
+
+.tbl_venta tfoot td {
 	font-weight: bold;
 }
-.textright{
+
+.textright {
 	text-align: right;
 }
-.textcenter{
+
+.textcenter {
 	text-align: center;
 }
-.textleft{
+
+.textleft {
 	text-align: left;
 }
-.btn_anular{
+
+.btn_anular {
 	background-color: #f36a6a;
 	border: 0;
 	border-radius: 5px;
@@ -311,5 +372,11 @@
 
 .loguinInicio {
 	display: block;
-  	margin: 0 auto;
-  }
+	margin: 0 auto;
+}
+
+.div-ajustable {
+	background-color: #f2f2f2;
+	padding: 20px;
+	border-radius: 5px;
+}

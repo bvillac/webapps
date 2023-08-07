@@ -20,7 +20,7 @@
 			
 			$data['page_id'] = 2;
 			$data['page_tag'] = "Dashboard";
-			$data['page_title'] = "Dashboard - Vsoluciones";
+			$data['page_title'] = "Dashboard - " .TITULO_EMPRESA;
 			$data['page_name'] = "dashboard";
 			//$data['fileJS'] = "funcionesAdmin.js";
 			$data['fileJS'] = "funciones_dashboard.js";

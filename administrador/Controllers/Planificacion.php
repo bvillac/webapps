@@ -1,6 +1,8 @@
 <?php
 require_once("Models/CentroAtencionModel.php");
-class Salon extends Controllers
+require_once("Models/SalonModel.php");
+require_once("Models/InstructorModel.php");
+class Planificacion extends Controllers
 {
     public function __construct()
     {
@@ -14,17 +16,15 @@ class Salon extends Controllers
     }
 
 
-    public function salon()
+    public function planificacion()
     {
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
-        $modelCentro = new CentroAtencionModel();
-        $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
-        $data['page_tag'] = "Salon";
-        $data['page_name'] = "Salon";
-        $data['page_title'] = "Salon <small> " . TITULO_EMPRESA . "</small>";
-        $this->views->getView($this, "salon", $data);
+        $data['page_tag'] = "Planificación";
+        $data['page_name'] = "Planificación";
+        $data['page_title'] = "Planificación <small> " . TITULO_EMPRESA . "</small>";
+        $this->views->getView($this, "planificacion", $data);
     }
 
     public function consultarSalon()
@@ -55,6 +55,22 @@ class Salon extends Controllers
             echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
         }
         die();
+    }
+
+    public function nuevo()
+    {
+        if (empty($_SESSION['permisosMod']['r'])) {
+            header("Location:" . base_url() . '/dashboard');
+        }
+        $modelCentro = new CentroAtencionModel();
+        $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
+        $modelInstructor = new InstructorModel();
+        $data['instructor'] = $modelInstructor->consultarInstructores(); //Valor por defecto
+        $data['page_tag'] = "Nueva Planificación";
+        $data['page_name'] = "Nueva Planificación";
+        $data['plugin'] = "calendar";
+        $data['page_title'] = "Nueva Planificación <small> " . TITULO_EMPRESA . "</small>";
+        $this->views->getView($this, "nuevo", $data);
     }
 
     public function ingresarSalon()
@@ -131,4 +147,49 @@ class Salon extends Controllers
         }
         die();
     }
+
+    public function bucarSalonCentro()
+    {
+        if ($_POST) {
+            if ($_SESSION['permisosMod']['r']) {
+                $modelSalon = new SalonModel();
+                $ids = intval(strClean($_POST['Ids']));
+                if ($ids > 0) {
+                    $arrData = $modelSalon->consultarSalones($ids);
+                    //dep($arrData);
+                    if (empty($arrData)) {
+                        $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+                    } else {
+                        $arrResponse = array('status' => true, 'data' => $arrData);
+                    }
+                    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+                }
+            }
+        }
+        die();
+    }
+
+    public function bucarInstructor()
+    {
+        if ($_POST) {
+            if ($_SESSION['permisosMod']['r']) {
+                $ids = intval(strClean($_POST['Ids']));
+                if ($ids > 0) {
+                    $modelInstructor = new InstructorModel();
+                    $arrData = $modelInstructor->consultarDatosId($ids);
+                    //dep($arrData);
+                    if (empty($arrData)) {
+                        $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+                    } else {
+                        $arrResponse = array('status' => true, 'data' => $arrData);
+                    }
+                    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+                }
+            }
+        }
+        die();
+    }
+
+
+
 }
