@@ -143,13 +143,13 @@ document.addEventListener('DOMContentLoaded', function () {
         var calendar = new FullCalendar.Calendar(calendarEl, {
             themeSystem: 'bootstrap5',
             timeZone: 'America/Guayaquil',
-            //initialView: 'dayGridWeek',
             initialView: 'timeGrid',
             locale: 'es',
             headerToolbar: {
-                left: 'prev next today',
+                left: 'prev,next today',
                 center: 'title',
-                right: 'timeGridWeek listWeek dayGridDay'
+                //right: 'timeGridWeek listWeek dayGridDay'
+                right: 'timeGridWeek,timeGridDay'
                 //right: 'dayGridMonth timeGridWeek listWeek dayGridDay dayGrid listDay'
             },
             views: {
@@ -162,12 +162,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 start: '2023-08-07',
                 end: '2023-08-13'
             },
-            businessHours: {
-                // days of week. an array of zero-based day of week integers (0=Sunday)
-                daysOfWeek: [1, 2, 3, 4, 5, 6], // Monday - Thursday
-                startTime: '08:00', // a start time (10am in this example)
-                endTime: '18:00', // an end time (6pm in this example)
-            },
+            hiddenDays: [ 7 ],
+            slotMinTime: '08:00:00', // Hora de inicio del rango
+            slotMaxTime: '21:00:00', // Hora de fin del rango 
+            slotDuration: '01:00:00', // Duración de cada intervalo de tiempo           
             editable: true,
             droppable: true, // this allows things to be dropped onto the calendar
             drop: function () {
@@ -265,7 +263,7 @@ function fntSalones(ids) {
 }
 
 function fntHorasInstructor(ids) {
-    $('#contenedor-padre').html('<h5 class="mb-4">Horas</h5>');
+    //$('#contenedor-padre').html('<h5 class="mb-4">Horas</h5>');
     if (ids != 0) {        
         let link = base_url + '/Planificacion/bucarInstructor';
         $.ajax({
@@ -276,11 +274,12 @@ function fntHorasInstructor(ids) {
             },
             success: function (data) {
                 if (data.status) {//Ids
-                    $('#contenedor-padre').html('<h5 class="mb-4">Horas ' + data.data.Nombres + ' </h5>');
+                    $('#TituloHoras').html('<h5 class="mb-4">Horas ' + data.data.Nombres + ' </h5>');
                     let horaInst=data.data.Horas;
                     let arrayHoras= horaInst.split(",");
+                    arrayHoras=arrayHoras.sort();
                     for (var i = 0; i < arrayHoras.length; i++) {
-                        $('#contenedor-padre').append('<div class="fc-event div-ajustable">' + arrayHoras[i] + '</div>');
+                        $('#contenedor-padre').append('<div id="' + arrayHoras[i] + '" class="fc-event">' + fntNameHoras(arrayHoras[i]) + '</div>&nbsp;');
                     }
                 } else {
                     swal("Error", data.msg, "error");
@@ -295,6 +294,42 @@ function fntHorasInstructor(ids) {
     }
 
 }
+
+function fntNameHoras(str) {
+    let nDia=str.substring(0, 2);
+    let nHora=str.substring(2, 4);
+    let result="";
+    switch (nDia) {
+        case "LU":
+            //result="LUNES "+nHora+":00";
+            result="LUN-"+nHora+":00";
+          break;
+        case "MA":
+            //result="MARTES "+nHora+":00";
+            result="MAR-"+nHora+":00";
+          break;
+        case "MI":
+            //result="MIÉRCOLES "+nHora+":00";
+            result="MIE-"+nHora+":00";
+          break;
+        case "JU":
+            //result="JUEVES "+nHora+":00";
+            result="JUE-"+nHora+":00";
+          break;
+        case "VI":
+            //result="VIERNES "+nHora+":00";
+            result="VIE-"+nHora+":00";
+          break;
+        case "SA":
+            //result="SÁBADO "+nHora+":00";
+            result="SÁB-"+nHora+":00";
+            break;
+        default:
+          
+      }
+      return result;
+}
+
 
 
 

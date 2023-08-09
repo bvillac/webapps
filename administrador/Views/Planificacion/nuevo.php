@@ -49,23 +49,11 @@ require_once "Views/Salon/Modals/modalSalon.php";
               ?>
             </select>
           </div>
-          <!--<div id="external-events">
-            <h4 class="mb-4">Horas</h4>
-            <div class="fc-event">My Event 1</div>
-            <div class="fc-event">My Event 2</div>
-            <div class="fc-event">My Event 3</div>
-            <div class="fc-event">My Event 4</div>
-            <div class="fc-event">My Event 5</div>
-            <p class="animated-checkbox mt-20">
-              <label>
-                <input id="drop-remove" type="checkbox"><span class="label-text">Remove after drop</span>
-              </label>
-            </p>
-          </div>-->
-          <div id="contenedor-padre">
+          <div id="TituloHoras"></div>
+          <div id="contenedor-padre" class="d-flex align-content-end flex-wrap">
             <!-- El contenido actual del contenedor padre -->
           </div>
-          <button id="agregarBoton">Agregar Div</button>
+          <button type="button" class="btn btn-dark">Generar</button>
         </div>
         <div class="col-md-9">
           <div id="calendar"></div>
