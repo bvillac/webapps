@@ -1,4 +1,6 @@
 <?php
+require_once("Models/CentroAtencionModel.php");
+require_once("Models/SalonModel.php");
 class Instructor extends Controllers
 {
 
@@ -16,9 +18,9 @@ class Instructor extends Controllers
 
 	public function instructor()
 	{
-		if(empty($_SESSION['permisosMod']['r'])){
-				header("Location:".base_url().'/dashboard');
-			}
+		if (empty($_SESSION['permisosMod']['r'])) {
+			header("Location:" . base_url() . '/dashboard');
+		}
 		$data['page_tag'] = "Instructor";
 		$data['page_name'] = "Instructor";
 		$data['page_title'] = "Instructor <small> " . TITULO_EMPRESA . "</small>";
@@ -27,9 +29,11 @@ class Instructor extends Controllers
 
 	public function nuevo()
 	{
-		if(empty($_SESSION['permisosMod']['r'])){
-				header("Location:".base_url().'/dashboard');
-			}
+		if (empty($_SESSION['permisosMod']['r'])) {
+			header("Location:" . base_url() . '/dashboard');
+		}
+		$modelCentro = new CentroAtencionModel();
+		$data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
 		$data['page_tag'] = "Nuevo Instructor";
 		$data['page_name'] = "Nuevo Instructor";
 		$data['page_title'] = "Nuevo Instructor <small> " . TITULO_EMPRESA . "</small>";
@@ -45,22 +49,18 @@ class Instructor extends Controllers
 			if ($arrData[$i]['Estado'] == 1) {
 				$arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
 			} else {
-				$arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>';//target="_blanck"
+				$arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>'; //target="_blanck"
 			}
 
-			/*if ($_SESSION['permisosMod']['r']) {
-					$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
-				}
-				if ($_SESSION['permisosMod']['u']) {
-					$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditInstructor" onClick="fntEditInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-				}
-				if ($_SESSION['permisosMod']['d']) {
-					$btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteInstructor(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
-				}*/
-			$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
-			//$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditInstructor" onClick="fntEditInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-			$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Instructor/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
-			$btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteInstructor(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+			if ($_SESSION['permisosMod']['r']) {
+				$btnOpciones .= '<button class="btn btn-info btn-sm btnViewInstructor" onClick="fntViewInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+			}
+			if ($_SESSION['permisosMod']['u']) {
+				$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Instructor/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+			}
+			if ($_SESSION['permisosMod']['d']) {
+				$btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteInstructor(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+			}
 			$arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
 		}
 		echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
@@ -95,14 +95,14 @@ class Instructor extends Controllers
 	{
 		if ($_POST) {
 			//if ($_SESSION['permisosMod']['d']) {
-				$ids = intval($_POST['ids']);
-				$request = $this->model->deleteRegistro($ids);
-				if ($request) {
-					$arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
-				} else {
-					$arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
-				}
-				echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+			$ids = intval($_POST['ids']);
+			$request = $this->model->deleteRegistro($ids);
+			if ($request) {
+				$arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
+			} else {
+				$arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
+			}
+			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 			//}
 		}
 		die();
@@ -153,10 +153,14 @@ class Instructor extends Controllers
 			if (empty($data)) {
 				echo "Datos no encontrados";
 			} else {
+				$modelCentro = new CentroAtencionModel();
+				$data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
+				$modelSalon = new SalonModel();
+				$data['dataSalon'] = $modelSalon->consultarSalones($data['CentroId']);
 				$data['page_tag'] = "Editar Instructor";
 				$data['page_name'] = "Editar Instructor";
 				$data['page_title'] = "Editar Instructor <small> " . TITULO_EMPRESA . "</small>";
-				$data['fileJS'] = "funcionesInstructor.js";
+				//$data['fileJS'] = "funcionesInstructor.js";
 				$this->views->getView($this, "editar", $data);
 			}
 		} else {

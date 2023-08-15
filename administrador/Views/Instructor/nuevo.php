@@ -2,8 +2,8 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
-getModal('modalPersonaBuscar', $data);
-getModal('modalUsuarios', $data);
+require_once "Views/Instructor/Modals/modalPersonaBuscar.php";
+require_once "Views/Instructor/Modals/modalPersona.php";
 ?>
 <div id="contentAjax"></div>
 <main class="app-content">
@@ -15,7 +15,7 @@ getModal('modalUsuarios', $data);
     </div>
     <ul class="app-breadcrumb breadcrumb">
       <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-      <li class="breadcrumb-item"><a href="<?= base_url(); ?>/lineas"><?= $data['page_title'] ?></a></li>
+      <li class="breadcrumb-item"><a href="<?= base_url(); ?>/instructor"><?= $data['page_title'] ?></a></li>
     </ul>
   </div>
   <div class="row">
@@ -55,16 +55,36 @@ getModal('modalUsuarios', $data);
             </div>
           </div>
 
+          <div class="row">
+            <div class="form-group col-md-3">
+              <label for="cmb_CentroAtencion">Centro Atención</label>
+              <select class="form-control" id="cmb_CentroAtencion" name="cmb_CentroAtencion" onchange="fntSalones(this.value)">
+                <?php
+                echo '<option value="0">SELECCIONAR</option>';
+                foreach ($data['centroAtencion'] as $opcion) {
+                  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
+                }
+                ?>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="cmb_Salon">Presione CTRL y haga clic para seleccionar varias opciones a la vez.</label>
+              <select class="form-control" multiple id="cmb_Salon" name="cmb_Salon" disabled>
+              </select>
+            </div>
+          </div>
+
+
 
           <h3 class="mb-3 line-head" id="type-blockquotes">Horarios</h3>
           <div class="row">
             <div class="form-group col-md-3">
               <label class="control-label">Laborables</label>
-              <input class="form-control valid validText" type="text" id="txt_horas_asignadas" name="txt_horas_asignadas" placeholder="" required="" >
+              <input class="form-control valid validText" type="text" id="txt_horas_asignadas" name="txt_horas_asignadas" placeholder="" required="">
             </div>
             <div class="form-group col-md-3">
               <label class="control-label">Extras</label>
-              <input class="form-control valid validText" type="text" id="txt_horas_extras" name="txt_horas_extras" placeholder="" required="" >
+              <input class="form-control valid validText" type="text" id="txt_horas_extras" name="txt_horas_extras" placeholder="" required="">
             </div>
 
           </div>
@@ -97,48 +117,48 @@ getModal('modalUsuarios', $data);
                     <td>
                       <div class="toggle-flip">
                         <label>
-                          <input type="checkbox" id="LU<?= $numero ?>"   ><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                          <input type="checkbox" id="LU<?= $numero ?>"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
                         </label>
                       </div>
                     </td>
                     <td>
                       <div class="toggle-flip">
                         <label>
-                          <input type="checkbox" id="MA<?= $numero ?>"  ><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>                        </label>
+                          <input type="checkbox" id="MA<?= $numero ?>"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span> </label>
                       </div>
                     </td>
                     <td>
                       <div class="toggle-flip">
                         <label>
-                          <input type="checkbox" id="MI<?= $numero ?>"   ><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                          <input type="checkbox" id="MI<?= $numero ?>"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
                         </label>
                       </div>
                     </td>
                     <td>
                       <div class="toggle-flip">
                         <label>
-                          <input type="checkbox" id="JU<?= $numero ?>"   ><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                          <input type="checkbox" id="JU<?= $numero ?>"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
                         </label>
                       </div>
                     </td>
                     <td>
                       <div class="toggle-flip">
                         <label>
-                          <input type="checkbox" id="VI<?= $numero ?>"   ><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                          <input type="checkbox" id="VI<?= $numero ?>"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
                         </label>
                       </div>
                     </td>
                     <td>
                       <div class="toggle-flip">
                         <label>
-                          <input type="checkbox" id="SA<?= $numero ?>"   ><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                          <input type="checkbox" id="SA<?= $numero ?>"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
                         </label>
                       </div>
                     </td>
                     <td>
                       <div class="toggle-flip">
                         <label>
-                          <input type="checkbox" id="DO<?= $numero ?>"   ><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
+                          <input type="checkbox" id="DO<?= $numero ?>"><span class="flip-indecator" data-toggle-on="ON" data-toggle-off="OFF"></span>
                         </label>
                       </div>
                     </td>

@@ -49,15 +49,17 @@
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
+              <label for="txt_color">Color Salón</label>
+              <input type="color" class="form-control"  id="txt_color" name="txt_color" >
+            </div>
+            <div class="form-group col-md-6">
               <label for="cmb_estado">Estado</label>
               <select class="form-control" id="cmb_estado" name="cmb_estado" required="">
                 <option value="1">Activo</option>
                 <option value="2">Inactivo</option>
               </select>
             </div>
-            <div class="form-group col-md-6">
-
-            </div>
+           
           </div>
 
           <div class="tile-footer">

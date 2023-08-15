@@ -64,8 +64,8 @@ class Planificacion extends Controllers
         }
         $modelCentro = new CentroAtencionModel();
         $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
-        $modelInstructor = new InstructorModel();
-        $data['instructor'] = $modelInstructor->consultarInstructores(); //Valor por defecto
+        //$modelInstructor = new InstructorModel();
+        //$data['instructor'] = $modelInstructor->consultarInstructores(); //Valor por defecto
         $data['page_tag'] = "Nueva Planificación";
         $data['page_name'] = "Nueva Planificación";
         $data['plugin'] = "calendar";
@@ -189,6 +189,30 @@ class Planificacion extends Controllers
         }
         die();
     }
+
+    public function bucarInstructorCentro()
+    {
+        if ($_POST) {
+            if ($_SESSION['permisosMod']['r']) {
+                
+                $ids = intval(strClean($_POST['Ids']));
+                if ($ids > 0) {
+                    $modelInstructor = new InstructorModel();
+                    $arrData = $modelInstructor->consultarCentroInstructores($ids);
+                    //dep($arrData);
+                    if (empty($arrData)) {
+                        $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+                    } else {
+                        $arrResponse = array('status' => true, 'data' => $arrData);
+                    }
+                    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+                }
+            }
+        }
+        die();
+    }
+
+    
 
 
 

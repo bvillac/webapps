@@ -1,194 +1,6 @@
-/*let calendarEl = document.getElementById('calendar');
-let frm = document.getElementById('formulario');
-let eliminar = document.getElementById('btnEliminar');
-let myModal = new bootstrap.Modal(document.getElementById('myModal'));
-document.addEventListener('DOMContentLoaded', function () {
-    calendar = new FullCalendar.Calendar(calendarEl, {
-        timeZone: 'local',
-        initialView: 'dayGridMonth',
-        locale: 'es',
-        headerToolbar: {
-            left: 'prev next today',
-            center: 'title',
-            right: 'dayGridMonth timeGridWeek listWeek'
-        },
-        events: base_url + 'Home/listar',
-        editable: true,
-        drop: function() {
-            // is the "remove after drop" checkbox checked?
-            if ($('#drop-remove').is(':checked')) {
-                // if so, remove the element from the "Draggable Events" list
-                $(this).remove();
-            }
-        },
-        dateClick: function (info) {
-            frm.reset();
-            eliminar.classList.add('d-none');
-            document.getElementById('start').value = info.dateStr;
-            document.getElementById('id').value = '';
-            document.getElementById('btnAccion').textContent = 'Registrar';
-            document.getElementById('titulo').textContent = 'Registrar Evento';
-            myModal.show();
-        },
-
-        eventClick: function (info) {
-            document.getElementById('id').value = info.event.id;
-            document.getElementById('title').value = info.event.title;
-            document.getElementById('start').value = info.event.startStr;
-            document.getElementById('color').value = info.event.backgroundColor;
-            document.getElementById('btnAccion').textContent = 'Modificar';
-            document.getElementById('titulo').textContent = 'Actualizar Evento';
-            eliminar.classList.remove('d-none');
-            myModal.show();
-        },
-        eventDrop: function (info) {
-            const start = info.event.startStr;
-            const id = info.event.id;
-            const url = base_url + 'Home/drag';
-            const http = new XMLHttpRequest();
-            const formDta = new FormData();
-            formDta.append('start', start);
-            formDta.append('id', id);
-            http.open("POST", url, true);
-            http.send(formDta);
-            http.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
-                    const res = JSON.parse(this.responseText);
-                     Swal.fire(
-                         'Avisos?',
-                         res.msg,
-                         res.tipo
-                     )
-                    if (res.estado) {
-                        myModal.hide();
-                        calendar.refetchEvents();
-                    }
-                }
-            }
-        }
-
-    });
-    calendar.render();
-    frm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const title = document.getElementById('title').value;
-        const start = document.getElementById('start').value;
-        if (title == '' || start == '') {
-             Swal.fire(
-                 'Avisos?',
-                 'Todo los campos son obligatorios',
-                 'warning'
-             )
-        } else {
-            const url = base_url + 'Home/registrar';
-            const http = new XMLHttpRequest();
-            http.open("POST", url, true);
-            http.send(new FormData(frm));
-            http.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
-                    const res = JSON.parse(this.responseText);
-                     Swal.fire(
-                         'Avisos?',
-                         res.msg,
-                         res.tipo
-                     )
-                    if (res.estado) {
-                        myModal.hide();
-                        calendar.refetchEvents();
-                    }
-                }
-            }
-        }
-    });
-    eliminar.addEventListener('click', function () {
-        myModal.hide();
-        Swal.fire({
-            title: 'Advertencia?',
-            text: "Esta seguro de eliminar!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const url = base_url + 'Home/eliminar/' + document.getElementById('id').value;
-                const http = new XMLHttpRequest();
-                http.open("GET", url, true);
-                http.send();
-                http.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log(this.responseText);
-                        const res = JSON.parse(this.responseText);
-                        Swal.fire(
-                            'Avisos?',
-                            res.msg,
-                            res.tipo
-                        )
-                        if (res.estado) {
-                            calendar.refetchEvents();
-                        }
-                    }
-                }
-            }
-        })
-    });
-})*/
-
-document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
-    if (calendarEl !== null) {//Revisa si existe el calendario
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            themeSystem: 'bootstrap5',
-            timeZone: 'America/Guayaquil',
-            initialView: 'timeGrid',
-            locale: 'es',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                //right: 'timeGridWeek listWeek dayGridDay'
-                right: 'timeGridWeek,timeGridDay'
-                //right: 'dayGridMonth timeGridWeek listWeek dayGridDay dayGrid listDay'
-            },
-            views: {
-                dayGridMonth: { // name of view
-                    titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-                    // other view-specific options here
-                }
-            },
-            visibleRange: {
-                start: '2023-08-07',
-                end: '2023-08-13'
-            },
-            hiddenDays: [ 7 ],
-            slotMinTime: '08:00:00', // Hora de inicio del rango
-            slotMaxTime: '21:00:00', // Hora de fin del rango 
-            slotDuration: '01:00:00', // Duración de cada intervalo de tiempo           
-            editable: true,
-            droppable: true, // this allows things to be dropped onto the calendar
-            drop: function () {
-                // is the "remove after drop" checkbox checked?
-                if ($('#drop-remove').is(':checked')) {
-                    // if so, remove the element from the "Draggable Events" list
-                    $(this).remove();
-                }
-            }, dateClick: function (arg) {
-                console.log(arg.date.toString()); // use *local* methods on the native Date Object
-                // will output something like 'Sat Sep 01 2018 00:00:00 GMT-XX:XX (Eastern Daylight Time)'
-            }
-        });
-        calendar.render();
-
-    }
-
-
-
-
-
-});
-
+let delayTimer;
+let fechaDia = new Date();
+let numeroDia =0;
 $(document).ready(function () {
     $('#cmb_instructor').selectpicker('render');
     //Nueva Orden
@@ -228,12 +40,28 @@ $(document).ready(function () {
     });
 
 
+    $("#btn_generar").click(function () {
+        generarPlanificiacion("");
+
+    });
+    $("#btn_siguiente").click(function () {
+        generarPlanificiacion("Next");
+
+    });
+    $("#btn_anterior").click(function () {
+        generarPlanificiacion("Back");
+
+    });
+
+
 });
 
 
 
+
+
 function fntSalones(ids) {
-    $('#cmb_Salon').html('<option value="">SELECCIONAR CENTRO</option>');
+    $('#cmb_Salon').html('<option value="">SELECCIONAR SALÓN</option>');
     if (ids != 0) {
         let link = base_url + '/Planificacion/bucarSalonCentro';
         $.ajax({
@@ -249,6 +77,12 @@ function fntSalones(ids) {
                     for (var i = 0; i < result.length; i++) {
                         $('#cmb_Salon').append('<option value="' + result[i].Ids + '">' + result[i].Nombre + '</option>');
                     }
+
+                    clearTimeout(delayTimer);
+                    delayTimer = setTimeout(function () {
+                        fntInstructor(ids);
+                    }, 500); // Retardo de 500 ms (medio segundo)
+
                 } else {
                     swal("Error", data.msg, "error");
                 }
@@ -257,14 +91,58 @@ function fntSalones(ids) {
         });
     } else {
         $('#cmb_Salon').prop('disabled', true);
-        swal("Información", "Seleccionar un Centro de Atención", "info");
+        swal("Información", "Seleccionar un Salón", "info");
     }
 
 }
 
+function fntInstructor(ids) {
+    var arrayList = new Array;
+    $('#cmb_instructor').html('<option value="">SELECCIONAR INSTRUCTOR</option>');
+    if (ids != 0) {
+        let link = base_url + '/Planificacion/bucarInstructorCentro';
+        $.ajax({
+            type: 'POST',
+            url: link,
+            data: {
+                "Ids": ids
+            },
+            success: function (data) {
+                if (data.status) {
+                    $('#cmb_instructor').prop('disabled', false);
+                    var result = data.data;
+                    var c = 0;
+                    for (var i = 0; i < result.length; i++) {
+                        $('#cmb_instructor').append('<option value="' + result[i].Ids + '">' + result[i].Nombre + '</option>');
+                        let rowInst = new Object();
+                        rowInst.ids = result[i].Ids;
+                        rowInst.Nombre = result[i].Nombre;
+                        arrayList[c] = rowInst;
+                        c += 1;
+                    }
+                    sessionStorage.dts_PlaInstructor = JSON.stringify(arrayList);
+                    //$('#cmb_instructor').selectpicker('render');
+                    $('#cmb_instructor').selectpicker('refresh');
+                } else {
+                    swal("Error", data.msg, "error");
+                }
+            },
+            dataType: "json"
+        });
+    } else {
+        $('#cmb_instructor').prop('disabled', true);
+        swal("Información", "Seleccionar un Instructor", "info");
+    }
+
+}
+
+
+
+
 function fntHorasInstructor(ids) {
     //$('#contenedor-padre').html('<h5 class="mb-4">Horas</h5>');
-    if (ids != 0) {        
+    $('#contenedor-padre').html('');
+    if (ids != 0) {
         let link = base_url + '/Planificacion/bucarInstructor';
         $.ajax({
             type: 'POST',
@@ -275,9 +153,9 @@ function fntHorasInstructor(ids) {
             success: function (data) {
                 if (data.status) {//Ids
                     $('#TituloHoras').html('<h5 class="mb-4">Horas ' + data.data.Nombres + ' </h5>');
-                    let horaInst=data.data.Horas;
-                    let arrayHoras= horaInst.split(",");
-                    arrayHoras=arrayHoras.sort();
+                    let horaInst = data.data.Horas;
+                    let arrayHoras = horaInst.split(",");
+                    arrayHoras = arrayHoras.sort();
                     for (var i = 0; i < arrayHoras.length; i++) {
                         $('#contenedor-padre').append('<div id="' + arrayHoras[i] + '" class="fc-event">' + fntNameHoras(arrayHoras[i]) + '</div>&nbsp;');
                     }
@@ -289,47 +167,119 @@ function fntHorasInstructor(ids) {
         });
     } else {
         swal("Información", "Seleccionar un Instructor", "info");
-        
+
 
     }
 
 }
 
 function fntNameHoras(str) {
-    let nDia=str.substring(0, 2);
-    let nHora=str.substring(2, 4);
-    let result="";
+    let nDia = str.substring(0, 2);
+    let nHora = str.substring(2, 4);
+    let result = "";
     switch (nDia) {
         case "LU":
             //result="LUNES "+nHora+":00";
-            result="LUN-"+nHora+":00";
-          break;
+            result = "LUN-" + nHora + ":00";
+            break;
         case "MA":
             //result="MARTES "+nHora+":00";
-            result="MAR-"+nHora+":00";
-          break;
+            result = "MAR-" + nHora + ":00";
+            break;
         case "MI":
             //result="MIÉRCOLES "+nHora+":00";
-            result="MIE-"+nHora+":00";
-          break;
+            result = "MIE-" + nHora + ":00";
+            break;
         case "JU":
             //result="JUEVES "+nHora+":00";
-            result="JUE-"+nHora+":00";
-          break;
+            result = "JUE-" + nHora + ":00";
+            break;
         case "VI":
             //result="VIERNES "+nHora+":00";
-            result="VIE-"+nHora+":00";
-          break;
+            result = "VIE-" + nHora + ":00";
+            break;
         case "SA":
             //result="SÁBADO "+nHora+":00";
-            result="SÁB-"+nHora+":00";
+            result = "SÁB-" + nHora + ":00";
             break;
         default:
-          
-      }
-      return result;
+
+    }
+    return result;
 }
 
 
+/**************** GENERAR PLANIFICACION  ******************/
+function generarPlanificiacion(accion) {
+    var tabla = document.getElementById("dts_Planificiacion");
+
+    if (sessionStorage.dts_PlaInstructor) {
+        var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
+        if (Grid.length > 0) {
+            //var encabezado = $("#dts_Planificiacion thead");
+            var filaEncabezado = $("<tr></tr>");
+            //var fechaDia = new Date($('#dtp_fecha_desde').val());
+            if (accion != "") {
+                fechaDia = new Date(fechaDia);
+                if (accion == "Next") {
+                    fechaDia.setDate(fechaDia.getDate() + 1);
+                } else {
+                    fechaDia.setDate(fechaDia.getDate() - 1);
+                }
+                console.log("dia semana numero "+numeroDia);
+            } else {
+                fechaDia = $('#dtp_fecha_desde').val();
+            }
+
+            $('#FechaDia').html(obtenerFechaConLetras(fechaDia));
+
+            filaEncabezado.append($("<th>Horas</th>"));
+            for (var i = 0; i < Grid.length; i++) {
+                filaEncabezado.append($("<th>" + Grid[i]['Nombre'] + "</th>"));
+            }
+            $("#dts_Planificiacion thead").html("");
+            $("#dts_Planificiacion thead").append(filaEncabezado);
+            numeroHora = 8;
+            var tabla = $('#dts_Planificiacion tbody');
+            $("#dts_Planificiacion tbody").html("");
+            for (var i = 0; i < 13; i++) {
+                var fila = '<tr><td>' + numeroHora + ':00</td>';
+                for (var col = 0; col < Grid.length; col++) {
+                    fila += '<td>' + Grid[col]['Nombre'] + ':00</td>';
+                }
+                fila += '</tr>';
+                tabla.append(fila);
+                numeroHora++;
+            }
+        }
+    }
+}
+function obtenerDiaSemana(numero){
+    let dias = [
+        'Domingo',
+        'Lunes',
+        'Martes',
+        'Miércoles',
+        'Jueves',
+        'Viernes',
+        'Sábado',
+    ];
+    return dias[numero];
+}
+
+function obtenerFechaConLetras(fechaDia) {
+    let meses = [
+        "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+    
+    var fecha = new Date(fechaDia);
+    var dia = fecha.getUTCDate();
+    numeroDia =fecha.getUTCDay();
+    var nombreDia = obtenerDiaSemana(numeroDia);
+    var mes = meses[fecha.getUTCMonth()];
+    var año = fecha.getUTCFullYear();
+    return `${nombreDia}, ${dia} de ${mes} de ${año}`;
+}
 
 

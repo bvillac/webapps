@@ -192,7 +192,7 @@ class Persona extends Controllers
 		die();
 	}
 
-	public function ingresarPersonaContrato()
+	public function ingresarPersonaDatos()
 	{
 		if ($_POST) {
 			//dep($_POST);

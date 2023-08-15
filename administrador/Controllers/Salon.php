@@ -131,4 +131,26 @@ class Salon extends Controllers
         }
         die();
     }
+
+    public function bucarSalonCentro()
+    {
+        if ($_POST) {
+            if ($_SESSION['permisosMod']['r']) {
+                $modelSalon = new SalonModel();
+                $ids = intval(strClean($_POST['Ids']));
+                if ($ids > 0) {
+                    $arrData = $modelSalon->consultarSalones($ids);
+                    //dep($arrData);
+                    if (empty($arrData)) {
+                        $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+                    } else {
+                        $arrResponse = array('status' => true, 'data' => $arrData);
+                    }
+                    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+                }
+            }
+        }
+        die();
+    }
+
 }

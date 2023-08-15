@@ -22,14 +22,6 @@ require_once "Views/Salon/Modals/modalSalon.php";
       <div class="tile row">
         <div class="col-md-3">
           <div class="form-group">
-            <label for="dtp_fecha_desde">Fecha Desde</label>
-            <input type="date" class="form-control " id="dtp_fecha_desde" name="dtp_fecha_desde" placeholder="1988-01-01" pattern="^\d{4}\/\d{2}\/\d{2}$" required="">
-          </div>
-          <div class="form-group">
-            <label for="dtp_fecha_hasta">Fecha Hasta</label>
-            <input type="date" class="form-control " id="dtp_fecha_hasta" name="dtp_fecha_hasta" placeholder="1988-01-01" pattern="^\d{4}\/\d{2}\/\d{2}$" required="">
-          </div>
-          <div class="form-group">
             <label for="cmb_CentroAtencion">Centro Atención</label>
             <select class="form-control" id="cmb_CentroAtencion" name="cmb_CentroAtencion" onchange="fntSalones(this.value)">
               <?php
@@ -47,13 +39,13 @@ require_once "Views/Salon/Modals/modalSalon.php";
           </div>
           <div class="form-group">
             <label for="cmb_instructor">Instructor</label>
-            <select class="form-control" data-live-search="true" id="cmb_instructor" name="cmb_instructor" title="SELECCIONAR INSTRUCTOR" onchange="fntHorasInstructor(this.value)">
+            <select class="form-control" data-live-search="true" id="cmb_instructor" name="cmb_instructor" onchange="fntHorasInstructor(this.value)">
               <?php
-              /* Recorre el array y genera las opciones del select
+              // Recorre el array y genera las opciones del select
               echo '<option value="0">SELECCIONAR</option>';
               foreach ($data['instructor'] as $opcion) {
                 echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
-              }*/
+              }
               ?>
             </select>
           </div>
@@ -61,33 +53,10 @@ require_once "Views/Salon/Modals/modalSalon.php";
           <div id="contenedor-padre" class="d-flex align-content-end flex-wrap">
             <!-- El contenido actual del contenedor padre -->
           </div>
-          <button type="button" class="btn btn-dark" id="btn_generar">Generar</button>
+          <button type="button" class="btn btn-dark">Generar</button>
         </div>
         <div class="col-md-9">
-          <div class="row">
-            <div class="col-sm">
-              <button type="button" class="btn btn-dark" id="btn_anterior">
-                < Anterior</button>
-                  <button type="button" class="btn btn-dark" id="btn_siguiente">Siguiente > </button>
-            </div>
-            <div class="col-sm">
-              <h2><span id="FechaDia" class="badge badge-secondary"></span></h2>
-            </div>
-            <div class="col-sm">
-
-            </div>
-          </div>
-          <br><br>
-          <div class="table-responsive">
-            <table class="table" id="dts_Planificiacion">
-              <thead>
-                
-              </thead>
-              <tbody>
-                
-              </tbody>
-            </table>
-          </div>
+          <div id="calendar"></div>
         </div>
       </div>
     </div>

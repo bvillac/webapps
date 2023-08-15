@@ -618,7 +618,7 @@ function guardarPersona() {
     dataPersona.per_direccion = per_direccion;
     dataPersona.per_genero = per_genero;
     //sessionStorage.dataPersona = JSON.stringify(dataPersona);
-    let link = base_url + '/Persona/ingresarPersonaContrato';
+    let link = base_url + '/Persona/ingresarPersonaDatos';
     $.ajax({
         type: 'POST',
         url: link,

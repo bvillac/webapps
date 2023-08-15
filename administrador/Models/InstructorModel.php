@@ -25,8 +25,8 @@ class InstructorModel extends MysqlAcademico
 
 	public function consultarDatosId(int $Ids)
 	{
-		$sql = "SELECT  A.ins_id Ids,A.per_id PerIds,B.per_cedula Cedula, concat(B.per_nombre,' ',B.per_apellido) Nombres, A.ins_estado_logico Estado,date(A.ins_fecha_creacion) FechaIng, ";
-		$sql .= "	A.ins_semana_horas Horas,A.ins_horas_asignadas HoraNormal,A.ins_horas_extras HoraExtra";
+		$sql = "SELECT  A.ins_id Ids,A.per_id PerIds,A.cat_id CentroId,B.per_cedula Cedula, concat(B.per_nombre,' ',B.per_apellido) Nombres, A.ins_estado_logico Estado,date(A.ins_fecha_creacion) FechaIng, ";
+		$sql .= "	A.ins_semana_horas Horas,A.ins_horas_asignadas HoraNormal,A.ins_horas_extras HoraExtra,ins_salones Salones";
 		$sql .= "	FROM " . $this->db_name . ".instructor A";
 		$sql .= "		INNER JOIN " . $this->db_nameAdmin . ".persona B";
 		$sql .= "			ON A.per_id=B.per_id AND B.estado_logico!=0";
@@ -48,6 +48,8 @@ class InstructorModel extends MysqlAcademico
 				//Inserta Cabecera add_ceros();				
 				$arrData = array(
 					$dataObj['per_id'],
+					$dataObj['cat_id'],
+					$dataObj['salones'],
 					$dataObj['horas_asignadas'],
 					$dataObj['horas_extras'],
 					0,
@@ -55,13 +57,14 @@ class InstructorModel extends MysqlAcademico
 					$idsUsuario, 1
 				);
 				$SqlQuery  = "INSERT INTO " . $this->db_name . ".instructor 
-				(`per_id`,
+				(`per_id`,`cat_id`,
+				`ins_salones`,
 				`ins_horas_asignadas`,
 				`ins_horas_extras`,
 				`ins_semana_dias`,
 				`ins_semana_horas`,
 				`ins_usuario_creacion`,
-				`ins_estado_logico`) VALUES(?,?,?,?,?,?,?) ";
+			`ins_estado_logico`) VALUES(?,?,?,?,?,?,?,?,?) ";
 				$Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
 				$con->commit();
 				$arroout["status"] = true;
@@ -70,7 +73,7 @@ class InstructorModel extends MysqlAcademico
 			} catch (Exception $e) {
 				$con->rollBack();
 				//echo "Fallo: " . $e->getMessage();
-				//throw $e;
+				throw $e;
 				$arroout["status"] = false;
 				return $arroout;
 			}
@@ -88,6 +91,8 @@ class InstructorModel extends MysqlAcademico
 		$Ids = $dataObj['ids'];
 		$arroout["status"] = false;
 		$arrData = array(
+			$dataObj['cat_id'],
+			$dataObj['salones'],
 			$dataObj['horas_asignadas'],
 			$dataObj['horas_extras'],
 			0,
@@ -95,7 +100,9 @@ class InstructorModel extends MysqlAcademico
 			retornaUser()
 		);
 		$sql = "UPDATE " . $this->db_name . ".instructor
-						SET					
+						SET	
+						`cat_id`= ?,
+						`ins_salones`= ?,				
 						`ins_horas_asignadas` = ?,
 						`ins_horas_extras` = ?,
 						`ins_semana_dias` = ?,
@@ -108,6 +115,7 @@ class InstructorModel extends MysqlAcademico
 		if ($request) {
 			$arroout["status"] = true;
 		}
+		$arroout["numero"] = 0;
 		return $arroout;
 	}
 
@@ -120,12 +128,12 @@ class InstructorModel extends MysqlAcademico
 		return $request;
 	}
 
-	public function consultarInstructores(){
+	public function consultarCentroInstructores(int $catIds){
 		$sql = "SELECT  A.ins_id Ids,B.per_cedula Cedula, concat(B.per_nombre,' ',B.per_apellido) Nombre ";
 		$sql .= "	FROM " . $this->db_name . ".instructor A";
 		$sql .= "		INNER JOIN " . $this->db_nameAdmin . ".persona B";
 		$sql .= "			ON A.per_id=B.per_id AND B.estado_logico!=0";
-		$sql .= "	WHERE A.ins_estado_logico!=0 ORDER BY Nombre DESC ";
+		$sql .= "	WHERE A.ins_estado_logico!=0 AND A.cat_id={$catIds} ORDER BY Nombre DESC ";
 		$request = $this->select_all($sql);
 		return $request;
         

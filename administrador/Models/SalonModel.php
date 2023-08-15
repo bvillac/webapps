@@ -12,7 +12,7 @@ class SalonModel extends MysqlAcademico
 
     public function consultarDatos()
     {
-        $sql = "SELECT a.sal_id Ids,a.cat_id,b.cat_nombre NombreCentro,a.sal_nombre NombreSalon, ";
+        $sql = "SELECT a.sal_id Ids,a.cat_id,b.cat_nombre NombreCentro,a.sal_nombre NombreSalon,a.sal_color Color, ";
         $sql .= "	a.sal_cupo_minimo CupoMinimo,a.sal_cupo_maximo CupoMaximo,a.sal_estado_logico Estado ";
         $sql .= "	FROM " . $this->db_name . ".salon a ";
         $sql .= "		inner join " . $this->db_name . ".centro_atencion b ";
@@ -26,7 +26,7 @@ class SalonModel extends MysqlAcademico
     
     public function consultarDatosId(int $Ids)
     {
-        $sql = "SELECT a.sal_id Ids,a.cat_id,b.cat_nombre NombreCentro,a.sal_nombre NombreSalon, ";
+        $sql = "SELECT a.sal_id Ids,a.cat_id,b.cat_nombre NombreCentro,a.sal_nombre NombreSalon,a.sal_color Color, ";
         $sql .= "	a.sal_cupo_minimo CupoMinimo,a.sal_cupo_maximo CupoMaximo,a.sal_estado_logico Estado,date(sal_fecha_creacion) FechaIngreso ";
         $sql .= "	FROM " . $this->db_name . ".salon a ";
         $sql .= "		inner join " . $this->db_name . ".centro_atencion b ";
@@ -51,6 +51,7 @@ class SalonModel extends MysqlAcademico
                     $dataObj['nombre'],
                     $dataObj['cupominimo'],
                     $dataObj['cupomaximo'],
+                    $dataObj['color'],
                     retornaUser(), 1
                 );
                 //putMessageLogFile($arrData);
@@ -59,8 +60,9 @@ class SalonModel extends MysqlAcademico
                     `sal_nombre`,
                     `sal_cupo_minimo`,
                     `sal_cupo_maximo`,
+                    `sal_color`,
                     `sal_usuario_creacion`,                   
-                    `sal_estado_logico`) VALUES(?,?,?,?,?,?) ";
+                    `sal_estado_logico`) VALUES(?,?,?,?,?,?,?) ";
                 $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
                 $con->commit();
                 $arroout["status"] = true;
@@ -94,10 +96,11 @@ class SalonModel extends MysqlAcademico
                 $dataObj['nombre'],
                 $dataObj['cupominimo'],
                 $dataObj['cupomaximo'],
+                $dataObj['color'],
                 retornaUser(), 1
             );
             $sql = "UPDATE " . $this->db_name . ".salon 
-						SET cat_id = ?, sal_nombre = ?,sal_cupo_minimo = ?,sal_cupo_maximo = ?,sal_usuario_modificacion = ?,
+						SET cat_id = ?, sal_nombre = ?,sal_cupo_minimo = ?,sal_cupo_maximo = ?,sal_color = ?,sal_usuario_modificacion = ?,
                             sal_estado_logico = ?,sal_fecha_modificacion = CURRENT_TIMESTAMP() WHERE sal_id={$Ids}  ";
             $request = $this->update($sql, $arrData);
             $arroout["status"]=($request)?true:false;

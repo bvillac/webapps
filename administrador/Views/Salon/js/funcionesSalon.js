@@ -73,6 +73,7 @@ function guardarSalon() {
     let nombresalon = $('#txt_nombreSalon').val();
     let cupominimo = $('#txt_cupoMinimo').val();
     let cupomaximo = $('#txt_cupoMaximo').val();
+    let color = $('#txt_color').val();
     let estado = $('#cmb_estado').val();
     if (centro_id == '0' || nombresalon == '' || cupominimo == '0' || cupomaximo == '0') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
@@ -92,6 +93,7 @@ function guardarSalon() {
     dataObj.nombre = nombresalon;
     dataObj.cupominimo = cupominimo;
     dataObj.cupomaximo = cupomaximo;
+    dataObj.color = color;
     dataObj.estado = estado;
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
     let link = base_url + '/Salon/ingresarSalon';
@@ -133,7 +135,8 @@ function editarSalon(ids) {
                 $('#cmb_CentroAtencion').val(objData.data.cat_id);
                 $('#txt_nombreSalon').val(objData.data.NombreSalon);
                 $('#txt_cupoMinimo').val(objData.data.CupoMinimo);
-                $('#txt_cupoMaximo').val(objData.data.CupoMaximo);      
+                $('#txt_cupoMaximo').val(objData.data.CupoMaximo); 
+                $('#txt_color').val(objData.data.Color);      
                 if (objData.data.Estado == 1) {
                     $('#cmb_estado').val("1");
                 } else {

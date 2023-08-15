@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 window.addEventListener('load', function () {
-    fntRolAsig();
+    //fntRolAsig();
 }, false);
 
 
@@ -384,7 +384,7 @@ function buscarPersonaDni(codigo) {
         },
         success: function (data) {
             if (data.status) {//Iva
-                console.log(data);
+                //console.log(data);
 
                 $('#txtCodigoPersona').val(data.data['Cedula']);
                 $('#txth_per_id').val(data.data['Ids']);
@@ -417,15 +417,11 @@ function limpiarDatos() {
 }
 
 function openModalPersona() {
-    rowTable = "";
-    //document.querySelector('#txth_ids').value ="";
-    //$("#txt_dni").prop("readonly",false);
-    document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");
-    document.querySelector('#btnActionForm').classList.replace("btn-info", "btn-primary");
-    document.querySelector('#btnText').innerHTML = "Guardar";
-    document.querySelector('#titleModal').innerHTML = "Nuevo Usuario";
-    document.querySelector("#formUsu").reset();
-    $('#modalFormUsu').modal('show');
+    document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+    document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
+    document.querySelector('#titleModal').innerHTML = "Nueva Persona";
+    document.querySelector("#formPersona").reset();
+    $('#modalFormPersona').modal('show');
 }
 
 
@@ -456,18 +452,37 @@ function guardarInstructor(accion) {
     //let accion=($('#cmd_guardar').html()=="Guardar")?'Create':'edit';    
     let Ids = document.querySelector('#txth_ids').value;
     let per_id = document.querySelector('#txth_per_id').value;
+    let centro = document.querySelector('#cmb_CentroAtencion').value;
     let txt_cedula = document.querySelector('#txt_cedula').value;
     let txt_horas_asignadas = document.querySelector('#txt_horas_asignadas').value;
     let txt_horas_extras = document.querySelector('#txt_horas_extras').value;
+    let element = document.getElementById('cmb_Salon');//obtienes los itmes seleccionados
+    let selectedSalon = Array.from(element.selectedOptions)
+        .map(option => option.value)
+
     let selecionados = "";
+
     $("#dts_horas tr td input[type='checkbox']:checked").each(function () {
         selecionados += $(this).attr("id") + ",";
     });
+
+    console.log(per_id)
+    console.log(txt_cedula)
+    console.log(txt_horas_asignadas)
+    console.log(txt_horas_extras)
+    console.log(selecionados)
+    console.log(centro)
+    console.log(selectedSalon)
     selecionados = selecionados.slice(0, selecionados.length - 1);
-    if (per_id == '' || txt_cedula == '' || txt_horas_asignadas == '' || txt_horas_extras == '' || selecionados == '') {
+    if (per_id == '' || txt_cedula == '' || txt_horas_asignadas == '' || txt_horas_extras == '' || selecionados == '' || centro == '0') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;
     }
+    console.log(selectedSalon);
+    /*if (selectedSalon.length>0) {
+        swal("Atención", "Debe Seleccionar almenos un Salón.", "error");
+        return false;
+    }*/
 
     let elementsValid = document.getElementsByClassName("valid");
     for (let i = 0; i < elementsValid.length; i++) {
@@ -480,10 +495,13 @@ function guardarInstructor(accion) {
     var dataInstructor = new Object();
     dataInstructor.ids = Ids;
     dataInstructor.per_id = per_id;
+    dataInstructor.cat_id = centro;
     dataInstructor.cedula = txt_cedula;
     dataInstructor.horas_asignadas = txt_horas_asignadas;
     dataInstructor.horas_extras = txt_horas_extras;
     dataInstructor.semana_horas = selecionados;
+    dataInstructor.salones = selectedSalon.toString();
+
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
 
     let link = base_url + '/instructor/ingresarInstructor';
@@ -507,6 +525,110 @@ function guardarInstructor(accion) {
         dataType: "json"
     });
 }
+
+function fntSalones(ids) {
+    //$('#cmb_Salon').html('<option value="">SELECCIONAR CENTRO</option>');
+    $('#cmb_Salon').html('');
+    if (ids != 0) {
+        let link = base_url + '/Salon/bucarSalonCentro';
+        $.ajax({
+            type: 'POST',
+            url: link,
+            data: {
+                "Ids": ids
+            },
+            success: function (data) {
+                if (data.status) {
+                    $('#cmb_Salon').prop('disabled', false);
+                    var result = data.data;
+                    for (var i = 0; i < result.length; i++) {
+                        $('#cmb_Salon').append('<option value="' + result[i].Ids + '">' + result[i].Nombre + '</option>');
+                    }
+                } else {
+                    swal("Error", data.msg, "error");
+                }
+            },
+            dataType: "json"
+        });
+    } else {
+        $('#cmb_Salon').prop('disabled', true);
+        $('#cmb_Salon').html('');
+        swal("Información", "Seleccionar un Centro de Atención", "info");
+    }
+
+}
+
+
+/**************** GUARDAR DATOS PERSONA  ******************/
+function guardarPersona() {
+    var per_cedula = document.querySelector('#txt_per_cedula').value;
+    var per_nombre = document.querySelector('#txt_per_nombre').value;
+    var per_apellido = document.querySelector('#txt_per_apellido').value;
+    var per_fecha_nacimiento = document.querySelector('#dtp_fecha_nacimiento').value;
+    var per_telefono = document.querySelector('#txt_per_telefono').value;
+    var per_direccion = document.querySelector('#txt_per_direccion').value;
+    var per_genero = document.querySelector('#txt_per_genero').value;
+    if (per_cedula == '' || per_nombre == '' || per_apellido == '' || per_fecha_nacimiento == '' || per_telefono == '' || per_direccion == '' || per_genero == '')//Validacin de Campos
+    {
+        swal("Atención", "Todos los campos son obligatorios.", "error");
+        return false;
+    }
+    //Verificas los elementos conl clase valid para controlar que esten ingresados
+    let elementsValid = document.getElementsByClassName("valid");
+    for (let i = 0; i < elementsValid.length; i++) {
+        if (elementsValid[i].classList.contains('is-invalid')) {
+            swal("Atención", "Por favor verifique los campos ingresados (Color Rojo).", "error");
+            return false;
+        }
+    }
+
+    var dataPersona = new Object();
+    //dataPersona.ids = Ids;
+    dataPersona.per_cedula = per_cedula;
+    dataPersona.per_nombre = per_nombre;
+    dataPersona.per_apellido = per_apellido;
+    dataPersona.per_fecha_nacimiento = per_fecha_nacimiento;
+    dataPersona.per_telefono = per_telefono;
+    dataPersona.per_direccion = per_direccion;
+    dataPersona.per_genero = per_genero;
+    //sessionStorage.dataPersona = JSON.stringify(dataPersona);
+    let link = base_url + '/Persona/ingresarPersonaDatos';
+    $.ajax({
+        type: 'POST',
+        url: link,
+        data: {
+            "persona": JSON.stringify(dataPersona),
+            "accion": "Create"
+        },
+        success: function (data) {
+            if (data.status) {
+                //sessionStorage.removeItem('dataPersona');
+                swal("Mensaje", data.msg, "success");
+                $('#txtCodigoPersona').val(per_cedula);
+                $('#txth_per_id').val(data.numero);
+                $('#txt_cedula').val(per_cedula);
+                $('#txt_nombres').val(per_nombre + " " + per_apellido);
+                $('#modalFormPersona').modal("hide");
+                limpiarTexboxPersona();
+            } else {
+                swal("Error", data.msg, "error");
+            }
+        },
+        dataType: "json"
+    });
+
+}
+
+function limpiarTexboxPersona() {
+    $('#txt_per_cedula').val("");
+    $('#dtp_fecha_nacimiento').val("");
+    $('#txt_per_nombre').val("");
+    $('#txt_per_apellido').val("");
+    $('#txt_per_telefono').val("");
+    $('#txt_per_direccion').val("");
+
+}
+
 
 
 
