@@ -129,11 +129,12 @@ class InstructorModel extends MysqlAcademico
 	}
 
 	public function consultarCentroInstructores(int $catIds){
-		$sql = "SELECT  A.ins_id Ids,B.per_cedula Cedula, concat(B.per_nombre,' ',B.per_apellido) Nombre ";
+		$sql = "SELECT  A.ins_id Ids,B.per_cedula Cedula, concat(B.per_nombre,' ',B.per_apellido) Nombre, ins_semana_horas Horario,ins_salones Salones ";
 		$sql .= "	FROM " . $this->db_name . ".instructor A";
 		$sql .= "		INNER JOIN " . $this->db_nameAdmin . ".persona B";
 		$sql .= "			ON A.per_id=B.per_id AND B.estado_logico!=0";
 		$sql .= "	WHERE A.ins_estado_logico!=0 AND A.cat_id={$catIds} ORDER BY Nombre DESC ";
+		putMessageLogFile($sql);
 		$request = $this->select_all($sql);
 		return $request;
         

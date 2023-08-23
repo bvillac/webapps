@@ -74,10 +74,18 @@ function fntSalones(ids) {
                 if (data.status) {
                     $('#cmb_Salon').prop('disabled', false);
                     var result = data.data;
+                    var c = 0;
+                    var arrayList = new Array;
                     for (var i = 0; i < result.length; i++) {
                         $('#cmb_Salon').append('<option value="' + result[i].Ids + '">' + result[i].Nombre + '</option>');
+                        let rowInst = new Object();
+                        rowInst.ids = result[i].Ids;
+                        rowInst.Nombre = result[i].Nombre;
+                        rowInst.Color = result[i].Color;
+                        arrayList[c] = rowInst;
+                        c += 1;
                     }
-
+                    sessionStorage.dts_SalonCentro = JSON.stringify(arrayList);
                     clearTimeout(delayTimer);
                     delayTimer = setTimeout(function () {
                         fntInstructor(ids);
@@ -117,6 +125,8 @@ function fntInstructor(ids) {
                         let rowInst = new Object();
                         rowInst.ids = result[i].Ids;
                         rowInst.Nombre = result[i].Nombre;
+                        rowInst.Horario = result[i].Horario;
+                        rowInst.Salones = result[i].Salones;
                         arrayList[c] = rowInst;
                         c += 1;
                     }
@@ -245,7 +255,16 @@ function generarPlanificiacion(accion) {
             for (var i = 0; i < 13; i++) {
                 var fila = '<tr><td>' + numeroHora + ':00</td>';
                 for (var col = 0; col < Grid.length; col++) {
-                    fila += '<td>' + Grid[col]['Nombre'] + ':00</td>';
+                    let arrayAula = Grid[col]['Salones'].split(",");
+                    console.log('BUSCAR ID= '+arrayAula[0]);
+                    let objAula=buscarSalonColor(arrayAula[0]);
+                    console.log('Resultado =>'+objAula['Nombre']);
+                    //fila += '<td>' + Grid[col]['Nombre'] + ':00</td>';
+                    fila += '<td>';
+                    //fila +=  Grid[col]['Nombre'] ;
+                    //fila += '<div class="border ms-auto p-1" style="--bs-bg-opacity: .5;background-color:red" >' + Grid[col]['Nombre'] + '</div>';
+                    fila += '<div class="border ms-auto p-1" style="--bs-bg-opacity: .5;background-color:'+objAula['Color']+'" >' + objAula['Nombre'] + '</div>';
+                    fila += '</td>';
                 }
                 fila += '</tr>';
                 tabla.append(fila);
@@ -280,6 +299,22 @@ function obtenerFechaConLetras(fechaDia) {
     var mes = meses[fecha.getUTCMonth()];
     var año = fecha.getUTCFullYear();
     return `${nombreDia}, ${dia} de ${mes} de ${año}`;
+}
+
+function buscarSalonColor(ids){
+    if (sessionStorage.dts_SalonCentro) {
+        var Grid = JSON.parse(sessionStorage.dts_SalonCentro);
+        if (Grid.length > 0) {
+            for (var i = 0; i < Grid.length; i++) {
+                if(Grid[i]['ids']==ids){
+                    console.log('encontro IDS= '+Grid[i])
+                    return Grid[i];
+                }
+            }
+        }
+
+    }
+    return 0;
 }
 
 
