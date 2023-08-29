@@ -1,6 +1,8 @@
+//NOTA IMPORTANTE: Los datos de Aula y instructor se guardan en session Store es decir que se mantienen en memoria mientras dure la selsion
+//si existe algun cambio en estas tablas los cambios no se reflejna mientras no se destruya la session o ce cierre el navegador
 let delayTimer;
 let fechaDia = new Date();
-let numeroDia =0;
+let numeroDia = 0;
 $(document).ready(function () {
     $('#cmb_instructor').selectpicker('render');
     //Nueva Orden
@@ -53,6 +55,16 @@ $(document).ready(function () {
 
     });
 
+    $("#btn_saveTemp").click(function () {
+        guardarTemp();
+
+    });
+
+
+
+
+
+
 
 });
 
@@ -61,7 +73,7 @@ $(document).ready(function () {
 
 
 function fntSalones(ids) {
-    $('#cmb_Salon').html('<option value="">SELECCIONAR SALÓN</option>');
+    $('#cmb_Salon').html('<option value="0">SELECCIONAR SALÓN</option>');
     if (ids != 0) {
         let link = base_url + '/Planificacion/bucarSalonCentro';
         $.ajax({
@@ -106,7 +118,7 @@ function fntSalones(ids) {
 
 function fntInstructor(ids) {
     var arrayList = new Array;
-    $('#cmb_instructor').html('<option value="">SELECCIONAR INSTRUCTOR</option>');
+    $('#cmb_instructor').html('<option value="0">SELECCIONAR INSTRUCTOR</option>');
     if (ids != 0) {
         let link = base_url + '/Planificacion/bucarInstructorCentro';
         $.ajax({
@@ -189,27 +201,21 @@ function fntNameHoras(str) {
     let result = "";
     switch (nDia) {
         case "LU":
-            //result="LUNES "+nHora+":00";
             result = "LUN-" + nHora + ":00";
             break;
         case "MA":
-            //result="MARTES "+nHora+":00";
             result = "MAR-" + nHora + ":00";
             break;
         case "MI":
-            //result="MIÉRCOLES "+nHora+":00";
             result = "MIE-" + nHora + ":00";
             break;
         case "JU":
-            //result="JUEVES "+nHora+":00";
             result = "JUE-" + nHora + ":00";
             break;
         case "VI":
-            //result="VIERNES "+nHora+":00";
             result = "VIE-" + nHora + ":00";
             break;
         case "SA":
-            //result="SÁBADO "+nHora+":00";
             result = "SÁB-" + nHora + ":00";
             break;
         default:
@@ -226,9 +232,7 @@ function generarPlanificiacion(accion) {
     if (sessionStorage.dts_PlaInstructor) {
         var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
         if (Grid.length > 0) {
-            //var encabezado = $("#dts_Planificiacion thead");
             var filaEncabezado = $("<tr></tr>");
-            //var fechaDia = new Date($('#dtp_fecha_desde').val());
             if (accion != "") {
                 fechaDia = new Date(fechaDia);
                 if (accion == "Next") {
@@ -236,35 +240,44 @@ function generarPlanificiacion(accion) {
                 } else {
                     fechaDia.setDate(fechaDia.getDate() - 1);
                 }
-                console.log("dia semana numero "+numeroDia);
             } else {
                 fechaDia = $('#dtp_fecha_desde').val();
             }
 
             $('#FechaDia').html(obtenerFechaConLetras(fechaDia));
-
+            //ENCABEZADO DE PLANIFICAICONR
             filaEncabezado.append($("<th>Horas</th>"));
             for (var i = 0; i < Grid.length; i++) {
-                filaEncabezado.append($("<th>" + Grid[i]['Nombre'] + "</th>"));
+                filaEncabezado.append($("<th>" + Grid[i]['Nombre'].toUpperCase() + "</th>"));
             }
             $("#dts_Planificiacion thead").html("");
             $("#dts_Planificiacion thead").append(filaEncabezado);
+            //FIN PLANIFICION
+            let nLetIni = $('#FechaDia').html().toUpperCase();
+            nLetIni = nLetIni.substring(0, 2);
+            nLetIni = (nLetIni == "SÁ") ? "SA" : nLetIni;//Se cambia por la Tilde
             numeroHora = 8;
             var tabla = $('#dts_Planificiacion tbody');
             $("#dts_Planificiacion tbody").html("");
-            for (var i = 0; i < 13; i++) {
+            for (var i = 0; i < 13; i++) {//GENERA LAS FILAS
                 var fila = '<tr><td>' + numeroHora + ':00</td>';
                 for (var col = 0; col < Grid.length; col++) {
-                    let arrayAula = Grid[col]['Salones'].split(",");
-                    console.log('BUSCAR ID= '+arrayAula[0]);
-                    let objAula=buscarSalonColor(arrayAula[0]);
-                    console.log('Resultado =>'+objAula['Nombre']);
-                    //fila += '<td>' + Grid[col]['Nombre'] + ':00</td>';
-                    fila += '<td>';
-                    //fila +=  Grid[col]['Nombre'] ;
-                    //fila += '<div class="border ms-auto p-1" style="--bs-bg-opacity: .5;background-color:red" >' + Grid[col]['Nombre'] + '</div>';
-                    fila += '<div class="border ms-auto p-1" style="--bs-bg-opacity: .5;background-color:'+objAula['Color']+'" >' + objAula['Nombre'] + '</div>';
-                    fila += '</td>';
+                    //Obtener los Salones
+                    //Existe el Salon programado para el instructor segun sus horarios
+                    let nExiste = existeHorario(Grid[col]['Horario'], nLetIni + numeroHora);
+                    //nLetIni=>inicialDia;numeroHora=>horaDia;Grid[col]['ids']=>Id Instructor
+                    let idPlan = nLetIni + "_" + numeroHora + "_" + Grid[col]['ids'];
+                    if (nExiste) {
+                        let arrayAula = Grid[col]['Salones'].split(",");
+                        let objSalon = buscarSalonColor(arrayAula[0]);
+                        idPlan += "_" + objSalon['ids'];//Agrega el Id del Salon
+                        fila += '<td>';
+                        fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" style="color:white;background-color:' + objSalon['Color'] + '" onclick="fnt_eventoPlanificado(this)">' + objSalon['Nombre'] + '</button>';
+                        fila += '</td>';
+                    } else {
+                        fila += '<td><button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
+                    }
+
                 }
                 fila += '</tr>';
                 tabla.append(fila);
@@ -273,41 +286,25 @@ function generarPlanificiacion(accion) {
         }
     }
 }
-function obtenerDiaSemana(numero){
-    let dias = [
-        'Domingo',
-        'Lunes',
-        'Martes',
-        'Miércoles',
-        'Jueves',
-        'Viernes',
-        'Sábado',
-    ];
-    return dias[numero];
+
+function existeHorario(nHorArray, nDiaHora) {
+    nHorArray = nHorArray.split(",");
+    if (nHorArray.includes(nDiaHora)) {
+        return true;
+    }
+    return false;
+
 }
 
-function obtenerFechaConLetras(fechaDia) {
-    let meses = [
-        "enero", "febrero", "marzo", "abril", "mayo", "junio",
-        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
-    ];
-    
-    var fecha = new Date(fechaDia);
-    var dia = fecha.getUTCDate();
-    numeroDia =fecha.getUTCDay();
-    var nombreDia = obtenerDiaSemana(numeroDia);
-    var mes = meses[fecha.getUTCMonth()];
-    var año = fecha.getUTCFullYear();
-    return `${nombreDia}, ${dia} de ${mes} de ${año}`;
-}
 
-function buscarSalonColor(ids){
+
+
+function buscarSalonColor(ids) {
     if (sessionStorage.dts_SalonCentro) {
         var Grid = JSON.parse(sessionStorage.dts_SalonCentro);
         if (Grid.length > 0) {
             for (var i = 0; i < Grid.length; i++) {
-                if(Grid[i]['ids']==ids){
-                    console.log('encontro IDS= '+Grid[i])
+                if (Grid[i]['ids'] == ids) {
                     return Grid[i];
                 }
             }
@@ -316,5 +313,133 @@ function buscarSalonColor(ids){
     }
     return 0;
 }
+
+function fnt_eventoPlanificado(comp) {
+    let nEstado = false;
+    let textobutton = comp.innerHTML;
+    let idSalon = document.querySelector('#cmb_Salon').value;
+    if (idSalon != 0) {
+        if (textobutton == "AGREGAR") {
+            nEstado = true;
+            //openModalSalon(comp);
+        } else {
+            var respuesta = confirm("Esta seguro de Cambiar.")
+            if (respuesta) { nEstado = true; }
+        }
+    } else {
+        nEstado = false;
+        swal("Información", "Seleccionar un Salón", "info");
+    }
+
+    if (nEstado) {//Camia el Salon cuando es True
+        let objSalon = buscarSalonColor(idSalon);
+        let nButton = $("#" + comp.id);
+        nButton.removeClass('btn-light').addClass('asignado-true')
+        nButton.css("color", "white");
+        nButton.css("background-color", objSalon['Color']);
+        $("#" + comp.id).html(objSalon['Nombre']);
+        let arrayIds = (comp.id).split("_");
+        let nuevoId = comp.id;
+        if (arrayIds.length > 3) {
+            nuevoId = arrayIds[0] + "_" + arrayIds[1] + "_" + arrayIds[2] + "_" + objSalon['ids']
+        } else {
+            nuevoId += "_" + objSalon['ids'];
+        }
+        $("#" + comp.id).attr("id", nuevoId);//Se Cambia el Id y se Agrega el Salon asignado 
+    }
+
+}
+
+function openModalSalon(comp) {
+    //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+    //document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
+    //document.querySelector('#btnActionForm').classList.replace("btn-info", "btn-primary");
+    //document.querySelector('#btnText').innerHTML = "Guardar";
+    //document.querySelector('#titleModal').innerHTML = "Nueva Registro";
+    //document.querySelector("#formSalon").reset();
+    //document.querySelector("#"+comp.id).classList.replace("btn ms-auto btn-lg btn-light", "btn ms-auto btn-lg asignado-true");
+
+    //$('#modalFormSalon').modal('show');
+}
+
+function objDataRow(nLetIni) {
+    let selecionados = "";
+    $('#dts_Planificiacion .asignado-true').each(function (index, boton) {
+        var botonId = $(boton).attr('id');
+        selecionados += botonId + ",";
+        //console.log('ID del botón:', botonId);
+    });
+    selecionados = selecionados.slice(0, selecionados.length - 1);//Quitar la ultima coma
+    //let nLetIni = $('#FechaDia').html().toUpperCase();
+    //nLetIni = nLetIni.substring(0, 2);
+    //nLetIni = (nLetIni == "SÁ") ? "SA" : nLetIni;//Se cambia por la Tilde
+    let rowGrid = new Object();
+    rowGrid.dia = nLetIni;
+    rowGrid.horario = selecionados;
+    rowGrid.fecha = new Date(fechaDia);
+    return rowGrid;
+}
+
+function guardarTemp() {
+    let nLetIni = $('#FechaDia').html().toUpperCase();
+    nLetIni = nLetIni.substring(0, 2);
+    nLetIni = (nLetIni == "SÁ") ? "SA" : nLetIni;//Se cambia por la Tilde
+    var arrayList = new Array;
+    if (sessionStorage.dts_PlaTemporal) {
+        arrayList = JSON.parse(sessionStorage.dts_PlaTemporal);
+        var size = arrayList.length;
+        if (size > 0) {
+            if (codigoExiste(nLetIni, 'dia', sessionStorage.dts_PlaTemporal)) {
+                arrayList[size] = objDataRow(nLetIni);
+                sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+                swal("Información!", "Planificación Temporal Guardada." , "success");
+            } else {
+                //swal("Atención!", "Planificación del día ya existe en su lista", "error");
+                swal({
+                    title: "Actualizar",
+                    text: "¿Realmente quiere Modificar Planificación?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Si, Modificar!",
+                    cancelButtonText: "No, cancelar!",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function(isConfirm) {                    
+                    if (isConfirm) {            
+                        eliminarItemsDia(nLetIni);
+                        arrayList[size] = objDataRow(nLetIni);
+                        sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+                        swal("Información!", "Planificación Temporal Guardada." , "success");
+                    }
+            
+                });
+            }
+
+        } else {
+            arrayList[0] = objDataRow(nLetIni);
+            sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+            swal("Información!", "Planificación Temporal Guardada." , "success");
+        }
+    } else {
+        arrayList[0] = objDataRow(nLetIni);
+        sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+        swal("Información!", "Planificación Temporal Guardada." , "success");
+    }
+
+
+}
+
+
+function eliminarItemsDia(nDia) {
+    if (sessionStorage.dts_PlaTemporal) {
+        var Grid = JSON.parse(sessionStorage.dts_PlaTemporal);
+        if (Grid.length > 0) {
+            var array = findAndRemove(Grid, 'dia', nDia);
+            sessionStorage.dts_PlaTemporal = JSON.stringify(array);
+        }
+    }
+}
+
+
 
 

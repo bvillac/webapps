@@ -2,7 +2,7 @@ document.write(`<script src="${base_url}/Assets/js/cedulaRucPass.js"></script>`)
 let tableContrato;
 let tablePersonaBuscar;
 
-function codigoExiste(value, property, lista) {
+/*function codigoExiste(value, property, lista) {
     if (lista) {
         var array = JSON.parse(lista);
         for (var i = 0; i < array.length; i++) {
@@ -32,7 +32,7 @@ function findAndRemove(array, property, value) {
         }
     }
     return array;
-}
+}*/
 
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -2,7 +2,7 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
-require_once "Views/Salon/Modals/modalSalon.php";
+require_once "Views/Planificacion/Modals/modalSalon.php";
 ?>
 <div id="contentAjax"></div>
 <main class="app-content">
@@ -74,14 +74,15 @@ require_once "Views/Salon/Modals/modalSalon.php";
               <h2><span id="FechaDia" class="badge badge-secondary"></span></h2>
             </div>
             <div class="col-sm">
-
+              <button type="button" class="btn btn-dark" id="btn_saveTemp">Temporal</button>
+              <button type="button" class="btn btn-dark" id="btn_saveAll">Guardar</button>
             </div>
           </div>
-          <br><br>
+          <br><br><h2>Planificación</h2>
           <div class="table-responsive">
             <table class="table" id="dts_Planificiacion">
               <thead>
-                
+
               </thead>
               <tbody>
                 

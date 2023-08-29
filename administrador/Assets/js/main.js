@@ -125,3 +125,68 @@ function calcularEdad(inputFechaNacimiento) {
     return edad;
 }
 
+//Obtener Dia de la Semana
+function obtenerDiaSemana(numero) {
+    let dias = [
+        'Domingo',
+        'Lunes',
+        'Martes',
+        'Miércoles',
+        'Jueves',
+        'Viernes',
+        'Sábado',
+    ];
+    return dias[numero];
+}
+
+//Obtener fecha con Letras
+function obtenerFechaConLetras(fechaDia) {
+    let meses = [
+        "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+
+    var fecha = new Date(fechaDia);
+    var dia = fecha.getUTCDate();
+    numeroDia = fecha.getUTCDay();
+    var nombreDia = obtenerDiaSemana(numeroDia);
+    var mes = meses[fecha.getUTCMonth()];
+    var ano = fecha.getUTCFullYear();
+    return `${nombreDia}, ${dia} de ${mes} de ${ano}`;
+}
+
+//Busca si existe un codigo en la lista JSON
+function codigoExiste(value, property, lista) {
+    if (lista) {
+        var array = JSON.parse(lista);
+        for (var i = 0; i < array.length; i++) {
+            if (array[i][property] == value) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+//RETORNA EL INDEX DE LA LISTA
+function retornarIndexArray(array, property, value) {
+    var index = -1;
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][property] == value) {
+            index = i;
+            return index;
+        }
+    }
+    return index;
+}
+
+//REMUEVE EL EL ITEN DE LA LISTA POR UN DI
+function findAndRemove(array, property, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][property] == value) {
+            array.splice(i, 1);
+        }
+    }
+    return array;
+}
+
