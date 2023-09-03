@@ -134,7 +134,6 @@ class InstructorModel extends MysqlAcademico
 		$sql .= "		INNER JOIN " . $this->db_nameAdmin . ".persona B";
 		$sql .= "			ON A.per_id=B.per_id AND B.estado_logico!=0";
 		$sql .= "	WHERE A.ins_estado_logico!=0 AND A.cat_id={$catIds} ORDER BY Nombre DESC ";
-		putMessageLogFile($sql);
 		$request = $this->select_all($sql);
 		return $request;
         

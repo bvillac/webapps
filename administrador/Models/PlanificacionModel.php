@@ -1,4 +1,7 @@
 <?php
+
+use Matrix\Functions;
+
 class PlanificacionModel extends MysqlAcademico
 {
     private $db_name;
@@ -35,31 +38,84 @@ class PlanificacionModel extends MysqlAcademico
         return $request;
     }
 
-    public function insertData($dataObj)
+    public function insertData($Cabecera, $Detalle)
     {
+        
         $con = $this->getConexion();
-        $nombreSalon = $dataObj['nombre'];
-        $sql = "SELECT * FROM " . $this->db_name . ".salon where sal_nombre='{$dataObj['nombre']}' and cat_id='{$dataObj['CentroAtencionID']}'";
+        //$nombreSalon = $dataObj['nombre'];
+        //$sql = "SELECT * FROM " . $this->db_name . ".salon where sal_nombre='{$dataObj['nombre']}' and cat_id='{$dataObj['CentroAtencionID']}'";
 
-        $request = $this->select($sql);
-        if (empty($request)) {
+
+        $request = true; //$this->select($sql);
+        //if (empty($request)) {
+        if (true) {
             $con->beginTransaction();
             try {
+                $rangoDia="";
+                for ($i = 0; $i < sizeof($Detalle); $i++) {
+                    switch ($Detalle[$i]['dia']) {
+                        case "LU":
+                            $diaLunes = $Detalle[$i]['horario'];
+                            $rangoDia .="LU:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            break;
+                        case "MA":
+                            $diaMartes = $Detalle[$i]['horario'];
+                            $rangoDia .="MA:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            break;
+                        case "MI":
+                            $diaMiercoles = $Detalle[$i]['horario'];
+                            $rangoDia .="MI:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            break;
+                        case "JU":
+                            $diaJueves = $Detalle[$i]['horario'];
+                            $rangoDia .="JU:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            break;
+                        case "VI":
+                            $diaViernes = $Detalle[$i]['horario'];
+                            $rangoDia .="VI:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            break;
+                        case "SA":
+                            $diaSabado = $Detalle[$i]['horario'];
+                            $rangoDia .="SA:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            break;
+                        case "DO":
+                            $diaDomingo = $Detalle[$i]['horario'];
+                            $rangoDia .="DO:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            break;
+                    }
+                }
+                
                 $arrData = array(
-                    $dataObj['CentroAtencionID'],
-                    $dataObj['nombre'],
-                    $dataObj['cupominimo'],
-                    $dataObj['cupomaximo'],
+                    $Cabecera['centro'],
+                    $Cabecera['fechaInicio'],
+                    $Cabecera['fechaFin'],
+                    empty(!$diaLunes)?$diaLunes:"",
+                    empty(!$diaMartes)?$diaMartes:"",
+                    empty(!$diaMiercoles)?$diaMiercoles:"",
+                    empty(!$diaJueves)?$diaJueves:"",
+                    empty(!$diaViernes)?$diaViernes:"",
+                    empty(!$diaSabado)?$diaSabado:"",
+                    empty(!$diaDomingo)?$diaDomingo:"",
+                    $rangoDia,
+                    'T',
                     retornaUser(), 1
                 );
-                //putMessageLogFile($arrData);
-                $SqlQuery  = "INSERT INTO " . $this->db_name . ".salon 
+                putMessageLogFile($arrData);
+                $SqlQuery  = "INSERT INTO " . $this->db_name . ".planificacion_temp 
 				    (`cat_id`,
-                    `sal_nombre`,
-                    `sal_cupo_minimo`,
-                    `sal_cupo_maximo`,
-                    `sal_usuario_creacion`,                   
-                    `sal_estado_logico`) VALUES(?,?,?,?,?,?) ";
+                    `tpla_fecha_incio`,
+                    `tpla_fecha_fin`,
+                    `tpla_lunes`,
+                    `tpla_martes`,
+                    `tpla_miercoles`,
+                    `tpla_jueves`,
+                    `tpla_viernes`,
+                    `tpla_sabado`,
+                    `tpla_domingo`,
+                    `tpla_fechas_rango`,
+                    `tpla_estado`,                    
+                    `tpla_usuario_creacion`,                   
+                    `tpla_estado_logico`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
                 $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
                 $con->commit();
                 $arroout["status"] = true;
@@ -83,6 +139,7 @@ class PlanificacionModel extends MysqlAcademico
 
 
 
+
     public function updateData($dataObj)
     {
         try {
@@ -99,7 +156,7 @@ class PlanificacionModel extends MysqlAcademico
 						SET cat_id = ?, sal_nombre = ?,sal_cupo_minimo = ?,sal_cupo_maximo = ?,sal_usuario_modificacion = ?,
                             sal_estado_logico = ?,sal_fecha_modificacion = CURRENT_TIMESTAMP() WHERE sal_id={$Ids}  ";
             $request = $this->update($sql, $arrData);
-            $arroout["status"]=($request)?true:false;
+            $arroout["status"] = ($request) ? true : false;
             $arroout["numero"] = 0;
             return $arroout;
         } catch (Exception $e) {

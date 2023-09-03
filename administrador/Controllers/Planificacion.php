@@ -73,25 +73,27 @@ class Planificacion extends Controllers
         $this->views->getView($this, "nuevo", $data);
     }
 
-    public function ingresarSalon()
+    public function ingresarPlanificacion()
     {
         if ($_POST) {
             //dep($_POST);
-            if (empty($_POST['salon']) || empty($_POST['accion'])) {
+            if (empty($_POST['cabecera']) || empty($_POST['detalle']) || empty($_POST['accion'])) {
                 $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
             } else {
                 $request = "";
-                $datos = isset($_POST['salon']) ? json_decode($_POST['salon'], true) : array();
+                //$datos = isset($_POST['cabecera']) ? json_decode($_POST['cabecera'], true) : array();
+                $Cabecera = isset($_POST['cabecera']) ? $_POST['cabecera'] : array();
+                $Detalle = isset($_POST['detalle']) ? $_POST['detalle'] : array();
                 $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
                 if ($accion == "Create") {
                     $option = 1;
-                    if ($_SESSION['permisosMod']['w']) {
-                        $request = $this->model->insertData($datos);
-                    }
+                    //if ($_SESSION['permisosMod']['w']) {
+                        $request = $this->model->insertData($Cabecera,$Detalle);
+                    //}
                 } else {
                     $option = 2;
                     if ($_SESSION['permisosMod']['u']) {
-                        $request = $this->model->updateData($datos);
+                        $request = $this->model->updateData($Cabecera);
                     }
                 }
                 if ($request["status"]) {
@@ -194,7 +196,7 @@ class Planificacion extends Controllers
     {
         if ($_POST) {
             if ($_SESSION['permisosMod']['r']) {
-                
+
                 $ids = intval(strClean($_POST['Ids']));
                 if ($ids > 0) {
                     $modelInstructor = new InstructorModel();
@@ -211,9 +213,4 @@ class Planificacion extends Controllers
         }
         die();
     }
-
-    
-
-
-
 }

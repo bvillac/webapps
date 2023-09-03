@@ -60,6 +60,11 @@ $(document).ready(function () {
 
     });
 
+    $("#btn_saveAll").click(function () {
+        guardarAll();
+
+    });
+
 
 
 
@@ -392,8 +397,9 @@ function guardarTemp() {
             if (codigoExiste(nLetIni, 'dia', sessionStorage.dts_PlaTemporal)) {
                 arrayList[size] = objDataRow(nLetIni);
                 sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+                swal("Información!", "Planificación Temporal Guardada.", "success");
             } else {
-                //swal("Atención!", "Planificación del día ya existe en su lista", "error");
+
                 swal({
                     title: "Actualizar",
                     text: "¿Realmente quiere Modificar Planificación?",
@@ -403,24 +409,27 @@ function guardarTemp() {
                     cancelButtonText: "No, cancelar!",
                     closeOnConfirm: false,
                     closeOnCancel: true
-                }, function(isConfirm) {                    
-                    if (isConfirm) {            
+                }, function (isConfirm) {
+                    if (isConfirm) {
                         eliminarItemsDia(nLetIni);
-                        arrayList[size] = objDataRow(nLetIni);
+                        arrayList = JSON.parse(sessionStorage.dts_PlaTemporal);
+                        arrayList[arrayList.length] = objDataRow(nLetIni);
                         sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
-                        swal("Autorizdo!", "Planificacion Guardada." , "success");
+                        swal("Información!", "Planificación Temporal Guardada.", "success");
                     }
-            
+
                 });
             }
 
         } else {
             arrayList[0] = objDataRow(nLetIni);
             sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+            swal("Información!", "Planificación Temporal Guardada.", "success");
         }
     } else {
         arrayList[0] = objDataRow(nLetIni);
         sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+        swal("Información!", "Planificación Temporal Guardada.", "success");
     }
 
 
@@ -434,6 +443,70 @@ function eliminarItemsDia(nDia) {
             var array = findAndRemove(Grid, 'dia', nDia);
             sessionStorage.dts_PlaTemporal = JSON.stringify(array);
         }
+    }
+}
+
+
+//Guardar todo
+function guardarAll() {
+    let fechaInicio = $('#dtp_fecha_desde').val();
+    let fechaFin = $('#dtp_fecha_hasta').val();
+    let centroAT = $('#cmb_CentroAtencion').val();
+    console.log(fechaInicio);
+    console.log(fechaFin);
+    console.log(centroAT);
+    if (fechaInicio == '' || fechaFin == '' || centroAT == 0) {
+        swal("Atención", "Todos los Fecha inicio,fecha fin, y Centro de Atención son obligatorios.", "error");
+        return false;
+    }
+
+
+    //return rowGrid;
+
+
+    if (sessionStorage.dts_PlaTemporal) {
+        var Grid = JSON.parse(sessionStorage.dts_PlaTemporal);
+        if (Grid.length > 0) {
+            let cabPlan = new Object();
+            cabPlan.fechaInicio = fechaInicio;
+            cabPlan.fechaFin = fechaFin;
+            cabPlan.centro = centroAT;            
+            let link = base_url + '/Planificacion/ingresarPlanificacion';
+            $.ajax({
+                type: 'POST',
+                url: link,
+                data: {
+                    "cabecera": cabPlan,
+                    "detalle": Grid,
+                    "accion": "Create"
+                },
+                success: function (data) {
+                    if (data.status) {
+                        //sessionStorage.removeItem('dataPersona');
+                        swal("Persona Contrato", data.msg, "success");
+                        $('#txth_per_idBenef').val(data.numero);
+                        $('#txt_CodigoBeneficiario').val(per_cedula);
+                        $('#txt_NombreBeneficirio').val(per_nombre + " " + per_apellido);
+                        $('#txt_TelefonoBeneficirio').val(per_telefono);
+                        $('#dtp_fecha_nacimiento').val(calcularEdad(per_fecha_nacimiento));
+                        //alert("IDS = " + data.numero);                
+                        $('#modalFormPersona').modal("hide");
+                        limpiarTexboxPersona();
+                    } else {
+                        swal("Error", data.msg, "error");
+                    }
+                },
+                dataType: "json"
+            });
+
+
+
+
+        } else {
+            swal("Atención!", "No existe Planificación", "error");
+        }
+    } else {
+        swal("Atención!", "No existe Planificación", "error");
     }
 }
 

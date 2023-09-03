@@ -74,8 +74,8 @@ require_once "Views/Planificacion/Modals/modalSalon.php";
               <h2><span id="FechaDia" class="badge badge-secondary"></span></h2>
             </div>
             <div class="col-sm">
-              <button type="button" class="btn btn-dark" id="btn_saveTemp">Temporal</button>
-              <button type="button" class="btn btn-dark" id="btn_saveAll">Guardar</button>
+              <button type="button" class="btn btn-dark" id="btn_saveTemp">Guardar Temporal</button>
+              <button type="button" class="btn btn-dark" id="btn_saveAll">Terminar Planificación</button>
             </div>
           </div>
           <br><br><h2>Planificación</h2>
