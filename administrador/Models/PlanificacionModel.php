@@ -40,62 +40,60 @@ class PlanificacionModel extends MysqlAcademico
 
     public function insertData($Cabecera, $Detalle)
     {
-        
+
         $con = $this->getConexion();
-        //$nombreSalon = $dataObj['nombre'];
-        //$sql = "SELECT * FROM " . $this->db_name . ".salon where sal_nombre='{$dataObj['nombre']}' and cat_id='{$dataObj['CentroAtencionID']}'";
+        $sql = "SELECT * FROM " . $this->db_name . ".planificacion_temp 
+                  where tpla_estado_logico=1 and cat_id='{$Cabecera['centro']}' and tpla_fecha_incio='{$Cabecera['fechaInicio']}' ";
 
-
-        $request = true; //$this->select($sql);
-        //if (empty($request)) {
-        if (true) {
+        $request = $this->select($sql);
+        if (empty($request)) {
             $con->beginTransaction();
             try {
-                $rangoDia="";
+                $rangoDia = "";
                 for ($i = 0; $i < sizeof($Detalle); $i++) {
                     switch ($Detalle[$i]['dia']) {
                         case "LU":
                             $diaLunes = $Detalle[$i]['horario'];
-                            $rangoDia .="LU:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            $rangoDia .= "LU:" . date("Y-m-d", strtotime($Detalle[$i]['fecha'])) . ";";
                             break;
                         case "MA":
                             $diaMartes = $Detalle[$i]['horario'];
-                            $rangoDia .="MA:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            $rangoDia .= "MA:" . date("Y-m-d", strtotime($Detalle[$i]['fecha'])) . ";";
                             break;
                         case "MI":
                             $diaMiercoles = $Detalle[$i]['horario'];
-                            $rangoDia .="MI:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            $rangoDia .= "MI:" . date("Y-m-d", strtotime($Detalle[$i]['fecha'])) . ";";
                             break;
                         case "JU":
                             $diaJueves = $Detalle[$i]['horario'];
-                            $rangoDia .="JU:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            $rangoDia .= "JU:" . date("Y-m-d", strtotime($Detalle[$i]['fecha'])) . ";";
                             break;
                         case "VI":
                             $diaViernes = $Detalle[$i]['horario'];
-                            $rangoDia .="VI:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            $rangoDia .= "VI:" . date("Y-m-d", strtotime($Detalle[$i]['fecha'])) . ";";
                             break;
                         case "SA":
                             $diaSabado = $Detalle[$i]['horario'];
-                            $rangoDia .="SA:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            $rangoDia .= "SA:" . date("Y-m-d", strtotime($Detalle[$i]['fecha'])) . ";";
                             break;
                         case "DO":
                             $diaDomingo = $Detalle[$i]['horario'];
-                            $rangoDia .="DO:".date("Y-m-d", strtotime($Detalle[$i]['fecha'])).";";
+                            $rangoDia .= "DO:" . date("Y-m-d", strtotime($Detalle[$i]['fecha'])) . ";";
                             break;
                     }
                 }
-                
+
                 $arrData = array(
                     $Cabecera['centro'],
                     $Cabecera['fechaInicio'],
                     $Cabecera['fechaFin'],
-                    empty(!$diaLunes)?$diaLunes:"",
-                    empty(!$diaMartes)?$diaMartes:"",
-                    empty(!$diaMiercoles)?$diaMiercoles:"",
-                    empty(!$diaJueves)?$diaJueves:"",
-                    empty(!$diaViernes)?$diaViernes:"",
-                    empty(!$diaSabado)?$diaSabado:"",
-                    empty(!$diaDomingo)?$diaDomingo:"",
+                    empty(!$diaLunes) ? $diaLunes : "",
+                    empty(!$diaMartes) ? $diaMartes : "",
+                    empty(!$diaMiercoles) ? $diaMiercoles : "",
+                    empty(!$diaJueves) ? $diaJueves : "",
+                    empty(!$diaViernes) ? $diaViernes : "",
+                    empty(!$diaSabado) ? $diaSabado : "",
+                    empty(!$diaDomingo) ? $diaDomingo : "",
                     $rangoDia,
                     'T',
                     retornaUser(), 1
@@ -131,7 +129,7 @@ class PlanificacionModel extends MysqlAcademico
             }
         } else {
             $arroout["status"] = false;
-            $arroout["message"] = "Ya exite el Aula con este Nombre.";
+            $arroout["message"] = "Ya exite el Planificación con esta fecha.";
             return $arroout;
         }
     }

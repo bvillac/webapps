@@ -452,18 +452,10 @@ function guardarAll() {
     let fechaInicio = $('#dtp_fecha_desde').val();
     let fechaFin = $('#dtp_fecha_hasta').val();
     let centroAT = $('#cmb_CentroAtencion').val();
-    console.log(fechaInicio);
-    console.log(fechaFin);
-    console.log(centroAT);
     if (fechaInicio == '' || fechaFin == '' || centroAT == 0) {
         swal("Atención", "Todos los Fecha inicio,fecha fin, y Centro de Atención son obligatorios.", "error");
         return false;
     }
-
-
-    //return rowGrid;
-
-
     if (sessionStorage.dts_PlaTemporal) {
         var Grid = JSON.parse(sessionStorage.dts_PlaTemporal);
         if (Grid.length > 0) {
@@ -482,26 +474,16 @@ function guardarAll() {
                 },
                 success: function (data) {
                     if (data.status) {
-                        //sessionStorage.removeItem('dataPersona');
-                        swal("Persona Contrato", data.msg, "success");
-                        $('#txth_per_idBenef').val(data.numero);
-                        $('#txt_CodigoBeneficiario').val(per_cedula);
-                        $('#txt_NombreBeneficirio').val(per_nombre + " " + per_apellido);
-                        $('#txt_TelefonoBeneficirio').val(per_telefono);
-                        $('#dtp_fecha_nacimiento').val(calcularEdad(per_fecha_nacimiento));
-                        //alert("IDS = " + data.numero);                
-                        $('#modalFormPersona').modal("hide");
-                        limpiarTexboxPersona();
+                        sessionStorage.removeItem('dts_PlaInstructor');
+                        sessionStorage.removeItem('dts_PlaTemporal');
+                        sessionStorage.removeItem('dts_SalonCentro');
+                        swal("Planificación", data.msg, "success");                        
                     } else {
                         swal("Error", data.msg, "error");
                     }
                 },
                 dataType: "json"
             });
-
-
-
-
         } else {
             swal("Atención!", "No existe Planificación", "error");
         }
