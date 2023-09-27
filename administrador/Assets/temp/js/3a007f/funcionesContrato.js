@@ -2,37 +2,6 @@ document.write(`<script src="${base_url}/Assets/js/cedulaRucPass.js"></script>`)
 let tableContrato;
 let tablePersonaBuscar;
 
-function codigoExiste(value, property, lista) {
-    if (lista) {
-        var array = JSON.parse(lista);
-        for (var i = 0; i < array.length; i++) {
-            if (array[i][property] == value) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-function retornarIndexArray(array, property, value) {
-    var index = -1;
-    for (var i = 0; i < array.length; i++) {
-        if (array[i][property] == value) {
-            index = i;
-            return index;
-        }
-    }
-    return index;
-}
-
-function findAndRemove(array, property, value) {
-    for (var i = 0; i < array.length; i++) {
-        if (array[i][property] == value) {
-            array.splice(i, 1);
-        }
-    }
-    return array;
-}
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -618,7 +587,7 @@ function guardarPersona() {
     dataPersona.per_direccion = per_direccion;
     dataPersona.per_genero = per_genero;
     //sessionStorage.dataPersona = JSON.stringify(dataPersona);
-    let link = base_url + '/Persona/ingresarPersonaContrato';
+    let link = base_url + '/Persona/ingresarPersonaDatos';
     $.ajax({
         type: 'POST',
         url: link,

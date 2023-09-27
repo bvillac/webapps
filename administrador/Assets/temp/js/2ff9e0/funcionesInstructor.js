@@ -466,23 +466,12 @@ function guardarInstructor(accion) {
         selecionados += $(this).attr("id") + ",";
     });
 
-    console.log(per_id)
-    console.log(txt_cedula)
-    console.log(txt_horas_asignadas)
-    console.log(txt_horas_extras)
-    console.log(selecionados)
-    console.log(centro)
-    console.log(selectedSalon)
     selecionados = selecionados.slice(0, selecionados.length - 1);
     if (per_id == '' || txt_cedula == '' || txt_horas_asignadas == '' || txt_horas_extras == '' || selecionados == '' || centro == '0') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;
     }
-    console.log(selectedSalon);
-    /*if (selectedSalon.length>0) {
-        swal("Atención", "Debe Seleccionar almenos un Salón.", "error");
-        return false;
-    }*/
+   
 
     let elementsValid = document.getElementsByClassName("valid");
     for (let i = 0; i < elementsValid.length; i++) {

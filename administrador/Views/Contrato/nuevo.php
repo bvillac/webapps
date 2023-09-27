@@ -2,7 +2,7 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
-getModal('modalPersonaBuscar', $data);
+//getModal('modalPersonaBuscar', $data);
 require_once "Views/Contrato/Modals/modalPersona.php";
 ?>
 <div id="contentAjax"></div>
