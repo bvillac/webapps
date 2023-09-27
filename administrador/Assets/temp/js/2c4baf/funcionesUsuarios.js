@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 window.addEventListener('load', function () {
-    fntRolAsig();
+    //fntRolAsig();
 }, false);
 
 //Se ejecuta en los eventos de Controles
