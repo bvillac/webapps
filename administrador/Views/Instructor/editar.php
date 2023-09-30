@@ -95,13 +95,21 @@ $dataHoras = $data['Horas'];
                 <?php
                 $numero = 8;
                 for ($i = 0; $i < 13; $i++) {
-                  $LUCheck = str_contains($dataHoras, 'LU' . $numero)  ? " checked " : "";
+                  /*$LUCheck = str_contains($dataHoras, 'LU' . $numero)  ? " checked " : "";
                   $MACheck = str_contains($dataHoras, 'MA' . $numero)  ? " checked " : "";
                   $MICheck = str_contains($dataHoras, 'MI' . $numero)  ? " checked " : "";
                   $JUCheck = str_contains($dataHoras, 'JU' . $numero)  ? " checked " : "";
                   $VICheck = str_contains($dataHoras, 'VI' . $numero)  ? " checked " : "";
                   $SACheck = str_contains($dataHoras, 'SA' . $numero)  ? " checked " : "";
-                  $DOCheck = str_contains($dataHoras, 'DO' . $numero)  ? " checked " : "";
+                  $DOCheck = str_contains($dataHoras, 'DO' . $numero)  ? " checked " : "";*/
+
+                  $LUCheck = strpos($dataHoras, 'LU' . $numero)!== false  ? " checked " : "";
+                  $MACheck = strpos($dataHoras, 'MA' . $numero)!== false   ? " checked " : "";
+                  $MICheck = strpos($dataHoras, 'MI' . $numero)!== false   ? " checked " : "";
+                  $JUCheck = strpos($dataHoras, 'JU' . $numero)!== false   ? " checked " : "";
+                  $VICheck = strpos($dataHoras, 'VI' . $numero)!== false   ? " checked " : "";
+                  $SACheck = strpos($dataHoras, 'SA' . $numero)!== false   ? " checked " : "";
+                  $DOCheck = strpos($dataHoras, 'DO' . $numero)!== false   ? " checked " : "";
                 ?>
                   <tr>
                     <td><?= $numero; ?>:00</td>
