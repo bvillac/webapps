@@ -253,7 +253,7 @@ function generarPlanificiacion(accion) {
             //ENCABEZADO DE PLANIFICAICONR
             filaEncabezado.append($("<th>Horas</th>"));
             for (var i = 0; i < Grid.length; i++) {
-                filaEncabezado.append($("<th>" + Grid[i]['Nombre'].toUpperCase() + "</th>"));
+                filaEncabezado.append($("<th>" + Grid[i]['Nombre'].substring(0, 15).toUpperCase() + "</th>"));
             }
             $("#dts_Planificiacion thead").html("");
             $("#dts_Planificiacion thead").append(filaEncabezado);
