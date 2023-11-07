@@ -568,7 +568,7 @@ function guardarAll(accion) {
             sessionStorage.removeItem("dts_PlaTemporal");
             sessionStorage.removeItem("dts_SalonCentro");
             swal("Planificación", data.msg, "success");
-            window.location = base_url + "/planificiacion"; //Retorna al Portal Principal
+            window.location = base_url + "/planificacion"; //Retorna al Portal Principal
           } else {
             swal("Error", data.msg, "error");
           }
@@ -649,14 +649,6 @@ function generarPlanificiacionEdit(accion, nLunes, nMartes, nMiercoles, nJueves,
       nLetIni = nLetIni == "SÁ" ? "SA" : nLetIni; //Se cambia por la Tilde
       numeroHora = 8;
 
-      /*console.log(nLunes);
-      console.log(nMartes);
-      console.log(nMiercoles);
-      console.log(nJueves);
-      console.log(nViernes);
-      console.log(nSabado);
-      console.log(nDomingo);*/
-
       switch (nLetIni) {
         case "LU":
           nDia = nLunes.split(",");
@@ -695,7 +687,6 @@ function generarPlanificiacionEdit(accion, nLunes, nMartes, nMiercoles, nJueves,
           }
 
           if (nExiste) {
-            //let arrayAula = Grid[col]["Salones"].split(",");
             let objSalon = buscarSalonColor(idsSalon);
             idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
             fila += "<td>";
@@ -735,5 +726,124 @@ function existeHorarioEditar(nHorArray, nDiaHora) {
   }
   //console.log(`No se encontraron elementos en el array que contengan "${nDiaHora}".`);
   return "0";
+}
+
+//Eliminar Planificacion 
+function fntDeletePlanificacion(ids) {
+  var ids = ids;
+  swal({
+      title: "Eliminar Registro",
+      text: "¿Realmente quiere eliminar el Registro?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Si, eliminar!",
+      cancelButtonText: "No, cancelar!",
+      closeOnConfirm: false,
+      closeOnCancel: true
+  }, function (isConfirm) {
+
+      if (isConfirm) {
+          var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+          var ajaxUrl = base_url + '/Planificacion/eliminar';
+          var strData = "ids=" + ids;
+          request.open("POST", ajaxUrl, true);
+          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          request.send(strData);
+          request.onreadystatechange = function () {
+              if (request.readyState == 4 && request.status == 200) {
+                  var objData = JSON.parse(request.responseText);
+                  if (objData.status) {
+                      swal("Eliminar!", objData.msg, "success");
+                      tablePlanificacion.api().ajax.reload(function () {
+
+                      });
+                  } else {
+                      swal("Atención!", objData.msg, "error");
+                  }
+              }
+          }
+      }
+
+  });
+}
+
+
+//CLONAR PLANIFICACION
+function fntClonarPlanificacion(ids) {
+  var ids = ids;
+  swal({
+      title: "Clonar Planificación",
+      text: "¿Realmente quiere Clonar el Registro?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Si, Continuar!",
+      cancelButtonText: "No, cancelar!",
+      closeOnConfirm: false,
+      closeOnCancel: true
+  }, function (isConfirm) {
+
+      if (isConfirm) {
+          var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+          var ajaxUrl = base_url + '/Planificacion/clonar';
+          var strData = "ids=" + ids;
+          request.open("POST", ajaxUrl, true);
+          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          request.send(strData);
+          request.onreadystatechange = function () {
+              if (request.readyState == 4 && request.status == 200) {
+                  var objData = JSON.parse(request.responseText);
+                  if (objData.status) {
+                      swal("Clonado!", objData.msg, "success");
+                      tablePlanificacion.api().ajax.reload(function () {
+
+                      });
+                  } else {
+                      swal("Atención!", objData.msg, "error");
+                  }
+              }
+          }
+      }
+
+  });
+}
+
+
+//AUTORIZAR PLANIFICACION
+function fntAutorizarPlanificacion(ids) {
+  var ids = ids;
+  swal({
+      title: "Autorizar Planificación",
+      text: "¿Realmente quiere Autorizar la Planificación?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Si, Continuar!",
+      cancelButtonText: "No, cancelar!",
+      closeOnConfirm: false,
+      closeOnCancel: true
+  }, function (isConfirm) {
+
+      if (isConfirm) {
+          var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+          var ajaxUrl = base_url + '/Planificacion/autorizar';
+          var strData = "ids=" + ids;
+          request.open("POST", ajaxUrl, true);
+          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          request.send(strData);
+          request.onreadystatechange = function () {
+              if (request.readyState == 4 && request.status == 200) {
+                  var objData = JSON.parse(request.responseText);
+                  if (objData.status) {
+                      swal("Autorizado!", objData.msg, "success");
+                      tablePlanificacion.api().ajax.reload(function () {
+
+                      });
+                  } else {
+                      swal("Atención!", objData.msg, "error");
+                  }
+              }
+          }
+      }
+
+  });
 }
 

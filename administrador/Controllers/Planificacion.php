@@ -39,16 +39,16 @@ class Planificacion extends Controllers
                 } else {
                     $arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>'; //target="_blanck"  
                 }
-
-
-                if ($_SESSION['permisosMod']['r']) {
-                    $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
-                }
+               
                 if ($_SESSION['permisosMod']['u']) {
                     $btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Planificacion/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
                 }
+                if ($_SESSION['permisosMod']['u']) {
+                    $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntClonarPlanificacion(\'' . $arrData[$i]['Ids'] . '\')" title="Clonar Planificación"><i class="fa fa-clone"></i></button> ';
+                    $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntAutorizarPlanificacion(\'' . $arrData[$i]['Ids'] . '\')" title="Autorizar Planificación"><i class="fa fa-sharp fa-solid fa-thumbs-up"></i></button> ';
+                }
                 if ($_SESSION['permisosMod']['d']) {
-                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteSalon(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeletePlanificacion(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
                 }
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
             }
@@ -161,7 +161,7 @@ class Planificacion extends Controllers
     }
 
 
-    public function eliminarSalon()
+    public function eliminar()
     {
         if ($_POST) {
 
@@ -242,4 +242,43 @@ class Planificacion extends Controllers
         }
         die();
     }
+
+    public function clonar()
+    {
+        if ($_POST) {
+
+            if ($_SESSION['permisosMod']['u']) {
+                $ids = intval($_POST['ids']);
+                $request = $this->model->clonarRegistro($ids);
+                if ($request) {
+                    $arrResponse = array('status' => true, 'msg' => 'Se ha Clonado el Registro');
+                } else {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al Clonar el Registro.');
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        die();
+    }
+
+    public function autorizar()
+    {
+        if ($_POST) {
+
+            if ($_SESSION['permisosMod']['u']) {
+                $ids = intval($_POST['ids']);
+                $request = $this->model->autorizarRegistro($ids);
+                if ($request) {
+                    $arrResponse = array('status' => true, 'msg' => 'Se ha Autorizado la Planificación.');
+                } else {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al Autorizar la Planificación.');
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        die();
+    }
+
+
+
 }

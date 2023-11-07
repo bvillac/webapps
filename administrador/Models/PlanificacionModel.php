@@ -91,7 +91,6 @@ class PlanificacionModel extends MysqlAcademico
                     retornaUser(),
                     1
                 );
-                putMessageLogFile($arrData);
                 $SqlQuery = "INSERT INTO " . $this->db_name . ".planificacion_temp 
 				    (`cat_id`,
                     `tpla_fecha_incio`,
@@ -189,7 +188,7 @@ class PlanificacionModel extends MysqlAcademico
             $arroout["numero"] = 0;
             return $arroout;
         } catch (Exception $e) {
-            //throw $e;
+            throw $e;
             $arroout["status"] = false;
             $arroout["message"] = "Fallo: " . $e->getMessage();
             return $arroout;
@@ -199,10 +198,42 @@ class PlanificacionModel extends MysqlAcademico
     public function deleteRegistro(int $Ids)
     {
         $usuario = retornaUser();
-        $sql = "UPDATE " . $this->db_name . ".salon SET sal_estado_logico = ?,sal_usuario_modificacion='{$usuario}',
-                        sal_fecha_modificacion = CURRENT_TIMESTAMP() WHERE sal_id = {$Ids} ";
+        $sql = "UPDATE " . $this->db_name . ".planificacion_temp SET tpla_estado_logico = ?,tpla_usuario_modificacion='{$usuario}',
+                    tpla_fecha_modificacion = CURRENT_TIMESTAMP() WHERE tpla_id = {$Ids} ";
         $arrData = array(0);
         $request = $this->update($sql, $arrData);
         return $request;
     }
+
+    public function clonarRegistro(int $Ids)
+    {
+        $usuario = retornaUser();
+        $sql = "INSERT INTO " . $this->db_name . ".planificacion_temp 
+                        (`cat_id`,`tpla_fecha_incio`,`tpla_fecha_fin`,`tpla_lunes`,`tpla_martes`,`tpla_miercoles`,`tpla_jueves`,
+                        `tpla_viernes`,`tpla_sabado`,`tpla_domingo`,`tpla_fechas_rango`,`tpla_estado`,`tpla_usuario_creacion`,`tpla_estado_logico`)
+                        SELECT `cat_id`,`tpla_fecha_incio`,`tpla_fecha_fin`,`tpla_lunes`,`tpla_martes`,`tpla_miercoles`,`tpla_jueves`,
+                         `tpla_viernes`,`tpla_sabado`,`tpla_domingo`,`tpla_fechas_rango`,`tpla_estado`,'{$usuario}',1
+                                FROM " . $this->db_name . ".planificacion_temp WHERE tpla_id = {$Ids} ";
+
+        $arrData = array();
+        $request = $this->update($sql, $arrData);
+        return $request;
+    }
+
+
+    public function autorizarRegistro(int $Ids)
+    {
+        $usuario = retornaUser();
+        $sql = "INSERT INTO " . $this->db_name . ".planificacion 
+                        (`cat_id`,`pla_fecha_incio`,`pla_fecha_fin`,`pla_lunes`,`pla_martes`,`pla_miercoles`,`pla_jueves`,
+                        `pla_viernes`,`pla_sabado`,`pla_domingo`,`pla_fechas_rango`,`pla_estado`,`pla_usuario_creacion`,`pla_estado_logico`)
+                        SELECT `cat_id`,`tpla_fecha_incio`,`tpla_fecha_fin`,`tpla_lunes`,`tpla_martes`,`tpla_miercoles`,`tpla_jueves`,
+                         `tpla_viernes`,`tpla_sabado`,`tpla_domingo`,`tpla_fechas_rango`,`tpla_estado`,'{$usuario}',1
+                                FROM " . $this->db_name . ".planificacion_temp WHERE tpla_id = {$Ids} ";
+
+        $arrData = array();
+        $request = $this->update($sql, $arrData);
+        return $request;
+    }
+
 }
