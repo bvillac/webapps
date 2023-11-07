@@ -27,10 +27,11 @@ class Planificacion extends Controllers
         $this->views->getView($this, "planificacion", $data);
     }
 
-    public function consultarSalon()
+    public function consultarPlanificacion()
     {
         if ($_SESSION['permisosMod']['r']) {
             $arrData = $this->model->consultarDatos();
+            //putMessageLogFile($arrData);
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($arrData[$i]['Estado'] == 1) {
@@ -44,8 +45,7 @@ class Planificacion extends Controllers
                     $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['u']) {
-                    //$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Beneficiario/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
-                    $btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+                    $btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Planificacion/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
                 }
                 if ($_SESSION['permisosMod']['d']) {
                     $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteSalon(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
@@ -73,6 +73,35 @@ class Planificacion extends Controllers
         $this->views->getView($this, "nuevo", $data);
     }
 
+    public function editar($ids)
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            if (is_numeric($ids)) {
+                $data = $this->model->consultarDatosId($ids);
+                if (empty($data)) {
+                    echo "Datos no encontrados";
+                } else {
+                    $modelCentro = new CentroAtencionModel();
+                    $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
+                    $modelInstructor = new InstructorModel();
+                    $data['dataInstructor'] = $modelInstructor->consultarCentroInstructores($data['cat_id']);
+                    $modelSalon = new SalonModel();
+                    $data['dataSalon'] = $modelSalon->consultarSalones($data['cat_id']);
+                    $data['page_tag'] = "Editar Planificación";
+                    $data['page_name'] = "Editar Planificación";
+                    $data['page_title'] = "Editar Planificación <small> " . TITULO_EMPRESA . "</small>";
+                    $this->views->getView($this, "editar", $data);
+                }
+            } else {
+                echo "Dato no válido";
+            }
+        } else {
+            header('Location: ' . base_url() . '/login');
+            die();
+        }
+        die();
+    }
+
     public function ingresarPlanificacion()
     {
         if ($_POST) {
@@ -88,12 +117,12 @@ class Planificacion extends Controllers
                 if ($accion == "Create") {
                     $option = 1;
                     //if ($_SESSION['permisosMod']['w']) {
-                        $request = $this->model->insertData($Cabecera,$Detalle);
+                    $request = $this->model->insertData($Cabecera, $Detalle);
                     //}
                 } else {
                     $option = 2;
                     if ($_SESSION['permisosMod']['u']) {
-                        $request = $this->model->updateData($Cabecera);
+                        $request = $this->model->updateData($Cabecera, $Detalle);
                     }
                 }
                 if ($request["status"]) {

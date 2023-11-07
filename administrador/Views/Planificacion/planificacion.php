@@ -33,14 +33,10 @@ adminMenu($data);
                         <table class="table table-hover table-bordered" id="tablePlanificacion">
                             <thead>
                                 <tr>
-                                    <th>Número</th>
+                                    <th>Centro</th>
                                     <th>F.Inicio</th>
-                                    <th>Razón Social</th>
-                                    <th>Total</th>
-                                    <th>C.Inicial</th>
-                                    <th>Saldo</th>
-                                    <th>N.Pagos</th>
-                                    <th>C.Mensual</th>
+                                    <th>F.Fin</th>
+                                    <th>Rango Fechas</th>                                  
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>

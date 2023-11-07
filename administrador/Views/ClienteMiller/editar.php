@@ -149,8 +149,6 @@ adminMenu($data);
     </div>
 </main>
 
-<script src="<?= media() ?>/js/cedulaRucPass.js"></script>
-
 
 
 <?php adminFooter($data); ?>

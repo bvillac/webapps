@@ -3,496 +3,737 @@
 let delayTimer;
 let fechaDia = new Date();
 let numeroDia = 0;
-$(document).ready(function () {
-    $('#cmb_instructor').selectpicker('render');
-    //Nueva Orden
-    $("#btn_nuevo").click(function () {
-        //eliminarStores();
-        window.location = base_url + '/Planificacion/nuevo';//Retorna al Portal Principal
-    });
-
-    $("#cmd_retornar").click(function () {
-        //eliminarStores();
-        window.location = base_url + '/planificiacion';//Retorna al Portal Principal
-    });
-
-    $('#external-events .fc-event').each(function () {
-
-        // store data so the calendar knows to render an event upon drop
-        $(this).data('event', {
-            title: $.trim($(this).text()), // use the element's text as the event title
-            stick: true // maintain when user navigates (see docs on the renderEvent method)
-        });
-
-        // make the event draggable using jQuery UI
-        $(this).draggable({
-            zIndex: 999,
-            revert: true,      // will cause the event to go back to its
-            revertDuration: 0  //  original position after the drag
-        });
-
-    });
-
-    $("#agregarBoton").click(function () {
-        const contenedorPadre = document.getElementById("contenedor-padre");
-        const nuevoDiv = document.createElement("div");
-        nuevoDiv.textContent = "Nuevo Div Agregado";
-        nuevoDiv.classList.add("nuevo-div");
-        contenedorPadre.appendChild(nuevoDiv);
-    });
+let tablePlanificacion;
 
 
-    $("#btn_generar").click(function () {
-        generarPlanificiacion("");
-
-    });
-    $("#btn_siguiente").click(function () {
-        generarPlanificiacion("Next");
-
-    });
-    $("#btn_anterior").click(function () {
-        generarPlanificiacion("Back");
-
-    });
-
-    $("#btn_saveTemp").click(function () {
-        guardarTemp();
-
-    });
-
-    $("#btn_saveAll").click(function () {
-        guardarAll();
-
-    });
+document.addEventListener("DOMContentLoaded", function () {
+  // Aquí puedes colocar el código que deseas ejecutar después de que la página se ha cargado completamente
+  // Por ejemplo, puedes llamar a una función o realizar alguna operación
+  tablePlanificacion = $("#tablePlanificacion").dataTable({
+    aProcessing: true,
+    aServerSide: true,
+    language: {
+      url: cdnTable,
+    },
+    ajax: {
+      url: " " + base_url + "/Planificacion/consultarPlanificacion",
+      dataSrc: "",
+    },
+    columns: [
+      { data: "Centro" },
+      { data: "FechaIni" },
+      { data: "FechaFin" },
+      { data: "Rango" },
+      { data: "Estado" },
+      { data: "options" },
+    ],
+    columnDefs: [
+      { className: "textleft", targets: [0] },
+      { className: "textcenter", targets: [1] }, //Agregamos la clase que va a tener la columna
+      { className: "textcenter", targets: [2] },
+      { className: "textleft", targets: [3] },
+      { className: "textcenter", targets: [4] },
+      { className: "textright", targets: [5] },
+    ],
+    dom: "lBfrtip",
+    buttons: [],
+    resonsieve: "true",
+    bDestroy: true,
+    iDisplayLength: 10, //Numero Items Retornados
+    order: [[1, "desc"]], //Orden por defecto 1 columna
+  });
 
 
 
+  //FUNCIONES PARA EDICION
+  if (typeof accionForm !== "undefined") {
+    // La variable existe EDITAR
+    fntupdateInstructor(resultInst);
+    fntupdateSalones(resultSalon);
+    generarPlanificiacionEdit("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+  } else {
+    // La variable no existe NUEVO
+    //console.log("es nuevo");
+  }
 
 
-
+  /*if (document.querySelector('#txth_ids').value != "") {
+    alert("valor"+document.querySelector('#txth_ids').value)
+  }*/
 
 });
 
 
 
+$(document).ready(function () {
+  $("#cmb_instructor").selectpicker("render");
+  //Nueva Orden
+  $("#btn_nuevo").click(function () {
+    //eliminarStores();
+    window.location = base_url + "/Planificacion/nuevo"; //Retorna al Portal Principal
+  });
 
+  $("#cmd_retornar").click(function () {
+    //eliminarStores();
+    window.location = base_url + "/planificiacion"; //Retorna al Portal Principal
+  });
+
+  $("#external-events .fc-event").each(function () {
+    // store data so the calendar knows to render an event upon drop
+    $(this).data("event", {
+      title: $.trim($(this).text()), // use the element's text as the event title
+      stick: true, // maintain when user navigates (see docs on the renderEvent method)
+    });
+
+    // make the event draggable using jQuery UI
+    $(this).draggable({
+      zIndex: 999,
+      revert: true, // will cause the event to go back to its
+      revertDuration: 0, //  original position after the drag
+    });
+  });
+
+  $("#agregarBoton").click(function () {
+    const contenedorPadre = document.getElementById("contenedor-padre");
+    const nuevoDiv = document.createElement("div");
+    nuevoDiv.textContent = "Nuevo Div Agregado";
+    nuevoDiv.classList.add("nuevo-div");
+    contenedorPadre.appendChild(nuevoDiv);
+  });
+
+  $("#btn_generar").click(function () {
+    generarPlanificiacion("");
+  });
+  $("#btn_siguiente").click(function () {
+    generarPlanificiacion("Next");
+  });
+  $("#btn_anterior").click(function () {
+    generarPlanificiacion("Back");
+  });
+
+  $("#btn_saveTemp").click(function () {
+    guardarTemp();
+  });
+
+  $("#btn_saveAll").click(function () {
+    guardarAll("Create");
+  });
+
+  $("#btn_saveAllEdit").click(function () {
+    guardarAll("Edit");
+  });
+
+  $("#btn_siguienteEdit").click(function () {
+    generarPlanificiacionEdit("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+  });
+  $("#btn_anteriorEdit").click(function () {
+    generarPlanificiacionEdit("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+  });
+});
 
 function fntSalones(ids) {
-    $('#cmb_Salon').html('<option value="0">SELECCIONAR SALÓN</option>');
-    if (ids != 0) {
-        let link = base_url + '/Planificacion/bucarSalonCentro';
-        $.ajax({
-            type: 'POST',
-            url: link,
-            data: {
-                "Ids": ids
-            },
-            success: function (data) {
-                if (data.status) {
-                    $('#cmb_Salon').prop('disabled', false);
-                    var result = data.data;
-                    var c = 0;
-                    var arrayList = new Array;
-                    for (var i = 0; i < result.length; i++) {
-                        $('#cmb_Salon').append('<option value="' + result[i].Ids + '">' + result[i].Nombre + '</option>');
-                        let rowInst = new Object();
-                        rowInst.ids = result[i].Ids;
-                        rowInst.Nombre = result[i].Nombre;
-                        rowInst.Color = result[i].Color;
-                        arrayList[c] = rowInst;
-                        c += 1;
-                    }
-                    sessionStorage.dts_SalonCentro = JSON.stringify(arrayList);
-                    clearTimeout(delayTimer);
-                    delayTimer = setTimeout(function () {
-                        fntInstructor(ids);
-                    }, 500); // Retardo de 500 ms (medio segundo)
-
-                } else {
-                    swal("Error", data.msg, "error");
-                }
-            },
-            dataType: "json"
-        });
-    } else {
-        $('#cmb_Salon').prop('disabled', true);
-        swal("Información", "Seleccionar un Salón", "info");
-    }
-
+  $("#cmb_Salon").html('<option value="0">SELECCIONAR SALÓN</option>');
+  if (ids != 0) {
+    let link = base_url + "/Planificacion/bucarSalonCentro";
+    $.ajax({
+      type: "POST",
+      url: link,
+      data: {
+        Ids: ids,
+      },
+      success: function (data) {
+        if (data.status) {
+          $("#cmb_Salon").prop("disabled", false);
+          var result = data.data;
+          var c = 0;
+          var arrayList = new Array();
+          for (var i = 0; i < result.length; i++) {
+            $("#cmb_Salon").append(
+              '<option value="' +
+              result[i].Ids +
+              '">' +
+              result[i].Nombre +
+              "</option>"
+            );
+            let rowInst = new Object();
+            rowInst.ids = result[i].Ids;
+            rowInst.Nombre = result[i].Nombre;
+            rowInst.Color = result[i].Color;
+            arrayList[c] = rowInst;
+            c += 1;
+          }
+          sessionStorage.dts_SalonCentro = JSON.stringify(arrayList);
+          clearTimeout(delayTimer);
+          delayTimer = setTimeout(function () {
+            fntInstructor(ids);
+          }, 500); // Retardo de 500 ms (medio segundo)
+        } else {
+          swal("Error", data.msg, "error");
+        }
+      },
+      dataType: "json",
+    });
+  } else {
+    $("#cmb_Salon").prop("disabled", true);
+    swal("Información", "Seleccionar un Salón", "info");
+  }
 }
 
 function fntInstructor(ids) {
-    var arrayList = new Array;
-    $('#cmb_instructor').html('<option value="0">SELECCIONAR INSTRUCTOR</option>');
-    if (ids != 0) {
-        let link = base_url + '/Planificacion/bucarInstructorCentro';
-        $.ajax({
-            type: 'POST',
-            url: link,
-            data: {
-                "Ids": ids
-            },
-            success: function (data) {
-                if (data.status) {
-                    $('#cmb_instructor').prop('disabled', false);
-                    var result = data.data;
-                    var c = 0;
-                    for (var i = 0; i < result.length; i++) {
-                        $('#cmb_instructor').append('<option value="' + result[i].Ids + '">' + result[i].Nombre + '</option>');
-                        let rowInst = new Object();
-                        rowInst.ids = result[i].Ids;
-                        rowInst.Nombre = result[i].Nombre;
-                        rowInst.Horario = result[i].Horario;
-                        rowInst.Salones = result[i].Salones;
-                        arrayList[c] = rowInst;
-                        c += 1;
-                    }
-                    sessionStorage.dts_PlaInstructor = JSON.stringify(arrayList);
-                    //$('#cmb_instructor').selectpicker('render');
-                    $('#cmb_instructor').selectpicker('refresh');
-                } else {
-                    swal("Error", data.msg, "error");
-                }
-            },
-            dataType: "json"
-        });
-    } else {
-        $('#cmb_instructor').prop('disabled', true);
-        swal("Información", "Seleccionar un Instructor", "info");
-    }
-
+  var arrayList = new Array();
+  $("#cmb_instructor").html(
+    '<option value="0">SELECCIONAR INSTRUCTOR</option>'
+  );
+  if (ids != 0) {
+    let link = base_url + "/Planificacion/bucarInstructorCentro";
+    $.ajax({
+      type: "POST",
+      url: link,
+      data: {
+        Ids: ids,
+      },
+      success: function (data) {
+        if (data.status) {
+          $("#cmb_instructor").prop("disabled", false);
+          var result = data.data;
+          var c = 0;
+          for (var i = 0; i < result.length; i++) {
+            $("#cmb_instructor").append(
+              '<option value="' +
+              result[i].Ids +
+              '">' +
+              result[i].Nombre +
+              "</option>"
+            );
+            let rowInst = new Object();
+            rowInst.ids = result[i].Ids;
+            rowInst.Nombre = result[i].Nombre;
+            rowInst.Horario = result[i].Horario;
+            rowInst.Salones = result[i].Salones;
+            arrayList[c] = rowInst;
+            c += 1;
+          }
+          sessionStorage.dts_PlaInstructor = JSON.stringify(arrayList);
+          //$('#cmb_instructor').selectpicker('render');
+          $("#cmb_instructor").selectpicker("refresh");
+        } else {
+          swal("Error", data.msg, "error");
+        }
+      },
+      dataType: "json",
+    });
+  } else {
+    $("#cmb_instructor").prop("disabled", true);
+    swal("Información", "Seleccionar un Instructor", "info");
+  }
 }
 
-
-
-
 function fntHorasInstructor(ids) {
-    //$('#contenedor-padre').html('<h5 class="mb-4">Horas</h5>');
-    $('#contenedor-padre').html('');
-    if (ids != 0) {
-        let link = base_url + '/Planificacion/bucarInstructor';
-        $.ajax({
-            type: 'POST',
-            url: link,
-            data: {
-                "Ids": ids
-            },
-            success: function (data) {
-                if (data.status) {//Ids
-                    $('#TituloHoras').html('<h5 class="mb-4">Horas ' + data.data.Nombres + ' </h5>');
-                    let horaInst = data.data.Horas;
-                    let arrayHoras = horaInst.split(",");
-                    arrayHoras = arrayHoras.sort();
-                    for (var i = 0; i < arrayHoras.length; i++) {
-                        $('#contenedor-padre').append('<div id="' + arrayHoras[i] + '" class="fc-event">' + fntNameHoras(arrayHoras[i]) + '</div>&nbsp;');
-                    }
-                } else {
-                    swal("Error", data.msg, "error");
-                }
-            },
-            dataType: "json"
-        });
-    } else {
-        swal("Información", "Seleccionar un Instructor", "info");
-
-
-    }
-
+  //$('#contenedor-padre').html('<h5 class="mb-4">Horas</h5>');
+  $("#contenedor-padre").html("");
+  if (ids != 0) {
+    let link = base_url + "/Planificacion/bucarInstructor";
+    $.ajax({
+      type: "POST",
+      url: link,
+      data: {
+        Ids: ids,
+      },
+      success: function (data) {
+        if (data.status) {
+          //Ids
+          $("#TituloHoras").html(
+            '<h5 class="mb-4">Horas ' + data.data.Nombres + " </h5>"
+          );
+          let horaInst = data.data.Horas;
+          let arrayHoras = horaInst.split(",");
+          arrayHoras = arrayHoras.sort();
+          for (var i = 0; i < arrayHoras.length; i++) {
+            $("#contenedor-padre").append(
+              '<div id="' +
+              arrayHoras[i] +
+              '" class="fc-event">' +
+              fntNameHoras(arrayHoras[i]) +
+              "</div>&nbsp;"
+            );
+          }
+        } else {
+          swal("Error", data.msg, "error");
+        }
+      },
+      dataType: "json",
+    });
+  } else {
+    swal("Información", "Seleccionar un Instructor", "info");
+  }
 }
 
 function fntNameHoras(str) {
-    let nDia = str.substring(0, 2);
-    let nHora = str.substring(2, 4);
-    let result = "";
-    switch (nDia) {
-        case "LU":
-            result = "LUN-" + nHora + ":00";
-            break;
-        case "MA":
-            result = "MAR-" + nHora + ":00";
-            break;
-        case "MI":
-            result = "MIE-" + nHora + ":00";
-            break;
-        case "JU":
-            result = "JUE-" + nHora + ":00";
-            break;
-        case "VI":
-            result = "VIE-" + nHora + ":00";
-            break;
-        case "SA":
-            result = "SÁB-" + nHora + ":00";
-            break;
-        default:
-
-    }
-    return result;
+  let nDia = str.substring(0, 2);
+  let nHora = str.substring(2, 4);
+  let result = "";
+  switch (nDia) {
+    case "LU":
+      result = "LUN-" + nHora + ":00";
+      break;
+    case "MA":
+      result = "MAR-" + nHora + ":00";
+      break;
+    case "MI":
+      result = "MIE-" + nHora + ":00";
+      break;
+    case "JU":
+      result = "JUE-" + nHora + ":00";
+      break;
+    case "VI":
+      result = "VIE-" + nHora + ":00";
+      break;
+    case "SA":
+      result = "SÁB-" + nHora + ":00";
+      break;
+    default:
+  }
+  return result;
 }
-
 
 /**************** GENERAR PLANIFICACION  ******************/
 function generarPlanificiacion(accion) {
-    var tabla = document.getElementById("dts_Planificiacion");
+  var tabla = document.getElementById("dts_Planificiacion");
 
-    if (sessionStorage.dts_PlaInstructor) {
-        var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
-        if (Grid.length > 0) {
-            var filaEncabezado = $("<tr></tr>");
-            if (accion != "") {
-                fechaDia = new Date(fechaDia);
-                if (accion == "Next") {
-                    fechaDia.setDate(fechaDia.getDate() + 1);
-                } else {
-                    fechaDia.setDate(fechaDia.getDate() - 1);
-                }
-            } else {
-                fechaDia = $('#dtp_fecha_desde').val();
-            }
-
-            $('#FechaDia').html(obtenerFechaConLetras(fechaDia));
-            //ENCABEZADO DE PLANIFICAICONR
-            filaEncabezado.append($("<th>Horas</th>"));
-            for (var i = 0; i < Grid.length; i++) {
-                //filaEncabezado.append($("<th>" + Grid[i]['Nombre'].toUpperCase() + "</th>"));
-                filaEncabezado.append($("<th>" + Grid[i]['Nombre'].substring(0, 10).toUpperCase() + "</th>"));
-            }
-            $("#dts_Planificiacion thead").html("");
-            $("#dts_Planificiacion thead").append(filaEncabezado);
-            //FIN PLANIFICION
-            let nLetIni = $('#FechaDia').html().toUpperCase();
-            nLetIni = nLetIni.substring(0, 2);
-            nLetIni = (nLetIni == "SÁ") ? "SA" : nLetIni;//Se cambia por la Tilde
-            numeroHora = 8;
-            var tabla = $('#dts_Planificiacion tbody');
-            $("#dts_Planificiacion tbody").html("");
-            for (var i = 0; i < 13; i++) {//GENERA LAS FILAS
-                var fila = '<tr><td>' + numeroHora + ':00</td>';
-                for (var col = 0; col < Grid.length; col++) {
-                    //Obtener los Salones
-                    //Existe el Salon programado para el instructor segun sus horarios
-                    let nExiste = existeHorario(Grid[col]['Horario'], nLetIni + numeroHora);
-                    //nLetIni=>inicialDia;numeroHora=>horaDia;Grid[col]['ids']=>Id Instructor
-                    let idPlan = nLetIni + "_" + numeroHora + "_" + Grid[col]['ids'];
-                    if (nExiste) {
-                        let arrayAula = Grid[col]['Salones'].split(",");
-                        let objSalon = buscarSalonColor(arrayAula[0]);
-                        idPlan += "_" + objSalon['ids'];//Agrega el Id del Salon
-                        fila += '<td>';
-                        fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" style="color:white;background-color:' + objSalon['Color'] + '" onclick="fnt_eventoPlanificado(this)">' + objSalon['Nombre'] + '</button>';
-                        fila += '</td>';
-                    } else {
-                        fila += '<td><button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
-                    }
-
-                }
-                fila += '</tr>';
-                tabla.append(fila);
-                numeroHora++;
-            }
+  if (sessionStorage.dts_PlaInstructor) {
+    var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
+    if (Grid.length > 0) {
+      var filaEncabezado = $("<tr></tr>");
+      if (accion != "") {
+        fechaDia = new Date(fechaDia);
+        if (accion == "Next") {
+          fechaDia.setDate(fechaDia.getDate() + 1);
+        } else {
+          fechaDia.setDate(fechaDia.getDate() - 1);
         }
+      } else {
+        fechaDia = $("#dtp_fecha_desde").val();
+      }
+
+      $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
+      //ENCABEZADO DE PLANIFICAICONR
+      filaEncabezado.append($("<th>Horas</th>"));
+      for (var i = 0; i < Grid.length; i++) {
+        filaEncabezado.append(
+          $("<th>" + Grid[i]["Nombre"].substring(0, 15).toUpperCase() + "</th>")
+        );
+      }
+      $("#dts_Planificiacion thead").html("");
+      $("#dts_Planificiacion thead").append(filaEncabezado);
+      //FIN PLANIFICION
+      let nLetIni = $("#FechaDia").html().toUpperCase();
+      nLetIni = nLetIni.substring(0, 2);
+      nLetIni = nLetIni == "SÁ" ? "SA" : nLetIni; //Se cambia por la Tilde
+      numeroHora = 8;
+      var tabla = $("#dts_Planificiacion tbody");
+      $("#dts_Planificiacion tbody").html("");
+      for (var i = 0; i < 13; i++) {
+        //GENERA LAS FILAS
+        var fila = "<tr><td>" + numeroHora + ":00</td>";
+        for (var col = 0; col < Grid.length; col++) {
+          //Obtener los Salones
+          //Existe el Salon programado para el instructor segun sus horarios
+          let nExiste = existeHorario(
+            Grid[col]["Horario"],
+            nLetIni + numeroHora
+          );
+          //nLetIni=>inicialDia;numeroHora=>horaDia;Grid[col]['ids']=>Id Instructor
+          let idPlan = nLetIni + "_" + numeroHora + "_" + Grid[col]["ids"];
+          if (nExiste) {
+            let arrayAula = Grid[col]["Salones"].split(",");
+            let objSalon = buscarSalonColor(arrayAula[0]);
+            idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
+            fila += "<td>";
+            fila +=
+              '<button type="button" id="' +
+              idPlan +
+              '" class="btn ms-auto btn-lg asignado-true" style="color:white;background-color:' +
+              objSalon["Color"] +
+              '" onclick="fnt_eventoPlanificado(this)">' +
+              objSalon["Nombre"] +
+              "</button>";
+            fila += "</td>";
+          } else {
+            fila +=
+              '<td><button type="button" id="' +
+              idPlan +
+              '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
+          }
+        }
+        fila += "</tr>";
+        tabla.append(fila);
+        numeroHora++;
+      }
     }
+  }
 }
 
 function existeHorario(nHorArray, nDiaHora) {
-    nHorArray = nHorArray.split(",");
-    if (nHorArray.includes(nDiaHora)) {
-        return true;
-    }
-    return false;
-
+  nHorArray = nHorArray.split(",");
+  if (nHorArray.includes(nDiaHora)) {
+    return true;
+  }
+  return false;
 }
 
-
-
-
 function buscarSalonColor(ids) {
-    if (sessionStorage.dts_SalonCentro) {
-        var Grid = JSON.parse(sessionStorage.dts_SalonCentro);
-        if (Grid.length > 0) {
-            for (var i = 0; i < Grid.length; i++) {
-                if (Grid[i]['ids'] == ids) {
-                    return Grid[i];
-                }
-            }
+  if (sessionStorage.dts_SalonCentro) {
+    var Grid = JSON.parse(sessionStorage.dts_SalonCentro);
+    if (Grid.length > 0) {
+      for (var i = 0; i < Grid.length; i++) {
+        if (Grid[i]["ids"] == ids) {
+          return Grid[i];
         }
-
+      }
     }
-    return 0;
+  }
+  return 0;
 }
 
 function fnt_eventoPlanificado(comp) {
-    let nEstado = false;
-    let textobutton = comp.innerHTML;
-    let idSalon = document.querySelector('#cmb_Salon').value;
-    if (idSalon != 0) {
-        if (textobutton == "AGREGAR") {
-            nEstado = true;
-            //openModalSalon(comp);
-        } else {
-            var respuesta = confirm("Esta seguro de Cambiar.")
-            if (respuesta) { nEstado = true; }
-        }
+  let nEstado = false;
+  let textobutton = comp.innerHTML;
+  let idSalon = document.querySelector("#cmb_Salon").value;
+  if (idSalon != 0) {
+    if (textobutton == "AGREGAR") {
+      nEstado = true;
+      //openModalSalon(comp);
     } else {
-        nEstado = false;
-        swal("Información", "Seleccionar un Salón", "info");
+      var respuesta = confirm("Esta seguro de Cambiar.");
+      if (respuesta) {
+        nEstado = true;
+      }
     }
+  } else {
+    nEstado = false;
+    swal("Información", "Seleccionar un Salón", "info");
+  }
 
-    if (nEstado) {//Camia el Salon cuando es True
-        let objSalon = buscarSalonColor(idSalon);
-        let nButton = $("#" + comp.id);
-        nButton.removeClass('btn-light').addClass('asignado-true')
-        nButton.css("color", "white");
-        nButton.css("background-color", objSalon['Color']);
-        $("#" + comp.id).html(objSalon['Nombre']);
-        let arrayIds = (comp.id).split("_");
-        let nuevoId = comp.id;
-        if (arrayIds.length > 3) {
-            nuevoId = arrayIds[0] + "_" + arrayIds[1] + "_" + arrayIds[2] + "_" + objSalon['ids']
-        } else {
-            nuevoId += "_" + objSalon['ids'];
-        }
-        $("#" + comp.id).attr("id", nuevoId);//Se Cambia el Id y se Agrega el Salon asignado 
+  if (nEstado) {
+    //Camia el Salon cuando es True
+    let objSalon = buscarSalonColor(idSalon);
+    let nButton = $("#" + comp.id);
+    nButton.removeClass("btn-light").addClass("asignado-true");
+    nButton.css("color", "white");
+    nButton.css("background-color", objSalon["Color"]);
+    $("#" + comp.id).html(objSalon["Nombre"]);
+    let arrayIds = comp.id.split("_");
+    let nuevoId = comp.id;
+    if (arrayIds.length > 3) {
+      nuevoId =
+        arrayIds[0] +
+        "_" +
+        arrayIds[1] +
+        "_" +
+        arrayIds[2] +
+        "_" +
+        objSalon["ids"];
+    } else {
+      nuevoId += "_" + objSalon["ids"];
     }
-
+    $("#" + comp.id).attr("id", nuevoId); //Se Cambia el Id y se Agrega el Salon asignado
+  }
 }
 
 function openModalSalon(comp) {
-    //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
-    //document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
-    //document.querySelector('#btnActionForm').classList.replace("btn-info", "btn-primary");
-    //document.querySelector('#btnText').innerHTML = "Guardar";
-    //document.querySelector('#titleModal').innerHTML = "Nueva Registro";
-    //document.querySelector("#formSalon").reset();
-    //document.querySelector("#"+comp.id).classList.replace("btn ms-auto btn-lg btn-light", "btn ms-auto btn-lg asignado-true");
-
-    //$('#modalFormSalon').modal('show');
+  //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+  //document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
+  //document.querySelector('#btnActionForm').classList.replace("btn-info", "btn-primary");
+  //document.querySelector('#btnText').innerHTML = "Guardar";
+  //document.querySelector('#titleModal').innerHTML = "Nueva Registro";
+  //document.querySelector("#formSalon").reset();
+  //document.querySelector("#"+comp.id).classList.replace("btn ms-auto btn-lg btn-light", "btn ms-auto btn-lg asignado-true");
+  //$('#modalFormSalon').modal('show');
 }
 
 function objDataRow(nLetIni) {
-    let selecionados = "";
-    $('#dts_Planificiacion .asignado-true').each(function (index, boton) {
-        var botonId = $(boton).attr('id');
-        selecionados += botonId + ",";
-        //console.log('ID del botón:', botonId);
-    });
-    selecionados = selecionados.slice(0, selecionados.length - 1);//Quitar la ultima coma
-    //let nLetIni = $('#FechaDia').html().toUpperCase();
-    //nLetIni = nLetIni.substring(0, 2);
-    //nLetIni = (nLetIni == "SÁ") ? "SA" : nLetIni;//Se cambia por la Tilde
-    let rowGrid = new Object();
-    rowGrid.dia = nLetIni;
-    rowGrid.horario = selecionados;
-    rowGrid.fecha = new Date(fechaDia);
-    return rowGrid;
+  let selecionados = "";
+  $("#dts_Planificiacion .asignado-true").each(function (index, boton) {
+    var botonId = $(boton).attr("id");
+    selecionados += botonId + ",";
+    //console.log('ID del botón:', botonId);
+  });
+  selecionados = selecionados.slice(0, selecionados.length - 1); //Quitar la ultima coma
+  //let nLetIni = $('#FechaDia').html().toUpperCase();
+  //nLetIni = nLetIni.substring(0, 2);
+  //nLetIni = (nLetIni == "SÁ") ? "SA" : nLetIni;//Se cambia por la Tilde
+  let rowGrid = new Object();
+  rowGrid.dia = nLetIni;
+  rowGrid.horario = selecionados;
+  rowGrid.fecha = new Date(fechaDia);
+  return rowGrid;
 }
 
 function guardarTemp() {
-    let nLetIni = $('#FechaDia').html().toUpperCase();
-    nLetIni = nLetIni.substring(0, 2);
-    nLetIni = (nLetIni == "SÁ") ? "SA" : nLetIni;//Se cambia por la Tilde
-    var arrayList = new Array;
-    if (sessionStorage.dts_PlaTemporal) {
-        arrayList = JSON.parse(sessionStorage.dts_PlaTemporal);
-        var size = arrayList.length;
-        if (size > 0) {
-            if (codigoExiste(nLetIni, 'dia', sessionStorage.dts_PlaTemporal)) {
-                arrayList[size] = objDataRow(nLetIni);
-                sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
-                swal("Información!", "Planificación Temporal Guardada.", "success");
-            } else {
-
-                swal({
-                    title: "Actualizar",
-                    text: "¿Realmente quiere Modificar Planificación?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Si, Modificar!",
-                    cancelButtonText: "No, cancelar!",
-                    closeOnConfirm: false,
-                    closeOnCancel: true
-                }, function (isConfirm) {
-                    if (isConfirm) {
-                        eliminarItemsDia(nLetIni);
-                        arrayList = JSON.parse(sessionStorage.dts_PlaTemporal);
-                        arrayList[arrayList.length] = objDataRow(nLetIni);
-                        sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
-                        swal("Información!", "Planificación Temporal Guardada.", "success");
-                    }
-
-                });
-            }
-
-        } else {
-            arrayList[0] = objDataRow(nLetIni);
-            sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
-            swal("Información!", "Planificación Temporal Guardada.", "success");
-        }
-    } else {
-        arrayList[0] = objDataRow(nLetIni);
+  let nLetIni = $("#FechaDia").html().toUpperCase();
+  nLetIni = nLetIni.substring(0, 2);
+  nLetIni = nLetIni == "SÁ" ? "SA" : nLetIni; //Se cambia por la Tilde
+  var arrayList = new Array();
+  if (sessionStorage.dts_PlaTemporal) {
+    arrayList = JSON.parse(sessionStorage.dts_PlaTemporal);
+    var size = arrayList.length;
+    if (size > 0) {
+      if (codigoExiste(nLetIni, "dia", sessionStorage.dts_PlaTemporal)) {
+        arrayList[size] = objDataRow(nLetIni);
         sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
         swal("Información!", "Planificación Temporal Guardada.", "success");
+      } else {
+        swal(
+          {
+            title: "Actualizar",
+            text: "¿Realmente quiere Modificar Planificación?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Si, Modificar!",
+            cancelButtonText: "No, cancelar!",
+            closeOnConfirm: false,
+            closeOnCancel: true,
+          },
+          function (isConfirm) {
+            if (isConfirm) {
+              eliminarItemsDia(nLetIni);
+              arrayList = JSON.parse(sessionStorage.dts_PlaTemporal);
+              arrayList[arrayList.length] = objDataRow(nLetIni);
+              sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+              swal(
+                "Información!",
+                "Planificación Temporal Guardada.",
+                "success"
+              );
+            }
+          }
+        );
+      }
+    } else {
+      arrayList[0] = objDataRow(nLetIni);
+      sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+      swal("Información!", "Planificación Temporal Guardada.", "success");
     }
-
-
+  } else {
+    arrayList[0] = objDataRow(nLetIni);
+    sessionStorage.dts_PlaTemporal = JSON.stringify(arrayList);
+    swal("Información!", "Planificación Temporal Guardada.", "success");
+  }
 }
-
 
 function eliminarItemsDia(nDia) {
-    if (sessionStorage.dts_PlaTemporal) {
-        var Grid = JSON.parse(sessionStorage.dts_PlaTemporal);
-        if (Grid.length > 0) {
-            var array = findAndRemove(Grid, 'dia', nDia);
-            sessionStorage.dts_PlaTemporal = JSON.stringify(array);
-        }
+  if (sessionStorage.dts_PlaTemporal) {
+    var Grid = JSON.parse(sessionStorage.dts_PlaTemporal);
+    if (Grid.length > 0) {
+      var array = findAndRemove(Grid, "dia", nDia);
+      sessionStorage.dts_PlaTemporal = JSON.stringify(array);
     }
+  }
 }
-
 
 //Guardar todo
-function guardarAll() {
-    let fechaInicio = $('#dtp_fecha_desde').val();
-    let fechaFin = $('#dtp_fecha_hasta').val();
-    let centroAT = $('#cmb_CentroAtencion').val();
-    if (fechaInicio == '' || fechaFin == '' || centroAT == 0) {
-        swal("Atención", "Todos los Fecha inicio,fecha fin, y Centro de Atención son obligatorios.", "error");
-        return false;
-    }
-    if (sessionStorage.dts_PlaTemporal) {
-        var Grid = JSON.parse(sessionStorage.dts_PlaTemporal);
-        if (Grid.length > 0) {
-            let cabPlan = new Object();
-            cabPlan.fechaInicio = fechaInicio;
-            cabPlan.fechaFin = fechaFin;
-            cabPlan.centro = centroAT;            
-            let link = base_url + '/Planificacion/ingresarPlanificacion';
-            $.ajax({
-                type: 'POST',
-                url: link,
-                data: {
-                    "cabecera": cabPlan,
-                    "detalle": Grid,
-                    "accion": "Create"
-                },
-                success: function (data) {
-                    if (data.status) {
-                        sessionStorage.removeItem('dts_PlaInstructor');
-                        sessionStorage.removeItem('dts_PlaTemporal');
-                        sessionStorage.removeItem('dts_SalonCentro');
-                        swal("Planificación", data.msg, "success");                        
-                    } else {
-                        swal("Error", data.msg, "error");
-                    }
-                },
-                dataType: "json"
-            });
-        } else {
-            swal("Atención!", "No existe Planificación", "error");
-        }
+function guardarAll(accion) {
+
+  let fechaInicio = $("#dtp_fecha_desde").val();
+  let fechaFin = $("#dtp_fecha_hasta").val();
+  let centroAT = $("#cmb_CentroAtencion").val();
+  if (fechaInicio == "" || fechaFin == "" || centroAT == 0) {
+    swal(
+      "Atención",
+      "Todos los Fecha inicio,fecha fin, y Centro de Atención son obligatorios.",
+      "error"
+    );
+    return false;
+  }
+  if (sessionStorage.dts_PlaTemporal) {
+    var Grid = JSON.parse(sessionStorage.dts_PlaTemporal);
+    if (Grid.length > 0) {
+      let cabPlan = new Object();
+      cabPlan.ids = IdsTemp;
+      cabPlan.fechaInicio = fechaInicio;
+      cabPlan.fechaFin = fechaFin;
+      cabPlan.centro = centroAT;
+      let link = base_url + "/Planificacion/ingresarPlanificacion";
+      $.ajax({
+        type: "POST",
+        url: link,
+        data: {
+          cabecera: cabPlan,
+          detalle: Grid,
+          accion: accion,
+        },
+        success: function (data) {
+          if (data.status) {
+            sessionStorage.removeItem("dts_PlaInstructor");
+            sessionStorage.removeItem("dts_PlaTemporal");
+            sessionStorage.removeItem("dts_SalonCentro");
+            swal("Planificación", data.msg, "success");
+            window.location = base_url + "/planificiacion"; //Retorna al Portal Principal
+          } else {
+            swal("Error", data.msg, "error");
+          }
+        },
+        dataType: "json",
+      });
     } else {
-        swal("Atención!", "No existe Planificación", "error");
+      swal("Atención!", "No existe Planificación", "error");
     }
+  } else {
+    swal("Atención!", "No existe Planificación", "error");
+  }
+}
+
+//FUNCION DE EDITAR
+function fntupdateInstructor(resultInst) {
+  var arrayList = new Array();
+  var c = 0;
+  for (var i = 0; i < resultInst.length; i++) {
+    let rowInst = new Object();
+    rowInst.ids = resultInst[i].Ids;
+    rowInst.Nombre = resultInst[i].Nombre;
+    rowInst.Horario = resultInst[i].Horario;
+    rowInst.Salones = resultInst[i].Salones;
+    arrayList[c] = rowInst;
+    c += 1;
+  }
+  sessionStorage.dts_PlaInstructor = JSON.stringify(arrayList);
+}
+
+function fntupdateSalones(resultSalon) {
+  var c = 0;
+  var arrayList = new Array();
+  for (var i = 0; i < resultSalon.length; i++) {
+    let rowInst = new Object();
+    rowInst.ids = resultSalon[i].Ids;
+    rowInst.Nombre = resultSalon[i].Nombre;
+    rowInst.Color = resultSalon[i].Color;
+    arrayList[c] = rowInst;
+    c += 1;
+  }
+  sessionStorage.dts_SalonCentro = JSON.stringify(arrayList);
 }
 
 
+function generarPlanificiacionEdit(accion, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo) {
+  var tabla = document.getElementById("dts_Planificiacion");
+  var nDia = "";
+  let salonArray = 0;
+  let idsSalon = 0;
+  if (sessionStorage.dts_PlaInstructor) {
+    var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
+    if (Grid.length > 0) {
+      fechaDia = new Date(fechaDia);
+      var filaEncabezado = $("<tr></tr>");
+      if (accion != "") {
+        if (accion == "Next") {
+          fechaDia.setDate(fechaDia.getDate() + 1);
+        } else {
+          fechaDia.setDate(fechaDia.getDate() - 1);
+        }
+      } else {
+        fechaDia = $("#dtp_fecha_desde").val();
+      }
+      $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
+      //ENCABEZADO DE PLANIFICACION INSTRUCTOR
+      filaEncabezado.append($("<th>Horas</th>"));
+      for (var i = 0; i < Grid.length; i++) {
+        filaEncabezado.append(
+          $("<th>" + Grid[i]["Nombre"].substring(0, 15).toUpperCase() + "</th>")
+        );
+      }
+      $("#dts_Planificiacion thead").html("");
+      $("#dts_Planificiacion thead").append(filaEncabezado);
+      //FIN PLANIFICION
+      let nLetIni = $("#FechaDia").html().toUpperCase();
+      nLetIni = nLetIni.substring(0, 2);
+      nLetIni = nLetIni == "SÁ" ? "SA" : nLetIni; //Se cambia por la Tilde
+      numeroHora = 8;
 
+      /*console.log(nLunes);
+      console.log(nMartes);
+      console.log(nMiercoles);
+      console.log(nJueves);
+      console.log(nViernes);
+      console.log(nSabado);
+      console.log(nDomingo);*/
+
+      switch (nLetIni) {
+        case "LU":
+          nDia = nLunes.split(",");
+          break;
+        case "MA":
+          nDia = nMartes.split(",");
+          break;
+        case "MI":
+          nDia = nMiercoles.split(",");
+          break;
+        case "JU":
+          nDia = nJueves.split(",");
+          break;
+        case "VI":
+          nDia = nViernes.split(",");
+          break;
+        case "SA":
+          nDia = nSabado.split(",");
+          break;
+        default:
+      }
+      var tabla = $("#dts_Planificiacion tbody");
+      $("#dts_Planificiacion tbody").html("");
+      for (var i = 0; i < 13; i++) {
+        //GENERA LAS FILAS
+        var fila = "<tr><td>" + numeroHora + ":00</td>";
+        for (var col = 0; col < Grid.length; col++) {
+          //nLetIni=>inicialDia;numeroHora=>horaDia;Grid[col]['ids']=>Id Instructor
+          let idPlan = nLetIni + "_" + numeroHora + "_" + Grid[col]["ids"];
+          let nResArray = existeHorarioEditar(nDia, idPlan);
+          let nExiste = false;
+          if (nResArray != "0") {
+            salonArray = nResArray[0].split("_");
+            idsSalon = salonArray[3];
+            nExiste = true;
+          }
+
+          if (nExiste) {
+            //let arrayAula = Grid[col]["Salones"].split(",");
+            let objSalon = buscarSalonColor(idsSalon);
+            idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
+            fila += "<td>";
+            fila +=
+              '<button type="button" id="' +
+              idPlan +
+              '" class="btn ms-auto btn-lg asignado-true" style="color:white;background-color:' +
+              objSalon["Color"] +
+              '" onclick="fnt_eventoPlanificado(this)">' +
+              objSalon["Nombre"] +
+              "</button>";
+            fila += "</td>";
+          } else {
+            fila +=
+              '<td><button type="button" id="' +
+              idPlan +
+              '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
+          }
+        }
+        fila += "</tr>";
+        tabla.append(fila);
+        numeroHora++;
+      }
+    }
+  }
+}
+
+function existeHorarioEditar(nHorArray, nDiaHora) {
+  const resultados = nHorArray.filter(function (element) {
+    return element.includes(nDiaHora);
+  });
+
+  if (resultados.length > 0) {
+    //console.log(`Se encontraron elementos en el array que contienen "${nDiaHora}":`);
+    //console.log(resultados);
+    return resultados;
+  }
+  //console.log(`No se encontraron elementos en el array que contengan "${nDiaHora}".`);
+  return "0";
+}
 
