@@ -43,7 +43,7 @@ class Reservacion extends Controllers
                 }
                
                 if ($_SESSION['permisosMod']['u']) {
-                    $btnOpciones .= ' <a title="Reservaciones" href="' . base_url() . '/Reservacion/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-solid fa-calendar"></i> </a> ';
+                    $btnOpciones .= ' <a title="Agendar" href="' . base_url() . '/Reservacion/agendar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-solid fa-calendar"></i> </a> ';
                 }
                 /*if ($_SESSION['permisosMod']['u']) {
                     $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntClonarPlanificacion(\'' . $arrData[$i]['Ids'] . '\')" title="Clonar Planificación"><i class="fa fa-clone"></i></button> ';
@@ -60,7 +60,7 @@ class Reservacion extends Controllers
     }
 
 
-    public function editar($ids)
+    public function agendar($ids)
     {
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
@@ -74,10 +74,10 @@ class Reservacion extends Controllers
                     $data['dataInstructor'] = $modelInstructor->consultarCentroInstructores($data['cat_id']);
                     $modelSalon = new SalonModel();
                     $data['dataSalon'] = $modelSalon->consultarSalones($data['cat_id']);
-                    $data['page_tag'] = "Editar Planificación";
-                    $data['page_name'] = "Editar Planificación";
-                    $data['page_title'] = "Editar Planificación <small> " . TITULO_EMPRESA . "</small>";
-                    $this->views->getView($this, "editar", $data);
+                    $data['page_tag'] = "Agendar";
+                    $data['page_name'] = "Agendar";
+                    $data['page_title'] = "Agendar <small> " . TITULO_EMPRESA . "</small>";
+                    $this->views->getView($this, "agendar", $data);
                 }
             } else {
                 echo "Dato no válido";
