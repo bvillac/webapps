@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
       url: cdnTable,
     },
     ajax: {
-      url: " " + base_url + "/Planificacion/consultarPlanificacion",
+      url: " " + base_url + "/Reservacion/consultarPlanificacion",
       dataSrc: "",
     },
     columns: [
@@ -46,39 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-  tablePlanificacionAut = $("#tablePlanificacionAut").dataTable({
-    aProcessing: true,
-    aServerSide: true,
-    language: {
-      url: cdnTable,
-    },
-    ajax: {
-      url: " " + base_url + "/Planificacion/consultarPlanificacionAut",
-      dataSrc: "",
-    },
-    columns: [
-      { data: "Centro" },
-      { data: "FechaIni" },
-      { data: "FechaFin" },
-      { data: "Rango" },
-      { data: "Estado" },
-      { data: "options" },
-    ],
-    columnDefs: [
-      { className: "textleft", targets: [0] },
-      { className: "textcenter", targets: [1] }, //Agregamos la clase que va a tener la columna
-      { className: "textcenter", targets: [2] },
-      { className: "textleft", targets: [3] },
-      { className: "textcenter", targets: [4] },
-      { className: "textright", targets: [5] },
-    ],
-    dom: "lBfrtip",
-    buttons: [],
-    resonsieve: "true",
-    bDestroy: true,
-    iDisplayLength: 10, //Numero Items Retornados
-    order: [[1, "desc"]], //Orden por defecto 1 columna
-  });
+
 
 
 

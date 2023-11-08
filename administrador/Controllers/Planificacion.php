@@ -27,6 +27,18 @@ class Planificacion extends Controllers
         $this->views->getView($this, "planificacion", $data);
     }
 
+
+    public function autorizado()
+    {
+        if (empty($_SESSION['permisosMod']['r'])) {
+            header("Location:" . base_url() . '/dashboard');
+        }
+        $data['page_tag'] = "Planificación Autorizada";
+        $data['page_name'] = "Planificación Autorizada";
+        $data['page_title'] = "Planificación Autorizada <small> " . TITULO_EMPRESA . "</small>";
+        $this->views->getView($this, "autorizado", $data);
+    }
+
     public function consultarPlanificacion()
     {
         if ($_SESSION['permisosMod']['r']) {
@@ -56,6 +68,32 @@ class Planificacion extends Controllers
         }
         die();
     }
+
+
+    public function consultarPlanificacionAut()
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            $arrData = $this->model->consultarDatosAut();
+            //putMessageLogFile($arrData);
+            for ($i = 0; $i < count($arrData); $i++) {
+                $btnOpciones = "";
+                if ($arrData[$i]['Estado'] == 1) {
+                    $arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
+                } else {
+                    $arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>'; //target="_blanck"  
+                }
+               
+                if ($_SESSION['permisosMod']['r']) {
+                    $btnOpciones .= ' <a title="Ver Planificación" href="' . base_url() . '/Planificacion/aprobado/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-eye"></i> </a> ';
+                }
+                
+                $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
+            }
+            echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+
 
     public function nuevo()
     {
@@ -101,6 +139,37 @@ class Planificacion extends Controllers
         }
         die();
     }
+
+
+    public function aprobado($ids)
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            if (is_numeric($ids)) {
+                $data = $this->model->consultarDatosIdAut($ids);
+                if (empty($data)) {
+                    echo "Datos no encontrados";
+                } else {
+                    $modelCentro = new CentroAtencionModel();
+                    $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
+                    $modelInstructor = new InstructorModel();
+                    $data['dataInstructor'] = $modelInstructor->consultarCentroInstructores($data['cat_id']);
+                    $modelSalon = new SalonModel();
+                    $data['dataSalon'] = $modelSalon->consultarSalones($data['cat_id']);
+                    $data['page_tag'] = "Planificación Aprobada";
+                    $data['page_name'] = "Planificación Aprobada";
+                    $data['page_title'] = "Planificación Aprobada <small> " . TITULO_EMPRESA . "</small>";
+                    $this->views->getView($this, "aprobado", $data);
+                }
+            } else {
+                echo "Dato no válido";
+            }
+        } else {
+            header('Location: ' . base_url() . '/login');
+            die();
+        }
+        die();
+    }
+
 
     public function ingresarPlanificacion()
     {

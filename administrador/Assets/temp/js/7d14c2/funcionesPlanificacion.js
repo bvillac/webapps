@@ -4,6 +4,7 @@ let delayTimer;
 let fechaDia = new Date();
 let numeroDia = 0;
 let tablePlanificacion;
+let tablePlanificacionAut;
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -45,6 +46,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+  tablePlanificacionAut = $("#tablePlanificacionAut").dataTable({
+    aProcessing: true,
+    aServerSide: true,
+    language: {
+      url: cdnTable,
+    },
+    ajax: {
+      url: " " + base_url + "/Planificacion/consultarPlanificacionAut",
+      dataSrc: "",
+    },
+    columns: [
+      { data: "Centro" },
+      { data: "FechaIni" },
+      { data: "FechaFin" },
+      { data: "Rango" },
+      { data: "Estado" },
+      { data: "options" },
+    ],
+    columnDefs: [
+      { className: "textleft", targets: [0] },
+      { className: "textcenter", targets: [1] }, //Agregamos la clase que va a tener la columna
+      { className: "textcenter", targets: [2] },
+      { className: "textleft", targets: [3] },
+      { className: "textcenter", targets: [4] },
+      { className: "textright", targets: [5] },
+    ],
+    dom: "lBfrtip",
+    buttons: [],
+    resonsieve: "true",
+    bDestroy: true,
+    iDisplayLength: 10, //Numero Items Retornados
+    order: [[1, "desc"]], //Orden por defecto 1 columna
+  });
+
+
+
+
+
   //FUNCIONES PARA EDICION
   if (typeof accionForm !== "undefined") {
     // La variable existe EDITAR
@@ -56,10 +95,16 @@ document.addEventListener("DOMContentLoaded", function () {
     //console.log("es nuevo");
   }
 
+  if (typeof accionFormAut !== "undefined") {
+    // La variable existe EDITAR
+    fntupdateInstructor(resultInst);
+    fntupdateSalones(resultSalon);
+    generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+  } else {
+    // La variable no existe NUEVO
+    //console.log("es nuevo");
+  }
 
-  /*if (document.querySelector('#txth_ids').value != "") {
-    alert("valor"+document.querySelector('#txth_ids').value)
-  }*/
 
 });
 
@@ -128,6 +173,19 @@ $(document).ready(function () {
   });
   $("#btn_anteriorEdit").click(function () {
     generarPlanificiacionEdit("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+  });
+
+
+  //Autorizados
+  $("#btn_siguienteAut").click(function () {
+    //var fecIni = document.querySelector("#dtp_fecha_desde").value;
+    //var fecFin = document.querySelector("#dtp_fecha_hasta").value;
+    //console.log(fecIni+' '+fecFin+' '+fechaDia)
+    
+    generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+  });
+  $("#btn_anteriorAut").click(function () {
+    generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
   });
 });
 
@@ -732,37 +790,37 @@ function existeHorarioEditar(nHorArray, nDiaHora) {
 function fntDeletePlanificacion(ids) {
   var ids = ids;
   swal({
-      title: "Eliminar Registro",
-      text: "¿Realmente quiere eliminar el Registro?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Si, eliminar!",
-      cancelButtonText: "No, cancelar!",
-      closeOnConfirm: false,
-      closeOnCancel: true
+    title: "Eliminar Registro",
+    text: "¿Realmente quiere eliminar el Registro?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Si, eliminar!",
+    cancelButtonText: "No, cancelar!",
+    closeOnConfirm: false,
+    closeOnCancel: true
   }, function (isConfirm) {
 
-      if (isConfirm) {
-          var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-          var ajaxUrl = base_url + '/Planificacion/eliminar';
-          var strData = "ids=" + ids;
-          request.open("POST", ajaxUrl, true);
-          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-          request.send(strData);
-          request.onreadystatechange = function () {
-              if (request.readyState == 4 && request.status == 200) {
-                  var objData = JSON.parse(request.responseText);
-                  if (objData.status) {
-                      swal("Eliminar!", objData.msg, "success");
-                      tablePlanificacion.api().ajax.reload(function () {
+    if (isConfirm) {
+      var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+      var ajaxUrl = base_url + '/Planificacion/eliminar';
+      var strData = "ids=" + ids;
+      request.open("POST", ajaxUrl, true);
+      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      request.send(strData);
+      request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200) {
+          var objData = JSON.parse(request.responseText);
+          if (objData.status) {
+            swal("Eliminar!", objData.msg, "success");
+            tablePlanificacion.api().ajax.reload(function () {
 
-                      });
-                  } else {
-                      swal("Atención!", objData.msg, "error");
-                  }
-              }
+            });
+          } else {
+            swal("Atención!", objData.msg, "error");
           }
+        }
       }
+    }
 
   });
 }
@@ -772,37 +830,37 @@ function fntDeletePlanificacion(ids) {
 function fntClonarPlanificacion(ids) {
   var ids = ids;
   swal({
-      title: "Clonar Planificación",
-      text: "¿Realmente quiere Clonar el Registro?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Si, Continuar!",
-      cancelButtonText: "No, cancelar!",
-      closeOnConfirm: false,
-      closeOnCancel: true
+    title: "Clonar Planificación",
+    text: "¿Realmente quiere Clonar el Registro?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Si, Continuar!",
+    cancelButtonText: "No, cancelar!",
+    closeOnConfirm: false,
+    closeOnCancel: true
   }, function (isConfirm) {
 
-      if (isConfirm) {
-          var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-          var ajaxUrl = base_url + '/Planificacion/clonar';
-          var strData = "ids=" + ids;
-          request.open("POST", ajaxUrl, true);
-          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-          request.send(strData);
-          request.onreadystatechange = function () {
-              if (request.readyState == 4 && request.status == 200) {
-                  var objData = JSON.parse(request.responseText);
-                  if (objData.status) {
-                      swal("Clonado!", objData.msg, "success");
-                      tablePlanificacion.api().ajax.reload(function () {
+    if (isConfirm) {
+      var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+      var ajaxUrl = base_url + '/Planificacion/clonar';
+      var strData = "ids=" + ids;
+      request.open("POST", ajaxUrl, true);
+      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      request.send(strData);
+      request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200) {
+          var objData = JSON.parse(request.responseText);
+          if (objData.status) {
+            swal("Clonado!", objData.msg, "success");
+            tablePlanificacion.api().ajax.reload(function () {
 
-                      });
-                  } else {
-                      swal("Atención!", objData.msg, "error");
-                  }
-              }
+            });
+          } else {
+            swal("Atención!", objData.msg, "error");
           }
+        }
       }
+    }
 
   });
 }
@@ -812,38 +870,131 @@ function fntClonarPlanificacion(ids) {
 function fntAutorizarPlanificacion(ids) {
   var ids = ids;
   swal({
-      title: "Autorizar Planificación",
-      text: "¿Realmente quiere Autorizar la Planificación?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Si, Continuar!",
-      cancelButtonText: "No, cancelar!",
-      closeOnConfirm: false,
-      closeOnCancel: true
+    title: "Autorizar Planificación",
+    text: "¿Realmente quiere Autorizar la Planificación?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Si, Continuar!",
+    cancelButtonText: "No, cancelar!",
+    closeOnConfirm: false,
+    closeOnCancel: true
   }, function (isConfirm) {
 
-      if (isConfirm) {
-          var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-          var ajaxUrl = base_url + '/Planificacion/autorizar';
-          var strData = "ids=" + ids;
-          request.open("POST", ajaxUrl, true);
-          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-          request.send(strData);
-          request.onreadystatechange = function () {
-              if (request.readyState == 4 && request.status == 200) {
-                  var objData = JSON.parse(request.responseText);
-                  if (objData.status) {
-                      swal("Autorizado!", objData.msg, "success");
-                      tablePlanificacion.api().ajax.reload(function () {
-
-                      });
-                  } else {
-                      swal("Atención!", objData.msg, "error");
-                  }
-              }
+    if (isConfirm) {
+      var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+      var ajaxUrl = base_url + '/Planificacion/autorizar';
+      var strData = "ids=" + ids;
+      request.open("POST", ajaxUrl, true);
+      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      request.send(strData);
+      request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200) {
+          var objData = JSON.parse(request.responseText);
+          if (objData.status) {
+            swal("Autorizado!", objData.msg, "success");
+            window.location = base_url + "/planificacion/autorizado"; //Retorna al Portal Principal
+            //tablePlanificacion.api().ajax.reload(function () {        });
+          } else {
+            swal("Atención!", objData.msg, "error");
           }
+        }
       }
+    }
 
   });
 }
+
+
+//AUTORIZADOS
+
+function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo) {
+  var tabla = document.getElementById("dts_PlanificiacionAut");
+  var nDia = "";
+  let salonArray = 0;
+  let idsSalon = 0;
+  if (sessionStorage.dts_PlaInstructor) {
+    var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
+    if (Grid.length > 0) {
+      fechaDia = new Date(fechaDia);
+      var filaEncabezado = $("<tr></tr>");
+      if (accion != "") {
+        if (accion == "Next") {
+          fechaDia.setDate(fechaDia.getDate() + 1);
+        } else {
+          fechaDia.setDate(fechaDia.getDate() - 1);
+        }
+      } else {
+        fechaDia = $("#dtp_fecha_desde").val();
+      }
+      $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
+      //ENCABEZADO DE PLANIFICACION INSTRUCTOR
+      filaEncabezado.append($("<th>Horas</th>"));
+      for (var i = 0; i < Grid.length; i++) {
+        filaEncabezado.append(
+          $("<th>" + Grid[i]["Nombre"].substring(0, 15).toUpperCase() + "</th>")
+        );
+      }
+      $("#dts_PlanificiacionAut thead").html("");
+      $("#dts_PlanificiacionAut thead").append(filaEncabezado);
+      //FIN PLANIFICION
+      let nLetIni = $("#FechaDia").html().toUpperCase();
+      nLetIni = nLetIni.substring(0, 2);
+      nLetIni = nLetIni == "SÁ" ? "SA" : nLetIni; //Se cambia por la Tilde
+      numeroHora = 8;
+
+      switch (nLetIni) {
+        case "LU":
+          nDia = nLunes.split(",");
+          break;
+        case "MA":
+          nDia = nMartes.split(",");
+          break;
+        case "MI":
+          nDia = nMiercoles.split(",");
+          break;
+        case "JU":
+          nDia = nJueves.split(",");
+          break;
+        case "VI":
+          nDia = nViernes.split(",");
+          break;
+        case "SA":
+          nDia = nSabado.split(",");
+          break;
+        default:
+      }
+      var tabla = $("#dts_PlanificiacionAut tbody");
+      $("#dts_PlanificiacionAut tbody").html("");
+      for (var i = 0; i < 13; i++) {
+        //GENERA LAS FILAS
+        var fila = "<tr><td>" + numeroHora + ":00</td>";
+        for (var col = 0; col < Grid.length; col++) {
+          //nLetIni=>inicialDia;numeroHora=>horaDia;Grid[col]['ids']=>Id Instructor
+          let idPlan = nLetIni + "_" + numeroHora + "_" + Grid[col]["ids"];
+          let nResArray = existeHorarioEditar(nDia, idPlan);
+          let nExiste = false;
+          if (nResArray != "0") {
+            salonArray = nResArray[0].split("_");
+            idsSalon = salonArray[3];
+            nExiste = true;
+          }
+
+          if (nExiste) {
+            let objSalon = buscarSalonColor(idsSalon);
+            idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
+            fila += "<td>";
+            fila +='<button type="button" id="' + idPlan +'" class="btn ms-auto btn-lg asignado-true" style="color:white;background-color:' +objSalon["Color"] +'" >' + objSalon["Nombre"] + "</button>";
+            fila += "</td>";
+          } else {
+            //fila +='<td><button type="button" id="' +idPlan + '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
+          }
+        }
+        fila += "</tr>";
+        tabla.append(fila);
+        numeroHora++;
+      }
+    }
+  }
+}
+
 
