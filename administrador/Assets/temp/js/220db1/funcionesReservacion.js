@@ -70,6 +70,59 @@ $(document).ready(function () {
     generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
   });
 
+
+
+  $("#txt_CodigoBeneficiario").autocomplete({
+    source: function (request, response) {
+      console.log("DAT");
+      let link = base_url + '/Persona/buscarAutoPersona';
+      $.ajax({
+        type: 'POST',
+        url: link,
+        dataType: "json",
+        data: {
+          buscar: request.term
+        },
+        success: function (data) {
+          var arrayList = new Array;
+          var c = 0;
+          if (data.status) {
+            var result = data.data;
+            for (var i = 0; i < result.length; i++) {
+              var objeto = result[i];
+              var rowResult = new Object();
+              rowResult.label = objeto.Cedula + " " + objeto.Nombre + " " + objeto.Apellido;
+              rowResult.value = objeto.Cedula;
+
+              rowResult.id = objeto.Ids;
+              rowResult.Cedula = objeto.Cedula;
+              rowResult.Nombres = objeto.Nombre + " " + objeto.Apellido;;
+              //rowResult.FechaNacimiento = objeto.FechaNacimiento;
+              //rowResult.Telefono = objeto.Telefono;
+              //rowResult.Edad = objeto.Edad;
+              arrayList[c] = rowResult;
+              c += 1;
+            }
+            response(arrayList);
+          } else {
+            //response(data.msg);
+            //limpiarTexbox();
+            swal("Atención!", data.msg, "info");
+
+          }
+        }
+      });
+    },
+    minLength: minLengthGeneral,
+    select: function (event, ui) {
+      $('#txt_NombreBeneficirio').val(ui.item.Nombres);
+      //$('#txt_EdadBeneficirio').val(ui.item.Edad);
+      //$('#txt_TelefonoBeneficirio').val(ui.item.Telefono);
+      //$('#txth_per_idBenef').val(ui.item.id);
+
+    }
+  });
+
 });
 
 function fntupdateInstructor(resultInst) {
@@ -177,7 +230,7 @@ function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, 
             let objSalon = buscarSalonColor(idsSalon);
             idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
             fila += "<td>";
-            fila +='<button type="button" id="' + idPlan +'" class="btn ms-auto btn-lg asignado-true" onclick="openModalAgenda(this)" style="color:white;background-color:' +objSalon["Color"] +'" >' + objSalon["Nombre"] + " <span class='badge badge-light'>4</span></button>";
+            fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" onclick="openModalAgenda(this)" style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + " <span class='badge badge-light'>4</span></button>";
             fila += "</td>";
           } else {
             //fila +='<td><button type="button" id="' +idPlan + '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';

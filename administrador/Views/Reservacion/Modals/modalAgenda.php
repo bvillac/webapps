@@ -16,32 +16,49 @@
 
 
           <div class="form-row">
-          <div class="form-group col-md-6">
-              <label for="txt_nombreAgenda">Nombre Agenda</label>
-              <input type="text" class="form-control valid validText " maxlength="100" id="txt_nombreAgenda" name="txt_nombreAgenda" onkeyup="TextMayus(this);" required="">
+            <div class="form-group col-md-6">
+              <label for="cmb_CentroAtencion">Actividad</label>
+              <select class="form-control" id="cmb_actividad" name="cmb_actividad">
+                <?php
+                echo '<option value="0">SELECCIONAR</option>';
+                foreach ($data['dataActividad'] as $opcion) {
+                  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
+                }
+                ?>
+              </select>
             </div>
             <div class="form-group col-md-6">
-              <label for="txt_nombreAgenda">Nombre Agenda</label>
-              <input type="text" class="form-control valid validText " maxlength="100" id="txt_nombreAgenda" name="txt_nombreAgenda" onkeyup="TextMayus(this);" required="">
+              <label for="cmb_CentroAtencion">Nivel</label>
+              <select class="form-control" id="cmb_nivel" name="cmb_nivel">
+                <?php
+                echo '<option value="0">SELECCIONAR</option>';
+                foreach ($data['dataNivel'] as $opcion) {
+                  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
+                }
+                ?>
+              </select>
             </div>
 
 
           </div>
 
+
+
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label for="txt_cupoMinimo">Cupo Minimo</label>
-              <input type="text" class="form-control valid validarNumber" value="0" maxlength="2" id="txt_cupoMinimo" name="txt_cupoMinimo" onkeypress="return controlTagEvent(event);" required="">
+              <label for="txt_CodigoBeneficiario">Beneficiario<span class="required">*</span></label>
+              <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text"
+                required="" placeholder="Buscar por Nombre o DNI">
             </div>
             <div class="form-group col-md-6">
-              <label for="txt_cupoMaximo">Cupo Máximo</label>
-              <input type="text" class="form-control valid validarNumber" value="0" maxlength="2" id="txt_cupoMaximo" name="txt_cupoMaximo" onkeypress="return controlTagEvent(event);" required="">
+              <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
+              <input class="form-control" id="txt_NombreBeneficirio" name="txt_NombreBeneficirio" type="text" disabled>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_color">Color Salón</label>
-              <input type="color" class="form-control"  id="txt_color" name="txt_color" >
+              <input type="color" class="form-control" id="txt_color" name="txt_color">
             </div>
             <div class="form-group col-md-6">
               <label for="cmb_estado">Estado</label>
@@ -50,12 +67,14 @@
                 <option value="2">Inactivo</option>
               </select>
             </div>
-           
+
           </div>
 
           <div class="tile-footer">
-            <button id="cmd_guardar" class="btn btn-primary" type="button"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
-            <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+            <button id="cmd_guardar" class="btn btn-primary" type="button"><i
+                class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+            <button class="btn btn-danger" type="button" data-dismiss="modal"><i
+                class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
           </div>
 
         </form>
@@ -63,5 +82,3 @@
     </div>
   </div>
 </div>
-
-

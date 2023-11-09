@@ -2,6 +2,9 @@
 require_once("Models/CentroAtencionModel.php");
 require_once("Models/SalonModel.php");
 require_once("Models/InstructorModel.php");
+require_once("Models/ActividadModel.php");
+require_once("Models/ValoracionModel.php");
+require_once("Models/NivelModel.php");
 class Reservacion extends Controllers
 {
     public function __construct()
@@ -74,6 +77,10 @@ class Reservacion extends Controllers
                     $data['dataInstructor'] = $modelInstructor->consultarCentroInstructores($data['cat_id']);
                     $modelSalon = new SalonModel();
                     $data['dataSalon'] = $modelSalon->consultarSalones($data['cat_id']);
+                    $modelActividad = new ActividadModel();
+                    $data['dataActividad'] = $modelActividad->consultarActividad();
+                    $modelNivel = new NivelModel();
+                    $data['dataNivel'] = $modelNivel->consultarNivel();
                     $data['page_tag'] = "Agendar";
                     $data['page_name'] = "Agendar";
                     $data['page_title'] = "Agendar <small> " . TITULO_EMPRESA . "</small>";
