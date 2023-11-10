@@ -4,7 +4,6 @@ let delayTimer;
 let fechaDia = new Date();
 let numeroDia = 0;
 let tablePlanificacion;
-let tablePlanificacionAut;
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -74,7 +73,6 @@ $(document).ready(function () {
 
   $("#txt_CodigoBeneficiario").autocomplete({
     source: function (request, response) {
-      console.log("DAT");
       let link = base_url + '/Persona/buscarAutoPersona';
       $.ajax({
         type: 'POST',
@@ -105,7 +103,7 @@ $(document).ready(function () {
             }
             response(arrayList);
           } else {
-            //response(data.msg);
+            response(data.msg);
             //limpiarTexbox();
             swal("Atención!", data.msg, "info");
 

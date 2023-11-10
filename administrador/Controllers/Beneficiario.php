@@ -143,4 +143,24 @@ class Beneficiario extends Controllers
         }
         die();
     }
+
+    public function buscarBeneficiarioNomCed()
+	{
+		if ($_POST) {
+			//dep($_POST);
+			$Buscar = isset($_POST['buscar']) ? $_POST['buscar'] : "";
+			$request = $this->model->consultarDatosCedulaNombres($Buscar);
+			if ($request) {
+				$arrResponse = array('status' => true, 'data' => $request, 'msg' => 'Datos Retornados correctamente.');
+			} else {
+				$arrResponse = array('status' => false, 'msg' => 'No Existen Datos');
+			}
+			//putMessageLogFile($arrResponse);	
+			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+		}
+		die();
+	}
+
+
+
 }

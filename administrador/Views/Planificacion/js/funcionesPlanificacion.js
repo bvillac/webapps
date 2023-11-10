@@ -607,7 +607,7 @@ function guardarAll(accion) {
     var Grid = JSON.parse(sessionStorage.dts_PlaTemporal);
     if (Grid.length > 0) {
       let cabPlan = new Object();
-      cabPlan.ids = IdsTemp;
+      cabPlan.ids = (accion!='Create')?IdsTemp:0;
       cabPlan.fechaInicio = fechaInicio;
       cabPlan.fechaFin = fechaFin;
       cabPlan.centro = centroAT;
@@ -673,6 +673,7 @@ function fntupdateSalones(resultSalon) {
 
 
 function generarPlanificiacionEdit(accion, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo) {
+  
   var tabla = document.getElementById("dts_Planificiacion");
   var nDia = "";
   let salonArray = 0;
@@ -680,9 +681,21 @@ function generarPlanificiacionEdit(accion, nLunes, nMartes, nMiercoles, nJueves,
   if (sessionStorage.dts_PlaInstructor) {
     var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
     if (Grid.length > 0) {
+      //var opciones = { timeZone: 'America/Guayaquil', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
+      //var fechaEcuador = new Date().toLocaleString('es-ES', opciones);
+      //console.log("Fecha en Ecuador:", fechaEcuador);
+      //fechaDia = $("#dtp_fecha_desde").val();
+      //var fechaLocal = fechaDia.split("-");
+      //console.log(fechaLocal);
+      //fechaDia = new Date(fechaLocal[0], Number(fechaLocal[1])-1, fechaLocal[2], 0, 0, 0);
+      //alert(fechaDia)
       fechaDia = new Date(fechaDia);
+      //fechaDia = new Date.parse($("#dtp_fecha_desde").val());
+      //fechaDia = new Date($("#dtp_fecha_desde").val());
       var filaEncabezado = $("<tr></tr>");
       if (accion != "") {
+        //fechaDia = new Date($("#dtp_fecha_desde").val());
+        //console.log(fechaDia);
         if (accion == "Next") {
           fechaDia.setDate(fechaDia.getDate() + 1);
         } else {
@@ -727,6 +740,7 @@ function generarPlanificiacionEdit(accion, nLunes, nMartes, nMiercoles, nJueves,
           nDia = nSabado.split(",");
           break;
         default:
+          nDia=new Array();
       }
       var tabla = $("#dts_Planificiacion tbody");
       $("#dts_Planificiacion tbody").html("");
@@ -962,6 +976,7 @@ function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, 
           nDia = nSabado.split(",");
           break;
         default:
+          nDia=new Array();
       }
       var tabla = $("#dts_PlanificiacionAut tbody");
       $("#dts_PlanificiacionAut tbody").html("");
