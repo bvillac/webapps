@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // La variable existe EDITAR
     fntupdateInstructor(resultInst);
     fntupdateSalones(resultSalon);
+    fntupdateNivel(resultNivel);
     generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
   }
 
@@ -71,9 +72,9 @@ $(document).ready(function () {
 
 
 
-  $("#txt_CodigoBeneficiario").autocomplete({
+  $("#txt_NumeroContrato").autocomplete({
     source: function (request, response) {
-      let link = base_url + '/Persona/buscarAutoPersona';
+      let link = base_url + '/Beneficiario/beneficiarioContratoNombres';
       $.ajax({
         type: 'POST',
         url: link,
@@ -89,8 +90,8 @@ $(document).ready(function () {
             for (var i = 0; i < result.length; i++) {
               var objeto = result[i];
               var rowResult = new Object();
-              rowResult.label = objeto.Cedula + " " + objeto.Nombre + " " + objeto.Apellido;
-              rowResult.value = objeto.Cedula;
+              rowResult.label = objeto.NumeroContrato + " " + objeto.Nombre + " " + objeto.Apellido;
+              rowResult.value = objeto.NumeroContrato;
 
               rowResult.id = objeto.Ids;
               rowResult.Cedula = objeto.Cedula;
@@ -114,6 +115,60 @@ $(document).ready(function () {
     minLength: minLengthGeneral,
     select: function (event, ui) {
       $('#txt_NombreBeneficirio').val(ui.item.Nombres);
+      $('#txt_CodigoBeneficiario').val(ui.item.Cedula);
+      //$('#txt_EdadBeneficirio').val(ui.item.Edad);
+      //$('#txt_TelefonoBeneficirio').val(ui.item.Telefono);
+      //$('#txth_per_idBenef').val(ui.item.id);
+
+    }
+  });
+
+
+  $("#txt_CodigoBeneficiario").autocomplete({
+    source: function (request, response) {
+      let link = base_url + '/Beneficiario/beneficiarioContratoNombres';
+      $.ajax({
+        type: 'POST',
+        url: link,
+        dataType: "json",
+        data: {
+          buscar: request.term
+        },
+        success: function (data) {
+          var arrayList = new Array;
+          var c = 0;
+          if (data.status) {
+            var result = data.data;
+            for (var i = 0; i < result.length; i++) {
+              var objeto = result[i];
+              var rowResult = new Object();
+              rowResult.label = objeto.Cedula + " " + objeto.Nombre + " " + objeto.Apellido;
+              rowResult.value = objeto.Cedula;
+
+              rowResult.id = objeto.Ids;
+              rowResult.Cedula = objeto.Cedula;
+              rowResult.Nombres = objeto.Nombre + " " + objeto.Apellido;
+              rowResult.NumeroContrato = objeto.NumeroContrato;
+              //rowResult.FechaNacimiento = objeto.FechaNacimiento;
+              //rowResult.Telefono = objeto.Telefono;
+              //rowResult.Edad = objeto.Edad;
+              arrayList[c] = rowResult;
+              c += 1;
+            }
+            response(arrayList);
+          } else {
+            response(data.msg);
+            //limpiarTexbox();
+            swal("Atención!", data.msg, "info");
+
+          }
+        }
+      });
+    },
+    minLength: minLengthGeneral,
+    select: function (event, ui) {
+      $('#txt_NombreBeneficirio').val(ui.item.Nombres);
+      $('#txt_NumeroContrato').val(ui.item.NumeroContrato);
       //$('#txt_EdadBeneficirio').val(ui.item.Edad);
       //$('#txt_TelefonoBeneficirio').val(ui.item.Telefono);
       //$('#txth_per_idBenef').val(ui.item.id);
@@ -122,6 +177,8 @@ $(document).ready(function () {
   });
 
 });
+
+
 
 function fntupdateInstructor(resultInst) {
   var arrayList = new Array();
@@ -151,6 +208,24 @@ function fntupdateSalones(resultSalon) {
   }
   sessionStorage.dts_SalonCentro = JSON.stringify(arrayList);
 }
+
+function fntupdateNivel(resultNivel) {
+  var c = 0;
+  var arrayList = new Array();
+  for (var i = 0; i < resultNivel.length; i++) {
+    let rowInst = new Object();
+    rowInst.ids = resultNivel[i].Ids;
+    rowInst.Nombre = resultNivel[i].Nombre;
+    rowInst.Uinicio = resultNivel[i].UnidadInicio;
+    rowInst.Ufin = resultNivel[i].UnidadFin;
+    rowInst.Examen1 = resultNivel[i].Examen1;
+    rowInst.Examen2 = resultNivel[i].Examen2;
+    arrayList[c] = rowInst;
+    c += 1;
+  }
+  sessionStorage.dts_Nivel = JSON.stringify(arrayList);
+}
+
 
 function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo) {
   var tabla = document.getElementById("dts_PlanificiacionAut");
@@ -207,6 +282,7 @@ function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, 
           nDia = nSabado.split(",");
           break;
         default:
+          nDia=new Array();
       }
       var tabla = $("#dts_PlanificiacionAut tbody");
       $("#dts_PlanificiacionAut tbody").html("");
@@ -270,15 +346,43 @@ function buscarSalonColor(ids) {
   return 0;
 }
 
+function buscarInstructor(ids) {
+  if (sessionStorage.dts_PlaInstructor) {
+    var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
+    if (Grid.length > 0) {
+      for (var i = 0; i < Grid.length; i++) {
+        if (Grid[i]["ids"] == ids) {
+          return Grid[i];
+        }
+      }
+    }
+  }
+  return 0;
+}
+
 function openModalAgenda(comp) {
-  document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+  DataArray = comp.id.split("_");
+  //console.log(DataArray);
+
+ var nDiaLetra= retornarDiaLetras(DataArray[0]);
+ var Hora = DataArray[1]+":00";
+ let objInstructor = buscarInstructor(DataArray[2]);
+ //console.log(objInstructor);
+ let objSalon = buscarSalonColor(DataArray[3]);
+ //console.log(objSalon);
+ $('#txt_color').val(objSalon["Color"]);
+ $('#lbl_Beneficiario').text($('#txt_NombreBeneficirio').val());
+
+  //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
   document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
   document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
-  document.querySelector('#btnText').innerHTML = "Guardar";
-  document.querySelector('#titleModal').innerHTML = "Nuevo Salón";
+  document.querySelector('#btnText').innerHTML = "Reservar";
+  document.querySelector('#titleModal').innerHTML = "Día: "+nDiaLetra+" ->  Hora: "+Hora + " -> Salón: " + objSalon["Nombre"]  +" -> Instructor: " + objInstructor["Nombre"];
   document.querySelector("#formAgenda").reset();
   $('#modalFormAgenda').modal('show');
 }
+
+
 
 /*function fnt_eventoPlanificado(comp) {
   let nEstado = false;

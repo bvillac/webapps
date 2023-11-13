@@ -976,6 +976,7 @@ function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, 
           nDia = nSabado.split(",");
           break;
         default:
+          nDia=new Array();
       }
       var tabla = $("#dts_PlanificiacionAut tbody");
       $("#dts_PlanificiacionAut tbody").html("");

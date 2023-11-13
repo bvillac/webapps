@@ -12,10 +12,14 @@
       <div class="modal-body">
         <form id="formAgenda" name="formAgenda" class="form-horizontal">
           <input type="hidden" id="txth_ids" name="txth_ids" value="">
-          <p class="text-primary">Todos los campos son obligatorios.</p>
+          <!--<p class="text-primary">Todos los campos son obligatorios.</p>-->
+
 
 
           <div class="form-row">
+            <div class="form-group col-md-12">
+              <h4 id="lbl_Beneficiario"></h4>
+            </div>
             <div class="form-group col-md-6">
               <label for="cmb_CentroAtencion">Actividad</label>
               <select class="form-control" id="cmb_actividad" name="cmb_actividad">
@@ -40,22 +44,20 @@
             </div>
 
 
+            <div class="form-group col-md-6">
+              <label for="cmb_NumeroNivel">Número de Nivel</label>
+              <select class="form-control" id="cmb_NumeroNivel" name="cmb_NumeroNivel">
+                
+              </select>
+            </div>
+
+
           </div>
 
 
 
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="txt_CodigoBeneficiario">Beneficiario<span class="required">*</span></label>
-              <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text"
-                required="" placeholder="Buscar por Nombre o DNI">
-            </div>
-            <div class="form-group col-md-6">
-              <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
-              <input class="form-control" id="txt_NombreBeneficirio" name="txt_NombreBeneficirio" type="text" disabled>
-            </div>
-          </div>
-          <div class="form-row">
+
+          <!--<div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_color">Color Salón</label>
               <input type="color" class="form-control" id="txt_color" name="txt_color">
@@ -68,7 +70,7 @@
               </select>
             </div>
 
-          </div>
+          </div>-->
 
           <div class="tile-footer">
             <button id="cmd_guardar" class="btn btn-primary" type="button"><i

@@ -3,11 +3,12 @@ adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/Reservacion/Modals/modalAgenda.php";
-//putMessageLogFile($data);
+//putMessageLogFile($data['dataNivel']);
 ?>
 <script>
   const resultInst = <?= json_encode($data['dataInstructor']) ?>;
   const resultSalon = <?= json_encode($data['dataSalon']) ?>;
+  const resultNivel = <?= json_encode($data['dataNivel']) ?>;
   const nLunes = <?= json_encode($data['pla_lunes']) ?>;
   const nMartes = <?= json_encode($data['pla_martes']) ?>;
   const nMiercoles = <?= json_encode($data['pla_miercoles']) ?>;
@@ -64,6 +65,23 @@ require_once "Views/Reservacion/Modals/modalAgenda.php";
               placeholder="1988-01-01" pattern="^\d{4}\/\d{2}\/\d{2}$" required=""
               value="<?= $data['pla_fecha_fin'] ?>">
           </div>
+
+          <div class="form-group col-md-4">
+              <label for="txt_NumeroContrato">Número Contrato<span class="required">*</span></label>
+              <input class="form-control" id="txt_NumeroContrato" name="txt_NumeroContrato" type="text"
+                required="" placeholder="Buscar por Contrato">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="txt_CodigoBeneficiario">DNI Beneficiario<span class="required">*</span></label>
+              <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text"
+                required="" placeholder="Buscar por Nombre o DNI">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
+              <input class="form-control" id="txt_NombreBeneficirio" name="txt_NombreBeneficirio" type="text" disabled>
+            </div>
+
+
 
 
         

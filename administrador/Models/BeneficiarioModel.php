@@ -78,7 +78,7 @@ class BeneficiarioModel extends MysqlAcademico
             return $arroout;
         } catch (Exception $e) {
             $con->rollBack();
-            throw $e;
+            //throw $e;
             $arroout["status"] = false;
             $arroout["message"] = "Fallo: " . $e->getMessage();
             return $arroout;
@@ -112,18 +112,31 @@ class BeneficiarioModel extends MysqlAcademico
         return $request;
     }
 
-    public function buscarBeneficiarioNomCed(string $parametro){
-		$sql = "SELECT a.per_id Ids,a.per_cedula Cedula,a.per_nombre Nombre, ";
+    public function beneficiarioContratoNombres(string $parametro){
+		/*$sql = "SELECT a.per_id Ids,a.per_cedula Cedula,a.per_nombre Nombre, ";
 		$sql .= "   a.per_apellido Apellido,a.per_fecha_nacimiento FechaNacimiento, a.per_telefono Telefono, a.per_direccion Direccion,  a.per_genero Genero, a.estado_logico Estado,date(a.fecha_creacion) FechaIng, ";
 		$sql .= "   FLOOR(DATEDIFF(CURDATE(),a.per_fecha_nacimiento) / 365.25) AS Edad ";
 		$sql .= "   FROM " . $this->db_name . ".persona a  ";
-		$sql .= " WHERE a.estado_logico!=0  ";
+		$sql .= " WHERE a.estado_logico!=0  ";*/
+
+        $sql = "SELECT a.ben_id Ids,b.con_numero NumeroContrato,a.ben_tipo TipoBenefiario,CONCAT(c.per_nombre,' ',c.per_apellido) Nombres,c.per_telefono Telefono, ";
+        $sql .= "c.per_cedula Cedula,c.per_nombre Nombre,c.per_apellido Apellido,c.per_fecha_nacimiento FechaNacimiento,c.per_genero Genero, c.estado_logico Estado, ";
+        $sql .= "c.per_direccion Direccion,a.ben_estado_logico Estado,FLOOR(DATEDIFF(CURDATE(),c.per_fecha_nacimiento) / 365.25) AS Edad ";
+        $sql .= "FROM db_academico.beneficiario a ";
+        $sql .= "	inner join db_academico.contrato b ";
+        $sql .= "		on a.con_id=b.con_id and b.con_estado_logico=1 ";
+        $sql .= "	inner join db_administrador.persona c ";
+        $sql .= "        on a.per_id=c.per_id  ";
+        $sql .= " where a.ben_estado_logico!=0 ";
+
+
 		if($parametro!=''){
 			if (is_numeric($parametro)) {
 				//$sql .= " AND (a.per_id LIKE '%{$parametro}%' OR a.per_cedula LIKE '%{$parametro}%'); ";
-				$sql .= " AND a.per_cedula LIKE '%{$parametro}%' ";
+				//$sql .= " AND c.per_cedula LIKE '%{$parametro}%' ";
+                $sql .= " AND (c.per_cedula LIKE '%{$parametro}%' OR b.con_numero LIKE '%{$parametro}%') ";
 			}else{
-				$sql .= " AND (a.per_nombre LIKE '%{$parametro}%' OR a.per_apellido LIKE '%{$parametro}%') ";
+				$sql .= " AND (c.per_nombre LIKE '%{$parametro}%' OR c.per_apellido LIKE '%{$parametro}%') ";
 			}
 		}
 		$sql .= LIMIT;

@@ -139,6 +139,34 @@ function obtenerDiaSemana(numero) {
     return dias[numero];
 }
 
+function retornarDiaLetras(nLetIni){
+    switch (nLetIni) {
+      case "LU":
+        nDia = "Lunes"
+        break;
+      case "MA":
+        nDia = "Martes"
+        break;
+      case "MI":
+        nDia = "Miércoles"
+        break;
+      case "JU":
+        nDia = "Jueves"
+        break;
+      case "VI":
+        nDia = "Viernes"
+        break;
+      case "SA":
+        nDia = "Sábado"
+        break;
+      default:
+        nDia = "Domingo"
+    }
+    return nDia;
+  }
+
+
+
 //Obtener fecha con Letras
 function obtenerFechaConLetras(fechaDia) {
     let meses = [

@@ -11,7 +11,7 @@
       </div>
       <div class="modal-body">
         <form id="formPersona" name="formPersona" class="form-horizontal">
-          <input type="hidden" id="txth_ids" name="txth_ids" value="">
+          <!--<input type="hidden" id="txth_ids" name="txth_ids" value="">-->
           <p class="text-primary">Todos los campos son obligatorios.</p>
 
           <div class="form-row">

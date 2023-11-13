@@ -144,12 +144,12 @@ class Beneficiario extends Controllers
         die();
     }
 
-    public function buscarBeneficiarioNomCed()
+    public function beneficiarioContratoNombres()
 	{
 		if ($_POST) {
 			//dep($_POST);
 			$Buscar = isset($_POST['buscar']) ? $_POST['buscar'] : "";
-			$request = $this->model->consultarDatosCedulaNombres($Buscar);
+			$request = $this->model->beneficiarioContratoNombres($Buscar);
 			if ($request) {
 				$arrResponse = array('status' => true, 'data' => $request, 'msg' => 'Datos Retornados correctamente.');
 			} else {
