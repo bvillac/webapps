@@ -70,6 +70,21 @@ $(document).ready(function () {
     generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
   });
 
+  $("#btn_reservar").click(function () {
+    console.log("Reservar");
+  });
+
+  
+
+  $('#cmb_nivel').change(function () {        
+    if ($('#cmb_nivel').val() != 0) {        
+        fntLLenarNivel();
+    } else {
+        $('#cmb_NumeroNivel option').remove();
+        swal("Error", "Selecione Libro o Nivel" , "error");
+    }
+});
+
 
 
   $("#txt_NumeroContrato").autocomplete({
@@ -177,6 +192,38 @@ $(document).ready(function () {
   });
 
 });
+
+function buscarNivel(ids) {
+  if (sessionStorage.dts_Nivel) {
+    var Grid = JSON.parse(sessionStorage.dts_Nivel);
+    if (Grid.length > 0) {
+      for (var i = 0; i < Grid.length; i++) {
+        if (Grid[i]["ids"] == ids) {
+          return Grid[i];
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+
+function fntLLenarNivel() {  
+  let objNivel=buscarNivel($('#cmb_nivel').val());
+  $("#cmb_NumeroNivel").empty();
+  for (var i = objNivel["Uinicio"]; i <= objNivel["Ufin"]; i++) {
+    // Crea una opción con el valor y texto igual al número del contador
+    var option = $("<option>", {
+      value: i,
+      text: "Unidad "+ i
+    });
+
+    // Agrega la opción al select usando jQuery
+    $("#cmb_NumeroNivel").append(option);
+  }
+}
+
+
 
 
 
@@ -360,24 +407,22 @@ function buscarInstructor(ids) {
   return 0;
 }
 
-function openModalAgenda(comp) {
+function openModalAgenda(comp) {  
+  $('#txth_idsModal').val(comp.id);
   DataArray = comp.id.split("_");
-  //console.log(DataArray);
-
- var nDiaLetra= retornarDiaLetras(DataArray[0]);
- var Hora = DataArray[1]+":00";
- let objInstructor = buscarInstructor(DataArray[2]);
- //console.log(objInstructor);
- let objSalon = buscarSalonColor(DataArray[3]);
- //console.log(objSalon);
- $('#txt_color').val(objSalon["Color"]);
- $('#lbl_Beneficiario').text($('#txt_NombreBeneficirio').val());
+  var nDiaLetra = retornarDiaLetras(DataArray[0]);
+  var Hora = DataArray[1] + ":00";
+  let objInstructor = buscarInstructor(DataArray[2]);
+  let objSalon = buscarSalonColor(DataArray[3]);
+  //console.log(objSalon);
+  $('#txt_color').val(objSalon["Color"]);
+  $('#lbl_Beneficiario').text($('#txt_NombreBeneficirio').val());
 
   //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
   document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
-  document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
+  document.querySelector('#btn_reservar').classList.replace("btn-info", "btn-primary");
   document.querySelector('#btnText').innerHTML = "Reservar";
-  document.querySelector('#titleModal').innerHTML = "Día: "+nDiaLetra+" ->  Hora: "+Hora + " -> Salón: " + objSalon["Nombre"]  +" -> Instructor: " + objInstructor["Nombre"];
+  document.querySelector('#titleModal').innerHTML = "Día: " + nDiaLetra + " ->  Hora: " + Hora + " -> Salón: " + objSalon["Nombre"] + " -> Instructor: " + objInstructor["Nombre"];
   document.querySelector("#formAgenda").reset();
   $('#modalFormAgenda').modal('show');
 }
