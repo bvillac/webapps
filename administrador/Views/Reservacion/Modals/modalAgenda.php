@@ -17,8 +17,8 @@
 
 
           <div class="form-row">
-            <div class="form-group col-md-12">
-              <h4 id="lbl_Beneficiario"></h4>
+            <div class="form-group col-md-12">              
+              <h4 class="line-head" id="lbl_Beneficiario"></h4>
             </div>
 
             <div class="form-group col-md-6">

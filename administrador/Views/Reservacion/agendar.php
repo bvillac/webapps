@@ -4,6 +4,7 @@ adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/Reservacion/Modals/modalAgenda.php";
 //putMessageLogFile($data['dataNivel']);
+//putMessageLogFile($data['pla_fecha_incio']);
 ?>
 <script>
   const resultInst = <?= json_encode($data['dataInstructor']) ?>;
@@ -18,6 +19,8 @@ require_once "Views/Reservacion/Modals/modalAgenda.php";
   const nDomingo = <?= json_encode($data['pla_domingo']) ?>;
   const accionFormAut = "Age";
   const IdsTemp = <?= $data['pla_id'] ?>;
+  const fechaIni = "<?= $data['pla_fecha_incio'] ?>";
+  const fechaFin = "<?= $data['pla_fecha_fin'] ?>";
 </script>
 
 <div id="contentAjax"></div>
@@ -38,6 +41,8 @@ require_once "Views/Reservacion/Modals/modalAgenda.php";
   </div>
   <div class="row">
     <input type="hidden" id="txth_ids" name="txth_ids" value="<?= $data['pla_id'] ?>">
+    <input type="hidden" id="txth_idBenef" name="txth_idBenef" value="">
+    <input type="hidden" id="txth_fechaReservacion" name="txth_fechaReservacion" value="">
     <div class="col-md-12">
       <div class="tile row">
         

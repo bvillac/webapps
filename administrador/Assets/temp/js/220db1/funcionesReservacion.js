@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fntupdateInstructor(resultInst);
     fntupdateSalones(resultSalon);
     fntupdateNivel(resultNivel);
-    generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   }
 
 
@@ -71,7 +71,8 @@ $(document).ready(function () {
   });
 
   $("#btn_reservar").click(function () {
-    console.log("Reservar");
+    //console.log("Reservar");
+    reservarUsuario();
   });
 
   
@@ -133,7 +134,7 @@ $(document).ready(function () {
       $('#txt_CodigoBeneficiario').val(ui.item.Cedula);
       //$('#txt_EdadBeneficirio').val(ui.item.Edad);
       //$('#txt_TelefonoBeneficirio').val(ui.item.Telefono);
-      //$('#txth_per_idBenef').val(ui.item.id);
+      $('#txth_idBenef').val(ui.item.id);
 
     }
   });
@@ -184,6 +185,7 @@ $(document).ready(function () {
     select: function (event, ui) {
       $('#txt_NombreBeneficirio').val(ui.item.Nombres);
       $('#txt_NumeroContrato').val(ui.item.NumeroContrato);
+      $('#txth_idBenef').val(ui.item.id);
       //$('#txt_EdadBeneficirio').val(ui.item.Edad);
       //$('#txt_TelefonoBeneficirio').val(ui.item.Telefono);
       //$('#txth_per_idBenef').val(ui.item.id);
@@ -274,7 +276,7 @@ function fntupdateNivel(resultNivel) {
 }
 
 
-function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo) {
+function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin) {
   var tabla = document.getElementById("dts_PlanificiacionAut");
   var nDia = "";
   let salonArray = 0;
@@ -282,17 +284,25 @@ function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, 
   if (sessionStorage.dts_PlaInstructor) {
     var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
     if (Grid.length > 0) {
-      fechaDia = new Date(fechaDia);
+      if(accionMove == "Edit"){
+        fechaDia=obtenerFormatoFecha(fechaDia);
+      }
+      
+      
       var filaEncabezado = $("<tr></tr>");
-      if (accion != "") {
-        if (accion == "Next") {
+      console.log("fecha dia "+fechaDia);
+      console.log(accionMove);
+      if (accionMove != "") {
+        if (accionMove == "Next") {
           fechaDia.setDate(fechaDia.getDate() + 1);
-        } else {
+        } else if (accionMove == "Back") {
           fechaDia.setDate(fechaDia.getDate() - 1);
         }
-      } else {
-        fechaDia = $("#dtp_fecha_desde").val();
-      }
+      } //else {
+        //fechaDia = $("#dtp_fecha_desde").val();
+      //}
+      
+      $("#txth_fechaReservacion").val(fechaDia);
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));
@@ -426,6 +436,64 @@ function openModalAgenda(comp) {
   document.querySelector("#formAgenda").reset();
   $('#modalFormAgenda').modal('show');
 }
+
+
+function reservarUsuario() {
+  let pla_id= $("#txth_ids").val();
+  let ben_id= $("#txth_idBenef").val();
+  let act_id = $("#cmb_actividad").val();
+  let niv_id = $("#cmb_nivel").val();
+  let uni_id = $("#cmb_NumeroNivel").val();
+  console.log(fechaDia);
+
+  //let fechaInicio = $("#dtp_fecha_desde").val();
+  //let fechaFin = $("#dtp_fecha_hasta").val();
+
+  /*if (fechaInicio == "" || fechaFin == "" || centroAT == 0) {
+    swal(
+      "Atención",
+      "Todos los Fecha inicio,fecha fin, y Centro de Atención son obligatorios.",
+      "error"
+    );
+    return false;
+  }*/
+  if (niv_id!=0) {
+    let objEnt = new Object();
+    objEnt.pla_id = pla_id;
+    objEnt.ben_id = ben_id;
+    objEnt.act_id = act_id;
+    objEnt.niv_id = niv_id;
+    objEnt.uni_id = uni_id;
+
+    objEnt.fechaInicio = fechaInicio;
+    objEnt.fechaFin = fechaFin;
+    objEnt.centro = centroAT;
+      let link = base_url + "/Reservacion/reservarBeneficiario";
+      $.ajax({
+        type: "POST",
+        url: link,
+        data: {
+          reservar: objEnt,
+          accion: accion,
+        },
+        success: function (data) {
+          if (data.status) {
+            /*sessionStorage.removeItem("dts_PlaInstructor");
+            sessionStorage.removeItem("dts_PlaTemporal");
+            sessionStorage.removeItem("dts_SalonCentro");
+            swal("Planificación", data.msg, "success");
+            window.location = base_url + "/planificacion"; //Retorna al Portal Principal*/
+          } else {
+            swal("Error", data.msg, "error");
+          }
+        },
+        dataType: "json",
+      });
+  } else {
+    swal("Atención!", "Seleccione un Nivel", "error");
+  }
+}
+
 
 
 

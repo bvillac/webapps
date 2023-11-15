@@ -183,6 +183,19 @@ function obtenerFechaConLetras(fechaDia) {
     return `${nombreDia}, ${dia} de ${mes} de ${ano}`;
 }
 
+//Obtener FORMATO fecha
+function obtenerFormatoFecha(fechaString){
+    console.log(fechaString);
+    //console.log(fechaDia.toLocaleString('es-ES', opciones));
+    var partesFecha = fechaString.split("-");
+    var fechaReal = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
+    return fechaReal;
+}
+
+function estaEnRango(fecha, fechaInicio, fechaFin) {
+    return fecha >= fechaInicio && fecha <= fechaFin;
+}
+
 //Busca si existe un codigo en la lista JSON
 function codigoExiste(value, property, lista) {
     if (lista) {

@@ -96,6 +96,44 @@ class Reservacion extends Controllers
         die();
     }
 
+    public function reservarBeneficiario()
+    {
+        if ($_POST) {
+            //dep($_POST);
+            if (empty($_POST['beneficiario']) || empty($_POST['accion'])) {
+                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+            } else {
+                $request = "";
+                $datos = isset($_POST['beneficiario']) ? json_decode($_POST['beneficiario'], true) : array();
+                $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
+                if ($accion == "Create") {
+                    $option = 1;
+                    if ($_SESSION['permisosMod']['w']) {
+                        $request = $this->model->insertData($datos);
+                    }
+                } else {
+                    $option = 2;
+                    if ($_SESSION['permisosMod']['u']) {
+                        $request = $this->model->updateData($datos);
+                    }
+                }
+                if ($request["status"]) {
+                    if ($option == 1) {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
+                    } else {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
+                    }
+                } else {
+                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
+                }
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+
+
+
 
 
 }
