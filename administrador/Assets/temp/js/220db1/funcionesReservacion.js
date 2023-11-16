@@ -287,17 +287,22 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
     if (Grid.length > 0) {
       console.log("fecha antes "+fechaDia);
       console.log(accionMove);
-   
       if (accionMove == "Edit") {
         fechaDia = obtenerFormatoFecha(fechaIni);
       } else {
+        
+        let fechaAux=fechaDia;
+        console.log("inicio fecha aux "+fechaAux);
+        fechaDia = contarFechaDia(accionMove, fechaDia);
+        console.log("fecha cambiada " + fechaDia);
         estadoFecha = estaEnRango(fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
         console.log("Estado Rango " + estadoFecha);
         if (!estadoFecha) {
+          fechaDia=fechaAux;
+          
+          console.log("fecha cambiada axu " + fechaDia);
           swal("Atención!", "Fechas fuera de Rango", "error");
           return; //Si no se cumple no continua
-        }else{
-          fechaDia = contarFechaDia(accionMove, fechaDia);
         }
         
       }

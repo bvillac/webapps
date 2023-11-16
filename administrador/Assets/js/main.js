@@ -184,7 +184,7 @@ function obtenerFechaConLetras(fechaDia) {
 }
 
 function obtenerFechaString(fecha){
-   return fecha.getUTCFullYear()+"-"+fecha.getUTCMonth()-1+"-"+fecha.getUTCDay();
+   return fecha.getUTCFullYear()+"-"+ (fecha.getUTCMonth()-1) +"-"+fecha.getUTCDay();
 }
 
 //Obtener FORMATO fecha => 2023-11-13
@@ -199,16 +199,21 @@ function obtenerFormatoFecha(fechaString){
 function estaEnRango(fecha, fechaInicio, fechaFin) {
     //Si ambas condiciones se cumplen retonra Verdadero
     console.log(fecha);
-    console.log("Fecha compara "+fecha+ "fecha INI " + obtenerFechaString(fechaInicio) + "FECHA FIN "+fechaFin);
+    console.log("Fecha compara "+fecha+ " fecha INI " + fechaInicio + " FECHA FIN "+fechaFin);
+    console.log("Fecha compara "+fecha.getTime()+ " fecha INI " + fechaInicio.getTime() + " FECHA FIN "+fechaFin.getTime());
+    //return fecha.getTime() >= fechaInicio.getTime() && fecha.getTime() <= fechaFin.getTime();
     //return fecha >= fechaInicio && fecha <= fechaFin;
     //return fechaInicio<fecha && fechaFin >fecha;
     //return fecha > fechaInicio && fecha < fechaFin;
-    if (fecha == fechaInicio) {
-        return false;
-    } else if (fecha == fechaFin) {
-        return false;
+    if (fecha.getTime() == fechaInicio.getTime()) {
+        console.log("Es igual inicio");
+        return true;
+    } else if (fecha.getTime() == fechaFin.getTime()) {
+        console.log("Es igual fin");
+        return true;
     }else{
-        return fecha >= fechaInicio && fecha <= fechaFin;
+        console.log("Es igual otro");
+        return fecha.getTime() >= fechaInicio.getTime() && fecha.getTime() <= fechaFin.getTime();
     }
 }
 
