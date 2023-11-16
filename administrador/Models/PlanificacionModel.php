@@ -15,13 +15,11 @@ class PlanificacionModel extends MysqlAcademico
 
     public function consultarDatos()
     {
-        $sql = "SELECT a.sal_id Ids,a.cat_id,b.cat_nombre NombreCentro,a.sal_nombre NombreSalon, ";
-        $sql .= "	a.sal_cupo_minimo CupoMinimo,a.sal_cupo_maximo CupoMaximo,a.sal_estado_logico Estado ";
-        $sql .= "	FROM " . $this->db_name . ".salon a ";
-        $sql .= "		inner join " . $this->db_name . ".centro_atencion b ";
-        $sql .= "			on a.cat_id=b.cat_id ";
-        $sql .= " where a.sal_estado_logico!=0 ";
-
+        $sql = "SELECT a.tpla_id Ids,b.cat_nombre Centro, a.tpla_fecha_incio FechaIni,a.tpla_fecha_fin FechaFin,a.tpla_fechas_rango Rango,a.tpla_estado_logico Estado ";
+	    $sql = "    FROM " . $this->db_name . ".planificacion_temp a ";
+		$sql = "        inner join " . $this->db_name . ".centro_atencion b  ";
+        $sql = "            on a.cat_id=b.cat_id ";
+        $sql = "    where a.tpla_estado_logico!=0; ";
         $request = $this->select_all($sql);
         return $request;
     }

@@ -27,7 +27,7 @@ class Planificacion extends Controllers
         $this->views->getView($this, "planificacion", $data);
     }
 
-    public function consultarSalon()
+    public function consultarPlanificacion()
     {
         if ($_SESSION['permisosMod']['r']) {
             $arrData = $this->model->consultarDatos();
