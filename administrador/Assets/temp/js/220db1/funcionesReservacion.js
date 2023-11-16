@@ -64,10 +64,10 @@ $(document).ready(function () {
     //var fecIni = document.querySelector("#dtp_fecha_desde").value;
     //var fecFin = document.querySelector("#dtp_fecha_hasta").value;
     //console.log(fecIni+' '+fecFin+' '+fechaDia)    
-    generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   });
   $("#btn_anteriorAut").click(function () {
-    generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   });
 
   $("#btn_reservar").click(function () {
@@ -281,27 +281,31 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
   var nDia = "";
   let salonArray = 0;
   let idsSalon = 0;
+  let estadoFecha=false;
   if (sessionStorage.dts_PlaInstructor) {
     var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
     if (Grid.length > 0) {
-      if(accionMove == "Edit"){
-        fechaDia=obtenerFormatoFecha(fechaDia);
+      console.log("fecha antes "+fechaDia);
+      console.log(accionMove);
+   
+      if (accionMove == "Edit") {
+        fechaDia = obtenerFormatoFecha(fechaIni);
+      } else {
+        estadoFecha = estaEnRango(fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+        console.log("Estado Rango " + estadoFecha);
+        if (!estadoFecha) {
+          swal("Atención!", "Fechas fuera de Rango", "error");
+          return; //Si no se cumple no continua
+        }else{
+          fechaDia = contarFechaDia(accionMove, fechaDia);
+        }
+        
       }
+      
+      console.log("fecha despues "+fechaDia);
       
       
       var filaEncabezado = $("<tr></tr>");
-      console.log("fecha dia "+fechaDia);
-      console.log(accionMove);
-      if (accionMove != "") {
-        if (accionMove == "Next") {
-          fechaDia.setDate(fechaDia.getDate() + 1);
-        } else if (accionMove == "Back") {
-          fechaDia.setDate(fechaDia.getDate() - 1);
-        }
-      } //else {
-        //fechaDia = $("#dtp_fecha_desde").val();
-      //}
-      
       $("#txth_fechaReservacion").val(fechaDia);
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR

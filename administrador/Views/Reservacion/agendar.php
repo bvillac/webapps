@@ -5,6 +5,7 @@ adminMenu($data);
 require_once "Views/Reservacion/Modals/modalAgenda.php";
 //putMessageLogFile($data['dataNivel']);
 //putMessageLogFile($data['pla_fecha_incio']);
+//putMessageLogFile($data);
 ?>
 <script>
   const resultInst = <?= json_encode($data['dataInstructor']) ?>;

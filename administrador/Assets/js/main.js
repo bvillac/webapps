@@ -176,14 +176,18 @@ function obtenerFechaConLetras(fechaDia) {
 
     var fecha = new Date(fechaDia);
     var dia = fecha.getUTCDate();
-    numeroDia = fecha.getUTCDay();
+    var numeroDia = fecha.getUTCDay();
     var nombreDia = obtenerDiaSemana(numeroDia);
     var mes = meses[fecha.getUTCMonth()];
     var ano = fecha.getUTCFullYear();
     return `${nombreDia}, ${dia} de ${mes} de ${ano}`;
 }
 
-//Obtener FORMATO fecha
+function obtenerFechaString(fecha){
+   return fecha.getUTCFullYear()+"-"+fecha.getUTCMonth()-1+"-"+fecha.getUTCDay();
+}
+
+//Obtener FORMATO fecha => 2023-11-13
 function obtenerFormatoFecha(fechaString){
     console.log(fechaString);
     //console.log(fechaDia.toLocaleString('es-ES', opciones));
@@ -193,7 +197,29 @@ function obtenerFormatoFecha(fechaString){
 }
 
 function estaEnRango(fecha, fechaInicio, fechaFin) {
-    return fecha >= fechaInicio && fecha <= fechaFin;
+    //Si ambas condiciones se cumplen retonra Verdadero
+    console.log(fecha);
+    console.log("Fecha compara "+fecha+ "fecha INI " + obtenerFechaString(fechaInicio) + "FECHA FIN "+fechaFin);
+    //return fecha >= fechaInicio && fecha <= fechaFin;
+    //return fechaInicio<fecha && fechaFin >fecha;
+    //return fecha > fechaInicio && fecha < fechaFin;
+    if (fecha == fechaInicio) {
+        return false;
+    } else if (fecha == fechaFin) {
+        return false;
+    }else{
+        return fecha >= fechaInicio && fecha <= fechaFin;
+    }
+}
+
+function contarFechaDia(accionMove, fecha) {
+    console.log("Contar fecha");
+    if (accionMove == "Next") {
+        fecha.setDate(fecha.getDate() + 1);
+    } else if (accionMove == "Back") {
+        fecha.setDate(fecha.getDate() - 1);
+    }
+    return fecha;
 }
 
 //Busca si existe un codigo en la lista JSON
