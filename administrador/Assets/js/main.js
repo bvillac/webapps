@@ -139,6 +139,34 @@ function obtenerDiaSemana(numero) {
     return dias[numero];
 }
 
+function retornarDiaLetras(nLetIni){
+    switch (nLetIni) {
+      case "LU":
+        nDia = "Lunes"
+        break;
+      case "MA":
+        nDia = "Martes"
+        break;
+      case "MI":
+        nDia = "Miércoles"
+        break;
+      case "JU":
+        nDia = "Jueves"
+        break;
+      case "VI":
+        nDia = "Viernes"
+        break;
+      case "SA":
+        nDia = "Sábado"
+        break;
+      default:
+        nDia = "Domingo"
+    }
+    return nDia;
+  }
+
+
+
 //Obtener fecha con Letras
 function obtenerFechaConLetras(fechaDia) {
     let meses = [
@@ -153,6 +181,19 @@ function obtenerFechaConLetras(fechaDia) {
     var mes = meses[fecha.getUTCMonth()];
     var ano = fecha.getUTCFullYear();
     return `${nombreDia}, ${dia} de ${mes} de ${ano}`;
+}
+
+//Obtener FORMATO fecha
+function obtenerFormatoFecha(fechaString){
+    console.log(fechaString);
+    //console.log(fechaDia.toLocaleString('es-ES', opciones));
+    var partesFecha = fechaString.split("-");
+    var fechaReal = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
+    return fechaReal;
+}
+
+function estaEnRango(fecha, fechaInicio, fechaFin) {
+    return fecha >= fechaInicio && fecha <= fechaFin;
 }
 
 //Busca si existe un codigo en la lista JSON

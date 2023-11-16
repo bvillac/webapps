@@ -358,7 +358,6 @@ function limpiarAutocompletar() {
 
 
 function buscarPersonaId(codigo) {
-    console.log(codigo);
     let link = base_url + '/Persona/consultarPersonaId';
     $.ajax({
         type: 'POST',
@@ -368,18 +367,10 @@ function buscarPersonaId(codigo) {
         },
         success: function (data) {
             if (data.status) {//Iva
-                console.log(data.data['Cedula'])
-
+                //console.log(data.data['Cedula'])
                 $('#txt_razon_social').val(data.data['Codigo']);
-                //$('#txtDetalleItem').val(data.data['Nombre']);
-
-                //$('#txtCantidadItem').removeAttr("disabled");
-                //$('#txtPrecioItem').removeAttr("disabled");
 
             } else {
-                //limpiarProducto();
-                //$('#txtPrecioItem').attr("disabled","disabled");
-                //$('#txtCantidadItem').attr("disabled","disabled");
                 swal("Atención!", "No Existen Datos", "error");
             }
         },
@@ -736,7 +727,7 @@ function listaReferencia() {
 }
 
 function openModaladdPersona() {
-    document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+    //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
     document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
     document.querySelector('#titleModal').innerHTML = "Nueva Persona";
     document.querySelector("#formPersona").reset();

@@ -73,7 +73,7 @@ class InstructorModel extends MysqlAcademico
 			} catch (Exception $e) {
 				$con->rollBack();
 				//echo "Fallo: " . $e->getMessage();
-				throw $e;
+				//throw $e;
 				$arroout["status"] = false;
 				return $arroout;
 			}

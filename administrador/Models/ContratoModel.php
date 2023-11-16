@@ -83,7 +83,8 @@ class ContratoModel extends MysqlAcademico
             return $arroout;
         } catch (Exception $e) {
             $con->rollBack();
-            throw $e;
+            putMessageLogFile($e);
+            //throw $e;
             $arroout["status"] = false;
             $arroout["message"] = "Fallo: " . $e->getMessage();
             return $arroout;

@@ -6,3 +6,4 @@ var SPM = ",";
 var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 var minLengthGeneral=3;
 var numPaginado=10;
+var opciones = { timeZone: 'America/Guayaquil' };
