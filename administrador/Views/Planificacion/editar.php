@@ -15,6 +15,8 @@ require_once "Views/Planificacion/Modals/modalSalon.php";
   const nViernes = <?= json_encode($data['tpla_viernes']) ?>;
   const nSabado = <?= json_encode($data['tpla_sabado']) ?>;
   const nDomingo = <?= json_encode($data['tpla_domingo']) ?>;
+  const fechaIni = "<?= $data['tpla_fecha_incio'] ?>";
+  const fechaFin = "<?= $data['tpla_fecha_fin'] ?>";
   const accionForm = "Edit";
   const IdsTemp = <?= $data['tpla_id'] ?>;
 </script>

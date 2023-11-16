@@ -15,6 +15,8 @@ adminMenu($data);
   const nViernes = <?= json_encode($data['pla_viernes']) ?>;
   const nSabado = <?= json_encode($data['pla_sabado']) ?>;
   const nDomingo = <?= json_encode($data['pla_domingo']) ?>;
+  const fechaIni = "<?= $data['pla_fecha_incio'] ?>";
+  const fechaFin = "<?= $data['pla_fecha_fin'] ?>";
   const accionFormAut = "Aut";
   const IdsTemp = <?= $data['pla_id'] ?>;
 </script>

@@ -186,6 +186,7 @@ function obtenerFechaConLetras(fechaDia) {
 
 //Obtener FORMATO fecha => 2023-11-13
 function obtenerFormatoFecha(fechaString){
+    //console.log(fechaString);
     var partesFecha = fechaString.split("-");
     var fechaReal = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
     return fechaReal;
@@ -200,6 +201,7 @@ function retonarFecha(fecha){
 
 function estaEnRango(Evento,fecha, fechaInicio, fechaFin) {
     let obtResult = new Object();
+    //console.log(Evento + " fecha " +fecha + " fecha ini " +fechaInicio + " fecha fin " +fechaFin);
     fecha=contarFechaDia(Evento,fecha);
     if(fecha.getTime() > fechaInicio.getTime() && fecha.getTime() < fechaFin.getTime()){
         //Dentro del Rengo
@@ -218,8 +220,9 @@ function estaEnRango(Evento,fecha, fechaInicio, fechaFin) {
         obtResult.estado="FUE";
         obtResult.fecha=fechaFin;
     }else{
-        obtResult.estado="FUE";
-        obtResult.fecha=0;
+        obtResult.estado="INI";
+        obtResult.fecha=fechaInicio;
+        //obtResult.fecha=0;
     }
     return obtResult;
 

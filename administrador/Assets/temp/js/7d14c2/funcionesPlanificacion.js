@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // La variable existe EDITAR
     fntupdateInstructor(resultInst);
     fntupdateSalones(resultSalon);
-    generarPlanificiacionEdit("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionEdit("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   } else {
     // La variable no existe NUEVO
     //console.log("es nuevo");
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // La variable existe EDITAR
     fntupdateInstructor(resultInst);
     fntupdateSalones(resultSalon);
-    generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   } else {
     // La variable no existe NUEVO
     //console.log("es nuevo");
@@ -147,7 +147,7 @@ $(document).ready(function () {
   });
 
   $("#btn_generar").click(function () {
-    generarPlanificiacion("");
+    generarPlanificiacion("Gen");
   });
   $("#btn_siguiente").click(function () {
     generarPlanificiacion("Next");
@@ -169,23 +169,19 @@ $(document).ready(function () {
   });
 
   $("#btn_siguienteEdit").click(function () {
-    generarPlanificiacionEdit("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionEdit("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   });
   $("#btn_anteriorEdit").click(function () {
-    generarPlanificiacionEdit("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionEdit("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   });
 
 
   //Autorizados
   $("#btn_siguienteAut").click(function () {
-    //var fecIni = document.querySelector("#dtp_fecha_desde").value;
-    //var fecFin = document.querySelector("#dtp_fecha_hasta").value;
-    //console.log(fecIni+' '+fecFin+' '+fechaDia)
-    
-    generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   });
   $("#btn_anteriorAut").click(function () {
-    generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo);
+    generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   });
 });
 
@@ -355,24 +351,27 @@ function fntNameHoras(str) {
 }
 
 /**************** GENERAR PLANIFICACION  ******************/
-function generarPlanificiacion(accion) {
+function generarPlanificiacion(accionMove) {
   var tabla = document.getElementById("dts_Planificiacion");
 
   if (sessionStorage.dts_PlaInstructor) {
     var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
     if (Grid.length > 0) {
-      var filaEncabezado = $("<tr></tr>");
-      if (accion != "") {
-        fechaDia = new Date(fechaDia);
-        if (accion == "Next") {
-          fechaDia.setDate(fechaDia.getDate() + 1);
-        } else {
-          fechaDia.setDate(fechaDia.getDate() - 1);
+      let fechaIni=$("#dtp_fecha_desde").val();
+      let fechaFin=$("#dtp_fecha_hasta").val();
+      if (accionMove == "Gen") {
+        fechaDia = obtenerFormatoFecha(fechaIni);
+      } else {        
+        let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+        //console.log(estadoFecha);
+        if(estadoFecha.estado=="FUE"){
+          fechaDia=estadoFecha.fecha;
+          swal("Atención!", "Fechas fuera de Rango", "error");
+          return;
         }
-      } else {
-        fechaDia = $("#dtp_fecha_desde").val();
+        
       }
-
+      var filaEncabezado = $("<tr></tr>");
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
       //ENCABEZADO DE PLANIFICAICONR
       filaEncabezado.append($("<th>Horas</th>"));
@@ -672,7 +671,7 @@ function fntupdateSalones(resultSalon) {
 }
 
 
-function generarPlanificiacionEdit(accion, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo) {
+function generarPlanificiacionEdit(accionMove, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin) {
   
   var tabla = document.getElementById("dts_Planificiacion");
   var nDia = "";
@@ -681,29 +680,23 @@ function generarPlanificiacionEdit(accion, nLunes, nMartes, nMiercoles, nJueves,
   if (sessionStorage.dts_PlaInstructor) {
     var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
     if (Grid.length > 0) {
-      //var opciones = { timeZone: 'America/Guayaquil', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
-      //var fechaEcuador = new Date().toLocaleString('es-ES', opciones);
-      //console.log("Fecha en Ecuador:", fechaEcuador);
-      //fechaDia = $("#dtp_fecha_desde").val();
-      //var fechaLocal = fechaDia.split("-");
-      //console.log(fechaLocal);
-      //fechaDia = new Date(fechaLocal[0], Number(fechaLocal[1])-1, fechaLocal[2], 0, 0, 0);
-      //alert(fechaDia)
-      fechaDia = new Date(fechaDia);
-      //fechaDia = new Date.parse($("#dtp_fecha_desde").val());
-      //fechaDia = new Date($("#dtp_fecha_desde").val());
-      var filaEncabezado = $("<tr></tr>");
-      if (accion != "") {
-        //fechaDia = new Date($("#dtp_fecha_desde").val());
-        //console.log(fechaDia);
-        if (accion == "Next") {
-          fechaDia.setDate(fechaDia.getDate() + 1);
-        } else {
-          fechaDia.setDate(fechaDia.getDate() - 1);
-        }
+
+      if (accionMove == "Edit") {
+        fechaDia = obtenerFormatoFecha(fechaIni);
       } else {
-        fechaDia = $("#dtp_fecha_desde").val();
+        let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+        //console.log(estadoFecha);
+        if(estadoFecha.estado=="FUE"){
+          fechaDia=estadoFecha.fecha;
+          swal("Atención!", "Fechas fuera de Rango", "error");
+          return;
+        }
+        
       }
+
+   
+
+      var filaEncabezado = $("<tr></tr>");
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));
@@ -921,7 +914,7 @@ function fntAutorizarPlanificacion(ids) {
 
 //AUTORIZADOS
 
-function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo) {
+function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin) {
   var tabla = document.getElementById("dts_PlanificiacionAut");
   var nDia = "";
   let salonArray = 0;
@@ -929,8 +922,7 @@ function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, 
   if (sessionStorage.dts_PlaInstructor) {
     var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
     if (Grid.length > 0) {
-      fechaDia = new Date(fechaDia);
-      var filaEncabezado = $("<tr></tr>");
+      /*fechaDia = new Date(fechaDia);      
       if (accion != "") {
         if (accion == "Next") {
           fechaDia.setDate(fechaDia.getDate() + 1);
@@ -939,7 +931,22 @@ function generarPlanificiacionAut(accion, nLunes, nMartes, nMiercoles, nJueves, 
         }
       } else {
         fechaDia = $("#dtp_fecha_desde").val();
+      }*/
+
+      if (accionMove == "Edit") {
+        fechaDia = obtenerFormatoFecha(fechaIni);
+      } else {
+        let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+        //console.log(estadoFecha);
+        if(estadoFecha.estado=="FUE"){
+          fechaDia=estadoFecha.fecha;
+          swal("Atención!", "Fechas fuera de Rango", "error");
+          return;
+        }
+        
       }
+
+      var filaEncabezado = $("<tr></tr>");
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));

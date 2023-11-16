@@ -46,7 +46,13 @@ require_once "Views/Reservacion/Modals/modalAgenda.php";
     <input type="hidden" id="txth_idBenef" name="txth_idBenef" value="">
     <input type="hidden" id="txth_fechaReservacion" name="txth_fechaReservacion" value="">
     <div class="col-md-12">
+
+  
+      
       <div class="tile row">
+      <div class="form-group col-md-12">
+      <h3>Centro: <span class="badge badge-secondary">New</span> Fecha Desde: <span class="badge badge-secondary">New</span> Fecha Hasta: <span class="badge badge-secondary">New</span></h3>
+      </div>
         
           <div class="form-group col-md-4">
             <label for="cmb_CentroAtencion">Centro Atención</label>
