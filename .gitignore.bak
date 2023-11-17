@@ -13,7 +13,6 @@ bin-release/
 administrador/Config/
 administrador/Log/
 administrador/vendor/
-administrador/Assets/temp
 
 # Executables
 *.swf

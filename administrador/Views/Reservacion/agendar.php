@@ -19,6 +19,7 @@ require_once "Views/Reservacion/Modals/modalAgenda.php";
   const nSabado = <?= json_encode($data['pla_sabado']) ?>;
   const nDomingo = <?= json_encode($data['pla_domingo']) ?>;
   const accionFormAut = "Age";
+  const CentroIds = <?= $data['cat_id'] ?>;
   const IdsTemp = <?= $data['pla_id'] ?>;
   const fechaIni = "<?= $data['pla_fecha_incio'] ?>";
   const fechaFin = "<?= $data['pla_fecha_fin'] ?>";

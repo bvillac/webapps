@@ -100,11 +100,12 @@ class Reservacion extends Controllers
     {
         if ($_POST) {
             //dep($_POST);
-            if (empty($_POST['beneficiario']) || empty($_POST['accion'])) {
+            if (empty($_POST['reservar']) || empty($_POST['accion'])) {
                 $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
             } else {
                 $request = "";
-                $datos = isset($_POST['beneficiario']) ? json_decode($_POST['beneficiario'], true) : array();
+                //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
+                $datos = isset($_POST['reservar']) ? $_POST['reservar'] : array();
                 $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
                 if ($accion == "Create") {
                     $option = 1;

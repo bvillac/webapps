@@ -72,7 +72,7 @@ $(document).ready(function () {
 
   $("#btn_reservar").click(function () {
     //console.log("Reservar");
-    reservarUsuario();
+    reservarUsuario('Create');
   });
 
   
@@ -281,34 +281,21 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
   var nDia = "";
   let salonArray = 0;
   let idsSalon = 0;
-  let estadoFecha=false;
   if (sessionStorage.dts_PlaInstructor) {
     var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
     if (Grid.length > 0) {
-      console.log("fecha antes "+fechaDia);
-      console.log(accionMove);
       if (accionMove == "Edit") {
         fechaDia = obtenerFormatoFecha(fechaIni);
       } else {
-        
-        let fechaAux=fechaDia;
-        console.log("inicio fecha aux "+fechaAux);
-        fechaDia = contarFechaDia(accionMove, fechaDia);
-        console.log("fecha cambiada " + fechaDia);
-        estadoFecha = estaEnRango(fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
-        console.log("Estado Rango " + estadoFecha);
-        if (!estadoFecha) {
-          fechaDia=fechaAux;
-          
-          console.log("fecha cambiada axu " + fechaDia);
+        let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+        //console.log(estadoFecha);
+        if(estadoFecha.estado=="FUE"){
+          fechaDia=estadoFecha.fecha;
           swal("Atención!", "Fechas fuera de Rango", "error");
-          return; //Si no se cumple no continua
+          return;
         }
         
       }
-      
-      console.log("fecha despues "+fechaDia);
-      
       
       var filaEncabezado = $("<tr></tr>");
       $("#txth_fechaReservacion").val(fechaDia);
@@ -429,13 +416,17 @@ function buscarInstructor(ids) {
 function openModalAgenda(comp) {  
   $('#txth_idsModal').val(comp.id);
   DataArray = comp.id.split("_");
+  $('#txth_diaLetra').val(DataArray[0]);
   var nDiaLetra = retornarDiaLetras(DataArray[0]);
   var Hora = DataArray[1] + ":00";
+  $('#txth_hora').val(DataArray[1]);
   let objInstructor = buscarInstructor(DataArray[2]);
   let objSalon = buscarSalonColor(DataArray[3]);
   //console.log(objSalon);
   $('#txt_color').val(objSalon["Color"]);
   $('#lbl_Beneficiario').text($('#txt_NombreBeneficirio').val());
+  $('#txth_idsInstru').val(objInstructor["ids"]);
+  
 
   //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
   document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
@@ -447,13 +438,16 @@ function openModalAgenda(comp) {
 }
 
 
-function reservarUsuario() {
+function reservarUsuario(accion) {
   let pla_id= $("#txth_ids").val();
   let ben_id= $("#txth_idBenef").val();
+  let ins_id= $("#txth_idsInstru").val();
   let act_id = $("#cmb_actividad").val();
   let niv_id = $("#cmb_nivel").val();
   let uni_id = $("#cmb_NumeroNivel").val();
-  console.log(fechaDia);
+  let hora = $("#txth_hora").val();
+  let diaLetra = $("#txth_diaLetra").val();
+  
 
   //let fechaInicio = $("#dtp_fecha_desde").val();
   //let fechaFin = $("#dtp_fecha_hasta").val();
@@ -473,10 +467,13 @@ function reservarUsuario() {
     objEnt.act_id = act_id;
     objEnt.niv_id = niv_id;
     objEnt.uni_id = uni_id;
-
-    objEnt.fechaInicio = fechaInicio;
+    objEnt.ins_id = ins_id;
+    objEnt.hora = hora;
+    objEnt.diaLetra=diaLetra;
+    objEnt.fechaReserv=retonarFecha(fechaDia)
+    objEnt.fechaInicio = fechaIni;
     objEnt.fechaFin = fechaFin;
-    objEnt.centro = centroAT;
+    objEnt.centro = CentroIds;
       let link = base_url + "/Reservacion/reservarBeneficiario";
       $.ajax({
         type: "POST",
@@ -492,6 +489,7 @@ function reservarUsuario() {
             sessionStorage.removeItem("dts_SalonCentro");
             swal("Planificación", data.msg, "success");
             window.location = base_url + "/planificacion"; //Retorna al Portal Principal*/
+            swal("Planificación", data.msg, "success");
           } else {
             swal("Error", data.msg, "error");
           }
@@ -506,50 +504,7 @@ function reservarUsuario() {
 
 
 
-/*function fnt_eventoPlanificado(comp) {
-  let nEstado = false;
-  let textobutton = comp.innerHTML;
-  let idSalon = document.querySelector("#cmb_Salon").value;
-  if (idSalon != 0) {
-    if (textobutton == "AGREGAR") {
-      nEstado = true;
-      //openModalSalon(comp);
-    } else {
-      var respuesta = confirm("Esta seguro de Cambiar.");
-      if (respuesta) {
-        nEstado = true;
-      }
-    }
-  } else {
-    nEstado = false;
-    swal("Información", "Seleccionar un Salón", "info");
-  }
 
-  if (nEstado) {
-    //Camia el Salon cuando es True
-    let objSalon = buscarSalonColor(idSalon);
-    let nButton = $("#" + comp.id);
-    nButton.removeClass("btn-light").addClass("asignado-true");
-    nButton.css("color", "white");
-    nButton.css("background-color", objSalon["Color"]);
-    $("#" + comp.id).html(objSalon["Nombre"]);
-    let arrayIds = comp.id.split("_");
-    let nuevoId = comp.id;
-    if (arrayIds.length > 3) {
-      nuevoId =
-        arrayIds[0] +
-        "_" +
-        arrayIds[1] +
-        "_" +
-        arrayIds[2] +
-        "_" +
-        objSalon["ids"];
-    } else {
-      nuevoId += "_" + objSalon["ids"];
-    }
-    $("#" + comp.id).attr("id", nuevoId); //Se Cambia el Id y se Agrega el Salon asignado
-  }
-}*/
 
 
 

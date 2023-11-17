@@ -183,42 +183,49 @@ function obtenerFechaConLetras(fechaDia) {
     return `${nombreDia}, ${dia} de ${mes} de ${ano}`;
 }
 
-function obtenerFechaString(fecha){
-   return fecha.getUTCFullYear()+"-"+ (fecha.getUTCMonth()-1) +"-"+fecha.getUTCDay();
-}
 
 //Obtener FORMATO fecha => 2023-11-13
 function obtenerFormatoFecha(fechaString){
-    console.log(fechaString);
-    //console.log(fechaDia.toLocaleString('es-ES', opciones));
     var partesFecha = fechaString.split("-");
     var fechaReal = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
     return fechaReal;
 }
 
-function estaEnRango(fecha, fechaInicio, fechaFin) {
-    //Si ambas condiciones se cumplen retonra Verdadero
-    console.log(fecha);
-    console.log("Fecha compara "+fecha+ " fecha INI " + fechaInicio + " FECHA FIN "+fechaFin);
-    console.log("Fecha compara "+fecha.getTime()+ " fecha INI " + fechaInicio.getTime() + " FECHA FIN "+fechaFin.getTime());
-    //return fecha.getTime() >= fechaInicio.getTime() && fecha.getTime() <= fechaFin.getTime();
-    //return fecha >= fechaInicio && fecha <= fechaFin;
-    //return fechaInicio<fecha && fechaFin >fecha;
-    //return fecha > fechaInicio && fecha < fechaFin;
-    if (fecha.getTime() == fechaInicio.getTime()) {
-        console.log("Es igual inicio");
-        return true;
+function retonarFecha(fecha){
+    var dia = fecha.getUTCDate();
+    var mes =fecha.getUTCMonth()+1;
+    var ano = fecha.getUTCFullYear();
+    return ano +'-'+ mes + '-' + dia
+}
+
+function estaEnRango(Evento,fecha, fechaInicio, fechaFin) {
+    let obtResult = new Object();
+    fecha=contarFechaDia(Evento,fecha);
+    if(fecha.getTime() > fechaInicio.getTime() && fecha.getTime() < fechaFin.getTime()){
+        //Dentro del Rengo
+        obtResult.estado="OK";
+        obtResult.fecha=fecha;    
+    }  else if (fecha.getTime() == fechaInicio.getTime()) {
+        obtResult.estado="INI";
+        obtResult.fecha=fechaInicio;
     } else if (fecha.getTime() == fechaFin.getTime()) {
-        console.log("Es igual fin");
-        return true;
+        obtResult.estado="FIN";
+        obtResult.fecha=fechaFin;
+    } else if (fecha.getTime() < fechaInicio.getTime()) {
+        obtResult.estado="FUE";//Fuera de Rango
+        obtResult.fecha=fechaInicio;
+    } else if (fecha.getTime() > fechaFin.getTime()) {
+        obtResult.estado="FUE";
+        obtResult.fecha=fechaFin;
     }else{
-        console.log("Es igual otro");
-        return fecha.getTime() >= fechaInicio.getTime() && fecha.getTime() <= fechaFin.getTime();
+        obtResult.estado="FUE";
+        obtResult.fecha=0;
     }
+    return obtResult;
+
 }
 
 function contarFechaDia(accionMove, fecha) {
-    console.log("Contar fecha");
     if (accionMove == "Next") {
         fecha.setDate(fecha.getDate() + 1);
     } else if (accionMove == "Back") {
