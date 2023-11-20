@@ -51,33 +51,8 @@ require_once "Views/Reservacion/Modals/modalAgenda.php";
       
       <div class="tile row">
       <div class="form-group col-md-12">
-      <h3>Centro: <span class="badge badge-secondary">New</span> Fecha Desde: <span class="badge badge-secondary">New</span> Fecha Hasta: <span class="badge badge-secondary">New</span></h3>
+      <h3>Centro: <span class="badge badge-secondary"><?= $data['Centro'] ?></span> Fecha Desde: <span class="badge badge-secondary"><?= $data['pla_fecha_incio'] ?></span> Fecha Hasta: <span class="badge badge-secondary"><?= $data['pla_fecha_fin'] ?></span></h3>
       </div>
-        
-          <div class="form-group col-md-4">
-            <label for="cmb_CentroAtencion">Centro Atención</label>
-            <select class="form-control" id="cmb_CentroAtencion" name="cmb_CentroAtencion" disabled>
-              <?php
-              echo '<option value="0">SELECCIONAR</option>';
-              foreach ($data['centroAtencion'] as $opcion) {
-                $seleted = ($opcion['Ids'] == $data['cat_id']) ? 'selected' : '';
-                echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
-              }
-              ?>
-            </select>
-          </div>
-          <div class="form-group  col-md-4">
-            <label for="dtp_fecha_desde">Fecha Desde</label>
-            <input type="date" class="form-control " id="dtp_fecha_desde" name="dtp_fecha_desde" disabled
-              placeholder="1988-01-01" pattern="^\d{4}\/\d{2}\/\d{2}$" required=""
-              value="<?= $data['pla_fecha_incio'] ?>">
-          </div>
-          <div class="form-group  col-md-4">
-            <label for="dtp_fecha_hasta">Fecha Hasta</label>
-            <input type="date" class="form-control " id="dtp_fecha_hasta" name="dtp_fecha_hasta" disabled
-              placeholder="1988-01-01" pattern="^\d{4}\/\d{2}\/\d{2}$" required=""
-              value="<?= $data['pla_fecha_fin'] ?>">
-          </div>
 
           <div class="form-group col-md-4">
               <label for="txt_NumeroContrato">Número Contrato<span class="required">*</span></label>

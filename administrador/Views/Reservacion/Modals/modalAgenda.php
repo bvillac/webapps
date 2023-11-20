@@ -14,6 +14,7 @@
           <input type="hidden" id="txth_idsModal" name="txth_idsModal" value="">
           <input type="hidden" id="txth_idsInstru" name="txth_idsInstru" value="">
           <input type="hidden" id="txth_hora" name="txth_hora" value="">
+          <input type="hidden" id="txth_salon" name="txth_salon" value="">
           <input type="hidden" id="txth_diaLetra" name="txth_diaLetra" value="">
           <!--<p class="text-primary">Todos los campos son obligatorios.</p>-->
 

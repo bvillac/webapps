@@ -71,6 +71,7 @@ class Reservacion extends Controllers
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
+                    $data['reservacion'] = $this->model->consultarReservaciones($data);
                     $modelCentro = new CentroAtencionModel();
                     $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
                     $modelInstructor = new InstructorModel();
