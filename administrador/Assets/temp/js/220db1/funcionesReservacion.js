@@ -477,7 +477,7 @@ function reservarUsuario(accion) {
     objEnt.fechaReserv=retonarFecha(fechaDia)
     objEnt.fechaInicio = fechaIni;
     objEnt.fechaFin = fechaFin;
-    objEnt.centro = CentroIds;
+    objEnt.cat_id = CentroIds;
       let link = base_url + "/Reservacion/reservarBeneficiario";
       $.ajax({
         type: "POST",
