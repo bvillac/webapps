@@ -68,10 +68,12 @@ class Reservacion extends Controllers
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
                 $data = $this->model->consultarDatosId($ids);
+                //putMessageLogFile($data);
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
-                    $data['reservacion'] = $this->model->consultarReservaciones($data);
+                    //$data['reservacion'] = $this->model->consultarReservaciones($data);
+                    $data['reservacion'] = $this->model->consultarReservacionFecha($data['cat_id'],$data['pla_id'],$data['pla_fecha_incio']);
                     $modelCentro = new CentroAtencionModel();
                     $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
                     $modelInstructor = new InstructorModel();
