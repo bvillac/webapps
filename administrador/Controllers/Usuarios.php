@@ -85,13 +85,13 @@
 
 					}
 
-					if($result){
+					if($result["status"]){
 						if($option == 1){
-							$arrResponse = array('status' => true, 'msg' => 'Datos guardados correctamente.');
+							$arrResponse = array('status' => true, 'dato' => $result["numero"],'msg' => 'Datos guardados correctamente.');
 						}else{
 							$arrResponse = array('status' => true, 'msg' => 'Datos Actualizados correctamente.');
 						}
-					}else if($result == 'exist'){
+					}else if($result["exist"] == 'exist'){
 						$arrResponse = array('status' => false, 'msg' => '¡Atención! el email o la identificación ya existe, ingrese otro.');		
 					}else{
 						$arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
@@ -114,11 +114,7 @@
 					$arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>';
 				}
 
-				/*$arrData[$i]['options'] = '<div class="text-center">
-				<button class="btn btn-info btn-sm btnViewUsu" onClick="fntViewUsu('.$arrData[$i]['Ids'].')" title="Ver Datos"><i class="fa fa-eye"></i></button>
-				<button class="btn btn-primary  btn-sm btnEditUsu" onClick="fntEditUsu('.$arrData[$i]['Ids'].')" title="Editar Datos"><i class="fa fa-pencil"></i></button>
-				<button class="btn btn-danger btn-sm btnDelUsu" onClick="fntDelUsu('.$arrData[$i]['Ids'].')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>
-				</div>';*/
+				
 				if($_SESSION['permisosMod']['r']){
 					$btnOpciones .='<button class="btn btn-info btn-sm btnViewUsu" onClick="fntViewUsu('.$arrData[$i]['Ids'].')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
 				}

@@ -2,7 +2,8 @@
     adminHeader($data);
     adminMenu($data);  
      //filelang(Setlanguage,"general") 
-    getModal('modalUsuarios',$data); 
+    //getModal('modalUsuarios',$data);
+    require_once "Views/Usuarios/Modals/modalUsuarios.php"; 
 ?>
     <main class="app-content">
       <div class="app-title">
@@ -33,7 +34,7 @@
                           <th>Nombres</th>
                           <th>Apellidos</th>
                           <th>Correo Electrónico</th>
-                          <th>Nombre Rol</th>
+                          <!--<th>Nombre Rol</th>-->
                           <th>Estado</th>
                           <th>Acciones</th>
                         </tr>

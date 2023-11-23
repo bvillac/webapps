@@ -67,8 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let strGenero = document.querySelector('#cmb_genero').value;
             let strEmail = document.querySelector('#txt_correo').value;
             let intEstado = document.querySelector('#cmb_estado').value;
-            let intTipoRol = 10;//Instructor por defecto//document.querySelector('#cmb_rol').value;
-            let strPassword = document.querySelector('#txt_Password').value;
+            let intTipoRol = 4;//Rol de Usuario por defecto
+            let strPassword = npass;//document.querySelector('#txt_Password').value;
 
 
             if (strDni == '' || strFecNac == '' || strApellido == '' || strNombre == '' || strEmail == '' || strTelefono == ''
@@ -110,10 +110,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (request.readyState == 4 && request.status == 200) {
                         var objData = JSON.parse(request.responseText);
                         if (objData.status) {
-                            $('#txtCodigoPersona').val(strDni);
-                            //$('#txt_ids').val(data.data['Ids']);
-                            $('#txt_cedula').val(strDni);
-                            $('#txt_nombres').val(strNombre + ' ' + strApellido);
+                            //console.log("PerID"+objData.dato);
+                            //$('#txtCodigoPersona').val(strDni);
+                            //$('#txt_ids').val(data.data['Ids']);per_id
+                            //$('#txt_cedula').val(strDni);
+                            //$('#txt_nombres').val(strNombre + ' ' + strApellido);
+
+                            $('#txth_per_id').val(objData.dato);
+                            $('#txt_CodigoPersona').val(strDni);
+                            $('#txt_cli_nombre').val(strNombre + ' ' + strApellido);
+                            $('#txt_cli_cedula_ruc').val(strDni);
+                            $('#txt_cli_razon_social').val(strNombre + ' ' + strApellido);
+                            $('#txt_cli_direccion').val(strDireccion);
+                            $('#txt_cli_correo').val(strEmail);
+                           
+
                             $('#modalFormUsu').modal("hide");
                             formUsuario.reset();
                             swal("Usuarios", objData.msg, "success");
@@ -182,14 +193,14 @@ $(document).ready(function () {
     });
 
     //Buscar Persona
-    $("#txtCodigoPersona").keyup(function (e) {
+    /*$("#txtCodigoPersona").keyup(function (e) {
         e.preventDefault();
         let codigo = $(this).val();
         if (codigo.length >= 4 && codigo != "") {
             buscarPersonaDni(codigo);
         }
 
-    });
+    });*/
 
     $("#txt_dni").blur(function () {
         /*let valor = document.querySelector('#txt_dni').value;
@@ -200,7 +211,7 @@ $(document).ready(function () {
 
 
     //https://api.jqueryui.com/datepicker/
-    $('.date-picker').datepicker({
+    /*$('.date-picker').datepicker({
         autoSize: true,
         closeText: 'Cerrar',
         prevText: '<Ant',
@@ -215,7 +226,7 @@ $(document).ready(function () {
         onClose: function (dateText, inst) {
             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay));
         }
-    });
+    });*/
 
 
     $("#txt_CodigoPersona").autocomplete({
@@ -237,7 +248,7 @@ $(document).ready(function () {
                             var objeto = result[i];
                             var rowResult = new Object();
                             rowResult.label = objeto.Nombre + " " + objeto.Apellido;
-                            rowResult.value = objeto.Nombre + " " + objeto.Apellido;
+                            rowResult.value = objeto.Cedula;
                             rowResult.id = objeto.Ids;
                             rowResult.cedula = objeto.Cedula;
                             arrayList[c] = rowResult;
@@ -254,11 +265,11 @@ $(document).ready(function () {
                 }
             });
         },
-        minLength: 2,
+        minLength: 3,
         select: function (event, ui) {
             $('#txt_CodigoPersona').val(ui.item.cedula);
             $('#txth_per_id').val(ui.item.id);
-            $('#txt_cli_nombre').val(ui.item.value);
+            $('#txt_cli_nombre').val(ui.item.label);
             //console.log(ui);
         }
     });

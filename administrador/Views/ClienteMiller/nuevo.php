@@ -3,7 +3,8 @@ adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
 //getModal('modalPersonaBuscar', $data);
-getModal('modalUsuarios', $data);
+//getModal('modalUsuarios', $data);
+require_once "Views/ClienteMiller/Modals/modalUsuarios.php"; 
 ?>
 <div id="contentAjax"></div>
 <main class="app-content">

@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             { "data": "per_nombre" },
             { "data": "per_apellido" },
             { "data": "usu_correo" },
-            { "data": "rol_nombre" },
+            //{ "data": "rol_nombre" },
             { "data": "Estado" },
             { "data": "options" }
         ],
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             let strIds = document.querySelector('#txth_ids').value;
             let strDni = document.querySelector('#txt_dni').value;
-            let strFecNac = document.querySelector('#txt_fec_nacimiento').value;
+            let strFecNac = document.querySelector('#dtp_fec_nacimiento').value;
             let strNombre = document.querySelector('#txt_nombre').value;
             let strApellido = document.querySelector('#txt_apellido').value;
             let strTelefono = document.querySelector('#txt_telefono').value;
@@ -318,7 +318,7 @@ function fntEditUsu(ids) {
                 document.querySelector("#txth_eusuids").value = objData.data.eusu_id;
                 document.querySelector("#txt_dni").value = objData.data.Dni;
                 $("#txt_dni").prop("readonly", true);
-                document.querySelector("#txt_fec_nacimiento").value = objData.data.FechaNac;
+                document.querySelector("#dtp_fecha_nacimiento").value = objData.data.FechaNac;
                 document.querySelector("#txt_nombre").value = objData.data.Nombre;
                 document.querySelector("#txt_apellido").value = objData.data.Apellido;
                 document.querySelector("#txt_telefono").value = objData.data.Telefono;
