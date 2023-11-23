@@ -46,11 +46,30 @@ class ReservacionModel extends MysqlAcademico
         $fec_ini=$dataObj['pla_fecha_incio'];
         $fec_fin=$dataObj['pla_fecha_fin'];
         $sql = "SELECT * FROM " . $this->db_name . ".reservacion  ";
+        //$sql .= "  where cat_id={$cat_id} and date(res_fecha_reservacion) between '{$fec_ini}' and '{$fec_fin}' and res_estado_logico!=0 ";
         $sql .= "  where cat_id={$cat_id} and date(res_fecha_reservacion) between '{$fec_ini}' and '{$fec_fin}' and res_estado_logico!=0 ";
         $sql .= "     order by res_fecha_reservacion,res_dia,res_hora,sal_id " ;
         $request = $this->select_all($sql);
         return $request;
     }
+
+    public function consultarReservacionFecha($catId,$plaId,$fecha)
+    {
+        $sql = "SELECT * FROM " . $this->db_name . ".reservacion  ";
+        $sql .= "  where cat_id={$catId} and pla_id={$plaId} and date(res_fecha_reservacion) = '{$fecha}'  and res_estado_logico!=0 ";
+        $sql .= "     order by res_fecha_reservacion,res_dia,res_hora,sal_id " ;
+        $request = $this->select_all($sql);
+        $this->generarArray($request);
+        return $request;
+    }
+
+    private function generarArray($request){
+        for ($i = 0; $i < sizeof($request); $i++) {
+            putMessageLogFile($request[$i]['CodigoItem']);
+        }
+    }
+
+
 
 
     public function insertData($dataObj)
