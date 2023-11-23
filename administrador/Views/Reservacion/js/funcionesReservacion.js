@@ -274,6 +274,7 @@ function fntupdateNivel(resultNivel) {
 
 
 function fntupdateReservacion(reservacion) {
+  console.log(reservacion);
   var c = 0;
   var arrayList = new Array();
   for (var i = 0; i < reservacion.length; i++) {

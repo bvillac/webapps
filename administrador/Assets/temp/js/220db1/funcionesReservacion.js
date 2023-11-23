@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fntupdateInstructor(resultInst);
     fntupdateSalones(resultSalon);
     fntupdateNivel(resultNivel);
+    fntupdateReservacion(reservacion);
     generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   }
 
@@ -60,10 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 $(document).ready(function () {
 
-  $("#btn_siguienteAut").click(function () {
-    //var fecIni = document.querySelector("#dtp_fecha_desde").value;
-    //var fecFin = document.querySelector("#dtp_fecha_hasta").value;
-    //console.log(fecIni+' '+fecFin+' '+fechaDia)    
+  $("#btn_siguienteAut").click(function () {   
     generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   });
   $("#btn_anteriorAut").click(function () {
@@ -71,7 +69,6 @@ $(document).ready(function () {
   });
 
   $("#btn_reservar").click(function () {
-    //console.log("Reservar");
     reservarUsuario('Create');
   });
 
@@ -273,6 +270,26 @@ function fntupdateNivel(resultNivel) {
     c += 1;
   }
   sessionStorage.dts_Nivel = JSON.stringify(arrayList);
+}
+
+
+function fntupdateReservacion(reservacion) {
+  console.log(reservacion);
+  var c = 0;
+  var arrayList = new Array();
+  for (var i = 0; i < reservacion.length; i++) {
+    let rowInst = new Object();
+    rowInst.res_id = reservacion[i].res_id;
+    rowInst.act_id = reservacion[i].act_id;
+    rowInst.niv_id = reservacion[i].niv_id;
+    rowInst.ben_id = reservacion[i].ben_id;
+    rowInst.sal_id = reservacion[i].sal_id;
+    rowInst.res_fecha_reservacion = reservacion[i].res_fecha_reservacion;
+    arrayList[c] = rowInst;
+    c += 1;
+  }
+  sessionStorage.dts_reservacion = JSON.stringify(arrayList);
+  //"res_id":"3","cat_id":"1","pla_id":"1","act_id":"2","niv_id":"1","ben_id":"1","ins_id":"3","sal_id":"10","res_fecha_reservacion":"2023-11-13","res_unidad":"2","res_dia":"LU","res_hora":"10","res_asistencia":"D","res_usuario_creacion":"byron_villacresesf","res_fecha_creacion":"2023-11-20 12:06:20","res_usuario_modificacion":null,"res_fecha_modificacion":null,"res_estado_logico":"1"}
 }
 
 

@@ -4,7 +4,7 @@ adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/Reservacion/Modals/modalAgenda.php";
 //putMessageLogFile($data['dataNivel']);
-//putMessageLogFile($data['reservacion']);
+putMessageLogFile($data['reservacion']);
 ?>
 <script>
   const resultInst = <?= json_encode($data['dataInstructor']) ?>;
