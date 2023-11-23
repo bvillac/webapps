@@ -274,12 +274,14 @@ function fntupdateNivel(resultNivel) {
 
 
 function fntupdateReservacion(reservacion) {
-  console.log(reservacion);
+  //console.log(reservacion);
   var c = 0;
   var arrayList = new Array();
   for (var i = 0; i < reservacion.length; i++) {
     let rowInst = new Object();
     rowInst.res_id = reservacion[i].res_id;
+    rowInst.ids = reservacion[i].Ids;
+    rowInst.Nombres = reservacion[i].Nombres;
     rowInst.cat_id = reservacion[i].cat_id;
     rowInst.act_id = reservacion[i].act_id;
     rowInst.niv_id = reservacion[i].niv_id;
@@ -291,11 +293,11 @@ function fntupdateReservacion(reservacion) {
     rowInst.res_dia = reservacion[i].res_dia;
     rowInst.res_hora = reservacion[i].res_hora;
     rowInst.res_asistencia = reservacion[i].res_asistencia;
-    rowInst.res_fecha_reservacion = reservacion[i].res_fecha_reservacion;
+    rowInst.FechaRes = reservacion[i].FechaRes;
     arrayList[c] = rowInst;
     c += 1;
   }
-  sessionStorage.dts_reservacion = JSON.stringify(arrayList);
+  sessionStorage.dts_Reservacion = JSON.stringify(arrayList);
   //"res_id":"3","cat_id":"1","pla_id":"1","act_id":"2","niv_id":"1","ben_id":"1","ins_id":"3","sal_id":"10","res_fecha_reservacion":"2023-11-13",
   //"res_unidad":"2","res_dia":"LU","res_hora":"10","res_asistencia":"D","res_usuario_creacion":"byron_villacresesf","res_fecha_creacion":"2023-11-20 12:06:20",
   //"res_usuario_modificacion":null,"res_fecha_modificacion":null,"res_estado_logico":"1"}
@@ -452,7 +454,9 @@ function openModalAgenda(comp) {
   $('#txth_salon').val(DataArray[3]);
   $('#txt_color').val(objSalon["Color"]);
   $('#lbl_Beneficiario').text($('#txt_NombreBeneficirio').val());
-  $('#txth_idsInstru').val(objInstructor["ids"]);  
+  $('#txth_idsInstru').val(objInstructor["ids"]); 
+  
+  cargarBeneficiarios(comp.id);
 
   document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
   document.querySelector('#btn_reservar').classList.replace("btn-info", "btn-primary");
@@ -461,6 +465,29 @@ function openModalAgenda(comp) {
   document.querySelector("#formAgenda").reset();
   $('#modalFormAgenda').modal('show');
 }
+
+function cargarBeneficiarios(ids) {
+  let option="";
+  if (sessionStorage.dts_Reservacion) {
+    var Grid = JSON.parse(sessionStorage.dts_Reservacion);
+    if (Grid.length > 0) {
+      $("#list_beneficiarios").empty();
+      for (var i = 0; i < Grid.length; i++) {
+        if (Grid[i]["ids"] == ids) {  
+          console.log("entro");       
+          option+='<li class="list-group-item d-flex justify-content-between align-items-center">';
+                option +=Grid[i]["Nombres"];    
+                option +='<span class="badge badge-primary badge-pill">1</span>';
+                option +='</li>';
+          //return Grid[i];
+        }
+      }
+    }
+  }
+  $("#list_beneficiarios").append(option);
+}
+
+
 
 
 function reservarUsuario(accion) {
@@ -574,6 +601,9 @@ function controlReservacion(objEnt) {
   }  
   
 }
+
+
+
 
 function objDataResIni(objEnt) {
   rowGrid = new Object();

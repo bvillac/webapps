@@ -25,37 +25,49 @@
               <h4 class="line-head" id="lbl_Beneficiario"></h4>
             </div>
 
-            <div class="form-group col-md-6">
-              <label for="cmb_nivel">Nivel/Libro</label>
-              <select class="form-control" id="cmb_nivel" name="cmb_nivel">
-                <?php
-                echo '<option value="0">SELECCIONAR</option>';
-                foreach ($data['dataNivel'] as $opcion) {
-                  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
-                }
-                ?>
-              </select>
+            <div class="col-sm">
+              <div class="form-group col-md-12">
+                <label for="cmb_nivel">Nivel/Libro</label>
+                <select class="form-control" id="cmb_nivel" name="cmb_nivel">
+                  <?php
+                  echo '<option value="0">SELECCIONAR</option>';
+                  foreach ($data['dataNivel'] as $opcion) {
+                    echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
+                  }
+                  ?>
+                </select>
+              </div>
+              
+              <div class="form-group col-md-12">
+                <label for="cmb_NumeroNivel">Unidad</label>
+                <select class="form-control" id="cmb_NumeroNivel" name="cmb_NumeroNivel">
+              
+                </select>
+              </div>
+              
+              <div class="form-group col-md-12">
+                <label for="cmb_actividad">Actividad</label>
+                <select class="form-control" id="cmb_actividad" name="cmb_actividad">
+                  <?php
+                  echo '<option value="0">SELECCIONAR</option>';
+                  foreach ($data['dataActividad'] as $opcion) {
+                    echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
+                  }
+                  ?>
+                </select>
+              </div>
             </div>
 
-            <div class="form-group col-md-6">
-              <label for="cmb_NumeroNivel">Unidad</label>
-              <select class="form-control" id="cmb_NumeroNivel" name="cmb_NumeroNivel">
-
-              </select>
+            <div class="col-sm">
+              <h5 class="line-head" >Reservados</h5>
+              <ul class="list-group" id="list_beneficiarios">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Cras justo odio
+                  <span class="badge badge-primary badge-pill">14</span>
+                </li>
+                
+              </ul>
             </div>
-
-            <div class="form-group col-md-6">
-              <label for="cmb_actividad">Actividad</label>
-              <select class="form-control" id="cmb_actividad" name="cmb_actividad">
-                <?php
-                echo '<option value="0">SELECCIONAR</option>';
-                foreach ($data['dataActividad'] as $opcion) {
-                  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
-                }
-                ?>
-              </select>
-            </div>
-
 
           </div>
 
