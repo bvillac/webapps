@@ -74,6 +74,7 @@ class Reservacion extends Controllers
                 } else {
                     //$data['reservacion'] = $this->model->consultarReservaciones($data);
                     $data['reservacion'] = $this->model->consultarReservacionFecha($data['cat_id'],$data['pla_id'],$data['pla_fecha_incio']);
+                    $data['numero_reser']=$this->contarResrevados($data['reservacion']);
                     $modelCentro = new CentroAtencionModel();
                     $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
                     $modelInstructor = new InstructorModel();
@@ -99,6 +100,30 @@ class Reservacion extends Controllers
         die();
     }
 
+    private function contarResrevados($data)
+    {
+        $numRes = [];
+        $c = 0;
+        if (sizeof($data) > 0) {
+            $aux = $data[0]['Ids'];
+            $rowData[$c]['Ids'] = $data[0]['Ids'];
+            $rowData[$c]['count'] = 0;
+            for ($i = 0; $i < sizeof($data); $i++) {
+                if ($data[$i]['Ids'] <> $aux) {
+                    $c++;
+                    $rowData[$c]['Ids'] = $data[$i]['Ids'];
+                    $rowData[$c]['count']++;
+                } else {
+                    $rowData[$c]['count']++;
+                }
+                $aux = $data[$i]['Ids'];
+            }
+            $numRes = $rowData;
+        }
+        
+        return $numRes;
+    }
+
     public function reservarBeneficiario()
     {
         if ($_POST) {
@@ -110,6 +135,37 @@ class Reservacion extends Controllers
                 //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
                 $datos = isset($_POST['reservar']) ? $_POST['reservar'] : array();
                 $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
+
+                $request['reservacion'] = $this->model->consultarReservacionFecha($data['cat_id'],$data['pla_id'],$data['pla_fecha_incio']);
+                $request['numero_reser']=$this->contarResrevados($data['reservacion']);
+              
+                if ($request["status"]) {
+                    if ($option == 1) {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
+                    } else {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
+                    }
+                } else {
+                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
+                }
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+
+    public function countBeneficiario()
+    {
+        if ($_POST) {
+            //dep($_POST);
+            if (empty($_POST['reservar']) || empty($_POST['accion'])) {
+                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+            } else {
+                $request = "";
+                //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
+                $datos = isset($_POST['reservar']) ? $_POST['reservar'] : array();
+                $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
+
                 if ($accion == "Create") {
                     $option = 1;
                     if ($_SESSION['permisosMod']['w']) {

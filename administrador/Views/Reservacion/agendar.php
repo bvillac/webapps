@@ -4,12 +4,13 @@ adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/Reservacion/Modals/modalAgenda.php";
 //putMessageLogFile($data['dataNivel']);
-putMessageLogFile($data['reservacion']);
+putMessageLogFile($data['numero_reser']);
 ?>
 <script>
   const resultInst = <?= json_encode($data['dataInstructor']) ?>;
   const resultSalon = <?= json_encode($data['dataSalon']) ?>;
   const resultNivel = <?= json_encode($data['dataNivel']) ?>;
+  const resultNumRes = <?= json_encode($data['numero_reser']) ?>;
   const reservacion = <?= json_encode($data['reservacion']) ?>;
   const nLunes = <?= json_encode($data['pla_lunes']) ?>;
   const nMartes = <?= json_encode($data['pla_martes']) ?>;

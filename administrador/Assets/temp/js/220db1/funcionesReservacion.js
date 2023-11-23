@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fntupdateSalones(resultSalon);
     fntupdateNivel(resultNivel);
     fntupdateReservacion(reservacion);
+    fntReservacionCount(resultNumRes);
     generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   }
 
@@ -298,9 +299,20 @@ function fntupdateReservacion(reservacion) {
     c += 1;
   }
   sessionStorage.dts_Reservacion = JSON.stringify(arrayList);
-  //"res_id":"3","cat_id":"1","pla_id":"1","act_id":"2","niv_id":"1","ben_id":"1","ins_id":"3","sal_id":"10","res_fecha_reservacion":"2023-11-13",
-  //"res_unidad":"2","res_dia":"LU","res_hora":"10","res_asistencia":"D","res_usuario_creacion":"byron_villacresesf","res_fecha_creacion":"2023-11-20 12:06:20",
-  //"res_usuario_modificacion":null,"res_fecha_modificacion":null,"res_estado_logico":"1"}
+}
+
+function fntReservacionCount(reservacion) {
+  //{"Ids":"LU_10_3_10","count":2}
+  var c = 0;
+  var arrayList = new Array();
+  for (var i = 0; i < reservacion.length; i++) {
+    let rowInst = new Object();
+    rowInst.ids = reservacion[i].Ids;
+    rowInst.count = reservacion[i].count;    
+    arrayList[c] = rowInst;
+    c += 1;
+  }
+  sessionStorage.dts_ReserCount = JSON.stringify(arrayList);
 }
 
 
@@ -383,9 +395,13 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
 
           if (nExiste) {
             let objSalon = buscarSalonColor(idsSalon);
+
+            
             idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
+            let objCount =buscarCountAlumnos(idPlan);
             fila += "<td>";
-            fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" onclick="openModalAgenda(this)" style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + " <span class='badge badge-light'>4</span></button>";
+            fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" onclick="openModalAgenda(this)" ';
+            fila += '    style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + ' <span class="badge badge-light">'+ objCount["count"] +'</span></button>';
             fila += "</td>";
           } else {
             //fila +='<td><button type="button" id="' +idPlan + '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
@@ -411,6 +427,20 @@ function existeHorarioEditar(nHorArray, nDiaHora) {
   }
   //console.log(`No se encontraron elementos en el array que contengan "${nDiaHora}".`);
   return "0";
+}
+
+function buscarCountAlumnos(ids) {
+  if (sessionStorage.dts_ReserCount) {
+    var Grid = JSON.parse(sessionStorage.dts_ReserCount);
+    if (Grid.length > 0) {
+      for (var i = 0; i < Grid.length; i++) {
+        if (Grid[i]["ids"] == ids) {
+          return Grid[i];
+        }
+      }
+    }
+  }
+  return 0;
 }
 
 function buscarSalonColor(ids) {
@@ -473,13 +503,11 @@ function cargarBeneficiarios(ids) {
     if (Grid.length > 0) {
       $("#list_beneficiarios").empty();
       for (var i = 0; i < Grid.length; i++) {
-        if (Grid[i]["ids"] == ids) {  
-          console.log("entro");       
+        if (Grid[i]["ids"] == ids) {        
           option+='<li class="list-group-item d-flex justify-content-between align-items-center">';
                 option +=Grid[i]["Nombres"];    
                 option +='<span class="badge badge-primary badge-pill">1</span>';
                 option +='</li>';
-          //return Grid[i];
         }
       }
     }

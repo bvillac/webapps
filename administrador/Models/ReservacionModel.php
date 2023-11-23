@@ -71,14 +71,14 @@ class ReservacionModel extends MysqlAcademico
 
         $request = $this->select_all($sql);
         //putMessageLogFile($sql);
-        $this->generarArray($request);
+        //$this->generarArray($request);
         return $request;
     }
 
     private function generarArray($request){
         //nLetIni=>inicialDia;numeroHora=>horaDia;Id Instructor,aula
         for ($i = 0; $i < sizeof($request); $i++) {
-            putMessageLogFile($request[$i]['ben_id']);
+            //putMessageLogFile($request[$i]['ben_id']);
         }
     }
 
