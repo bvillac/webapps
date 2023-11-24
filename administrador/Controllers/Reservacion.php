@@ -135,37 +135,6 @@ class Reservacion extends Controllers
                 //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
                 $datos = isset($_POST['reservar']) ? $_POST['reservar'] : array();
                 $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
-
-                $request['reservacion'] = $this->model->consultarReservacionFecha($data['cat_id'],$data['pla_id'],$data['pla_fecha_incio']);
-                $request['numero_reser']=$this->contarResrevados($data['reservacion']);
-              
-                if ($request["status"]) {
-                    if ($option == 1) {
-                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
-                    } else {
-                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
-                    }
-                } else {
-                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
-                }
-            }
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        }
-        die();
-    }
-
-    public function countBeneficiario()
-    {
-        if ($_POST) {
-            //dep($_POST);
-            if (empty($_POST['reservar']) || empty($_POST['accion'])) {
-                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
-            } else {
-                $request = "";
-                //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
-                $datos = isset($_POST['reservar']) ? $_POST['reservar'] : array();
-                $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
-
                 if ($accion == "Create") {
                     $option = 1;
                     if ($_SESSION['permisosMod']['w']) {
@@ -188,6 +157,34 @@ class Reservacion extends Controllers
                 }
             }
             echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+
+    public function countBeneficiario()
+    {
+        if ($_POST) {
+            //dep($_POST);
+            if (empty($_POST['cat_id']) || empty($_POST['pla_id']) || empty($_POST['fechaDia']) ) {
+                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+            } else {
+                $request = "";
+                //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
+                $cat_id = isset($_POST['cat_id']) ? $_POST['cat_id'] : "";
+                $pla_id = isset($_POST['pla_id']) ? $_POST['pla_id'] : "";
+                $fechaDia = isset($_POST['fechaDia']) ? $_POST['fechaDia'] : "";
+
+                $arrData['reservacion'] = $this->model->consultarReservacionFecha($cat_id,$pla_id,$fechaDia);
+                $arrData['numero_reser']= $this->contarResrevados($arrData['reservacion']);
+
+                if (empty($arrData)) {
+                    $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+                } else {
+                    $arrResponse = array('status' => true, 'data' => $arrData);
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+            //echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         }
         die();
     }

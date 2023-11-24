@@ -302,6 +302,7 @@ function fntupdateReservacion(reservacion) {
 }
 
 function fntReservacionCount(reservacion) {
+  console.log(reservacion);
   //{"Ids":"LU_10_3_10","count":2}
   var c = 0;
   var arrayList = new Array();
@@ -340,6 +341,7 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       var filaEncabezado = $("<tr></tr>");
       $("#txth_fechaReservacion").val(fechaDia);
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
+      fntBuscarCount(fechaDia);
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));
       for (var i = 0; i < Grid.length; i++) {
@@ -379,6 +381,7 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       }
       var tabla = $("#dts_PlanificiacionAut tbody");
       $("#dts_PlanificiacionAut tbody").html("");
+      
       for (var i = 0; i < 13; i++) {
         //GENERA LAS FILAS
         var fila = "<tr><td>" + numeroHora + ":00</td>";
@@ -394,11 +397,11 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
           }
 
           if (nExiste) {
-            let objSalon = buscarSalonColor(idsSalon);
-
-            
+            let objSalon = buscarSalonColor(idsSalon);                
             idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
+            
             let objCount =buscarCountAlumnos(idPlan);
+            console.log("contador "+objCount);  
             fila += "<td>";
             fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" onclick="openModalAgenda(this)" ';
             fila += '    style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + ' <span class="badge badge-light">'+ objCount["count"] +'</span></button>';
@@ -411,6 +414,7 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
         tabla.append(fila);
         numeroHora++;
       }
+      
     }
   }
 }
@@ -631,6 +635,38 @@ function controlReservacion(objEnt) {
 }
 
 
+function fntBuscarCount(fechaDia) {
+  //if (ids != 0) {
+    let link = base_url + "/Reservacion/countBeneficiario";
+    $.ajax({
+      type: "POST",
+      url: link,
+      data: {
+        cat_id: CentroIds,
+        pla_id: IdsTemp,
+        fechaDia: retonarFecha(fechaDia),
+      },
+      success: function (data) {
+        //console.log(data);
+        if (data.status) {
+          //console.log(data.data.numero_reser);
+          fntupdateReservacion(data.data.reservacion);
+          fntReservacionCount(data.data.numero_reser);
+
+        } else {
+          swal("Error", data.msg, "error");
+        }
+      },
+      dataType: "json",
+    });
+  //} else {
+  //  swal("Información", "Seleccionar un Instructor", "info");
+  //}
+
+}
+
+
+
 
 
 function objDataResIni(objEnt) {
@@ -641,44 +677,7 @@ function objDataResIni(objEnt) {
   arr_Benef[0] = agregarBeneficiario(objEnt);
   rowGrid.beneficiarios =arr_Benef;
 
-  /*var arr_Benef = new Array();
-  var size = rowGrid.beneficiarios.length;
-  console.log(size);
-  if (size.length > 0) {
-    if (codigoExiste(objEnt.ids, 'ids', rowGrid.beneficiarios)) {
-      arr_Benef[size] = agregarBeneficiario(objEnt);
-      rowGrid.beneficiarios =arr_Benef;
-    }else{
-      swal("Atención!", "Beneficiario ya existe" , "error");
-    }
-  }else{
-    arr_Benef[0] = agregarBeneficiario(objEnt);
-    rowGrid.beneficiarios =arr_Benef;
-  }*/
-  
   return rowGrid;
-}
-
-function agregarBeneficiario(objEnt){
-  let objBenef = new Object();
-  objBenef.ids=objEnt.ben_id;
-  return objBenef;
-}
-
-function objDataResVar(objEnt) {
-  if (sessionStorage.dts_Reservacion) {
-    var arr_Reser = JSON.parse(sessionStorage.dts_Reservacion);
-    var size = arr_Grid.length;
-    if (size > 0) {
-      let index=retornarIndexArray(arr_Reser,"idsRes",objEnt.idsModal)
-      if(index>-1){        
-        console.log(arr_Reser[index]['beneficiarios']);
-      }
-    }
-    //sessionStorage.dts_Reservacion = JSON.stringify(arr_Reser);
-    
-
-  }
 }
 
 
