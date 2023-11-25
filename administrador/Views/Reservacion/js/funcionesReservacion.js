@@ -302,7 +302,7 @@ function fntupdateReservacion(reservacion) {
 }
 
 function fntReservacionCount(reservacion) {
-  console.log(reservacion);
+  //console.log(reservacion);
   //{"Ids":"LU_10_3_10","count":2}
   var c = 0;
   var arrayList = new Array();
@@ -341,6 +341,7 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       var filaEncabezado = $("<tr></tr>");
       $("#txth_fechaReservacion").val(fechaDia);
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
+      //Recuperar Datos de tiendas
       fntBuscarCount(fechaDia);
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));
@@ -399,12 +400,14 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
           if (nExiste) {
             let objSalon = buscarSalonColor(idsSalon);                
             idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
-            //Revisar aki
+            
             let objCount =buscarCountAlumnos(idPlan);
-            console.log("contador "+objCount);  
+            let totalRes=(objCount!=0)?objCount["count"]:0;
+
+           
             fila += "<td>";
             fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" onclick="openModalAgenda(this)" ';
-            fila += '    style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + ' <span class="badge badge-light">'+ objCount["count"] +'</span></button>';
+            fila += '    style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + ' <span class="badge badge-light">'+ totalRes +'</span></button>';
             fila += "</td>";
           } else {
             //fila +='<td><button type="button" id="' +idPlan + '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
