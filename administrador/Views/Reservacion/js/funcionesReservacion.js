@@ -340,30 +340,16 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
         
       }
 
-      function iniciarTemporizador() {
-        // Muestra el spinner
-        document.getElementById("spinner").style.display = "block";
-      
-        // Establece el tiempo del temporizador a 5 segundos (5000 milisegundos)
-        var tiempoLimite = 5000;
-      
-        // Inicia el temporizador
-        setTimeout(function() {
-          // Oculta el spinner después de que el temporizador haya terminado
-          document.getElementById("spinner").style.display = "none";
-      
-          // Aquí puedes agregar la lógica que deseas ejecutar después del temporizador
-          console.log("Temporizador completado");
-        }, tiempoLimite);
-      }
+     
       
       var filaEncabezado = $("<tr></tr>");
       $("#txth_fechaReservacion").val(fechaDia);
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
       //Recuperar Datos de tiendas
       fntBuscarCount(fechaDia);
-      //iniciarTemporizador();
-      //alert("Esperar");
+
+     
+      alert("Esperar");
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));
       for (var i = 0; i < Grid.length; i++) {
@@ -677,9 +663,6 @@ function fntBuscarCount(fechaDia) {
         //console.log(data);
         if (data.status) {
           //console.log(data.data.numero_reser);
-          //sessionStorage.removeItem("dts_Reservacion");
-          //sessionStorage.removeItem("dts_ReserCount");
-          console.log("entro actualizar");
           fntupdateReservacion(data.data.reservacion);
           fntReservacionCount(data.data.numero_reser);
 
@@ -702,6 +685,11 @@ function fntBuscarCount(fechaDia) {
   //}
 
 }
+
+realizarSolicitudAJAX("POST","ejemplo.json", function(respuesta) {
+  // Manejar la respuesta aquí
+  console.log("Respuesta recibida:", respuesta);
+});
 
 
 
