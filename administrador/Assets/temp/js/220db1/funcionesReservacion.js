@@ -1,7 +1,7 @@
 //NOTA IMPORTANTE: Los datos de Aula y instructor se guardan en session Store es decir que se mantienen en memoria mientras dure la selsion
 //si existe algun cambio en estas tablas los cambios no se reflejna mientras no se destruya la session o ce cierre el navegador
 let delayTimer;
-let fechaDia = new Date();
+//let fechaDia = "";//new Date();
 let numeroDia = 0;
 let tablePlanificacion;
 
@@ -44,13 +44,13 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   if (typeof accionFormAut !== "undefined") {
-    // La variable existe EDITAR
+    console.log("ingresoa ="+fechaDia);
     fntupdateInstructor(resultInst);
     fntupdateSalones(resultSalon);
     fntupdateNivel(resultNivel);
     fntupdateReservacion(reservacion);
     fntReservacionCount(resultNumRes);
-    generarPlanificiacionAut("Edit", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
+    generarPlanificiacionAut(nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaDia);
   }
 
 
@@ -63,40 +63,32 @@ document.addEventListener("DOMContentLoaded", function () {
 $(document).ready(function () {
 
   $("#btn_siguienteAut").click(function () {   
-    let accionMove="Next";
-
-      /*let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
-      //console.log(estadoFecha);
-  
-      if(estadoFecha.estado=="FUE"){
-        fechaDia=estadoFecha.fecha;
-        swal("Atención!", "Fechas fuera de Rango", "error");
-        return;
-      }
-      fechaDia=estadoFecha.fecha;
-    alert(fechaDia);*/
-
-    //generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
-    alert(fechaDiaNex);
     var parametros = {
       cat_id: CentroIds,
       pla_id: IdsTemp,
       accion: "Next",
-      fechaDia: fechaDiaNex  //retonarFecha(fechaDia)
+      fechaDia: fechaDia
     };
     var url = base_url+'/Reservacion/moverAgenda?'+ new URLSearchParams(parametros).toString();
     // Redirigir a la nueva URL
     window.location.href = url;
   });
   $("#btn_anteriorAut").click(function () {
-    generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
+    //generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
+    var parametros = {
+      cat_id: CentroIds,
+      pla_id: IdsTemp,
+      accion: "Back",
+      fechaDia: fechaDia
+    };
+    var url = base_url+'/Reservacion/moverAgenda?'+ new URLSearchParams(parametros).toString();
+    // Redirigir a la nueva URL
+    window.location.href = url;
   });
 
   $("#btn_reservar").click(function () {
     reservarUsuario('Create');
   });
-
-  
 
   $('#cmb_nivel').change(function () {        
     if ($('#cmb_nivel').val() != 0) {        
@@ -335,7 +327,6 @@ function fntReservacionCount(reservacion) {
     arrayList[c] = rowInst;
     c += 1;
   }
-  console.log("actualiza datos");
   sessionStorage.dts_ReserCount = JSON.stringify(arrayList);
 }
 
@@ -343,7 +334,7 @@ function fntReservacionCount(reservacion) {
 
 
 
-function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin) {
+function generarPlanificiacionAut(nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaDia) {
   
   var tabla = document.getElementById("dts_PlanificiacionAut");
   var nDia = "";
@@ -352,29 +343,9 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
   if (sessionStorage.dts_PlaInstructor) {
     var Grid = JSON.parse(sessionStorage.dts_PlaInstructor);
     if (Grid.length > 0) {
-      if (accionMove == "Edit") {
-        fechaDia = obtenerFormatoFecha(fechaIni);
-      } else {
-        //let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
-        //console.log(estadoFecha);
-        //if(estadoFecha.estado=="FUE"){
-        //  fechaDia=estadoFecha.fecha;
-        //  swal("Atención!", "Fechas fuera de Rango", "error");
-        //  return;
-        //}
-        fechaDia=fechaDiaNex;
-      }
-
-     
-      
       var filaEncabezado = $("<tr></tr>");
       $("#txth_fechaReservacion").val(fechaDia);
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
-      //Recuperar Datos de tiendas
-      fntBuscarCount(fechaDia);
-
-     
-     
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));
       for (var i = 0; i < Grid.length; i++) {
@@ -409,6 +380,9 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
         case "SA":
           nDia = nSabado.split(",");
           break;
+        case "DO":
+          nDia = nDomingo.split(",");
+          break;
         default:
           nDia=new Array();
       }
@@ -433,10 +407,8 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
             let objSalon = buscarSalonColor(idsSalon);                
             idPlan += "_" + objSalon["ids"]; //Agrega el Id del Salon
             
-            let objCount =buscarCountAlumnos(idPlan);
-            let totalRes=(objCount!=0)?objCount["count"]:0;
-
-           
+            let objCount=buscarCountAlumnos(idPlan);
+            let totalRes=(objCount!=0)?objCount["count"]:0;    
             fila += "<td>";
             fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" onclick="openModalAgenda(this)" ';
             fila += '    style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + ' <span class="badge badge-light">'+ totalRes +'</span></button>';
@@ -474,7 +446,7 @@ function buscarCountAlumnos(ids) {
     var Grid = JSON.parse(sessionStorage.dts_ReserCount);
     if (Grid.length > 0) {
       for (var i = 0; i < Grid.length; i++) {
-        console.log(Grid[i]["ids"]+'=='+ids)
+        //console.log(Grid[i]["ids"]+'=='+ids)
         if (Grid[i]["ids"] == ids) {
           return Grid[i];
         }
@@ -521,7 +493,6 @@ function openModalAgenda(comp) {
   $('#txth_hora').val(DataArray[1]);
   let objInstructor = buscarInstructor(DataArray[2]);
   let objSalon = buscarSalonColor(DataArray[3]);
-  console.log(objSalon);
   $('#txth_salon').val(DataArray[3]);
   $('#txt_color').val(objSalon["Color"]);
   $('#lbl_Beneficiario').text($('#txt_NombreBeneficirio').val());
@@ -596,7 +567,7 @@ function reservarUsuario(accion) {
     objEnt.hora = hora;
     objEnt.sal_id = sal_id;
     objEnt.diaLetra=diaLetra;
-    objEnt.fechaReserv=retonarFecha(fechaDia)
+    objEnt.fechaReserv=fechaDia;//retonarFecha(fechaDia)
     objEnt.fechaInicio = fechaIni;
     objEnt.fechaFin = fechaFin;
     objEnt.cat_id = CentroIds;
@@ -610,16 +581,10 @@ function reservarUsuario(accion) {
         },
         success: function (data) {
           if (data.status) {
-            //controlReservacion(objEnt);
-            
-            /*sessionStorage.removeItem("dts_PlaInstructor");
-            sessionStorage.removeItem("dts_PlaTemporal");
-            sessionStorage.removeItem("dts_SalonCentro");
-            swal("Planificación", data.msg, "success");
-            window.location = base_url + "/planificacion"; //Retorna al Portal Principal*/
             limpiarTextReservacion();
             swal("Planificación", data.msg, "success");
-            $('#modalFormPersona').modal("hide");//Oculta el Modal
+            $('#modalFormAgenda').modal("hide");//Oculta el Modal
+            location.reload();
           } else {
             swal("Error", data.msg, "error");
           }

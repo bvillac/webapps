@@ -73,7 +73,7 @@ class Reservacion extends Controllers
                     echo "Datos no encontrados";
                 } else {
                     $data['fechaDia']=$data['pla_fecha_incio'];
-                    $data['accion']="Edit";
+                    $data['accion']="INI";
                     //$data['reservacion'] = $this->model->consultarReservaciones($data);
                     $data['reservacion'] = $this->model->consultarReservacionFecha($data['cat_id'],$data['pla_id'],$data['pla_fecha_incio']);
                     $data['numero_reser']=$this->contarResrevados($data['reservacion']);
@@ -118,8 +118,10 @@ class Reservacion extends Controllers
                 $cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : "";
                 $pla_id = isset($_GET['pla_id']) ? $_GET['pla_id'] : "";
                 $accion = isset($_GET['accion']) ? $_GET['accion'] : "";
-                $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : "";
+                $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : null;
                 $data = $this->model->consultarDatosId($pla_id);
+                putMessageLogFile("ddd".$fechaDia); 
+                //$fechaDia=($fechaDia!=null)?$fechaDia:$data['pla_fecha_incio']; //Cuando es NULL se seteea a fecha inicio  
                 
 
                 $result=$this->estaEnRango($accion,$fechaDia,$data['pla_fecha_incio'],$data['pla_fecha_fin']);
@@ -258,7 +260,7 @@ class Reservacion extends Controllers
         return $fecha->format('Y-m-d');
     }
 
-    function estaEnRango($Evento,$fecha, $fechaInicio, $fechaFin) {        
+    function estaEnRango($Evento,$fecha, $fechaInicio, $fechaFin) {   
         $fechaInicio = new DateTime($fechaInicio);
         $fechaFin = new DateTime($fechaFin);
         $fecha = new DateTime($fecha);

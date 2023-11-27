@@ -4,8 +4,8 @@ adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/Reservacion/Modals/modalAgenda.php";
 //putMessageLogFile($data['dataNivel']);
-putMessageLogFile("fecha ".$data['fechaDia']);
-putMessageLogFile("accion ".$data['accion']);
+//putMessageLogFile("fecha ".$data['fechaDia']);
+//putMessageLogFile("accion ".$data['accion']);
 ?>
 <script>
   const resultInst = <?= json_encode($data['dataInstructor']) ?>;
@@ -25,7 +25,7 @@ putMessageLogFile("accion ".$data['accion']);
   const IdsTemp = <?= $data['pla_id'] ?>;
   const fechaIni = "<?= $data['pla_fecha_incio'] ?>";
   const fechaFin = "<?= $data['pla_fecha_fin'] ?>";
-  const fechaDiaNex = "<?= $data['fechaDia'] ?>";
+  let fechaDia = "<?= $data['fechaDia'] ?>";
 </script>
 
 <div id="contentAjax"></div>

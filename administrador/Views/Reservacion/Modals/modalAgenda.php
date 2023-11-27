@@ -61,20 +61,12 @@
             <div class="col-sm">
               <h5 class="line-head" >Reservados</h5>
               <ul class="list-group" id="list_beneficiarios">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  Cras justo odio
-                  <span class="badge badge-primary badge-pill">14</span>
-                </li>
+               
                 
               </ul>
             </div>
 
           </div>
-
-
-
-
-
 
           <div class="tile-footer">
             <button id="btn_reservar" class="btn btn-primary" type="button"><i
