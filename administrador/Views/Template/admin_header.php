@@ -24,9 +24,17 @@
   <!-- Font-icon css-->
   <!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 
+  <style>
+    #spinner {
+      display: none;
+      /* Agrega estilos para el spinner, por ejemplo, un spinner CSS o un mensaje de carga */
+    }
+  </style>
+
 </head>
 
 <body class="app sidebar-mini">
+  <div id="spinner">Cargando...</div>
   <!-- Navbar-->
   <header class="app-header"><a class="app-header__logo font-weight-bold" href="<?= base_url(); ?>/dashboard"><?= TITULO_EMPRESA ?></a>
     <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>

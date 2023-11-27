@@ -302,7 +302,6 @@ function fntupdateReservacion(reservacion) {
 }
 
 function fntReservacionCount(reservacion) {
-  //console.log(reservacion);
   //{"Ids":"LU_10_3_10","count":2}
   var c = 0;
   var arrayList = new Array();
@@ -313,11 +312,13 @@ function fntReservacionCount(reservacion) {
     arrayList[c] = rowInst;
     c += 1;
   }
+  console.log("actualiza datos");
   sessionStorage.dts_ReserCount = JSON.stringify(arrayList);
 }
 
 
 function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin) {
+  
   var tabla = document.getElementById("dts_PlanificiacionAut");
   var nDia = "";
   let salonArray = 0;
@@ -332,10 +333,28 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
         //console.log(estadoFecha);
         if(estadoFecha.estado=="FUE"){
           fechaDia=estadoFecha.fecha;
+          document.getElementById("loading-spinner").style.display = "none";
           swal("Atención!", "Fechas fuera de Rango", "error");
           return;
         }
         
+      }
+
+      function iniciarTemporizador() {
+        // Muestra el spinner
+        document.getElementById("spinner").style.display = "block";
+      
+        // Establece el tiempo del temporizador a 5 segundos (5000 milisegundos)
+        var tiempoLimite = 5000;
+      
+        // Inicia el temporizador
+        setTimeout(function() {
+          // Oculta el spinner después de que el temporizador haya terminado
+          document.getElementById("spinner").style.display = "none";
+      
+          // Aquí puedes agregar la lógica que deseas ejecutar después del temporizador
+          console.log("Temporizador completado");
+        }, tiempoLimite);
       }
       
       var filaEncabezado = $("<tr></tr>");
@@ -343,6 +362,8 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       $("#FechaDia").html(obtenerFechaConLetras(fechaDia));
       //Recuperar Datos de tiendas
       fntBuscarCount(fechaDia);
+      //iniciarTemporizador();
+      //alert("Esperar");
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));
       for (var i = 0; i < Grid.length; i++) {
@@ -420,6 +441,7 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       
     }
   }
+  
 }
 
 function existeHorarioEditar(nHorArray, nDiaHora) {
@@ -441,6 +463,7 @@ function buscarCountAlumnos(ids) {
     var Grid = JSON.parse(sessionStorage.dts_ReserCount);
     if (Grid.length > 0) {
       for (var i = 0; i < Grid.length; i++) {
+        console.log(Grid[i]["ids"]+'=='+ids)
         if (Grid[i]["ids"] == ids) {
           return Grid[i];
         }
@@ -644,6 +667,7 @@ function fntBuscarCount(fechaDia) {
     $.ajax({
       type: "POST",
       url: link,
+      timeout: 5000,
       data: {
         cat_id: CentroIds,
         pla_id: IdsTemp,
@@ -653,12 +677,23 @@ function fntBuscarCount(fechaDia) {
         //console.log(data);
         if (data.status) {
           //console.log(data.data.numero_reser);
+          //sessionStorage.removeItem("dts_Reservacion");
+          //sessionStorage.removeItem("dts_ReserCount");
+          console.log("entro actualizar");
           fntupdateReservacion(data.data.reservacion);
           fntReservacionCount(data.data.numero_reser);
 
         } else {
           swal("Error", data.msg, "error");
         }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        // Manejar errores
+        console.error('Error en la solicitud. Estado:', textStatus);
+      },
+      timeout: function() {
+        // Manejar el tiempo de espera alcanzado
+        console.error('Tiempo de espera alcanzado. La solicitud ha sido cancelada.');
       },
       dataType: "json",
     });
