@@ -56,8 +56,8 @@ class ReservacionModel extends MysqlAcademico
         $sql = "SELECT a.res_id,concat(a.res_dia,'_',a.res_hora,'_',a.ins_id,'_',a.sal_id) Ids,a.cat_id,a.pla_id,a.act_id,a.niv_id,a.ben_id,a.ins_id,a.sal_id," ;
         $sql .= "   a.res_fecha_reservacion FechaRes,a.res_unidad,a.res_dia,a.res_hora,a.res_asistencia, CONCAT(c.per_nombre,' ',c.per_apellido) Nombres " ;
         $sql .= "       FROM " . $this->db_name . ".reservacion a   " ;
-        $sql .= "           inner join (db_academico.beneficiario b   " ;
-        $sql .= "               inner join db_administrador.persona c  " ;
+        $sql .= "           inner join (" . $this->db_name . ".beneficiario b   " ;
+        $sql .= "               inner join " . $this->db_nameAdmin . ".persona c  " ;
         $sql .= "                   on b.per_id=c.per_id)   " ;
         $sql .= "           on a.ben_id=b.ben_id   " ;
         $sql .= "   where a.cat_id={$catId} and a.pla_id={$plaId} and date(a.res_fecha_reservacion) = '{$fecha}' " ; 
@@ -122,7 +122,7 @@ class ReservacionModel extends MysqlAcademico
             } catch (Exception $e) {
                 $con->rollBack();
                 //echo "Fallo: " . $e->getMessage();
-                throw $e;
+                //throw $e;
                 $arroout["message"] = $e->getMessage();
                 $arroout["status"] = false;
                 return $arroout;
@@ -141,6 +141,26 @@ class ReservacionModel extends MysqlAcademico
                         res_fecha_modificacion = CURRENT_TIMESTAMP() WHERE res_id = {$Ids} ";
         $arrData = array(0);
         $request = $this->update($sql, $arrData);
+        return $request;
+    }
+
+
+    public function consultarAsistenciaFecha($catId,$plaId,$insId,$fecha)
+    {
+        $sql = "SELECT a.res_id,a.cat_id,a.pla_id,a.act_id,d.act_nombre,a.niv_id,f.niv_nombre,a.ben_id,a.ins_id,a.sal_id,e.sal_nombre," ;
+        $sql .= "   a.res_fecha_reservacion FechaRes,a.res_unidad,a.res_dia,a.res_hora,a.res_asistencia, CONCAT(c.per_nombre,' ',c.per_apellido) Nombres, " ;
+        $sql .= "   (SELECT CONCAT(z.per_nombre,' ',z.per_apellido)  FROM db_academico.instructor x inner join db_administrador.persona z on x.per_id=z.per_id where x.ins_id=a.ins_id) Instructor " ;
+        $sql .= "       FROM " . $this->db_name . ".reservacion a   " ;
+        $sql .= "           inner join (" . $this->db_name . ".beneficiario b   " ;
+        $sql .= "               inner join " . $this->db_nameAdmin . ".persona c  " ;
+        $sql .= "                   on b.per_id=c.per_id)   " ;
+        $sql .= "           on a.ben_id=b.ben_id   " ;
+        $sql .= "           inner join " . $this->db_name . ".actividad d on d.act_id=a.act_id   " ;
+        $sql .= "           inner join " . $this->db_name . ".salon e on e.sal_id=a.sal_id   " ;
+        $sql .= "           inner join " . $this->db_name . ".nivel f on f.niv_id=a.niv_id   " ;
+        $sql .= "   where a.cat_id={$catId} and a.pla_id={$plaId} and a.ins_id={$insId} and date(a.res_fecha_reservacion) = '{$fecha}' " ; 
+        $sql .= "       and a.res_estado_logico!=0  order by a.res_hora " ;
+        $request = $this->select_all($sql);
         return $request;
     }
 
