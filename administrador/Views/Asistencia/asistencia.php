@@ -66,32 +66,11 @@
 
         <div class="col-md-9">
           <div class="tile">
-            <div id="list_tables"></div>
-            <h3 class="tile-title">HORA + SALON + ACTIVIDAD + NIVEL</h3>
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>USUARIO</th>
-                  <th>ASISTENCÍA</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
+            <div id="list_tables">
+              <h3 class="tile-title">Horarios</h3>
+            </div>
             
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-               
-                </tr>
-                
-              </tbody>
-            </table>
+            
           </div>
         </div>
       </div>

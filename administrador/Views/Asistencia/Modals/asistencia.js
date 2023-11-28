@@ -88,59 +88,60 @@ function fntInstructor(ids) {
               while (c < table.length) { 
                 strtable += '<h3 class="tile-title">Instructor: ' + table[c]['InsNombre'] + '</h3>';
                 //strtable += '<h3 class="tile-title">' + table[c]['InsNombre'] + ' + SALON + ACTIVIDAD + NIVEL</h3>';
-                
-                let strFila = "";
-                let auxHora="";
-                let thoras=table[c].Reservado;
+                strtable += '<table class="table table-hover">';
+                strtable += '<thead>';
+                  strtable += '<tr>';
+                    strtable += '<th>#</th>';
+                    strtable += '<th>hora</th>';
+                    strtable += '<th>USUARIO</th>';
+                    strtable += '<th>ASISTENCÍA</th>';
+                  strtable += '</tr>';
+                strtable += '</thead>';
+                var thoras=table[c].Reservado;
+                strtable += '<tbody>';
+                var strFila = "";
                 for (var i = 0; i < thoras.length; i++) { 
-                  if(auxHora!=thoras[i].ResHora){
-                    auxHora=thoras[i].ResHora;
-                    strtable += '<table class="table table-hover">';
-                    strtable += fntHeadHora();                    
-                    strtable += '<tbody>';
-                    strtable += fntRowHora(thoras[i]);
-                    strtable += '</tbody>';
-                    strtable += '</table>';
-                    strtable += '<br>';
-                  }
-                  //strtable += fntRowHora(thoras[i]);
-                
+                  strFila = '<td>' + thoras[i].ResId + '</td>';  
+                  strFila += '<td>' + thoras[i].ResHora + '</td>';  
+                  strFila += '<td>' + thoras[i].BenNombre + '</td>';  
+                  strFila += '<td>' + thoras[i].Estado + '</td>';  
+                  strtable += '<tr>' + strFila + '</tr>';   
                 }
+                strtable += '</tbody>';
+                strtable += '</table>';
+                strtable += '<br>';
                 c++;
               }
 
               $('#list_tables').append(strtable);
-   
             }else{
               swal("Atención!", Response.msg, "error");
             }
 
 
-         
+            //if(dataMov.length){  
+            /*if(dataMov.length){ 
+                $('#lbl_tIngreso').text(redondea(parseInt(data['TOT_ING']), N2decimal));  
+                $('#lbl_tEgreso').text(redondea(parseInt(data['TOT_EGR']), N2decimal));  
+                $('#lbl_tSaldo').text(redondea(parseInt(data['TOT_ING'])-parseInt(data['TOT_EGR']), N2decimal));  
+                for (var c = 0; c < dataMov.length; c++) {                 
+                    var strFila = "";            
+                    strFila += '<td>' + dataMov[c]['FECHA'] + '</td>';
+                    strFila += '<td>' + dataMov[c]['INGRESO'] + '</td>';
+                    strFila += '<td>' + dataMov[c]['EGRESO'] + '</td>';
+                    strFila += '<td class="textright">' + dataMov[c]['CANTIDAD'] + '</td>';
+                    strFila += '<td class="textright">' + dataMov[c]['SALDO'] + '</td>';
+                    strFila += '<td>' + dataMov[c]['ESTADO'] + '</td>';
+                    strFila += '<td>' + dataMov[c]['REFERENCIA'] + '</td>';                  
+                    strFila = '<tr class="odd gradeX">' + strFila + '</tr>';                   
+                    $('#' + tGrid ).append(strFila);
+                }
+
+            }else{
+                swal("Atención!", "No Existen Datos" , "error");
+            }*/
         },
         dataType: "json"
     });
 }
-
-function fntHeadHora() {
-  let strtable = '<thead>';
-    strtable += '<tr>';
-      strtable += '<th>#</th>';
-      strtable += '<th>hora</th>';
-      strtable += '<th>USUARIO</th>';
-      strtable += '<th>ASISTENCÍA</th>';
-    strtable += '</tr>';
-  strtable += '</thead>';
-  return strtable;
-}
-
-function fntRowHora(thoras) {
-  let strFila = '<td>' + thoras['ResId'] + '</td>';
-  strFila += '<td>' + thoras['ResHora'] + '</td>';
-  strFila += '<td>' + thoras['BenNombre'] + '</td>';
-  strFila += '<td>' + thoras['Estado'] + '</td>';
-  strFila += '<tr>' + strFila + '</tr>';
-  return strFila;
-}
-
   

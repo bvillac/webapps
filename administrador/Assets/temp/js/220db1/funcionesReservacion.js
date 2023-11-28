@@ -72,7 +72,6 @@ $(document).ready(function () {
     window.location.href = url;
   });
   $("#btn_anteriorAut").click(function () {
-    //generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
     var parametros = {
       cat_id: CentroIds,
       pla_id: IdsTemp,
