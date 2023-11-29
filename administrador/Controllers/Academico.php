@@ -19,12 +19,12 @@ class Academico extends Controllers
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
-        $modelCentro = new CentroAtencionModel();
-        $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
+        //$modelCentro = new CentroAtencionModel();
+        //$data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
         $data['page_tag'] = "Salon";
         $data['page_name'] = "Salon";
         $data['page_title'] = "Salon <small> " . TITULO_EMPRESA . "</small>";
-        $this->views->getView($this, "salon", $data);
+        $this->views->getView($this, "academico", $data);
     }
 
     public function consultarControl()

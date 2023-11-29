@@ -13,7 +13,7 @@ class AcademicoModel extends MysqlAcademico
     public function consultarDatos()
     {
         $sql = "SELECT b.ben_id BenId,CONCAT(c.per_nombre,' ',c.per_apellido) Nombres,d.con_numero Contrato,date(d.con_fecha_inicio) FechaIngreso, ";
-                $sql .= " if(b.ben_tipo=1, 'TITULAR', "BENEFICIARIO") Tipo,a.cac_estado_logico Estado ";
+                $sql .= " if(b.ben_tipo=1, 'TITULAR', 'BENEFICIARIO') Tipo,a.cac_estado_logico Estado ";
                 $sql .= "    FROM " . $this->db_name . ".control_academico a ";
                 $sql .= "-     INNER JOIN (" . $this->db_name . ".beneficiario b ";
                 $sql .= "         INNER JOIN " . $this->db_nameAdmin . ".persona c on b.per_id=c.per_id ";
