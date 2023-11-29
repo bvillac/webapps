@@ -63,7 +63,28 @@ document.addEventListener("DOMContentLoaded", function () {
 $(document).ready(function () {
 
   $("#btn_siguienteAut").click(function () {   
-    generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
+    let accionMove="Next";
+
+      let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+      //console.log(estadoFecha);
+      alert(estadoFecha);
+      if(estadoFecha.estado=="FUE"){
+        fechaDia=estadoFecha.fecha;
+        swal("Atención!", "Fechas fuera de Rango", "error");
+        return;
+      }
+      fechaDia=estadoFecha.fecha;
+    alert(fechaDia);
+
+    //generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
+    var parametros = {
+      cat_id: CentroIds,
+      pla_id: IdsTemp,
+      fechaDia: retonarFecha(fechaDia)
+    };
+    var url = base_url+'/Reservacion/moverAgenda?'+ new URLSearchParams(parametros).toString();
+    // Redirigir a la nueva URL
+    window.location.href = url;
   });
   $("#btn_anteriorAut").click(function () {
     generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
@@ -333,7 +354,6 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
         //console.log(estadoFecha);
         if(estadoFecha.estado=="FUE"){
           fechaDia=estadoFecha.fecha;
-          document.getElementById("loading-spinner").style.display = "none";
           swal("Atención!", "Fechas fuera de Rango", "error");
           return;
         }
@@ -349,7 +369,7 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       fntBuscarCount(fechaDia);
 
      
-      alert("Esperar");
+     
       //ENCABEZADO DE PLANIFICACION INSTRUCTOR
       filaEncabezado.append($("<th>Horas</th>"));
       for (var i = 0; i < Grid.length; i++) {
@@ -663,9 +683,6 @@ function fntBuscarCount(fechaDia) {
         //console.log(data);
         if (data.status) {
           //console.log(data.data.numero_reser);
-          //sessionStorage.removeItem("dts_Reservacion");
-          //sessionStorage.removeItem("dts_ReserCount");
-          console.log("entro actualizar");
           fntupdateReservacion(data.data.reservacion);
           fntReservacionCount(data.data.numero_reser);
 
@@ -688,6 +705,8 @@ function fntBuscarCount(fechaDia) {
   //}
 
 }
+
+
 
 
 

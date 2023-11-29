@@ -190,6 +190,51 @@ class Reservacion extends Controllers
     }
 
 
+    public function moverAgenda()
+    {
+        
+        //putMessageLogFile($_GET);
+        //putMessageLogFile($_GET['parametro1']);
+        
+        if ($_GET) {
+            //dep($_GET);
+            if (empty($_GET['cat_id']) || empty($_GET['pla_id']) || empty($_GET['fechaDia']) ) {
+                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+            } else {
+                $request = "";
+                //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
+                $cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : "";
+                $pla_id = isset($_GET['pla_id']) ? $_GET['pla_id'] : "";
+                $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : "";
+
+                $data = $this->model->consultarDatosId($pla_id);
+
+                $data['reservacion'] = $this->model->consultarReservacionFecha($cat_id, $pla_id, $fechaDia);
+                $data['numero_reser'] = $this->contarResrevados($data['reservacion']);
+
+                $modelCentro = new CentroAtencionModel();
+                $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
+                $modelInstructor = new InstructorModel();
+                $data['dataInstructor'] = $modelInstructor->consultarCentroInstructores($cat_id);
+                $modelSalon = new SalonModel();
+                $data['dataSalon'] = $modelSalon->consultarSalones($cat_id);
+                $modelActividad = new ActividadModel();
+                $data['dataActividad'] = $modelActividad->consultarActividad();
+                $modelNivel = new NivelModel();
+                $data['dataNivel'] = $modelNivel->consultarNivel();
+                $data['page_tag'] = "Agendar";
+                $data['page_name'] = "Agendar";
+                $data['page_title'] = "Agendar <small> " . TITULO_EMPRESA . "</small>";
+                $this->views->getView($this, "agendar", $data);
+
+                
+            }
+
+        }
+        die();
+    }
+
+
 
 
 
