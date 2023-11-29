@@ -95,7 +95,7 @@ $controlAcad = $data['control'];
           <div class="tab-content">
 
 
-            <table id="dts_Control" class="table table-hover">
+            <table id="dts_Control" class="table table-hover table-striped" >
               <thead>
                 <tr>
                   <th>NIVEL</th>

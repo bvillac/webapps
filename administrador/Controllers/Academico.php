@@ -85,27 +85,21 @@ class Academico extends Controllers
         die();
     }
 
-    public function ingresarSalon()
+    public function ingresarEvaluacion()
     {
         if ($_POST) {
             //dep($_POST);
-            if (empty($_POST['salon']) || empty($_POST['accion'])) {
+            if (empty($_POST['data']) || empty($_POST['accion'])) {
                 $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
             } else {
                 $request = "";
-                $datos = isset($_POST['salon']) ? json_decode($_POST['salon'], true) : array();
+                $datos = isset($_POST['data']) ? json_decode($_POST['data'], true) : array();
                 $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
-                if ($accion == "Create") {
-                    $option = 1;
-                    if ($_SESSION['permisosMod']['w']) {
-                        $request = $this->model->insertData($datos);
-                    }
-                } else {
-                    $option = 2;
+                if ($accion == "Evaluar") {
                     if ($_SESSION['permisosMod']['u']) {
-                        $request = $this->model->updateData($datos);
+                        $request = $this->model->updateDataEvaluacion($datos);
                     }
-                }
+                } 
                 if ($request["status"]) {
                     if ($option == 1) {
                         $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');

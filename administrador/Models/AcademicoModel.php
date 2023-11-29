@@ -59,57 +59,12 @@ class AcademicoModel extends MysqlAcademico
         return $request;
     }
 
-    public function insertData($dataObj)
-    {
-        $con = $this->getConexion();
-        $nombreSalon = $dataObj['nombre'];
-        $sql = "SELECT * FROM " . $this->db_name . ".salon where sal_nombre='{$dataObj['nombre']}' and cat_id='{$dataObj['CentroAtencionID']}'";
-
-        $request = $this->select($sql);
-        if (empty($request)) {
-            $con->beginTransaction();
-            try {
-                $arrData = array(
-                    $dataObj['CentroAtencionID'],
-                    $dataObj['nombre'],
-                    $dataObj['cupominimo'],
-                    $dataObj['cupomaximo'],
-                    $dataObj['color'],
-                    retornaUser(), 1
-                );
-                //putMessageLogFile($arrData);
-                $SqlQuery  = "INSERT INTO " . $this->db_name . ".salon 
-				    (`cat_id`,
-                    `sal_nombre`,
-                    `sal_cupo_minimo`,
-                    `sal_cupo_maximo`,
-                    `sal_color`,
-                    `sal_usuario_creacion`,                   
-                    `sal_estado_logico`) VALUES(?,?,?,?,?,?,?) ";
-                $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
-                $con->commit();
-                $arroout["status"] = true;
-                $arroout["numero"] = 0;
-                return $arroout;
-            } catch (Exception $e) {
-                $con->rollBack();
-                //echo "Fallo: " . $e->getMessage();
-                throw $e;
-                $arroout["message"] = $e->getMessage();
-                $arroout["status"] = false;
-                return $arroout;
-            }
-        } else {
-            $arroout["status"] = false;
-            $arroout["message"] = "Ya exite el Aula con este Nombre.";
-            return $arroout;
-        }
-    }
+    
 
 
 
 
-    public function updateData($dataObj)
+    public function updateDataEvaluacion($dataObj)
     {
         try {
 
@@ -130,7 +85,7 @@ class AcademicoModel extends MysqlAcademico
             $arroout["numero"] = 0;
             return $arroout;
         } catch (Exception $e) {
-            throw $e;
+            //throw $e;
             $arroout["status"] = false;
             $arroout["message"] = "Fallo: " . $e->getMessage();
             return $arroout;

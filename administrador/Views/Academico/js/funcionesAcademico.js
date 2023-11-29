@@ -1,21 +1,21 @@
 let tableSalon;
 
 document.addEventListener('DOMContentLoaded', function () {
-    tableSalon = $('#tableSalon').dataTable({
+    tableSalon = $('#tableControl').dataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
             "url": cdnTable
         },
         "ajax": {
-            "url": " " + base_url + "/Salon/consultarSalon",
+            "url": " " + base_url + "/Academico/consultarControl",
             "dataSrc": ""
         },
         "columns": [
-            { "data": "NombreCentro" },
-            { "data": "NombreSalon" },
-            { "data": "CupoMinimo" },
-            { "data": "CupoMaximo" },
+            { "data": "Contrato" },
+            { "data": "Nombres" },
+            { "data": "FechaIngreso" },
+            { "data": "Tipo" },
             { "data": "Estado" },
             { "data": "options" }
         ],
@@ -40,21 +40,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 $(document).ready(function () {
     $("#cmd_guardar").click(function () {
-        guardarSalon();
+        guardarEvaluacion();
     });
 
 
 });
 
 
-function openModal() {
-    document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+function evaluarModals(Ids) {
+    document.querySelector('#txth_idsControl').value = Ids;//IDS oculto hiden
     document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
     document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
     document.querySelector('#btnText').innerHTML = "Guardar";
-    document.querySelector('#titleModal').innerHTML = "Nuevo Salón";
-    document.querySelector("#formSalon").reset();
-    $('#modalFormSalon').modal('show');
+    document.querySelector('#titleModal').innerHTML = "Registrar Evaluación";
+    document.querySelector("#formEvaluar").reset();
+    $('#modalFormEvaluar').modal('show');
 }
 
 function limpiarText() {
@@ -66,49 +66,38 @@ function limpiarText() {
     $('#cmb_estado').val("1");
 }
 
-function guardarSalon() {
-    let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
-    let Ids = document.querySelector('#txth_ids').value;
-    let centro_id = $('#cmb_CentroAtencion').val();
-    let nombresalon = $('#txt_nombreSalon').val();
-    let cupominimo = $('#txt_cupoMinimo').val();
-    let cupomaximo = $('#txt_cupoMaximo').val();
-    let color = $('#txt_color').val();
-    let estado = $('#cmb_estado').val();
-    if (centro_id == '0' || nombresalon == '' || cupominimo == '0' || cupomaximo == '0') {
-        swal("Atención", "Todos los campos son obligatorios.", "error");
-        return false;
-    }
-    let elementsValid = document.getElementsByClassName("valid");
-    for (let i = 0; i < elementsValid.length; i++) {
-        if (elementsValid[i].classList.contains('is-invalid')) {
-            swal("Atención", "Por favor verifique los campos ingresados (Color Rojo).", "error");
-            return false;
-        }
-    }
+function guardarEvaluacion() {
+    //let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
+    let Ids = document.querySelector('#txth_idsControl').value;
+    let val_id = $('#cmb_valoracion').val();
+    let val_por = $('#cmb_porcentaje').val();
+    let comentario = $('#txta_comentario').val();
+    
+    //if (centro_id == '0' || nombresalon == '' || cupominimo == '0' || cupomaximo == '0') {
+    //    swal("Atención", "Todos los campos son obligatorios.", "error");
+    //    return false;
+    //}
 
     var dataObj = new Object();
     dataObj.ids = Ids;
-    dataObj.CentroAtencionID = centro_id;
-    dataObj.nombre = nombresalon;
-    dataObj.cupominimo = cupominimo;
-    dataObj.cupomaximo = cupomaximo;
-    dataObj.color = color;
-    dataObj.estado = estado;
+    dataObj.val_id = val_id;
+    dataObj.val_por = val_por;
+    dataObj.comentario = comentario;
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
-    let link = base_url + '/Salon/ingresarSalon';
+    let link = base_url + '/Academico/ingresarEvaluacion';
     $.ajax({
         type: 'POST',
         url: link,
         data: {
-            "salon": JSON.stringify(dataObj),
-            "accion": accion
+            "data": JSON.stringify(dataObj),
+            "accion": "Evaluar"
         },
         success: function (data) {
             if (data.status) {
                 //sessionStorage.removeItem('cabeceraOrden');
-                swal("Beneficiarios", data.msg, "success");
-                window.location = base_url + '/Salon/salon';
+                swal("Evaluación", data.msg, "success");
+                location.reload();
+                //window.location = base_url + '/Salon/salon';
             } else {
                 swal("Error", data.msg, "error");
             }

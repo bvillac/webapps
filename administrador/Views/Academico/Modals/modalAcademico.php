@@ -43,6 +43,11 @@
               </select>
             </div>
 
+            <div class="form-group col-md-12">
+              <label for="txta_comentario">Observación</label>
+              <textarea class="form-control" id="txta_comentario" rows="3"></textarea>
+            </div>
+
           </div>
 
 
