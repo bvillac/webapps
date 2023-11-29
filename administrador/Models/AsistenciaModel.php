@@ -26,7 +26,8 @@ class AsistenciaModel extends MysqlAcademico
         $sql .= "           inner join " . $this->db_name . ".actividad d on d.act_id=a.act_id   " ;
         $sql .= "           inner join " . $this->db_name . ".salon e on e.sal_id=a.sal_id   " ;
         $sql .= "           inner join " . $this->db_name . ".nivel f on f.niv_id=a.niv_id   " ;
-        $sql .= "   where a.res_estado_logico!=0  and a.cat_id={$catId} and a.pla_id={$plaId} and date(a.res_fecha_reservacion) = '{$fecha}' " ; 
+        $sql .= "   where a.res_estado_logico!=0  and a.cat_id={$catId} and date(a.res_fecha_reservacion) = '{$fecha}' " ; 
+        //$sql .= "       and a.pla_id={$plaId} " ;
         $sql .=($insId!="0")?" and a.ins_id={$insId} ":"";
         $sql .=($hora!="0")?" and a.res_hora={$hora} ":"";
         $sql .= "   order by a.ins_id,CONVERT(a.res_hora , SIGNED) " ;
@@ -80,41 +81,43 @@ class AsistenciaModel extends MysqlAcademico
         $con = $this->getConexion();
         $sql = "SELECT * FROM " . $this->db_name . ".reservacion where res_id='{$Ids}' AND res_estado_logico=1";
         $request = $this->select($sql);
-        if (!empty($request)) {
-            
-
-
-            
-
+        if (!empty($request)) { 
             $con->beginTransaction();
             try {
+                //Insertar Control Academico
                 $arrData = array(
-                    $dataObj['pla_id'],
-                    $dataObj['nombre'],
-                    $dataObj['cupominimo'],
-                    $dataObj['cupomaximo'],
-                    $dataObj['color'],
-                    retornaUser(), 1
+                    $request['ben_id'],
+                    $request['act_id'],
+                    $request['ins_id'],
+                    $request['niv_id'],
+                    $request['res_id'],
+                    $request['res_unidad'],
+                    NULL,
+                    NULL,
+                    $request['res_hora'],
+                    NULL,
+                    retornaUser(),
+                    1
                 );
-                
-                $SqlQuery  = "INSERT INTO " . $this->db_name . ".control_academico 
+                $SqlQuery = "INSERT INTO " . $this->db_name . ".control_academico 
 				    (`ben_id`,
                     `act_id`,
+                    `ins_id`,
                     `niv_id`,
+                    `res_id`,
                     `cac_unidad`,
                     `val_id`,
                     `cac_valoracion`,
                     `cac_hora`,
-                    `sal_usuario_creacion`,                   
-                    `sal_estado_logico`) VALUES(?,?,?,?,?,?,?,?,?) ";
-                    
+                    `cac_observacion`,
+                    `cac_usuario_creacion`,                   
+                    `cac_estado_logico`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ";
                 $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
-
+                //Acualizar Asistencia
                 $sql = "UPDATE " . $this->db_name . ".reservacion SET res_asistencia = ?,res_usuario_modificacion='{$usuario}',
                             res_fecha_modificacion = CURRENT_TIMESTAMP() WHERE res_id = {$Ids} ";
                 $arrData = array("A");
-                $request = $this->update($sql, $arrData);
-                //return $request;
+                $request = $this->updateConTrasn($con,$sql, $arrData);
 
                 $con->commit();
                 $arroout["status"] = true;

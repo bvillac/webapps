@@ -38,12 +38,12 @@ class Asistencia extends Controllers
 
     public function asistenciaFechaHora(){	
         if ($_POST) {
-            if (empty($_POST['catId']) || empty($_POST['plaId']) || empty($_POST['fechaDia'])) {
+            if (empty($_POST['catId']) || empty($_POST['fechaDia'])) {
                 $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
             } else {
                 if($_SESSION['permisosMod']['r']){
                     $catId = isset($_POST['catId']) ? $_POST['catId'] : 0;
-                    $plaId = isset($_POST['plaId']) ? $_POST['plaId'] : 0;
+                    //$plaId = isset($_POST['plaId']) ? $_POST['plaId'] : 0;
                     $insId = isset($_POST['insId']) ? $_POST['insId'] : 0;
                     $fechaDia = isset($_POST['fechaDia']) ? $_POST['fechaDia'] : '';
                     $hora = isset($_POST['hora']) ? $_POST['hora'] : 0;        
@@ -67,7 +67,7 @@ class Asistencia extends Controllers
             if ($_SESSION['permisosMod']['d']) {
                 $ids = intval($_POST['Ids']);
                 $request = $this->model->marcarAsistencia($ids);
-                
+                //$request["status"]=true;
                 if ($request["status"]) {
                     $arrResponse = array('status' => true, 'msg' => 'Asistencía Registrada Correctamente');
                 } else {

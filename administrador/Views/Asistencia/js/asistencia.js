@@ -73,7 +73,7 @@ function fntInstructor(ids) {
         url: link,
         data:{
             "catId": Centro,
-            "plaId": 1,
+            //"plaId": 1,
             "insId": InsId,
             "hora": hora,            
             "fechaDia": $("#dtp_fecha").val(),
@@ -155,7 +155,7 @@ function fntRowHora(thoras) {
   //strFila += '<td>' + thoras['Estado'] + '</td>';
   strFila +='<td><div class="toggle-flip">';
   strFila +='<label>';
-  let nCheck=(thoras['Estado']=="A")?"checked":"";
+  let nCheck=(thoras['Estado']=="A")?"checked disabled":"";
   strFila +='<input type="checkbox" '+nCheck+' onclick="fntAsistencia(' + thoras['ResId'] + ');" id="ASI_' + thoras['ResId'] + '"><span class="flip-indecator" data-toggle-on="SI" data-toggle-off="NO"></span>';
   strFila +='</label>';
   strFila +='</div></td>';
@@ -164,30 +164,53 @@ function fntRowHora(thoras) {
 
 
 function fntAsistencia(ids) {
-  if (ids != 0) {
-    let link = base_url + "/Asistencia/marcarAsistencia";
-    $.ajax({
-      type: "POST",
-      url: link,
-      data: {
-        Ids: ids,
-      },
-      success: function (data) {
-        if (data.status) {
-          //$("#cmb_instructor").prop("disabled", false);
-          swal("Información", data.msg, "info");
-      
-        } else {
-          swal("Error", data.msg, "error");
-        }
-      },
-      dataType: "json",
-    });
-  } else {
-    //$("#cmb_instructor").prop("disabled", true);
-    swal("Información", "Seleccionar un Horario", "info");
-  }
+  //var estaDeshabilitado = $("#ASI_" + ids).prop('disabled');
+  swal({
+    title: "Registrar Asistencia",
+    text: "¿Esta seguro de registrar?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Si, Registrar!",
+    cancelButtonText: "No, cancelar!",
+    closeOnConfirm: false,
+    closeOnCancel: true
+  }, function (isConfirm) {
+
+    if (isConfirm) {
+      if (ids != 0) {
+        let link = base_url + "/Asistencia/marcarAsistencia";
+        $.ajax({
+          type: "POST",
+          url: link,
+          data: {
+            Ids: ids,
+          },
+          success: function (data) {
+            if (data.status) {
+              $("#ASI_" + ids).prop("disabled", true);
+              swal("Información", data.msg, "info");
+
+            } else {
+              swal("Error", data.msg, "error");
+            }
+          },
+          dataType: "json",
+        });
+      } else {
+        //$("#cmb_instructor").prop("disabled", true);
+        
+        swal("Información", "Seleccionar un Horario", "info");
+      }
+
+    }else{
+      $("#ASI_" + ids).prop("checked", false);
+    }
+
+  });
+
 }
+
+
 
 
 
