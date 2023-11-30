@@ -109,21 +109,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 request.onreadystatechange = function () {
                     if (request.readyState == 4 && request.status == 200) {
                         var objData = JSON.parse(request.responseText);
-                        if (objData.status) {
-                            //console.log("PerID"+objData.dato);
-                            //$('#txtCodigoPersona').val(strDni);
-                            //$('#txt_ids').val(data.data['Ids']);per_id
-                            //$('#txt_cedula').val(strDni);
-                            //$('#txt_nombres').val(strNombre + ' ' + strApellido);
-
+                        if (objData.status) {                           
                             $('#txth_per_id').val(objData.dato);
                             $('#txt_CodigoPersona').val(strDni);
                             $('#txt_cli_nombre').val(strNombre + ' ' + strApellido);
                             $('#txt_cli_cedula_ruc').val(strDni);
                             $('#txt_cli_razon_social').val(strNombre + ' ' + strApellido);
                             $('#txt_cli_direccion').val(strDireccion);
-                            $('#txt_cli_correo').val(strEmail);
-                           
+                            $('#txt_cli_correo').val(strEmail);                           
 
                             $('#modalFormUsu').modal("hide");
                             formUsuario.reset();
@@ -210,23 +203,6 @@ $(document).ready(function () {
     });
 
 
-    //https://api.jqueryui.com/datepicker/
-    /*$('.date-picker').datepicker({
-        autoSize: true,
-        closeText: 'Cerrar',
-        prevText: '<Ant',
-        nextText: 'Sig>',
-        currentText: 'Hoy',
-        monthNames: monthNames,
-        //changeMonth: true,
-        //changeYear: true,
-        showButtonPanel: true,
-        dateFormat: "yy-mm-dd",
-        showDays: false,
-        onClose: function (dateText, inst) {
-            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay));
-        }
-    });*/
 
 
     $("#txt_CodigoPersona").autocomplete({
@@ -251,6 +227,7 @@ $(document).ready(function () {
                             rowResult.value = objeto.Cedula;
                             rowResult.id = objeto.Ids;
                             rowResult.cedula = objeto.Cedula;
+                            rowResult.direccion = objeto.Direccion;
                             arrayList[c] = rowResult;
                             c += 1;
                         }
@@ -270,6 +247,10 @@ $(document).ready(function () {
             $('#txt_CodigoPersona').val(ui.item.cedula);
             $('#txth_per_id').val(ui.item.id);
             $('#txt_cli_nombre').val(ui.item.label);
+            $('#txt_cli_cedula_ruc').val(ui.item.cedula);
+            $('#txt_cli_razon_social').val(ui.item.label);
+            $('#txt_cli_direccion').val(ui.item.direccion);
+            //$('#txt_cli_correo').val(strEmail);    
             //console.log(ui);
         }
     });
@@ -286,7 +267,10 @@ function limpiarAutocompletar() {
     //$('#txth_ids').val("");
     $('#txth_per_id').val("");
     $('#txt_cli_nombre').val("");
-    //$('#lbl_Ruc').text("");
+    //$('#lbl_Ruc').text("");  
+    $('#txt_cli_cedula_ruc').val("");
+    $('#txt_cli_razon_social').val("");
+    $('#txt_cli_direccion').val("");
 
 }
 
@@ -309,7 +293,7 @@ function guardarCliente(accion) {
 
     let txth_ids = document.querySelector('#txth_ids').value;
     let txth_per_id = document.querySelector('#txth_per_id').value;
-    let txt_codigo = document.querySelector('#txt_codigo').value;
+    let txt_codigo = null;//document.querySelector('#txt_codigo').value;
     let txt_cli_tipo_dni = document.querySelector('#txt_cli_tipo_dni').value;
     let txt_cli_cedula_ruc = document.querySelector('#txt_cli_cedula_ruc').value;
     let txt_cli_razon_social = document.querySelector('#txt_cli_razon_social').value;
@@ -325,7 +309,7 @@ function guardarCliente(accion) {
     let cli_ingreso_mensual = document.querySelector('#txt_cli_ingreso_mensual').value;   
     let cmb_estado = document.querySelector('#cmb_estado').value;
 
-    if (txth_per_id == '' || txt_codigo == '' || txt_cli_cedula_ruc == '' || txt_cli_razon_social == '' || txt_cli_telefono == '' || txt_cli_direccion == ''
+    if (txth_per_id == '' || txt_cli_cedula_ruc == '' || txt_cli_razon_social == '' || txt_cli_telefono == '' || txt_cli_direccion == ''
         || cmb_pago == 0 || cmb_ocupacion == 0 || txt_cli_correo == '' || txt_cli_referencia_bancaria == '' || txt_cli_cargo == '' || cli_ingreso_mensual == '') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;

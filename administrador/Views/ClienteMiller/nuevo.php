@@ -2,8 +2,6 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
-//getModal('modalPersonaBuscar', $data);
-//getModal('modalUsuarios', $data);
 require_once "Views/ClienteMiller/Modals/modalUsuarios.php"; 
 ?>
 <div id="contentAjax"></div>
@@ -16,7 +14,7 @@ require_once "Views/ClienteMiller/Modals/modalUsuarios.php";
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-            <li class="breadcrumb-item"><a href="<?= base_url(); ?>/lineas"><?= $data['page_title'] ?></a></li>
+            <li class="breadcrumb-item"><a href="<?= base_url(); ?>/<?= $data['page_back'] ?>"><?= $data['page_title'] ?></a></li>
         </ul>
     </div>
     
@@ -48,14 +46,14 @@ require_once "Views/ClienteMiller/Modals/modalUsuarios.php";
                         </div>
                     </div>
                     <h3 class="mb-3 line-head" id="type-blockquotes">Datos Cliente</h3>
-                    <div class="form-row">
+                    <!-- <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="txt_codigo">Código</label>
                             <input type="text" class="form-control valid validText " id="txt_codigo" name="txt_codigo" onkeyup="TextMayus(this);" required="">
                         </div>
                         <div class="form-group col-md-6">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="txt_cli_tipo_dni">Tipo DNI</label>

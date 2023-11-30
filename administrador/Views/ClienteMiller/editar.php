@@ -2,9 +2,6 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
-//getModal('modalPersonaBuscar', $data);
-//getModal('modalUsuarios', $data);
-
 ?>
 <script>
   const tipoDNI = "<?= $data['Tipo'] ?>";
@@ -21,7 +18,7 @@ adminMenu($data);
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-            <li class="breadcrumb-item"><a href="<?= base_url(); ?>/lineas"><?= $data['page_title'] ?></a></li>
+            <li class="breadcrumb-item"><a href="<?= base_url(); ?>/<?= $data['page_back'] ?>"><?= $data['page_title'] ?></a></li>
         </ul>
     </div>
     <div class="row">
@@ -32,18 +29,18 @@ adminMenu($data);
             <div class="tile">
                 <div class="tile-body">
                     <h3 class="mb-3 line-head" id="type-blockquotes">Datos Cliente</h3>
-                    <div class="form-row">
+                    <!-- <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="txt_codigo">Código</label>
                             <input type="text" class="form-control valid validText " id="txt_codigo" name="txt_codigo" value="<?= $data['Codigo'] ?>" onkeyup="TextMayus(this);" required="" disabled>
                         </div>
                         <div class="form-group col-md-6">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="txt_cli_tipo_dni">Tipo DNI</label>
-                            <select class="form-control" id="txt_cli_tipo_dni" name="txt_cli_tipo_dni" value="<?= $data['Tipo'] ?>" required="">
+                            <select class="form-control" id="txt_cli_tipo_dni" name="txt_cli_tipo_dni" value="<?= $data['Tipo'] ?>" required="" disabled>
                                 <option value="01">Cédula</option>
                                 <option value="02">Ruc</option>
                                 <option value="03">Pasaporte</option>
@@ -51,7 +48,7 @@ adminMenu($data);
                         </div>
                         <div class="form-group col-md-6">
                             <label for="txt_cli_cedula_ruc">Identificación Cédula/Ruc</label>
-                            <input type="text" class="form-control valid validarNumber " id="txt_cli_cedula_ruc" name="txt_cli_cedula_ruc" value="<?= $data['Cedula'] ?>" required="" onkeypress="return controlTagEvent(event);">
+                            <input type="text" class="form-control valid validarNumber " id="txt_cli_cedula_ruc" name="txt_cli_cedula_ruc" value="<?= $data['Cedula'] ?>" required="" onkeypress="return controlTagEvent(event);" disabled>
                         </div>
                     </div>
                     <div class="form-row">

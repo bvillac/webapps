@@ -23,6 +23,7 @@ class ClienteMiller extends Controllers
         $data['page_tag'] = "Cliente";
         $data['page_name'] = "Cliente";
         $data['page_title'] = "Cliente <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_back'] = "clientemiller";
         $this->views->getView($this, "clientemiller", $data);
     }
 
@@ -75,6 +76,7 @@ class ClienteMiller extends Controllers
         $data['page_tag'] = "Cliente";
         $data['page_name'] = "Cliente";
         $data['page_title'] = "Cliente <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_back'] = "clienteMiller";
         $this->views->getView($this, "nuevo", $data);
     }
 
@@ -94,6 +96,7 @@ class ClienteMiller extends Controllers
                     $data['page_tag'] = "Editar Cliente";
                     $data['page_name'] = "Editar Cliente";
                     $data['page_title'] = "Editar Cliente <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_back'] = "clienteMiller";
                     $this->views->getView($this, "editar", $data);
                 }
             } else {

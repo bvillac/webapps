@@ -10,11 +10,7 @@
   <meta name="theme-color" content="#009688">
   <link rel="shortcut icon" href="<?= media(); ?>/images/site/favicon.ico">
   <title><?= $data['page_name'] ?></title>
-  <?php if (!empty($data['plugin'])) { ?>
-    <!-- Calendar plugin-->
-    <script type="text/javascript" src="<?= media(); ?>/js/calendar/6.1.8_index.global.min.js"></script>
-    <script type="text/javascript" src="<?= media(); ?>/js/calendar/es.js"></script>
-  <?php } ?>
+  <!-- Calendar plugin-->
 
   <!-- Main CSS-->
   <link rel="stylesheet" type="text/css" href="<?= media(); ?>/css/main.css">
@@ -37,7 +33,8 @@
   <div id="spinner">Cargando...</div>
   <!-- Navbar-->
   <header class="app-header"><a class="app-header__logo font-weight-bold" href="<?= base_url(); ?>/dashboard"><?= TITULO_EMPRESA ?></a>
-    <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
+    <!-- Sidebar toggle button-->
+    <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"><i class="fa fa-bars fa-lg"></i></a>
     <!-- Navbar Right Menu-->
     <ul class="app-nav">
 

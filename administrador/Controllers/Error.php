@@ -1,17 +1,25 @@
-<?php 
+<?php
 
-	class Errors extends Controllers{
-		public function __construct()
-		{
-			parent::__construct();
+class Errors extends Controllers
+{
+	public function __construct()
+	{
+		sessionStart();
+		parent::__construct();
+		if (empty($_SESSION['loginEstado'])) {
+			header('Location: ' . base_url() . '/login');
+			die();
 		}
-
-		public function notFound()
-		{
-			$this->views->getView($this,"error");
-		}
+		getPermisos();
 	}
 
-	$notFound = new Errors();
-	$notFound->notFound();
- ?>
+	public function notFound()
+	{
+		//$this->views->getView($this, "error");
+		$this->views->getView($this, "error", null);
+	}
+}
+
+$notFound = new Errors();
+$notFound->notFound();
+?>

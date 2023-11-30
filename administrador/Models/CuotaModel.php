@@ -29,19 +29,11 @@ class CuotaModel extends MysqlAcademico
     
     public function consultarDatosId(int $Ids)
     {
-        $sql = "SELECT a.sal_id Ids,a.cat_id,b.cat_nombre NombreCentro,a.sal_nombre NombreSalon,a.sal_color Color, ";
-        $sql .= "	a.sal_cupo_minimo CupoMinimo,a.sal_cupo_maximo CupoMaximo,a.sal_estado_logico Estado,date(sal_fecha_creacion) FechaIngreso ";
-        $sql .= "	FROM " . $this->db_name . ".salon a ";
-        $sql .= "		inner join " . $this->db_name . ".centro_atencion b ";
-        $sql .= "			on a.cat_id=b.cat_id ";
-        $sql .= " where a.sal_estado_logico!=0 AND a.sal_id={$Ids}";
-
-        SELECT a.numero_cobro Numero,DATE(a.fecha_vencimiento_debito) FechaVencimiento,a.valor_debito ValorDebito,DATE(a.fecha_pago_debito) FechaPago,
-		a.valor_cancelado ValorCancelado,if(a.fecha_pago_debito>=a.fecha_vencimiento_debito,'VENCIDO','') EstadoVencimiento,
-        if(a.estado_cancelado='C','CANCELADO','PENDIENTE') EstadoCancelado
-		FROM db_academico.cobranza a
-        WHERE a.estado_logico!=0 and a.con_id=11;
-
+        $sql = "SELECT a.numero_cobro Numero,DATE(a.fecha_vencimiento_debito) FechaVencimiento,a.valor_debito ValorDebito,DATE(a.fecha_pago_debito) FechaPago, ";
+		$sql .= "   a.valor_cancelado ValorCancelado,if(a.fecha_pago_debito>=a.fecha_vencimiento_debito,'VENCIDO','') EstadoVencimiento, ";
+        $sql .= "   if(a.estado_cancelado='C','CANCELADO','PENDIENTE') EstadoCancelado ";
+		$sql .= "FROM " . $this->db_name . ".cobranza a ";
+        $sql .= "   WHERE a.estado_logico!=0 and a.con_id={$Ids} ";
         $request = $this->select($sql);
         return $request;
     }

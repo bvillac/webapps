@@ -177,7 +177,7 @@ class ClienteMillerModel extends Mysql
         $sql = "SELECT a.cli_id Ids,a.per_id,a.fpag_id FpagIds,c.fpag_nombre FpagoNombre,d.ocu_nombre OcupaNombre,a.cli_tipo_dni TipoDni,a.cli_cedula_ruc CedulaRuc,
                     a.cli_razon_social RazonSocial,a.cli_direccion DireccionCliente,a.cli_correo CorreoCliente,a.cli_telefono TelefCliente,
                     a.cli_telefono_oficina TelfOficina,a.cli_cargo Cargo,a.cli_antiguedad Antiguedad,a.cli_ingreso_mensual IngMensual,
-                    a.cli_referencia_bancaria RefBanco,CONCAT(b.per_nombre,'',b.per_apellido) NombreTitular,b.per_telefono TelfCelular,
+                    a.cli_referencia_bancaria RefBanco,CONCAT(b.per_nombre,' ',b.per_apellido) NombreTitular,b.per_telefono TelfCelular,
                     b.per_direccion DireccionDomicilio
                 FROM " . $this->db_name . ".cliente a
                     INNER JOIN " . $this->db_name . ".persona b
