@@ -65,22 +65,24 @@ $(document).ready(function () {
   $("#btn_siguienteAut").click(function () {   
     let accionMove="Next";
 
-      let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+      /*let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
       //console.log(estadoFecha);
-      alert(estadoFecha);
+  
       if(estadoFecha.estado=="FUE"){
         fechaDia=estadoFecha.fecha;
         swal("Atención!", "Fechas fuera de Rango", "error");
         return;
       }
       fechaDia=estadoFecha.fecha;
-    alert(fechaDia);
+    alert(fechaDia);*/
 
     //generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
+    alert(fechaDiaNex);
     var parametros = {
       cat_id: CentroIds,
       pla_id: IdsTemp,
-      fechaDia: retonarFecha(fechaDia)
+      accion: "Next",
+      fechaDia: fechaDiaNex  //retonarFecha(fechaDia)
     };
     var url = base_url+'/Reservacion/moverAgenda?'+ new URLSearchParams(parametros).toString();
     // Redirigir a la nueva URL
@@ -338,6 +340,9 @@ function fntReservacionCount(reservacion) {
 }
 
 
+
+
+
 function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin) {
   
   var tabla = document.getElementById("dts_PlanificiacionAut");
@@ -350,14 +355,14 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       if (accionMove == "Edit") {
         fechaDia = obtenerFormatoFecha(fechaIni);
       } else {
-        let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+        //let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
         //console.log(estadoFecha);
-        if(estadoFecha.estado=="FUE"){
-          fechaDia=estadoFecha.fecha;
-          swal("Atención!", "Fechas fuera de Rango", "error");
-          return;
-        }
-        
+        //if(estadoFecha.estado=="FUE"){
+        //  fechaDia=estadoFecha.fecha;
+        //  swal("Atención!", "Fechas fuera de Rango", "error");
+        //  return;
+        //}
+        fechaDia=fechaDiaNex;
       }
 
      

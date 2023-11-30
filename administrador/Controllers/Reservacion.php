@@ -72,6 +72,8 @@ class Reservacion extends Controllers
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
+                    $data['fechaDia']=$data['pla_fecha_incio'];
+                    $data['accion']="Edit";
                     //$data['reservacion'] = $this->model->consultarReservaciones($data);
                     $data['reservacion'] = $this->model->consultarReservacionFecha($data['cat_id'],$data['pla_id'],$data['pla_fecha_incio']);
                     $data['numero_reser']=$this->contarResrevados($data['reservacion']);
@@ -96,6 +98,61 @@ class Reservacion extends Controllers
         } else {
             header('Location: ' . base_url() . '/login');
             die();
+        }
+        die();
+    }
+
+    public function moverAgenda()
+    {
+        
+        //putMessageLogFile($_GET);
+        //putMessageLogFile($_GET['parametro1']);
+        putMessageLogFile($_GET);
+        if ($_GET) {
+            //dep($_GET);
+            if (empty($_GET['cat_id']) || empty($_GET['pla_id']) || empty($_GET['accion']) || empty($_GET['fechaDia']) ) {
+                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+            } else {
+                $request = "";
+                //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
+                $cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : "";
+                $pla_id = isset($_GET['pla_id']) ? $_GET['pla_id'] : "";
+                $accion = isset($_GET['accion']) ? $_GET['accion'] : "";
+                $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : "";
+                $data = $this->model->consultarDatosId($pla_id);
+                
+
+                $result=$this->estaEnRango($accion,$fechaDia,$data['pla_fecha_incio'],$data['pla_fecha_fin']);
+                if($result["estado"]=="FUE"){
+                    $fechaDia=$result["fecha"];
+                    //swal("Atención!", "Fechas fuera de Rango", "error");
+                    //return;
+                  }
+                $fechaDia=$result["fecha"];
+                putMessageLogFile("despues  ".$fechaDia);
+                $data['fechaDia']=$fechaDia;
+                $data['accion']=$accion;
+                $data['reservacion'] = $this->model->consultarReservacionFecha($cat_id, $pla_id, $fechaDia);
+                $data['numero_reser'] = $this->contarResrevados($data['reservacion']);
+
+                $modelCentro = new CentroAtencionModel();
+                $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
+                $modelInstructor = new InstructorModel();
+                $data['dataInstructor'] = $modelInstructor->consultarCentroInstructores($cat_id);
+                $modelSalon = new SalonModel();
+                $data['dataSalon'] = $modelSalon->consultarSalones($cat_id);
+                $modelActividad = new ActividadModel();
+                $data['dataActividad'] = $modelActividad->consultarActividad();
+                $modelNivel = new NivelModel();
+                $data['dataNivel'] = $modelNivel->consultarNivel();
+                $data['page_tag'] = "Agendar";
+                $data['page_name'] = "Agendar";
+                $data['page_title'] = "Agendar <small> " . TITULO_EMPRESA . "</small>";
+                $this->views->getView($this, "agendar", $data);
+
+                
+            }
+
         }
         die();
     }
@@ -190,48 +247,49 @@ class Reservacion extends Controllers
     }
 
 
-    public function moverAgenda()
-    {
-        
-        //putMessageLogFile($_GET);
-        //putMessageLogFile($_GET['parametro1']);
-        
-        if ($_GET) {
-            //dep($_GET);
-            if (empty($_GET['cat_id']) || empty($_GET['pla_id']) || empty($_GET['fechaDia']) ) {
-                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
-            } else {
-                $request = "";
-                //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
-                $cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : "";
-                $pla_id = isset($_GET['pla_id']) ? $_GET['pla_id'] : "";
-                $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : "";
 
-                $data = $this->model->consultarDatosId($pla_id);
 
-                $data['reservacion'] = $this->model->consultarReservacionFecha($cat_id, $pla_id, $fechaDia);
-                $data['numero_reser'] = $this->contarResrevados($data['reservacion']);
-
-                $modelCentro = new CentroAtencionModel();
-                $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
-                $modelInstructor = new InstructorModel();
-                $data['dataInstructor'] = $modelInstructor->consultarCentroInstructores($cat_id);
-                $modelSalon = new SalonModel();
-                $data['dataSalon'] = $modelSalon->consultarSalones($cat_id);
-                $modelActividad = new ActividadModel();
-                $data['dataActividad'] = $modelActividad->consultarActividad();
-                $modelNivel = new NivelModel();
-                $data['dataNivel'] = $modelNivel->consultarNivel();
-                $data['page_tag'] = "Agendar";
-                $data['page_name'] = "Agendar";
-                $data['page_title'] = "Agendar <small> " . TITULO_EMPRESA . "</small>";
-                $this->views->getView($this, "agendar", $data);
-
-                
-            }
-
+    private function contarFechaDia($accionMove,$fecha){
+        if ($accionMove == "Next") {
+            $fecha->modify('+1 day');
+        } else if ($accionMove == "Back") {
+            $fecha->modify('-1 day');
         }
-        die();
+        return $fecha->format('Y-m-d');
+    }
+
+    function estaEnRango($Evento,$fecha, $fechaInicio, $fechaFin) {        
+        $fechaInicio = new DateTime($fechaInicio);
+        $fechaFin = new DateTime($fechaFin);
+        $fecha = new DateTime($fecha);
+       
+        $result=$this->contarFechaDia($Evento,$fecha);
+        //putMessageLogFile($result);
+        putMessageLogFile("camibo ".$fecha->format('Y-m-d'));
+        if($fecha > $fechaInicio && $fecha < $fechaFin){
+            //Dentro del Rengo  
+            $obtResult['estado'] ="OK";
+            $obtResult['fecha'] =$fecha->format('Y-m-d');
+        }  else if ($fecha == $fechaInicio) {
+            $obtResult['estado'] ="INI";
+            $obtResult['fecha'] =$fechaInicio->format('Y-m-d');
+        } else if ($fecha == $fechaFin) {
+            $obtResult['estado'] ="FIN";
+            $obtResult['fecha'] =$fechaFin->format('Y-m-d');
+        } else if ($fecha < $fechaInicio) {
+            //Fuera de Rango
+            $obtResult['estado'] ="FUE";
+            $obtResult['fecha'] =$fechaInicio->format('Y-m-d');
+        } else if ($fecha > $fechaFin) {
+            $obtResult['estado'] ="FUE";
+            $obtResult['fecha'] =$fechaFin->format('Y-m-d');
+        }else{
+            $obtResult['estado'] ="INI";
+            $obtResult['fecha'] =$fechaInicio->format('Y-m-d');
+            //obtResult.fecha=0;
+        }
+        return $obtResult;
+    
     }
 
 

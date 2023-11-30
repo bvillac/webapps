@@ -4,7 +4,8 @@ adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/Reservacion/Modals/modalAgenda.php";
 //putMessageLogFile($data['dataNivel']);
-//putMessageLogFile($data['numero_reser']);
+putMessageLogFile("fecha ".$data['fechaDia']);
+putMessageLogFile("accion ".$data['accion']);
 ?>
 <script>
   const resultInst = <?= json_encode($data['dataInstructor']) ?>;
@@ -19,11 +20,12 @@ require_once "Views/Reservacion/Modals/modalAgenda.php";
   const nViernes = <?= json_encode($data['pla_viernes']) ?>;
   const nSabado = <?= json_encode($data['pla_sabado']) ?>;
   const nDomingo = <?= json_encode($data['pla_domingo']) ?>;
-  const accionFormAut = "Age";
+  const accionFormAut = "<?= $data['accion'] ?>";
   const CentroIds = <?= $data['cat_id'] ?>;
   const IdsTemp = <?= $data['pla_id'] ?>;
   const fechaIni = "<?= $data['pla_fecha_incio'] ?>";
   const fechaFin = "<?= $data['pla_fecha_fin'] ?>";
+  const fechaDiaNex = "<?= $data['fechaDia'] ?>";
 </script>
 
 <div id="contentAjax"></div>

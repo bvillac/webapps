@@ -1,7 +1,7 @@
 //NOTA IMPORTANTE: Los datos de Aula y instructor se guardan en session Store es decir que se mantienen en memoria mientras dure la selsion
 //si existe algun cambio en estas tablas los cambios no se reflejna mientras no se destruya la session o ce cierre el navegador
 let delayTimer;
-let fechaDia = new Date();
+//let fechaDia = new Date();
 let numeroDia = 0;
 let tablePlanificacion;
 
@@ -77,12 +77,11 @@ $(document).ready(function () {
     alert(fechaDia);*/
 
     //generarPlanificiacionAut("Next", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
-    alert(fechaDiaNex);
     var parametros = {
       cat_id: CentroIds,
       pla_id: IdsTemp,
       accion: "Next",
-      fechaDia: fechaDiaNex  //retonarFecha(fechaDia)
+      fechaDia: retonarFecha(fechaDia)
     };
     var url = base_url+'/Reservacion/moverAgenda?'+ new URLSearchParams(parametros).toString();
     // Redirigir a la nueva URL
@@ -342,7 +341,6 @@ function fntReservacionCount(reservacion) {
 
 
 
-
 function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin) {
   
   var tabla = document.getElementById("dts_PlanificiacionAut");
@@ -355,14 +353,14 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       if (accionMove == "Edit") {
         fechaDia = obtenerFormatoFecha(fechaIni);
       } else {
-        //let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
+        let estadoFecha = estaEnRango(accionMove,fechaDia, obtenerFormatoFecha(fechaIni), obtenerFormatoFecha(fechaFin));
         //console.log(estadoFecha);
-        //if(estadoFecha.estado=="FUE"){
-        //  fechaDia=estadoFecha.fecha;
-        //  swal("Atención!", "Fechas fuera de Rango", "error");
-        //  return;
-        //}
-        fechaDia=fechaDiaNex;
+        if(estadoFecha.estado=="FUE"){
+          fechaDia=estadoFecha.fecha;
+          swal("Atención!", "Fechas fuera de Rango", "error");
+          return;
+        }
+        
       }
 
      
