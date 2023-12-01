@@ -104,10 +104,7 @@ class Reservacion extends Controllers
 
     public function moverAgenda()
     {
-        
         //putMessageLogFile($_GET);
-        //putMessageLogFile($_GET['parametro1']);
-        putMessageLogFile($_GET);
         if ($_GET) {
             //dep($_GET);
             if (empty($_GET['cat_id']) || empty($_GET['pla_id']) || empty($_GET['accion']) || empty($_GET['fechaDia']) ) {
@@ -120,18 +117,13 @@ class Reservacion extends Controllers
                 $accion = isset($_GET['accion']) ? $_GET['accion'] : "";
                 $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : null;
                 $data = $this->model->consultarDatosId($pla_id);
-                putMessageLogFile("ddd".$fechaDia); 
-                //$fechaDia=($fechaDia!=null)?$fechaDia:$data['pla_fecha_incio']; //Cuando es NULL se seteea a fecha inicio  
-                
-
                 $result=$this->estaEnRango($accion,$fechaDia,$data['pla_fecha_incio'],$data['pla_fecha_fin']);
-                if($result["estado"]=="FUE"){
-                    $fechaDia=$result["fecha"];
+               
+                //if($result["estado"]=="FUE"){
+                //    $fechaDia=$result["fecha"];
                     //swal("Atención!", "Fechas fuera de Rango", "error");
-                    //return;
-                  }
+                //}
                 $fechaDia=$result["fecha"];
-                putMessageLogFile("despues  ".$fechaDia);
                 $data['fechaDia']=$fechaDia;
                 $data['accion']=$accion;
                 $data['reservacion'] = $this->model->consultarReservacionFecha($cat_id, $pla_id, $fechaDia);
@@ -243,7 +235,7 @@ class Reservacion extends Controllers
                 }
                 echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
             }
-            //echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            
         }
         die();
     }
@@ -264,10 +256,7 @@ class Reservacion extends Controllers
         $fechaInicio = new DateTime($fechaInicio);
         $fechaFin = new DateTime($fechaFin);
         $fecha = new DateTime($fecha);
-       
         $result=$this->contarFechaDia($Evento,$fecha);
-        //putMessageLogFile($result);
-        putMessageLogFile("camibo ".$fecha->format('Y-m-d'));
         if($fecha > $fechaInicio && $fecha < $fechaFin){
             //Dentro del Rengo  
             $obtResult['estado'] ="OK";
@@ -293,6 +282,24 @@ class Reservacion extends Controllers
         return $obtResult;
     
     }
+
+    public function anularReservacion()
+    {
+        if ($_POST) {
+            if ($_SESSION['permisosMod']['d']) {
+                $ids = intval($_POST['ids']);
+                $request = $this->model->anularReservacion($ids);
+                if ($request) {
+                    $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
+                } else {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        die();
+    }
+
 
 
 

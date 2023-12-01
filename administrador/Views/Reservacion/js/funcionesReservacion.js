@@ -54,8 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 
-
-
 });
 
 
@@ -411,7 +409,7 @@ function generarPlanificiacionAut(nLunes, nMartes, nMiercoles, nJueves, nViernes
             let totalRes=(objCount!=0)?objCount["count"]:0;    
             fila += "<td>";
             fila += '<button type="button" id="' + idPlan + '" class="btn ms-auto btn-lg asignado-true" onclick="openModalAgenda(this)" ';
-            fila += '    style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + ' <span class="badge badge-light">'+ totalRes +'</span></button>';
+            fila += '    style="color:white;background-color:' + objSalon["Color"] + '" >' + objSalon["Nombre"] + ' <span id="tot_' + idPlan + '" class="badge badge-light">'+ totalRes +'</span></button>';
             fila += "</td>";
           } else {
             //fila +='<td><button type="button" id="' +idPlan + '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
@@ -433,11 +431,8 @@ function existeHorarioEditar(nHorArray, nDiaHora) {
   });
 
   if (resultados.length > 0) {
-    //console.log(`Se encontraron elementos en el array que contienen "${nDiaHora}":`);
-    //console.log(resultados);
     return resultados;
   }
-  //console.log(`No se encontraron elementos en el array que contengan "${nDiaHora}".`);
   return "0";
 }
 
@@ -484,7 +479,13 @@ function buscarInstructor(ids) {
   return 0;
 }
 
-function openModalAgenda(comp) {  
+function openModalAgenda(comp) { //
+
+  if($("#txt_CodigoBeneficiario").val() == "" || $("#txt_NombreBeneficirio").val() == "" ){
+    swal("Atención!", "Seleccionar un Beneficiarios", "info");
+    return;
+  }
+  
   $('#txth_idsModal').val(comp.id);
   DataArray = comp.id.split("_");
   $('#txth_diaLetra').val(DataArray[0]);
@@ -516,15 +517,57 @@ function cargarBeneficiarios(ids) {
       $("#list_beneficiarios").empty();
       for (var i = 0; i < Grid.length; i++) {
         if (Grid[i]["ids"] == ids) {        
-          option+='<li class="list-group-item d-flex justify-content-between align-items-center">';
-                option +=Grid[i]["Nombres"];    
-                option +='<span class="badge badge-primary badge-pill">1</span>';
+                option+='<li class="list-group-item d-flex justify-content-between align-items-center">';
+                  option +=Grid[i]["Nombres"];    
+                  //option +='<span class="badge badge-primary badge-pill">X</span>';
+                  option += ' <a href="#" class="link_delete" onclick="event.preventDefault();anularReservacion(\'' + Grid[i]["res_id"] + '\',\'' +  Grid[i]["ids"] + '\');"><i class="fa fa-trash"></i></a>';
                 option +='</li>';
         }
       }
     }
   }
   $("#list_beneficiarios").append(option);
+}
+
+function anularReservacion(ResId,HorId){
+  swal({
+      title: "Cancelar Reservación",
+      text: "¿Realmente quiere Cancelar Reservación?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Si, Eliminar!",
+      cancelButtonText: "No, cancelar!",
+      closeOnConfirm: false,
+      closeOnCancel: true
+  }, function(isConfirm) {
+   
+      if (isConfirm) {
+          var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+          var ajaxUrl = base_url+'/Reservacion/anularReservacion';
+          var strData = "ids="+ResId;
+          request.open("POST",ajaxUrl,true);
+          request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          request.send(strData);
+          request.onreadystatechange = function(){
+              if(request.readyState == 4 && request.status == 200){
+                  var objData = JSON.parse(request.responseText);
+                  if(objData.status){
+                      var Grid = JSON.parse(sessionStorage.dts_Reservacion);
+                      var array = findAndRemove(Grid, 'res_id', ResId);
+                      sessionStorage.dts_Reservacion = JSON.stringify(array);
+                      cargarBeneficiarios(HorId);
+                      swal("Cancelar!", objData.msg , "success");
+                      //$('#modalFormAgenda').modal("hide");//Oculta el Modal
+                      location.reload();
+                  }else{
+                      swal("Atención!", objData.msg , "error");
+                  }
+              }
+          }
+      }
+
+  });
+
 }
 
 
@@ -612,44 +655,7 @@ function limpiarTextReservacion(){
   $("#txt_NombreBeneficirio").val("");
 }
 
-function fntBuscarCount(fechaDia) {
-  //if (ids != 0) {
-    let link = base_url + "/Reservacion/countBeneficiario";
-    $.ajax({
-      type: "POST",
-      url: link,
-      timeout: 5000,
-      data: {
-        cat_id: CentroIds,
-        pla_id: IdsTemp,
-        fechaDia: retonarFecha(fechaDia),
-      },
-      success: function (data) {
-        //console.log(data);
-        if (data.status) {
-          //console.log(data.data.numero_reser);
-          fntupdateReservacion(data.data.reservacion);
-          fntReservacionCount(data.data.numero_reser);
 
-        } else {
-          swal("Error", data.msg, "error");
-        }
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        // Manejar errores
-        console.error('Error en la solicitud. Estado:', textStatus);
-      },
-      timeout: function() {
-        // Manejar el tiempo de espera alcanzado
-        console.error('Tiempo de espera alcanzado. La solicitud ha sido cancelada.');
-      },
-      dataType: "json",
-    });
-  //} else {
-  //  swal("Información", "Seleccionar un Instructor", "info");
-  //}
-
-}
 
 
 

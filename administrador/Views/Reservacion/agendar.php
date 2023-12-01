@@ -50,37 +50,47 @@ require_once "Views/Reservacion/Modals/modalAgenda.php";
     <input type="hidden" id="txth_fechaReservacion" name="txth_fechaReservacion" value="">
     <div class="col-md-12">
 
-  
-      
+
+
       <div class="tile row">
-      <div class="form-group col-md-12">
-      <h3>Centro: <span class="badge badge-secondary"><?= $data['Centro'] ?></span> Fecha Desde: <span class="badge badge-secondary"><?= $data['pla_fecha_incio'] ?></span> Fecha Hasta: <span class="badge badge-secondary"><?= $data['pla_fecha_fin'] ?></span></h3>
-      </div>
+        <div class="form-group col-md-12">
+          <h3>Centro: <span class="badge badge-secondary"><?= $data['Centro'] ?></span> Fecha Desde: <span class="badge badge-secondary"><?= $data['pla_fecha_incio'] ?></span> Fecha Hasta: <span class="badge badge-secondary"><?= $data['pla_fecha_fin'] ?></span></h3>
+        </div>
 
-          <div class="form-group col-md-4">
-              <label for="txt_NumeroContrato">Número Contrato<span class="required">*</span></label>
-              <input class="form-control" id="txt_NumeroContrato" name="txt_NumeroContrato" type="text"
-                required="" placeholder="Buscar por Contrato">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="txt_CodigoBeneficiario">DNI Beneficiario<span class="required">*</span></label>
-              <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text"
-                required="" placeholder="Buscar por Nombre o DNI">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
-              <input class="form-control" id="txt_NombreBeneficirio" name="txt_NombreBeneficirio" type="text" disabled>
-            </div>
+        <div class="col-sm">
+          <div class="form-group col-md-12">
+            <label for="txt_NumeroContrato">Número Contrato<span class="required">*</span></label>
+            <input class="form-control" id="txt_NumeroContrato" name="txt_NumeroContrato" type="text" required="" placeholder="Buscar por Contrato">
+          </div>
+          <div class="form-group col-md-12">
+            <label for="txt_CodigoBeneficiario">DNI Beneficiario<span class="required">*</span></label>
+            <input class="form-control" id="txt_CodigoBeneficiario" name="txt_CodigoBeneficiario" type="text" required="" placeholder="Buscar por Nombre o DNI">
+          </div>
+          <div class="form-group col-md-12">
+            <label for="txt_NombreBeneficirio">Nombre <span class="required">*</span></label>
+            <input class="form-control" id="txt_NombreBeneficirio" name="txt_NombreBeneficirio" type="text" disabled>
+          </div>
+        </div>
+        <div class="col-sm">
+          <h5 class="line-head">Reservados</h5>
+          <ul class="list-group" id="list_beneficiarios">
+
+
+          </ul>
+        </div>
 
 
 
 
-        
+
+
+
         <div class="col-md-12">
           <div class="row">
             <div class="col-sm">
-              <button type="button" class="btn btn-dark" id="btn_anteriorAut">  < Anterior</button>
-              <button type="button" class="btn btn-dark" id="btn_siguienteAut">Siguiente > </button>
+              <button type="button" class="btn btn-dark" id="btn_anteriorAut">
+                < Anterior</button>
+                  <button type="button" class="btn btn-dark" id="btn_siguienteAut">Siguiente > </button>
             </div>
             <div class="col-sm">
               <h2><span id="FechaDia" class="badge badge-secondary"></span></h2>
