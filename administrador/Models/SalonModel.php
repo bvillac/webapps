@@ -125,7 +125,7 @@ class SalonModel extends MysqlAcademico
     }
 
     public function consultarSalones(int $idsCentro){
-        $sql = "SELECT sal_id Ids, sal_nombre Nombre,sal_color Color ";
+        $sql = "SELECT sal_id Ids, sal_nombre Nombre,sal_color Color,sal_cupo_maximo CupoMax ";
         $sql .= " FROM ". $this->db_name .".salon WHERE sal_estado_logico!=0 and cat_id='{$idsCentro}' ORDER BY sal_nombre ASC";
         $request = $this->select_all($sql);
         return $request;

@@ -263,6 +263,7 @@ function fntupdateSalones(resultSalon) {
     rowInst.ids = resultSalon[i].Ids;
     rowInst.Nombre = resultSalon[i].Nombre;
     rowInst.Color = resultSalon[i].Color;
+    rowInst.CupoMax = resultSalon[i].CupoMax;
     arrayList[c] = rowInst;
     c += 1;
   }
