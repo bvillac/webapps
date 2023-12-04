@@ -26,7 +26,7 @@
           <div class="tile row">
               <div class="form-group col-md-12">
                 <label for="cmb_CentroAtencion">Centro Atención</label>
-                <select class="form-control" id="cmb_CentroAtencion" name="cmb_CentroAtencion" onchange="fntSalones(this.value)">
+                <select class="form-control" id="cmb_CentroAtencion" name="cmb_CentroAtencion" onchange="fntInstructor(this.value)">
                   <?php
                   echo '<option value="0">SELECCIONAR</option>';
                   foreach ($data['centroAtencion'] as $opcion) {
@@ -44,12 +44,29 @@
                 <label for="dtp_fecha">Fecha</label>
                 <input type="date" class="form-control " id="dtp_fecha" name="mdtp_fecha" placeholder="1988-01-01" pattern="^\d{4}\/\d{2}\/\d{2}$" required="">
               </div>
+              <div class="form-group col-md-12">
+                <label for="cmb_hora">Hora</label>
+                <select class="form-control" id="cmb_hora" name="cmb_hora" >
+                  <?php
+                  echo '<option value="0">SELECCIONAR</option>';
+                  foreach ($data['horarios'] as $opcion) {
+                    echo '<option value="' . $opcion . '" >' . $opcion . ':00</option>';
+                  }
+                  
+                  ?>
+                </select>
+              </div>
+              <div class="form-group col-md-12">
+                <button type="button" class="btn btn-dark" id="btn_buscar">Buscar</button>
+              </div>
+              
           </div>
         </div>
 
 
         <div class="col-md-9">
           <div class="tile">
+            <div id="list_tables"></div>
             <h3 class="tile-title">HORA + SALON + ACTIVIDAD + NIVEL</h3>
             <table class="table table-hover">
               <thead>
