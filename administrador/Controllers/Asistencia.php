@@ -61,6 +61,27 @@ class Asistencia extends Controllers
     }
 
 
+    public function marcarAsistencia()
+    {
+        if ($_POST) {
+            if ($_SESSION['permisosMod']['d']) {
+                $ids = intval($_POST['Ids']);
+                $request = $this->model->marcarAsistencia($ids);
+                
+                if ($request["status"]) {
+                    $arrResponse = array('status' => true, 'msg' => 'Asistencía Registrada Correctamente');
+                } else {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al Registrar la Asistencía.');
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        die();
+    }
+
+  
+
+
 
 
 

@@ -6,6 +6,8 @@ $(document).ready(function () {
     buscarReservaciones();;
   });
 
+  
+
 });
 
 function fntInstructor(ids) {
@@ -59,8 +61,6 @@ function fntInstructor(ids) {
 
 
   function buscarReservaciones(){
-    //var tGrid = 'tableMovimiento';
-    //$('#'+ tGrid + ' > tbody').empty();
     let link = base_url + '/Asistencia/asistenciaFechaHora';
     let Centro=($('#cmb_CentroAtencion').val()!=0)?$('#cmb_CentroAtencion').val():0;
     //let PlaID=($('#cmb_CentroAtencion').val()!=0)?$('#cmb_CentroAtencion').val():0;
@@ -84,63 +84,111 @@ function fntInstructor(ids) {
             if(Response.status){ 
               let table=Response.data;
               let c=0;
+              let h=0;
               let strtable = ""; 
-              while (c < table.length) { 
-                strtable += '<h3 class="tile-title">Instructor: ' + table[c]['InsNombre'] + '</h3>';
-                //strtable += '<h3 class="tile-title">' + table[c]['InsNombre'] + ' + SALON + ACTIVIDAD + NIVEL</h3>';
-                
-                let strFila = "";
-                let auxHora="";
-                let thoras=table[c].Reservado;
-                for (var i = 0; i < thoras.length; i++) { 
-                  if(auxHora!=thoras[i].ResHora){
-                    auxHora=thoras[i].ResHora;
-                    strtable += '<table class="table table-hover">';
-                    strtable += fntHeadHora();                    
-                    strtable += '<tbody>';
-                    strtable += fntRowHora(thoras[i]);
-                    strtable += '</tbody>';
-                    strtable += '</table>';
-                    strtable += '<br>';
+              let ban=0;
+              let strFila = "";
+              while (c < table.length) {
+                strtable = '<h3 class="tile-title">TUTOR: ' + table[c]['InsNombre'] + '</h3>';
+                $('#list_tables').append(strtable);
+               
+                let auxHora = "";
+                let thoras = table[c].Reservado;
+                h=0;
+                while (h < thoras.length) {
+                  if (auxHora != thoras[h].ResHora) { 
+                    if (h != 0) {
+                      fntNewTable(auxHora,thoras[h],strFila)
+                      strFila = "";
+                    }                         
+                    auxHora = thoras[h].ResHora;
                   }
-                  //strtable += fntRowHora(thoras[i]);
-                
+                  //console.log(thoras[h].ResId+" "+thoras[h].ResHora+" "+thoras[h].BenNombre);
+                  strFila += fntRowHora(thoras[h]);
+                  h++;
                 }
+                fntNewTable(auxHora,thoras[h-1],strFila)
+                strFila = "";
                 c++;
               }
-
-              $('#list_tables').append(strtable);
-   
             }else{
               swal("Atención!", Response.msg, "error");
             }
 
-
-         
         },
         dataType: "json"
     });
 }
 
+function fntNewTable(auxHora,thoras,strFila) {
+  let nHora='HORA: '+auxHora+':00 --> ';
+  let nSalon='SALÓN: '+thoras['SalNombre'];
+  let strtable = '<h1 class="tile-title">' + nHora +  nSalon+' </h1>';
+  strtable += '<table id="tabHor_' + auxHora + '" class="table table-hover">';
+  strtable += fntHeadHora();
+  strtable += '<tbody>';
+  strtable += strFila;
+  strtable += '</tbody>';
+  strtable += '</table>';
+  strtable += '<br>';
+  $('#list_tables').append(strtable);
+}
+
 function fntHeadHora() {
   let strtable = '<thead>';
     strtable += '<tr>';
-      strtable += '<th>#</th>';
-      strtable += '<th>hora</th>';
+      strtable += '<th>NIVEL</th>';
+      strtable += '<th>UNIDAD</th>';
+      strtable += '<th>ACTIVIDAD</th>';
       strtable += '<th>USUARIO</th>';
-      strtable += '<th>ASISTENCÍA</th>';
+      strtable += '<th>ASISTÍO</th>';
     strtable += '</tr>';
   strtable += '</thead>';
   return strtable;
 }
 
 function fntRowHora(thoras) {
-  let strFila = '<td>' + thoras['ResId'] + '</td>';
-  strFila += '<td>' + thoras['ResHora'] + '</td>';
+  let strFila = '<td>' + thoras['NivNombre'] + '</td>';
+  strFila += '<td>' + thoras['ResUnidad'] + '</td>';
+  strFila += '<td>' + thoras['ActNombre'] + '</td>';
   strFila += '<td>' + thoras['BenNombre'] + '</td>';
-  strFila += '<td>' + thoras['Estado'] + '</td>';
-  strFila += '<tr>' + strFila + '</tr>';
-  return strFila;
+  //strFila += '<td>' + thoras['Estado'] + '</td>';
+  strFila +='<td><div class="toggle-flip">';
+  strFila +='<label>';
+  let nCheck=(thoras['Estado']=="A")?"checked":"";
+  strFila +='<input type="checkbox" '+nCheck+' onclick="fntAsistencia(' + thoras['ResId'] + ');" id="ASI_' + thoras['ResId'] + '"><span class="flip-indecator" data-toggle-on="SI" data-toggle-off="NO"></span>';
+  strFila +='</label>';
+  strFila +='</div></td>';
+  return '<tr>' + strFila + '</tr>';
 }
+
+
+function fntAsistencia(ids) {
+  if (ids != 0) {
+    let link = base_url + "/Asistencia/marcarAsistencia";
+    $.ajax({
+      type: "POST",
+      url: link,
+      data: {
+        Ids: ids,
+      },
+      success: function (data) {
+        if (data.status) {
+          //$("#cmb_instructor").prop("disabled", false);
+          swal("Información", data.msg, "info");
+      
+        } else {
+          swal("Error", data.msg, "error");
+        }
+      },
+      dataType: "json",
+    });
+  } else {
+    //$("#cmb_instructor").prop("disabled", true);
+    swal("Información", "Seleccionar un Horario", "info");
+  }
+}
+
+
 
   

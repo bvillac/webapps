@@ -74,6 +74,66 @@ class AsistenciaModel extends MysqlAcademico
     }
 
 
+    public function marcarAsistencia(int $Ids)
+    {
+        $usuario = retornaUser();
+        $con = $this->getConexion();
+        $sql = "SELECT * FROM " . $this->db_name . ".reservacion where res_id='{$Ids}' AND res_estado_logico=1";
+        $request = $this->select($sql);
+        if (!empty($request)) {
+            
+
+
+            
+
+            $con->beginTransaction();
+            try {
+                $arrData = array(
+                    $dataObj['CentroAtencionID'],
+                    $dataObj['nombre'],
+                    $dataObj['cupominimo'],
+                    $dataObj['cupomaximo'],
+                    $dataObj['color'],
+                    retornaUser(), 1
+                );
+                
+                $SqlQuery  = "INSERT INTO " . $this->db_name . ".salon 
+				    (`cat_id`,
+                    `sal_nombre`,
+                    `sal_cupo_minimo`,
+                    `sal_cupo_maximo`,
+                    `sal_color`,
+                    `sal_usuario_creacion`,                   
+                    `sal_estado_logico`) VALUES(?,?,?,?,?,?,?) ";
+                $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
+
+
+                $sql = "UPDATE " . $this->db_name . ".reservacion SET res_asistencia = ?,res_usuario_modificacion='{$usuario}',
+                            res_fecha_modificacion = CURRENT_TIMESTAMP() WHERE res_id = {$Ids} ";
+                $arrData = array("A");
+                $request = $this->update($sql, $arrData);
+                //return $request;
+
+                $con->commit();
+                $arroout["status"] = true;
+                $arroout["numero"] = 0;
+                return $arroout;
+            } catch (Exception $e) {
+                $con->rollBack();
+                //echo "Fallo: " . $e->getMessage();
+                //throw $e;
+                $arroout["message"] = $e->getMessage();
+                $arroout["status"] = false;
+                return $arroout;
+            }
+        } else {
+            $arroout["status"] = false;
+            $arroout["message"] = "Error al ingresar la asistencía.";
+            return $arroout;
+        }
+    }
+
+
 
 
 

@@ -8,11 +8,7 @@
     <main class="app-content">
       <div class="app-title">
         <div>
-            <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
-            <?php if($_SESSION['permisosMod']['w']){ ?>
-                <button class="btn btn-primary" type="button" onclick="openModal();" ><i class="fa fa-plus"></i> Nuevo</button>
-            <?php } ?> 
-             </h1>
+            <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?></h1>
         </div>
         <ul class="app-breadcrumb breadcrumb">
           <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
