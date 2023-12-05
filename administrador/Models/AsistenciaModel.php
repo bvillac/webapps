@@ -89,7 +89,7 @@ class AsistenciaModel extends MysqlAcademico
             $con->beginTransaction();
             try {
                 $arrData = array(
-                    $dataObj['CentroAtencionID'],
+                    $dataObj['pla_id'],
                     $dataObj['nombre'],
                     $dataObj['cupominimo'],
                     $dataObj['cupomaximo'],
@@ -97,16 +97,18 @@ class AsistenciaModel extends MysqlAcademico
                     retornaUser(), 1
                 );
                 
-                $SqlQuery  = "INSERT INTO " . $this->db_name . ".salon 
-				    (`cat_id`,
-                    `sal_nombre`,
-                    `sal_cupo_minimo`,
-                    `sal_cupo_maximo`,
-                    `sal_color`,
+                $SqlQuery  = "INSERT INTO " . $this->db_name . ".control_academico 
+				    (`ben_id`,
+                    `act_id`,
+                    `niv_id`,
+                    `cac_unidad`,
+                    `val_id`,
+                    `cac_valoracion`,
+                    `cac_hora`,
                     `sal_usuario_creacion`,                   
-                    `sal_estado_logico`) VALUES(?,?,?,?,?,?,?) ";
+                    `sal_estado_logico`) VALUES(?,?,?,?,?,?,?,?,?) ";
+                    
                 $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
-
 
                 $sql = "UPDATE " . $this->db_name . ".reservacion SET res_asistencia = ?,res_usuario_modificacion='{$usuario}',
                             res_fecha_modificacion = CURRENT_TIMESTAMP() WHERE res_id = {$Ids} ";
