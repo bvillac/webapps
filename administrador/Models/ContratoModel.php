@@ -172,7 +172,7 @@ class ContratoModel extends MysqlAcademico
     { 
         $SqlQuery  = "INSERT INTO " . $this->db_name . ".cobranza ";
         $SqlQuery .= "(`con_id`,`sec_tipo`,`sec_numero`,`numero_cobro`,`fecha_sustento_debito`,`fecha_vencimiento_debito`,`dia_plazo`,
-                            `valor_debito`,`fecha_pago_debito`,`valor_cancelado`,`estado_cancelado`,`orignal_transaccion`,`original_documento`,
+                            `valor_debito`,`fecha_pago_debito`,`valor_cancelado`,`estado_cancelado`,`original_transaccion`,`original_documento`,
                             `usuario_ingreso`,`estado_logico`) ";
         $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
         $this->insertConTrasn($con, $SqlQuery, $arrData);

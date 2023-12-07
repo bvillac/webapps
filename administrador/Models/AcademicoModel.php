@@ -59,10 +59,6 @@ class AcademicoModel extends MysqlAcademico
         return $request;
     }
 
-    
-
-
-
 
     public function updateDataEvaluacion($dataObj)
     {
@@ -88,23 +84,6 @@ class AcademicoModel extends MysqlAcademico
             $arroout["message"] = "Fallo: " . $e->getMessage();
             return $arroout;
         }
-    }
-
-    public function deleteRegistro(int $Ids)
-    {
-        $usuario = retornaUser();
-        $sql = "UPDATE " . $this->db_name . ".salon SET sal_estado_logico = ?,sal_usuario_modificacion='{$usuario}',
-                        sal_fecha_modificacion = CURRENT_TIMESTAMP() WHERE sal_id = {$Ids} ";
-        $arrData = array(0);
-        $request = $this->update($sql, $arrData);
-        return $request;
-    }
-
-    public function consultarSalones(int $idsCentro){
-        $sql = "SELECT sal_id Ids, sal_nombre Nombre,sal_color Color,sal_cupo_maximo CupoMax ";
-        $sql .= " FROM ". $this->db_name .".salon WHERE sal_estado_logico!=0 and cat_id='{$idsCentro}' ORDER BY sal_nombre ASC";
-        $request = $this->select_all($sql);
-        return $request;
     }
 
 }
