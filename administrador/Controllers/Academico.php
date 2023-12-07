@@ -1,5 +1,5 @@
 <?php
-require_once("Models/CentroAtencionModel.php");
+require_once("Models/ValoracionModel.php");
 class Academico extends Controllers
 {
     public function __construct()
@@ -21,9 +21,9 @@ class Academico extends Controllers
         }
         //$modelCentro = new CentroAtencionModel();
         //$data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
-        $data['page_tag'] = "Salon";
-        $data['page_name'] = "Salon";
-        $data['page_title'] = "Salon <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_tag'] = "Control Académico";
+        $data['page_name'] = "Control Académico";
+        $data['page_title'] = "Control Académico <small> " . TITULO_EMPRESA . "</small>";
         $this->views->getView($this, "academico", $data);
     }
 
@@ -41,18 +41,46 @@ class Academico extends Controllers
 
 
                 if ($_SESSION['permisosMod']['r']) {
-                    $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+                    //$btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewSalon(\'' . $arrData[$i]['BenId'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['u']) {
-                    //$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Beneficiario/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
-                    $btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+                    $btnOpciones .= ' <a title="Evaluar Beneficiario" href="' . base_url() . '/Academico/evaluar/' . $arrData[$i]['BenId'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+                    //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['d']) {
-                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteSalon(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+                    //$btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteSalon(' . $arrData[$i]['BenId'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
                 }
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
             }
             echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+
+
+    public function evaluar($ids)
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            if (is_numeric($ids)) {
+                $data = $this->model->consultarDatosId($ids);
+                if (empty($data)) {
+                    echo "Datos no encontrados";
+                } else {
+                    $data['control'] = $this->model->consultarBenefId($ids);
+                    $valoracion = new ValoracionModel();
+                    $data['valoracion'] = $valoracion->consultarValoracion();
+                    $data['porcentaje'] = range(0, 100);
+                    $data['page_tag'] = "Control Académico";
+                    $data['page_name'] = "Control Académico";
+                    $data['page_title'] = "Control Académico <small> " . TITULO_EMPRESA . "</small>";
+                    $this->views->getView($this, "evaluar", $data);
+                }
+            } else {
+                echo "Dato no válido";
+            }
+        } else {
+            header('Location: ' . base_url() . '/login');
+            die();
         }
         die();
     }
@@ -93,27 +121,6 @@ class Academico extends Controllers
         die();
     }
 
-
-    public function consultarSalonId(int $ids)
-    {
-        if ($_SESSION['permisosMod']['r']) {
-            $ids = intval(strClean($ids));
-            if ($ids > 0) {
-                $arrData = $this->model->consultarDatosId($ids);
-                //dep($arrData);
-                if (empty($arrData)) {
-                    $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-                } else {
-                    $arrResponse = array('status' => true, 'data' => $arrData);
-                }
-
-                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            }
-        }
-        die();
-    }
-
-
     public function eliminarSalon()
     {
         if ($_POST) {
@@ -132,25 +139,6 @@ class Academico extends Controllers
         die();
     }
 
-    public function bucarSalonCentro()
-    {
-        if ($_POST) {
-            if ($_SESSION['permisosMod']['r']) {
-                $modelSalon = new SalonModel();
-                $ids = intval(strClean($_POST['Ids']));
-                if ($ids > 0) {
-                    $arrData = $modelSalon->consultarSalones($ids);
-                    //dep($arrData);
-                    if (empty($arrData)) {
-                        $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-                    } else {
-                        $arrResponse = array('status' => true, 'data' => $arrData);
-                    }
-                    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-                }
-            }
-        }
-        die();
-    }
+   
 
 }

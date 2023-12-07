@@ -1,21 +1,21 @@
 let tableSalon;
 
 document.addEventListener('DOMContentLoaded', function () {
-    tableSalon = $('#tableSalon').dataTable({
+    tableSalon = $('#tableControl').dataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
             "url": cdnTable
         },
         "ajax": {
-            "url": " " + base_url + "/Salon/consultarSalon",
+            "url": " " + base_url + "/Academico/consultarControl",
             "dataSrc": ""
         },
         "columns": [
-            { "data": "NombreCentro" },
-            { "data": "NombreSalon" },
-            { "data": "CupoMinimo" },
-            { "data": "CupoMaximo" },
+            { "data": "Contrato" },
+            { "data": "Nombres" },
+            { "data": "FechaIngreso" },
+            { "data": "Tipo" },
             { "data": "Estado" },
             { "data": "options" }
         ],
@@ -47,14 +47,14 @@ $(document).ready(function () {
 });
 
 
-function openModal() {
-    document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+function evaluarModals(Ids) {
+    document.querySelector('#txth_idsControl').value = Ids;//IDS oculto hiden
     document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
     document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
     document.querySelector('#btnText').innerHTML = "Guardar";
-    document.querySelector('#titleModal').innerHTML = "Nuevo Salón";
-    document.querySelector("#formSalon").reset();
-    $('#modalFormSalon').modal('show');
+    document.querySelector('#titleModal').innerHTML = "Registrar Evaluación";
+    document.querySelector("#formEvaluar").reset();
+    $('#modalFormEvaluar').modal('show');
 }
 
 function limpiarText() {
