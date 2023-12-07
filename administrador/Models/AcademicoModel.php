@@ -67,25 +67,23 @@ class AcademicoModel extends MysqlAcademico
     public function updateDataEvaluacion($dataObj)
     {
         try {
-
             $Ids = $dataObj['ids'];
             $arrData = array(
-                $dataObj['CentroAtencionID'],
-                $dataObj['nombre'],
-                $dataObj['cupominimo'],
-                $dataObj['cupomaximo'],
-                $dataObj['color'],
+                $dataObj['val_id'],
+                $dataObj['val_por'],
+                $dataObj['comentario'],
                 retornaUser(), 1
             );
-            $sql = "UPDATE " . $this->db_name . ".salon 
-						SET cat_id = ?, sal_nombre = ?,sal_cupo_minimo = ?,sal_cupo_maximo = ?,sal_color = ?,sal_usuario_modificacion = ?,
-                            sal_estado_logico = ?,sal_fecha_modificacion = CURRENT_TIMESTAMP() WHERE sal_id={$Ids}  ";
+            $sql = "UPDATE " . $this->db_name . ".control_academico 
+						SET val_id = ?, cac_valoracion = ?,cac_observacion = ?,cac_usuario_modificacion = ?,
+                            cac_estado_logico = ?,cac_fecha_modificacion = CURRENT_TIMESTAMP(),cac_fecha_evaluacion = CURRENT_TIMESTAMP() 
+                            WHERE cac_id={$Ids}  ";
             $request = $this->update($sql, $arrData);
             $arroout["status"]=($request)?true:false;
             $arroout["numero"] = 0;
             return $arroout;
         } catch (Exception $e) {
-            //throw $e;
+            throw $e;
             $arroout["status"] = false;
             $arroout["message"] = "Fallo: " . $e->getMessage();
             return $arroout;

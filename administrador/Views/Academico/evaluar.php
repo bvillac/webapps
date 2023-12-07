@@ -11,9 +11,7 @@ $controlAcad = $data['control'];
   <div class="app-title">
     <div>
       <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
-        <?php if ($_SESSION['permisosMod']['w']) { ?>
-          <button class="btn btn-primary" type="button" onclick="openModal();"><i class="fa fa-plus"></i> Nuevo</button>
-        <?php } ?>
+        
       </h1>
     </div>
     <ul class="app-breadcrumb breadcrumb">
@@ -107,12 +105,17 @@ $controlAcad = $data['control'];
                   <th>F.EVALUACIÓN</th>
                   <th>VALORACION</th>
                   <th>VALOR</th>
+                  <th>OBSERVACIÓN</th>
                   <th>ACCIÓN</th>
                 </tr>
               </thead>
               <tbody>
               <?php
                   foreach ($controlAcad as $control) {
+                    $bloqueo=($control['Valoracion']!="")?"disabled":"";                    
+                    $valorPor=($control['Valor']!="")? $control['Valor'] ." %":"";
+                    $observacion='<a href="#" class="btn btn-sm bg-teal"><i class="fa fa-comments"></i></a>';
+                    //$valorPor=($control['Valor']!="")? "<span class='badge bg-primary'>".$control['Valor'] ." %</span>":"";
                   ?>
                     <tr>
                       <td class="text-left"><?= $control['Nivel'] ?></td>
@@ -123,14 +126,13 @@ $controlAcad = $data['control'];
                       <td class="text-center"><?= $control['FechaAsistencia'] ?></td>
                       <td class="text-center"><?= $control['FechaEvaluacion'] ?></td>
                       <td class="text-left"><?= $control['Valoracion'] ?></td>
-                      <td class="text-left"><?= $control['Valor'] ?></td>
-                      <td class="text-left"><button class="btn btn-primary  btn-sm btnEditLinea" onClick="evaluarModals('<?= $control['Ids'] ?>')" title="Evaluar Datos"><i class="fa fa-pencil"></i></button></td>
+                      <td class="text-center"><?= $valorPor ?></td>
+                      <td class="text-center"><?= $observacion ?></td>
+                      <td class="text-left"><button class="btn btn-primary  btn-sm btnEditLinea" onClick="evaluarModals('<?= $control['Ids'] ?>')" <?= $bloqueo ?> title="Evaluar Datos"><i class="fa fa-pencil-square-o"></i></button></td>
                     </tr>
                   <?php } ?>
               </tbody>
             </table>
-
-
 
           </div>
         </div>

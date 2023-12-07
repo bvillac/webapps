@@ -9,9 +9,7 @@
       <div class="app-title">
         <div>
             <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
-            <?php if($_SESSION['permisosMod']['w']){ ?>
-                <button class="btn btn-primary" type="button" onclick="openModal();" ><i class="fa fa-plus"></i> Nuevo</button>
-            <?php } ?> 
+            
              </h1>
         </div>
         <ul class="app-breadcrumb breadcrumb">
@@ -28,7 +26,7 @@
                     <table class="table table-hover table-bordered" id="tableControl">
                       <thead>
                         <tr>
-                          <th>N.Contrato c</th>
+                          <th>N.Contrato</th>
                           <th>Nombre</th>                          
                           <th>F.Ingreso</th>
                           <th>T.Benficiario</th>

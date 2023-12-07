@@ -31,7 +31,7 @@
             </div>
             <div class="form-group col-md-12">
               <label for="cmb_porcentaje">Valor Porcentaje</label>
-              <select class="form-control" data-live-search="true" id="cmb_porcentaje" name="cmb_porcentaje" required="">
+              <select class="form-control" data-live-search="true" id="cmb_porcentaje" name="cmb_porcentaje" required="" disabled >
                 <?php
                 // Recorre el array y genera las opciones del select
                 echo '<option value="0">SELECCIONAR</option>';

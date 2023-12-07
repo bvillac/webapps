@@ -34,7 +34,59 @@ class ContratoModel extends MysqlAcademico
             $objSecuencia=new SecuenciasModel;
 			$numGenerado=$objSecuencia->newSecuence("CON",$PuntoEmision,true,$con);
             if((int)$numGenerado>0){//Si Es mayor a 0 continua guardando
-                $contId=$this->insertarContrato($con,$Cabecera,$numGenerado);                
+                $contId=$this->insertarContrato($con,$Cabecera,$numGenerado); 
+                //INSERTAR COBRANZAS
+                $numCobroGenerado=$objSecuencia->newSecuence("COB",$PuntoEmision,true,$con);
+                //Si existe Cuota Inicial se ingresa
+                if($Cabecera['cuotaInicial']!=0){
+                    //$this->insertarInicialCobranza($con,$Cabecera,$contId,$numGenerado,$numCobroGenerado);
+                    $arrData = array(
+                        $contId,
+                        "COB",
+                        $numCobroGenerado,
+                        "INI",
+                        $Cabecera['fecha_inicio'],
+                        $Cabecera['fecha_inicio'],
+                        0,
+                        $Cabecera['cuotaInicial'],
+                        $Cabecera['fecha_inicio'],
+                        $Cabecera['cuotaInicial'],
+                        "C",
+                        "CON",
+                        $numGenerado,
+                        retornaUser(), 1
+                    ); 
+                    $this->insertarCobranza($con,$arrData);
+                }
+
+                //Si existe varias cuotas ingresa
+                $numCuota = ($Cabecera['numeroCuota']!="")?(int)$Cabecera['numeroCuota']:0;
+                if($numCuota>0){   
+                    $plazo=30; 
+                    $fechaFin = new DateTime($Cabecera['fecha_inicio']);                                 
+                    for ($i = 0; $i < $numCuota; $i++) {
+                        $fechaFin->modify("+{$plazo} day");                         
+                        $arrData = array(
+                            $contId,
+                            "COB",
+                            $numCobroGenerado,
+                            ($i + 1) . "/" . $numCuota,
+                            $Cabecera['fecha_inicio'],
+                            $fechaFin->format('Y-m-d'),
+                            $plazo,
+                            $Cabecera['valorMensual'],
+                            NULL,
+                            0,
+                            "P",
+                            "CON",
+                            $numGenerado,
+                            retornaUser(), 1
+                        );
+                        $this->insertarCobranza($con,$arrData);
+                        //$plazo+=30;
+                    } 
+                }
+                
                 for ($i = 0; $i < sizeof($Detalle); $i++) {
                     $arrBeneficiario = array(
                         $contId,
@@ -115,6 +167,17 @@ class ContratoModel extends MysqlAcademico
         $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
         return $this->insertConTrasn($con, $SqlQuery, $arrData);        
     }
+
+    private function insertarCobranza($con, $arrData)
+    { 
+        $SqlQuery  = "INSERT INTO " . $this->db_name . ".cobranza ";
+        $SqlQuery .= "(`con_id`,`sec_tipo`,`sec_numero`,`numero_cobro`,`fecha_sustento_debito`,`fecha_vencimiento_debito`,`dia_plazo`,
+                            `valor_debito`,`fecha_pago_debito`,`valor_cancelado`,`estado_cancelado`,`orignal_transaccion`,`original_documento`,
+                            `usuario_ingreso`,`estado_logico`) ";
+        $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+        $this->insertConTrasn($con, $SqlQuery, $arrData);
+    }
+
 
     private function insertarBeneficiario($con, $arrDetalle){ 
         $SqlQuery  = "INSERT INTO " . $this->db_name . ".beneficiario ";

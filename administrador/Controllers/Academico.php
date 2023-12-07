@@ -44,7 +44,7 @@ class Academico extends Controllers
                     //$btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewSalon(\'' . $arrData[$i]['BenId'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['u']) {
-                    $btnOpciones .= ' <a title="Evaluar Beneficiario" href="' . base_url() . '/Academico/evaluar/' . $arrData[$i]['BenId'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+                    $btnOpciones .= ' <a title="Evaluar Beneficiario" href="' . base_url() . '/Academico/evaluar/' . $arrData[$i]['BenId'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-list-alt"></i> </a> ';
                     //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['d']) {
