@@ -66,7 +66,7 @@ function limpiarText() {
     $('#cmb_estado').val("1");
 }
 
-function guardarSalon() {
+function guardarSalonxx() {
     let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
     let Ids = document.querySelector('#txth_ids').value;
     let centro_id = $('#cmb_CentroAtencion').val();

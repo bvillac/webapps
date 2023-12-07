@@ -28,7 +28,7 @@
                     <table class="table table-hover table-bordered" id="tableControl">
                       <thead>
                         <tr>
-                          <th>N.Contrato</th>
+                          <th>N.Contrato c</th>
                           <th>Nombre</th>                          
                           <th>F.Ingreso</th>
                           <th>T.Benficiario</th>
