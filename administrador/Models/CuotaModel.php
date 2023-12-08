@@ -84,5 +84,41 @@ class CuotaModel extends MysqlAcademico
         return $arroout;
     }
 
+
+    public function realizarPago(int $Ids)
+    {
+        $usuario = retornaUser();
+        $con = $this->getConexion();
+        $sql = "SELECT valor_debito Valor,estado_cancelado Estado FROM " . $this->db_name . ".cobranza where estado_logico=1 and cob_id={$Ids} and estado_cancelado='P' ";
+        $request = $this->select($sql);
+        putMessageLogFile($request);
+        putMessageLogFile(empty($request));
+        if (!empty($request)) { 
+            $con->beginTransaction();
+            try {				
+                $sql = "UPDATE " . $this->db_name . ".cobranza SET valor_cancelado = ?,estado_cancelado = ?,fecha_pago_debito = CURRENT_TIMESTAMP(),
+                            res_usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE cob_id = {$Ids} ";
+                $arrData = array($request['valor_cancelado'],"C");
+                $request = $this->updateConTrasn($con,$sql, $arrData);
+                $con->commit();
+                $arroout["status"] = true;
+                $arroout["numero"] = 0;
+                return $arroout;
+            } catch (Exception $e) {
+                $con->rollBack();
+                //echo "Fallo: " . $e->getMessage();
+                //throw $e;
+                $arroout["message"] = $e->getMessage();
+                $arroout["status"] = false;
+                return $arroout;
+            }
+        } else {
+            $arroout["status"] = false;
+            $arroout["message"] = "Error al Registrar Pago.";
+            return $arroout;
+        }
+    }
+
+
     
 }

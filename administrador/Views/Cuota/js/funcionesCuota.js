@@ -73,7 +73,7 @@ function fntRegistarPago(ids) {
   
       if (isConfirm) {
         if (ids != 0) {
-          let link = base_url + "/Asistencia/marcarAsistencia";
+          let link = base_url + "/Cuota/realizarPago";
           $.ajax({
             type: "POST",
             url: link,
@@ -98,7 +98,7 @@ function fntRegistarPago(ids) {
         }
   
       }else{
-        $("#COB_" + ids).prop("checked", false);
+        //$("#COB_" + ids).prop("checked", false);
       }
   
     });

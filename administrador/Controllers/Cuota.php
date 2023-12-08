@@ -68,6 +68,26 @@ class Cuota extends Controllers
     }
 
 
+    public function realizarPago()
+    {
+        if ($_POST) {
+            if ($_SESSION['permisosMod']['d']) {
+                $ids = intval($_POST['Ids']);
+                $request = $this->model->realizarPago($ids);
+                //$request["status"]=true;
+                if ($request["status"]) {
+                    $arrResponse = array('status' => true, 'msg' => 'Pago Registrado Correctamente');
+                } else {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al Registrar el Pago.');
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        die();
+    }
+
+
+
     
 
 
