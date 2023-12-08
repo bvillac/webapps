@@ -27,15 +27,61 @@ class CuotaModel extends MysqlAcademico
     }
 
     
-    public function consultarDatosId(int $Ids)
+    public function consultarPagoContratoId(int $Ids)
     {
-        $sql = "SELECT a.numero_cobro Numero,DATE(a.fecha_vencimiento_debito) FechaVencimiento,a.valor_debito ValorDebito,DATE(a.fecha_pago_debito) FechaPago, ";
-		$sql .= "   a.valor_cancelado ValorCancelado,if(a.fecha_pago_debito>=a.fecha_vencimiento_debito,'VENCIDO','') EstadoVencimiento, ";
-        $sql .= "   if(a.estado_cancelado='C','CANCELADO','PENDIENTE') EstadoCancelado ";
-		$sql .= "FROM " . $this->db_name . ".cobranza a ";
-        $sql .= "   WHERE a.estado_logico!=0 and a.con_id={$Ids} ";
-        $request = $this->select($sql);
-        return $request;
+        $sql = "SELECT a.con_id Ids,a.con_numero Contrato,DATE(a.con_fecha_inicio) FechaInicio,a.con_valor Valor,a.con_valor_cuota_mensual ValorMensual, ";
+        $sql .= "   c.cli_cedula_ruc DNI,c.cli_razon_social RazonSocial ";
+        $sql .= "   FROM " . $this->db_name . ".contrato a  ";
+        $sql .= "       INNER JOIN " . $this->db_nameAdmin . ".cliente c ON a.cli_id=c.cli_id ";
+        $sql .= "   WHERE a.con_estado_logico=1 and a.con_id={$Ids} ";
+        $resultContrato = $this->select($sql);
+        if (!empty($resultContrato)) { 
+            $sql = "SELECT a.cob_id Ids,a.numero_cobro Numero,DATE(a.fecha_vencimiento_debito) FechaVencimiento,a.valor_debito ValorDebito,DATE(a.fecha_pago_debito) FechaPago, ";
+            $sql .= "   a.valor_cancelado ValorCancelado,if(a.fecha_pago_debito>=a.fecha_vencimiento_debito,'VENCIDO','') EstadoVencimiento, ";
+            $sql .= "   a.estado_cancelado Estado,if(a.estado_cancelado='C','CANCELADO','PENDIENTE') EstadoCancelado ";
+            $sql .= "FROM " . $this->db_name . ".cobranza a ";
+            $sql .= "   WHERE a.estado_logico!=0 and a.con_id={$Ids} ";
+            $resultCobros = $this->select_all($sql);
+
+            $movimiento=[];
+			$Saldo=$resultContrato['Valor'];
+            $rowData[0]['IDS']="";
+            $rowData[0]['NUMERO']="";
+            $rowData[0]['FECHA_VENCE']=$resultContrato['FechaInicio'];
+            $rowData[0]['FECHA_PAGO']="";            			
+			$rowData[0]['DEBITO']="INICIAL";
+			$rowData[0]['CREDITO']="";
+			$rowData[0]['SALDO']= SMONEY . ' ' . formatMoney($Saldo, 2);
+            $rowData[0]['CANCELADO']="";
+			$rowData[0]['VENCIDO']="";
+			$rowData[0]['REFERENCIA']="";
+            $rowData[0]['ESTADO']="N";
+			$c=1;	
+
+            for ($i = 0; $i < sizeof($resultCobros); $i++) {
+                $rowData[$c]['IDS']=$resultCobros[$i]['Ids'];
+                $rowData[$c]['NUMERO']=$resultCobros[$i]['Numero'];
+                $rowData[$c]['FECHA_VENCE']=$resultCobros[$i]['FechaVencimiento'];
+                $rowData[$c]['FECHA_PAGO']=$resultCobros[$i]['FechaPago'];                			
+                $rowData[$c]['DEBITO']=$resultCobros[$i]['ValorDebito'];	
+                $rowData[$c]['CREDITO']=($resultCobros[$i]['Estado']=='C')? SMONEY . ' ' . formatMoney($resultCobros[$i]['ValorCancelado'], 2):"";
+                $Saldo=$Saldo-$resultCobros[$i]['ValorCancelado'];	
+                $rowData[$c]['SALDO']= ($resultCobros[$i]['Estado']=='C')? SMONEY . ' ' . formatMoney($Saldo, 2):""; 
+                $rowData[$c]['CANCELADO']=$resultCobros[$i]['EstadoCancelado'];	
+                $rowData[$c]['VENCIDO']=$resultCobros[$i]['EstadoVencimiento'];	
+                $rowData[$c]['REFERENCIA']="";
+                $rowData[$c]['ESTADO']=$resultCobros[$i]['Estado'];
+                $movimiento=$rowData;
+                $c++;
+            }
+            $arroout['movimiento']=$movimiento;
+            $arroout["contrato"] = $resultContrato;
+            $arroout["status"] = true;
+        }else {
+            $arroout["status"] = false;
+            $arroout["message"] = "Error en la consulta de Contrato.";
+        }
+        return $arroout;
     }
 
     

@@ -21,6 +21,7 @@ class Cuota extends Controllers
         $data['page_tag'] = "Cuota Pago";
         $data['page_name'] = "Cuota Pago";
         $data['page_title'] = "Cuota Pago <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_back'] = "cuota";
         $this->views->getView($this, "cuota", $data);
     }
 
@@ -31,8 +32,8 @@ class Cuota extends Controllers
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($_SESSION['permisosMod']['u']) {
-                    //$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Beneficiario/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
-                    $btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['ContIds'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+                    $btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Cuota/detallepago/' . $arrData[$i]['ContIds'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+                    //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['ContIds'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
                 }                
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
             }
@@ -40,6 +41,32 @@ class Cuota extends Controllers
         }
         die();
     }
+
+    public function detallePago($ids)
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            if (is_numeric($ids)) {
+                $data = $this->model->consultarPagoContratoId($ids);
+                //putMessageLogFile($data);
+                if (empty($data)) {
+                    echo "Datos no encontrados";
+                } else {                    
+                    $data['page_tag'] = "Detalle Pagos";
+                    $data['page_name'] = "Detalle Pagos";
+                    $data['page_title'] = "Detalle Pagos <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_back'] = "cuota";
+                    $this->views->getView($this, "detallepago", $data);
+                }
+            } else {
+                echo "Dato no válido";
+            }
+        } else {
+            header('Location: ' . base_url() . '/login');
+            die();
+        }
+        die();
+    }
+
 
     
 
