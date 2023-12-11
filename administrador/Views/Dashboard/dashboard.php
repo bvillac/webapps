@@ -35,6 +35,16 @@
         </div>
       </a>
     </div>
+    <div class="col-md-3 col-lg-3">
+      <a href="<?= base_url() ?>/cliente/generarReporteClientePDF/" class="linkw">
+        <div class="widget-small info coloured-icon"><i class="icon fa fa-user fa-3x"></i>
+          <div class="info">
+            <h5>Reporte de Beneficiarios</h5>
+            <p><b><?= $data['beneficiario'] ?></b></p>
+          </div>
+        </div>
+      </a>
+    </div>
 
 
   </div>

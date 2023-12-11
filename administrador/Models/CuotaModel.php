@@ -92,7 +92,6 @@ class CuotaModel extends MysqlAcademico
         $sql = "SELECT valor_debito Valor,estado_cancelado Estado FROM " . $this->db_name . ".cobranza where estado_logico=1 and cob_id={$Ids} and estado_cancelado='P' ";
         $requestCob = $this->select($sql);
         if (!empty($requestCob)) { //Ingresa solo si existen valores
-            putMessageLogFile("ingreso");
             $con->beginTransaction();
             try {				
                 $sql = "UPDATE " . $this->db_name . ".cobranza SET valor_cancelado = ?,estado_cancelado = ?,fecha_pago_debito = CURRENT_TIMESTAMP(),
@@ -112,7 +111,6 @@ class CuotaModel extends MysqlAcademico
                 return $arroout;
             }
         } else {
-            putMessageLogFile("no ingreso");
             $arroout["status"] = false;
             $arroout["message"] = "Error al Registrar Pago.";
             return $arroout;

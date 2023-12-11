@@ -39,24 +39,24 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         'dom': 'lBfrtip',
         'buttons': [
-            /* {
-                "extend": "copyHtml5",
-                "text": "<i class='far fa-copy'></i> Copiar",
-                "titleAttr":"Copiar",
-                "className": "btn btn-secondary"
-            }, */
-
-            /*{
-                "extend": "excelHtml5",
-                "text": "<i class='fas fa-file-excel'></i> Excel",
-                "titleAttr": "Esportar a Excel",
-                "title": "REPORTE DE USUARIOS REGISTRADOS",
-                "order": [[0, "asc"]],
-                "className": "btn btn-success"
-            },*/
-
-
-        ],
+            {
+              "extend": "excelHtml5",
+              "text": "<i class='fa fa-file-excel'></i> Excel",
+              "titleAttr": "Esportar a Excel",
+              "title": "REPORTE GENERAL CONTRATO",
+              "order": [[0, "asc"]],
+              "className": "btn btn-success"
+            },
+            {
+              "extend": "pdfHtml5",
+              "text": "<i class='fa fa-file-pdf'></i> PDF",
+              "titleAttr": "Esportar a PDF",
+              "pageSize": "LETTER",
+              "title": "REPORTE GENERAL CONTRATO",
+              "order": [[0, "asc"]],
+              "className": "btn btn-secondary"
+            }
+          ],
         "resonsieve": "true",
         "bDestroy": true,
         "iDisplayLength": 10,//Numero Items Retornados

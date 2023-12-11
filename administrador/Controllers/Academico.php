@@ -1,4 +1,6 @@
 <?php
+use Spipu\Html2Pdf\Html2Pdf;
+require 'vendor/autoload.php';
 require_once("Models/ValoracionModel.php");
 class Academico extends Controllers
 {
@@ -48,6 +50,9 @@ class Academico extends Controllers
                     $btnOpciones .= ' <a title="Evaluar Beneficiario" href="' . base_url() . '/Academico/evaluar/' . $arrData[$i]['BenId'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-list-alt"></i> </a> ';
                     //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
                 }
+                if($_SESSION['permisosMod']['r']){
+					$btnOpciones .=' <a title="Generar PDF" href="'.base_url().'/Academico/generarControlAcademicoPDF/'.$arrData[$i]['BenId'].'" target="_blanck" class="btn btn-primary btn-sm"> <i class="fa fa-file-pdf-o"></i> </a> ';
+				}
                 if ($_SESSION['permisosMod']['d']) {
                     //$btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteSalon(' . $arrData[$i]['BenId'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
                 }
@@ -117,24 +122,31 @@ class Academico extends Controllers
         die();
     }
 
-    public function eliminarSalon()
-    {
-        if ($_POST) {
-
-            if ($_SESSION['permisosMod']['d']) {
-                $ids = intval($_POST['ids']);
-                $request = $this->model->deleteRegistro($ids);
-                if ($request) {
-                    $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
-                } else {
-                    $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
-                }
-                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            }
-        }
-        die();
-    }
-
+    public function generarControlAcademicoPDF($idBen){
+		if($_SESSION['permisosMod']['r']){
+			if(is_numeric($idBen)){			
+                $data = $this->model->consultarDatosId($idBen);
+				if(empty($data)){
+					echo "Datos no encontrados";
+				}else{
+                    $data['control'] = $this->model->consultarBenefId($idBen);
+                    //putMessageLogFile($data);
+                    
+					$numeroContrato = $data['Contrato'];
+					ob_end_clean();
+					$html =getFile("Academico/controlPDF",$data);
+					$html2pdf = new Html2Pdf('p','A4','es','true','UTF-8');
+					$html2pdf->writeHTML($html);
+					$html2pdf->output('CONTROL_'.$numeroContrato.'.pdf');
+				}
+			}else{
+				echo "Dato no válido";
+			}
+		}else{
+			header('Location: '.base_url().'/login');
+			die();
+		}
+	}
    
 
 }

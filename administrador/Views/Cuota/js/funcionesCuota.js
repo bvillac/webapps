@@ -40,7 +40,26 @@ document.addEventListener('DOMContentLoaded', function () {
             { 'className': "textcenter", "targets": [11] }
         ],
         'dom': 'lBfrtip',
-        'buttons': [],
+        'buttons': [
+          {
+            "extend": "excelHtml5",
+            "text": "<i class='fa fa-file-excel'></i> Excel",
+            "titleAttr": "Esportar a Excel",
+            "title": "REPORTE GENERAL PAGOS",
+            "order": [[0, "asc"]],
+            "className": "btn btn-success"
+          },
+          {
+            "extend": "pdfHtml5",
+            "text": "<i class='fa fa-file-pdf'></i> PDF",
+            "titleAttr": "Esportar a PDF",
+            "pageSize": "LETTER",
+            "title": "REPORTE GENERAL PAGOS",
+            "order": [[0, "asc"]],
+            "className": "btn btn-secondary"
+          }
+        ],
+
         "resonsieve": "true",
         "bDestroy": true,
         "iDisplayLength": 10,//Numero Items Retornados

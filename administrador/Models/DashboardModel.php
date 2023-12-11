@@ -1,35 +1,50 @@
 <?php 
-	class DashboardModel extends Mysql
+	class DashboardModel extends MysqlAcademico
 	{
+
+		private $db_name;
+		private $db_nameAdmin;
+
 		public function __construct()
 		{
 			parent::__construct();
+			$this->db_name = $this->getDbNameMysql();
+			$this->db_nameAdmin = $this->getDbNameMysqlAdmin();
 		}
 
 		public function cantUsuarios(){
 			$db_name=$this->getDbNameMysql();
-			$sql = "SELECT COUNT(*) as total FROM ". $db_name .".usuario WHERE estado_logico != 0";
+			$sql = "SELECT COUNT(*) as total FROM ". $this->db_nameAdmin .".usuario WHERE estado_logico != 0";
 			$request = $this->select($sql);
 			$total = $request['total']; 
 			return $total;
 		}
 		public function cantClientes(){
 			$db_name=$this->getDbNameMysql();
-			$sql = "SELECT COUNT(*) as total FROM ". $db_name .".cliente WHERE estado_logico != 0 ";
+			$sql = "SELECT COUNT(*) as total FROM ". $this->db_nameAdmin .".cliente WHERE estado_logico != 0 ";
 			$request = $this->select($sql);
 			$total = $request['total']; 
 			return $total;
 		}
 		public function cantProveedores(){
 			$db_name=$this->getDbNameMysql();
-			$sql = "SELECT COUNT(*) as total FROM ". $db_name .".proveedor WHERE estado_logico != 0 ";
+			$sql = "SELECT COUNT(*) as total FROM ". $this->db_nameAdmin .".proveedor WHERE estado_logico != 0 ";
 			$request = $this->select($sql);
 			$total = $request['total']; 
 			return $total;
 		}
+
+		public function cantBeneficiarios(){
+			$db_name=$this->getDbNameMysql();
+			$sql = "SELECT COUNT(*) as total FROM ". $this->db_name .".beneficiario WHERE ben_estado_logico != 0 ";
+			$request = $this->select($sql);
+			$total = $request['total']; 
+			return $total;
+		}
+
 		public function cantProductos(){
 			$db_name=$this->getDbNameMysql();
-			$sql = "SELECT COUNT(*) as total FROM ". $db_name .".item WHERE estado_logico != 0 ";
+			$sql = "SELECT COUNT(*) as total FROM ". $this->db_name .".item WHERE estado_logico != 0 ";
 			$request = $this->select($sql);
 			$total = $request['total']; 
 			return $total;
@@ -39,7 +54,7 @@
 			$idsUsuario= $_SESSION['idsUsuario'];
 			$db_name=$this->getDbNameMysql();
 
-			$sql = "SELECT COUNT(*) as total FROM ". $db_name .".pedidos WHERE estado_logico != 0 ";
+			$sql = "SELECT COUNT(*) as total FROM ". $this->db_name .".pedidos WHERE estado_logico != 0 ";
 			$request = $this->select($sql);
 			$total = $request['total']; 
 			return $total;
@@ -48,8 +63,8 @@
 		public function lastOrders(){	
 			$db_name=$this->getDbNameMysql();
 			$sql = "SELECT a.ped_id Ids,a.ped_numero Numero,b.cli_nombre Nombre,a.ped_valor_neto Monto,if(a.estado_logico,'ACTIVO','ANULADO') Estado
-						FROM ". $db_name .".pedidos a
-							INNER JOIN ". $db_name .".cliente b ON a.cli_codigo=b.cli_codigo
+						FROM ". $this->db_name .".pedidos a
+							INNER JOIN ". $this->db_name .".cliente b ON a.cli_codigo=b.cli_codigo
 						WHERE a.estado_logico!=0 ORDER BY a.ped_id DESC LIMIT 10;";
 			$request = $this->select_all($sql);
 			return $request;

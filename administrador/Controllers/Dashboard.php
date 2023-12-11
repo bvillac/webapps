@@ -23,12 +23,13 @@
 			$data['page_title'] = "Dashboard - " .TITULO_EMPRESA;
 			$data['page_name'] = "dashboard";
 			//$data['fileJS'] = "funcionesAdmin.js";
-			$data['fileJS'] = "funciones_dashboard.js";
+			//$data['fileJS'] = "funciones_dashboard.js";
 
 			
 			$data['usuarios'] = $this->model->cantUsuarios();
 			$data['clientes'] = $this->model->cantClientes();
-			$data['proveedores'] = $this->model->cantProveedores();
+			$data['beneficiario'] = $this->model->cantBeneficiarios();
+			$data['proveedores'] = array();//$this->model->cantProveedores();
 			$data['productos'] = array();//$this->model->cantProductos();
 			$data['pedidos'] = array();//$this->model->cantPedidos();
 			$data['lastOrders'] = array();//$this->model->lastOrders();

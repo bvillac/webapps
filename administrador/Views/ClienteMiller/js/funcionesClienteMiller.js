@@ -26,21 +26,15 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         'dom': 'lBfrtip',
         'buttons': [
-            /* {
-                "extend": "copyHtml5",
-                "text": "<i class='far fa-copy'></i> Copiar",
-                "titleAttr":"Copiar",
+            {
+                "extend": "pdfHtml5",
+                "text": "<i class='fas fa-file-pdf'></i> PDF",
+                "titleAttr":"Esportar a PDF",
+                "pageSize":"LETTER",
+                "title":"REPORTE DE CLIENTES REGISTRADOS",
+                "order":[[0,"asc"]],
                 "className": "btn btn-secondary"
-            }, */
-
-            /*{
-                "extend": "excelHtml5",
-                "text": "<i class='fas fa-file-excel'></i> Excel",
-                "titleAttr": "Esportar a Excel",
-                "title": "REPORTE DE USUARIOS REGISTRADOS",
-                "order": [[0, "asc"]],
-                "className": "btn btn-success"
-            },*/
+            }
 
 
         ],
