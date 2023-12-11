@@ -30,6 +30,7 @@ class Asistencia extends Controllers
         $data['page_tag'] = "Asistencia";
         $data['page_name'] = "Asistencia";
         $data['page_title'] = "Asistencia <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_back'] = "asistencia";
         $this->views->getView($this, "asistencia", $data);
     }
 

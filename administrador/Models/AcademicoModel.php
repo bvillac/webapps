@@ -79,7 +79,7 @@ class AcademicoModel extends MysqlAcademico
             $arroout["numero"] = 0;
             return $arroout;
         } catch (Exception $e) {
-            throw $e;
+            //throw $e;
             $arroout["status"] = false;
             $arroout["message"] = "Fallo: " . $e->getMessage();
             return $arroout;

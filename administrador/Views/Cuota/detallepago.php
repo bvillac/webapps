@@ -52,20 +52,15 @@
             <li class="list-group-item">
               <b>Fecha Ingreso</b> <a class="float-right"><?= $contrato['FechaInicio'] ?></a>
             </li>
+            <li class="list-group-item">
+              <b>Número Pagos</b> <a class="float-right"><?= $contrato['Npagos'] ?></a>
+            </li>
+            <li class="list-group-item">
+              <b>Valor Mensual</b> <a class="float-right"><?= $contrato['ValorMensual'] ?></a>
+            </li>
           </ul>
           <!--<hr>-->
-          <!-- <strong><i class="fas fa-map-marker-alt mr-1"></i> Personal</strong>
-          <ul class="text-muted list-group list-group-unbordered mb-3">
-            <li class="list-group-item">
-              <b>Fecha Nacimiento</b> <a class="float-right"><?= $data['FechaNac'] ?></a>
-            </li>
-            <li class="list-group-item">
-              <b>Dirección</b> <a class="float-right"><?= $data['Direccion'] ?></a>
-            </li>
-            <li class="list-group-item">
-              <b>Teléfono</b> <a class="float-right"><?= $data['Telefono'] ?></a>
-            </li>
-          </ul> -->
+       
 
           
           <strong><i class="far fa-file-alt mr-1"></i> Observación</strong>

@@ -24,6 +24,7 @@ class Academico extends Controllers
         $data['page_tag'] = "Control Académico";
         $data['page_name'] = "Control Académico";
         $data['page_title'] = "Control Académico <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_back'] = "academico";
         $this->views->getView($this, "academico", $data);
     }
 
@@ -73,6 +74,7 @@ class Academico extends Controllers
                     $data['page_tag'] = "Control Académico";
                     $data['page_name'] = "Control Académico";
                     $data['page_title'] = "Control Académico <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_back'] = "academico";
                     $this->views->getView($this, "evaluar", $data);
                 }
             } else {

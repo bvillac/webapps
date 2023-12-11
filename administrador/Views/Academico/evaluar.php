@@ -16,7 +16,7 @@ $controlAcad = $data['control'];
     </div>
     <ul class="app-breadcrumb breadcrumb">
       <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-      <li class="breadcrumb-item"><a href="<?= base_url(); ?>/academico"><?= $data['page_title'] ?></a></li>
+      <li class="breadcrumb-item"><a href="<?= base_url(); ?>/<?= $data['page_back'] ?>"><?= $data['page_title'] ?></a></li>
     </ul>
   </div>
 
@@ -92,8 +92,8 @@ $controlAcad = $data['control'];
         <div class="card-body">
           <div class="tab-content">
 
-
-            <table id="dts_Control" class="table table-hover table-striped" >
+          <div class="table-responsive">
+          <table id="dts_Control" class="table table-hover table-striped" >
               <thead>
                 <tr>
                   <th>NIVEL</th>
@@ -104,9 +104,8 @@ $controlAcad = $data['control'];
                   <th>F.ASISTENCÍA</th>
                   <th>F.EVALUACIÓN</th>
                   <th>VALORACION</th>
-                  <th>VALOR</th>
-                  <th>OBSERVACIÓN</th>
-                  <th>ACCIÓN</th>
+                  <th>VALOR</th>                  
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -114,7 +113,7 @@ $controlAcad = $data['control'];
                   foreach ($controlAcad as $control) {
                     $bloqueo=($control['Valoracion']!="")?"disabled":"";                    
                     $valorPor=($control['Valor']!="")? $control['Valor'] ." %":"";
-                    $observacion='<a href="#" class="btn btn-sm bg-teal"><i class="fa fa-comments"></i></a>';
+                    $observacion='<a class="btn btn-primary  btn-sm" href="#" ><i class="fa fa-comments"></i></a>';
                     //$valorPor=($control['Valor']!="")? "<span class='badge bg-primary'>".$control['Valor'] ." %</span>":"";
                   ?>
                     <tr>
@@ -126,13 +125,19 @@ $controlAcad = $data['control'];
                       <td class="text-center"><?= $control['FechaAsistencia'] ?></td>
                       <td class="text-center"><?= $control['FechaEvaluacion'] ?></td>
                       <td class="text-left"><?= $control['Valoracion'] ?></td>
-                      <td class="text-center"><?= $valorPor ?></td>
-                      <td class="text-center"><?= $observacion ?></td>
-                      <td class="text-left"><button class="btn btn-primary  btn-sm btnEditLinea" onClick="evaluarModals('<?= $control['Ids'] ?>')" <?= $bloqueo ?> title="Evaluar Datos"><i class="fa fa-pencil-square-o"></i></button></td>
+                      <td class="text-center"><?= $valorPor ?></td>                   
+                      <td class="text-center">
+                        <button class="btn btn-primary  btn-sm" onClick="evaluarModals('<?= $control['Ids'] ?>')" <?= $bloqueo ?> 
+                          title="Evaluar Datos"><i class="fa fa-pencil-square-o"></i>
+                        </button>
+                      <?= $observacion ?>
+                      </td>
                     </tr>
                   <?php } ?>
               </tbody>
             </table>
+          </div>
+           
 
           </div>
         </div>

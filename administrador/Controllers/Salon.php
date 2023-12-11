@@ -24,6 +24,7 @@ class Salon extends Controllers
         $data['page_tag'] = "Salon";
         $data['page_name'] = "Salon";
         $data['page_title'] = "Salon <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_back'] = "salon";
         $this->views->getView($this, "salon", $data);
     }
 

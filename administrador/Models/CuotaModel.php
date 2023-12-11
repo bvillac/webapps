@@ -30,7 +30,7 @@ class CuotaModel extends MysqlAcademico
     public function consultarPagoContratoId(int $Ids)
     {
         $sql = "SELECT a.con_id Ids,a.con_numero Contrato,DATE(a.con_fecha_inicio) FechaInicio,a.con_valor Valor,a.con_valor_cuota_mensual ValorMensual, ";
-        $sql .= "   c.cli_cedula_ruc DNI,c.cli_razon_social RazonSocial ";
+        $sql .= "   c.cli_cedula_ruc DNI,c.cli_razon_social RazonSocial,a.con_numero_pagos Npagos ";
         $sql .= "   FROM " . $this->db_name . ".contrato a  ";
         $sql .= "       INNER JOIN " . $this->db_nameAdmin . ".cliente c ON a.cli_id=c.cli_id ";
         $sql .= "   WHERE a.con_estado_logico=1 and a.con_id={$Ids} ";
@@ -90,15 +90,14 @@ class CuotaModel extends MysqlAcademico
         $usuario = retornaUser();
         $con = $this->getConexion();
         $sql = "SELECT valor_debito Valor,estado_cancelado Estado FROM " . $this->db_name . ".cobranza where estado_logico=1 and cob_id={$Ids} and estado_cancelado='P' ";
-        $request = $this->select($sql);
-        putMessageLogFile($request);
-        putMessageLogFile(empty($request));
-        if (!empty($request)) { 
+        $requestCob = $this->select($sql);
+        if (!empty($requestCob)) { //Ingresa solo si existen valores
+            putMessageLogFile("ingreso");
             $con->beginTransaction();
             try {				
                 $sql = "UPDATE " . $this->db_name . ".cobranza SET valor_cancelado = ?,estado_cancelado = ?,fecha_pago_debito = CURRENT_TIMESTAMP(),
-                            res_usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE cob_id = {$Ids} ";
-                $arrData = array($request['valor_cancelado'],"C");
+                            usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE cob_id = {$Ids} ";
+                $arrData = array($requestCob['Valor'],"C");
                 $request = $this->updateConTrasn($con,$sql, $arrData);
                 $con->commit();
                 $arroout["status"] = true;
@@ -113,6 +112,7 @@ class CuotaModel extends MysqlAcademico
                 return $arroout;
             }
         } else {
+            putMessageLogFile("no ingreso");
             $arroout["status"] = false;
             $arroout["message"] = "Error al Registrar Pago.";
             return $arroout;

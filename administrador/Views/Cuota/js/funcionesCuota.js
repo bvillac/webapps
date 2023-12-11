@@ -83,6 +83,7 @@ function fntRegistarPago(ids) {
             success: function (data) {
               if (data.status) {
                 $("#COB_" + ids).prop("disabled", true);
+                location.reload();
                 swal("Información", data.msg, "info");
   
               } else {

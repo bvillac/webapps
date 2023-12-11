@@ -32,7 +32,7 @@ class Cuota extends Controllers
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($_SESSION['permisosMod']['u']) {
-                    $btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Cuota/detallepago/' . $arrData[$i]['ContIds'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+                    $btnOpciones .= ' <a title="Ver Detalle Pagos" href="' . base_url() . '/Cuota/detallepago/' . $arrData[$i]['ContIds'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-list-alt"></i> </a> ';
                     //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['ContIds'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
                 }                
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
