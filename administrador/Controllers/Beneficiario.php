@@ -21,6 +21,7 @@ class Beneficiario extends Controllers
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
+        
         $data['page_tag'] = "Beneficiarío";
         $data['page_name'] = "Beneficiarío";
         $data['page_title'] = "Beneficiarío <small> " . TITULO_EMPRESA . "</small>";
@@ -30,7 +31,18 @@ class Beneficiario extends Controllers
     public function consultarBeneficiario()
     {
         if ($_SESSION['permisosMod']['r']) {
-            $arrData = $this->model->consultarDatos();
+            //Inicio Paginado
+            $pagina = 1;
+            $countRows=$this->model->countDatos();
+            $totalRows = $countRows['total_registro'];
+            $desde = ($pagina-1) * LIMIT_NUMERO;
+            $TotPaginas = ceil($totalRows / LIMIT_NUMERO);
+            $parametro=array("desde"=>$desde,"Tpagina"=>$TotPaginas);
+            //Fin Paginado
+            $arrData = $this->model->consultarDatos($parametro);
+            //$arrData['pagina'] = $pagina;
+			//$arrData['total_paginas'] = $TotPaginas;
+            //putMessageLogFile($arrData);
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($arrData[$i]['Estado'] == 1) {

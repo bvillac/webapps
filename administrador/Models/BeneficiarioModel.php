@@ -10,8 +10,21 @@ class BeneficiarioModel extends MysqlAcademico
         $this->db_nameAdmin = $this->getDbNameMysqlAdmin();
     }
 
-    public function consultarDatos()
+    public function countDatos($parmetro = null){
+		$where = "";
+		if($parmetro != null){
+			//$where = " AND categoriaid = ".$parmetro;
+		}
+		$sql = "SELECT COUNT(*) as total_registro FROM " . $this->db_name . ".beneficiario WHERE ben_estado_logico = 1 ".$where;
+        $request = $this->select($sql);
+		return $request;
+
+	}
+
+    public function consultarDatos($parametro)
     {
+        $desde=$parametro["desde"];
+        $numpagina=$parametro["Tpagina"];
         $sql = "SELECT a.ben_id Ids,b.con_numero NumeroContrato,a.ben_tipo TipoBenefiario,CONCAT(c.per_nombre,' ',c.per_apellido) Nombres,c.per_telefono Telefono, ";
         $sql .= "   c.per_direccion Direccion,a.ben_estado_logico Estado  ";
         $sql .= "   FROM " . $this->db_name . ".beneficiario a  ";
@@ -20,6 +33,7 @@ class BeneficiarioModel extends MysqlAcademico
         $sql .= "       inner join " . $this->db_nameAdmin . ".persona c  ";
         $sql .= "           on a.per_id=c.per_id ";
         $sql .= "   where a.ben_estado_logico!=0 ";
+        //$sql .= " LIMIT $desde,$numpagina";
 
         $request = $this->select_all($sql);
         return $request;

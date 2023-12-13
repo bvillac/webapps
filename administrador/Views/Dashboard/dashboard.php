@@ -26,7 +26,7 @@
       </a>
     </div>
     <div class="col-md-3 col-lg-3">
-      <a href="<?= base_url() ?>/cliente/generarReporteClientePDF/" class="linkw">
+      <a href="<?= base_url() ?>/clienteMiller/generarReporteClientesPDF/" class="linkw">
         <div class="widget-small info coloured-icon"><i class="icon fa fa-user fa-3x"></i>
           <div class="info">
             <h5>Reporte de Clientes</h5>

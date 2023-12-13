@@ -9,13 +9,17 @@ class ClienteMillerModel extends Mysql
         $this->db_name = $this->getDbNameMysql();
     }
 
-    public function consultarDatos()
+    public function consultarDatos($parametro)
     {
+        //putMessageLogFile(empty($parametro ));
         $sql = "SELECT a.cli_id Ids,a.per_id PerIds,b.fpag_nombre Pago,a.cli_tipo_dni Tipo, ";
         $sql .= "   a.cli_cedula_ruc Cedula,a.cli_razon_social Nombre,a.cli_direccion Direccion,a.cli_correo Correo,a.cli_telefono Telefono, a.cli_distribuidor Distribuidor,a.cli_tipo_precio Precio,a.cli_ruta_certificado_ruc Certificado,a.estado_logico Estado ";
         $sql .= "   FROM " . $this->db_name . ".cliente a  ";
         $sql .= "      INNER JOIN " . $this->db_name . ".forma_pago b ON a.fpag_id=b.fpag_id  ";
-        $sql .= "WHERE a.estado_logico!=0  ";
+        $sql .= " WHERE a.estado_logico!=0  ";
+        //if(empty($parametro )){
+        //    $sql .= ($parametro['estado']==1)? " AND a.estado_logico=1 ":"";
+        //}
         $request = $this->select_all($sql);
         return $request;
     }

@@ -1,4 +1,6 @@
 <?php
+use Spipu\Html2Pdf\Html2Pdf;
+require 'vendor/autoload.php';
 require_once("Models/PagoModel.php");
 require_once("Models/UsuariosModel.php");
 class ClienteMiller extends Controllers
@@ -31,7 +33,9 @@ class ClienteMiller extends Controllers
     {
         //putMessageLogFile($_SESSION['permisosMod']['r']);
         if ($_SESSION['permisosMod']['r']) {
-            $arrData = $this->model->consultarDatos();
+            $parametro = array();
+            //$parametro = array('estado' => $requestCab);
+            $arrData = $this->model->consultarDatos($parametro);
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($arrData[$i]['Estado'] == 1) {
@@ -178,6 +182,30 @@ class ClienteMiller extends Controllers
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();
+	}
+
+
+    public function generarReporteClientesPDF(){
+		if($_SESSION['permisosMod']['r']){
+                $parametro = array('estado' => '1');		
+                $data['Result'] = $this->model->consultarDatos($parametro);
+				if(empty($data)){
+					echo "Datos no encontrados";
+				}else{
+					//$numeroContrato = $data['Contrato'];
+					ob_end_clean();
+                    $data['Titulo']="Lista Clientes Activos";
+					$html =getFile("ClienteMiller/clientePDF",$data);
+					$html2pdf = new Html2Pdf('p','A4','es','true','UTF-8');
+					$html2pdf->writeHTML($html);
+                    $FechaActual= date('m-d-Y H:i:s a', time()); 
+                    //$html2pdf->pdf->SetDisplayMode('fullpage');
+                    $html2pdf->output('ReporteClientes_'.$FechaActual.'.pdf','D');
+				}
+		}else{
+			header('Location: '.base_url().'/login');
+			die();
+		}
 	}
 
 

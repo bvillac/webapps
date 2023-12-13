@@ -1,0 +1,20 @@
+<page_header>
+        <table id="encabezado">
+            <tr class="fila">
+                <td id="col_1" >
+                    <img src="../../images/img_izq.png">
+                </td>
+                <td id="col_2">
+                    <span id="span1">Aquí pueden ir más span o divs según requiera el diseño</span>
+                    <br>
+                    <span id="span2">Este es otro span con otros estilos</span>
+                </td>
+                <td id="col_3">
+                    <img  src="../../images/img_der_1.png">
+                </td>
+                <td id="col_4">
+                    <img src="../../images/img_der_2.png">
+                </td>
+            </tr>
+        </table>
+    </page_header>
