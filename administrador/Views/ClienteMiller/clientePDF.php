@@ -1,5 +1,5 @@
 <?php
-require_once "Views/Template/pdf/header.php";
+require_once "Views/Template/Pdf/header.php";
 $resultset = $data['Result'];
 ?>
 <br>
@@ -38,5 +38,5 @@ $resultset = $data['Result'];
 </div>
 
 <?php
-require_once "Views/Template/pdf/footer.php";
+require_once "Views/Template/Pdf/footer.php";
 ?>
