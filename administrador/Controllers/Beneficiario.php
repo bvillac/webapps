@@ -1,4 +1,6 @@
 <?php
+use Spipu\Html2Pdf\Html2Pdf;
+require 'vendor/autoload.php';
 require_once("Models/CentroAtencionModel.php");
 require_once("Models/PaqueteModel.php");
 require_once("Models/ModalidadModel.php");
@@ -171,6 +173,28 @@ class Beneficiario extends Controllers
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();
+	}
+
+    public function generarReporteBeneficiarioPDF(){
+		if($_SESSION['permisosMod']['r']){
+                $parametro = array('estado' => '1');		
+                $data['Result'] = $this->model->consultarDatos($parametro);
+				if(empty($data)){
+					echo "Datos no encontrados";
+				}else{
+					ob_end_clean();
+                    $data['Titulo']="Lista Beneficiarios Activos";
+					$html =getFile("Beneficiario/beneficiarioPDF",$data);
+					$html2pdf = new Html2Pdf('p','A4','es','true','UTF-8');
+					$html2pdf->writeHTML($html);
+                    $FechaActual= date('m-d-Y H:i:s a', time()); 
+                    //$html2pdf->pdf->SetDisplayMode('fullpage');
+                    $html2pdf->output('ReporteBeneficiarios_'.$FechaActual.'.pdf','D');
+				}
+		}else{
+			header('Location: '.base_url().'/login');
+			die();
+		}
 	}
 
 

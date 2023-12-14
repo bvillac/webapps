@@ -198,6 +198,7 @@ class ClienteMiller extends Controllers
 					$html =getFile("ClienteMiller/clientePDF",$data);
 					$html2pdf = new Html2Pdf('p','A4','es','true','UTF-8');
 					$html2pdf->writeHTML($html);
+
                     $FechaActual= date('m-d-Y H:i:s a', time()); 
                     //$html2pdf->pdf->SetDisplayMode('fullpage');
                     $html2pdf->output('ReporteClientes_'.$FechaActual.'.pdf','D');

@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Tecnología Superior en Desarrollo de Software">
+    <meta name="description" content="<?= DESCRIPCION ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="Sonya y Dayci">
+    <meta name="author" content="<?= AUTOR ?>">
     <meta name="theme-color" content="#009688">
     <link rel="shortcut icon" href="<?= media();?>/images/site/favicon.ico">
     <!-- Main CSS-->
@@ -51,6 +51,6 @@
     <!-- The javascript plugin to display page loading on top-->
     <script src="<?= media(); ?>/js/plugins/pace.min.js"></script>
     <script type="text/javascript" src="<?= media();?>/js/plugins/sweetalert.min.js"></script>
-    <script src="<?= media(); ?>/js/<?= $data['fileJS']; ?>"></script>
+    <?= incluirJs() ?>
   </body>
 </html>
