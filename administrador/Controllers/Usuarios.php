@@ -160,7 +160,7 @@
 					//}
 					$model=new UsuariosModel;
 					$data = $model->consultarReporteUsuarioPDF($idUsuario, $idpersona);
-					putMessageLogFile($data);
+					//putMessageLogFile($data);
 					if(empty($data)){
 						echo "Datos no encontrados";
 					}else{

@@ -4,9 +4,11 @@
 	//require_once("Libraries/Core/Conexion.php");
 	class UsuariosModel extends Mysql{
 		private $db_name;
+		private $db_nameAdmin;
 		public function __construct(){
 			parent::__construct();
 			$this->db_name = $this->getDbNameMysql();
+        	//$this->db_nameAdmin = $this->getDbNameMysqlAdmin();
 		}
 
 
@@ -101,45 +103,40 @@ public function consultarReporteUsuarioPDF(string $idUsuario, $idpersona = NULL)
 		
 
 		public function consultarCabecerDoc(string $IdsEmpresa){
-			$db_name=$this->getDbNameMysql();
-			$IdsEmpresa="1";
+			//$db_name=$this->getDbNameMysql();
+			$IdsEmpresa=$_SESSION['idEmpresa'];
 			$sql = "SELECT a.usu_id Ids,b.per_id ,a.usu_correo Correo,a.usu_alias Alias,a.usu_clave Clave,b.per_cedula Cedula,b.per_nombre Nombre,b.per_apellido Apellido, ";
-			$sql .= "	d.rol_nombre Rol,a.estado_logico Estado  ";
-			$sql .= "	FROM ". $db_name .".usuario a ";
-			$sql .= "		INNER JOIN ". $db_name .".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
-			$sql .= "			INNER JOIN (". $db_name .".empresa_usuario c ";
-			$sql .= "				INNER JOIN ". $db_name .".rol d ON c.rol_id=d.rol_id ) ";
-			$sql .= "		ON a.usu_id=c.usu_id AND c.estado_logico!=0 ";
-			$sql .= "	WHERE a.estado_logico!=0 AND c.emp_id='{$IdsEmpresa}' ";
+			$sql .= "	a.estado_logico Estado  ";
+			$sql .= "	FROM ". $this->db_name .".usuario a ";
+			$sql .= "		INNER JOIN ". $this->db_name .".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
+			$sql .= "	WHERE a.estado_logico!=0  "; 
+
+			//putMessageLogFile($sql);
 			$request = $this->select($sql);
 			return $request;
 		}
 		public function consultarDetalleDoc(string $IdsEmpresa){
-			$db_name=$this->getDbNameMysql();
-			$IdsEmpresa="1";
+			//$db_name=$this->getDbNameMysql();
+			//$IdsEmpresa="1";
+			$IdsEmpresa=$_SESSION['idEmpresa'];
 			$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,b.per_cedula,b.per_nombre,b.per_apellido, ";
-			$sql .= "	d.rol_nombre,a.estado_logico Estado  ";
-			$sql .= "	FROM ". $db_name .".usuario a ";
-			$sql .= "		INNER JOIN ". $db_name .".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
-			$sql .= "			INNER JOIN (". $db_name .".empresa_usuario c ";
-			$sql .= "				INNER JOIN ". $db_name .".rol d ON c.rol_id=d.rol_id ) ";
-			$sql .= "		ON a.usu_id=c.usu_id AND c.estado_logico!=0 ";
-			$sql .= "	WHERE a.estado_logico!=0 AND c.emp_id='{$IdsEmpresa}' ";
+			$sql .= "	a.estado_logico Estado  ";
+			$sql .= "	FROM ". $this->db_name .".usuario a ";
+			$sql .= "		INNER JOIN ". $this->db_name .".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
+			$sql .= "	WHERE a.estado_logico!=0  ";
+			//putMessageLogFile($sql);
 			$request = $this->select_all($sql);
 			return $request;
 		}
 
 		public function consultarDatosUsuarios(){
-			$db_name=$this->getDbNameMysql();
-			$idsEmpresa=1;
+			//$db_name=$this->getDbNameMysql();
+			$IdsEmpresa=$_SESSION['idEmpresa'];
 			$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,b.per_cedula,b.per_nombre,b.per_apellido, ";
-			$sql .= "	d.rol_nombre,a.estado_logico Estado  ";
-			$sql .= "	FROM ". $db_name .".usuario a ";
-			$sql .= "		INNER JOIN ". $db_name .".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
-			$sql .= "			INNER JOIN (". $db_name .".empresa_usuario c ";
-			$sql .= "				INNER JOIN ". $db_name .".rol d ON c.rol_id=d.rol_id ) ";
-			$sql .= "		ON a.usu_id=c.usu_id AND c.estado_logico!=0 ";
-			$sql .= "	WHERE a.estado_logico!=0 AND c.emp_id='{$idsEmpresa}' ";
+			$sql .= "	a.estado_logico Estado  ";
+			$sql .= "	FROM ". $this->db_name .".usuario a ";
+			$sql .= "		INNER JOIN ". $this->db_name .".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
+			$sql .= "	WHERE a.estado_logico!=0  ";
 			$request = $this->select_all($sql);
 			return $request;
 		}
@@ -163,7 +160,7 @@ public function consultarReporteUsuarioPDF(string $idUsuario, $idpersona = NULL)
 			$sql .= "			ON a.per_id=p.per_id AND p.estado_logico!=0 	";	
 			$sql .= "	WHERE a.estado_logico!=0 ";	
 
-			putMessageLogFile($sql);
+			//putMessageLogFile($sql);
 			$request = $this->select_all($sql);
 			return $request;
 		}
