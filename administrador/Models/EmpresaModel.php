@@ -102,12 +102,13 @@
 			return $request;
 		}
 
-		public function consultarEmpresaId(int $Ids){
+		public function consultarEmpresaId(){
+			$IdsEmp=$_SESSION['idEmpresa'];
 			$sql = "SELECT a.emp_id Ids,a.emp_ruc Ruc,a.mon_id IdMoneda, ";
 			$sql .= "   a.emp_razon_social Razon,a.emp_nombre_comercial	Nombre,a.emp_direccion Direccion, ";
 			$sql .= "	a.emp_correo Correo,a.emp_ruta_logo Logo";
 			$sql .= "   FROM ". $this->db_name .".empresa a  ";
-			$sql .= "WHERE a.estado_logico=1 AND a.emp_id={$Ids} ";
+			$sql .= "WHERE a.estado_logico=1 AND a.emp_id={$IdsEmp} ";
 			$request = $this->select($sql);
 			return $request;
 		}

@@ -1,9 +1,9 @@
 <?php 
 	//namespace Controllers;
 	//use Models\UsuariosModel;
-	//include("../Models/RolesModel.php");
 	require_once("Models/UsuariosModel.php");
 	require_once("Models/PersonaModel.php");
+	require_once("Models/EmpresaModel.php");
 	use Spipu\Html2Pdf\Html2Pdf;
 	require 'vendor/autoload.php';
 	
@@ -172,6 +172,39 @@
 						$Object = new DateTime(); 
 					    $FechaActual= date('m-d-Y H:i:s a', time()); 
 						$html2pdf->output('ReporteUsuarios_'.$FechaActual.'.pdf');
+					}
+				}else{
+					echo "Dato no válido";
+				}
+			}else{
+				header('Location: '.base_url().'/login');
+				die();
+			}
+		}
+
+
+		public function reporteUsuariosPDF($idUsuario){
+			if($_SESSION['permisosMod']['r']){
+				if(is_string($idUsuario)){
+					$idpersona = "";
+					//if($_SESSION['permisosMod']['r'] and $_SESSION['userData']['idrol'] == RCLIENTES){
+					//	$idpersona = $_SESSION['userData']['idpersona'];
+					//}
+					$$data['Result'] = $this->model->consultarDatosUsuarios();
+					//putMessageLogFile($data);
+					if(empty($data)){
+						echo "Datos no encontrados";
+					}else{
+						//$idUsuario = $data['cabReporte']['usu_id'];
+						ob_end_clean();
+						$ObjEmp = new EmpresaModel;
+						$data['EmpData'] = $ObjEmp->consultarEmpresaId();
+						$data['Titulo']="Lista Usuarios Activos";
+						$html =getFile("Usuarios/Reporte/usuarioPDF",$data);
+						$html2pdf = new Html2Pdf('p','A4','es','true','UTF-8');
+						$html2pdf->writeHTML($html);
+					    $FechaActual= date('m-d-Y H:i:s a', time()); 
+						$html2pdf->output('ReporteUsuarios_'.$FechaActual.'.pdf','D');
 					}
 				}else{
 					echo "Dato no válido";
