@@ -22,8 +22,7 @@
 			$data['page_tag'] = "Dashboard";
 			$data['page_title'] = "Dashboard - " .TITULO_EMPRESA;
 			$data['page_name'] = "dashboard";
-			//$data['fileJS'] = "funcionesAdmin.js";
-			//$data['fileJS'] = "funciones_dashboard.js";
+			
 
 			
 			$data['usuarios'] = $this->model->cantUsuarios();
@@ -32,7 +31,7 @@
 			$data['proveedores'] = array();//$this->model->cantProveedores();
 			$data['productos'] = array();//$this->model->cantProductos();
 			$data['pedidos'] = array();//$this->model->cantPedidos();
-			$data['lastOrders'] = array();//$this->model->lastOrders();
+			$data['lastContrato'] = $this->model->lastContrato();
 			$data['lastCompras'] = array();//$this->model->lastCompras();
 			$data['itemUtilidad'] = array();//$this->model->UtilidadItems();
 			$data['itemMarca'] = array();//$this->model->UtilidadItemsMarca();

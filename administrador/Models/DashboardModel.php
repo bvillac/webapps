@@ -60,15 +60,26 @@
 			return $total;
 		}
 
-		public function lastOrders(){	
-			$db_name=$this->getDbNameMysql();
+		/* public function lastContrato(){	
 			$sql = "SELECT a.ped_id Ids,a.ped_numero Numero,b.cli_nombre Nombre,a.ped_valor_neto Monto,if(a.estado_logico,'ACTIVO','ANULADO') Estado
 						FROM ". $this->db_name .".pedidos a
 							INNER JOIN ". $this->db_name .".cliente b ON a.cli_codigo=b.cli_codigo
 						WHERE a.estado_logico!=0 ORDER BY a.ped_id DESC LIMIT 10;";
 			$request = $this->select_all($sql);
 			return $request;
-		}	
+		} */
+
+		public function lastContrato()
+		{
+			$sql = "SELECT a.con_id Ids,a.con_numero Numero,date(a.con_fecha_inicio) FechaIni,b.cli_razon_social RazonSocial,a.con_valor Total,a.con_valor_cuota_inicial CuoInicial, ";
+			$sql .= "(a.con_valor-a.con_valor_cuota_inicial) Saldo,a.con_numero_pagos Npagos,a.con_valor_cuota_mensual Vmensual,a.con_estado_logico Estado ";
+			$sql .= "FROM " . $this->db_name . ".contrato a ";
+			$sql .= "	INNER JOIN 	" . $this->db_nameAdmin . ".cliente b ";
+			$sql .= "		ON a.cli_id=b.cli_id and b.estado_logico!=0 ";
+			$sql .= "   WHERE a.con_estado_logico!=0 ORDER BY a.con_numero ASC LIMIT 10 ";
+			$request = $this->select_all($sql);
+			return $request;
+		}
 
 		public function selectVentasMes(int $anio, int $mes){
 			$db_name=$this->getDbNameMysql();

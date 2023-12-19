@@ -16,7 +16,7 @@
 
   <div class="row">
     <div class="col-md-3 col-lg-3">
-      <a href="<?= base_url() ?>/usuarios/generarReporteUsuarioPDF/" class="linkw">
+      <a href="<?= base_url() ?>/usuarios/reporteUsuariosPDF/" class="linkw">
         <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
           <div class="info">
             <h5>Reporte de Usuarios</h5>
@@ -54,12 +54,12 @@
     ?>
     <div class="col-md-6">
       <div class="tile">
-        <h3 class="tile-title">Últimas Ventas</h3>
+        <h3 class="tile-title">Últimos Contratos</h3>
         <table class="table table-striped table-sm">
           <thead>
             <tr>
               <th>#</th>
-              <th>Cliente</th>
+              <th>Razón Social</th>
               <th>Estado</th>
               <th class="text-right">Total</th>
               <th></th>
@@ -67,17 +67,17 @@
           </thead>
           <tbody>
             <?php
-            if (count($data['lastOrders']) > 0) {
-              foreach ($data['lastOrders'] as $pedido) {
+            if (count($data['lastContrato']) > 0) {
+              foreach ($data['lastContrato'] as $pedido) {
+                $Estado = ($pedido['Estado'] != 0) ? "Activo" : "Inactivo";
             ?>
                 <tr>
 
                   <td><?= $pedido['Numero'] ?></td>
-                  <td><?= $pedido['Nombre'] ?></td>
-                  <td><?= $pedido['Estado'] ?></td>
-                  <td class="text-right"><?= SMONEY . " " . formatMoney($pedido['Monto'], 2) ?></td>
-                  <td></td>
-                  <!-- <td><a href="<?= base_url() ?>/pedidos/orden/<?= $pedido['Ids'] ?>" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a></td> -->
+                  <td><?= $pedido['RazonSocial'] ?></td>
+                  <td><?= $Estado ?></td>
+                  <td class="text-right"><?= SMONEY . " " . formatMoney($pedido['Total'], 2) ?></td>
+                  <td><a href="<?= base_url() ?>/Contrato/generarContratoPDF/<?= $pedido['Ids'] ?>" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
                 </tr>
             <?php  }
             } ?>
