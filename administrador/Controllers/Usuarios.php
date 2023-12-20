@@ -11,7 +11,7 @@
 		public function __construct(){
 			parent::__construct();
 			session_start();
-			session_regenerate_id(true);//Seguridad en Session hace que IDsesion Php anteriores se eliminen y que no se puedan usar
+			//session_regenerate_id(true);//Seguridad en Session hace que IDsesion Php anteriores se eliminen y que no se puedan usar
 			if(empty($_SESSION['loginEstado'])){
 				header('Location: '.base_url().'/login');
 				die();

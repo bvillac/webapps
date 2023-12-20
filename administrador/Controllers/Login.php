@@ -1,12 +1,13 @@
 <?php 
 	class Login extends Controllers{
 		public function __construct(){
-			session_start();//iniciamos el uso de variables de session
+			parent::__construct();
+			session_start();//iniciamos el uso de variables de session	
 			if(isset($_SESSION['loginEstado'])){//Veifica si existe la seesion
 				header('Location: '.base_url().'/dashboard');//Lo direciona al  dashboard
 				die();
 			}
-			parent::__construct();
+			
 		}
 
 		public function login(){

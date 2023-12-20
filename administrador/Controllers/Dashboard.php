@@ -2,17 +2,9 @@
 
 	class Dashboard extends Controllers{
 		public function __construct(){
-			sessionStart();//Para que se muestre el Dasboard
 			parent::__construct();
-			//session_start();
-			//session_regenerate_id(true);
-			if(empty($_SESSION['loginEstado'])){
-				header('Location: '.base_url().'/login');
-				die();
-			}
+			sessionStart();//Para que se muestre el Dasboard
 			getPermisos();
-			//getPermisos(1);//Control de Permisos Segun el Ids de la base de Datos
-			//getGenerarMenu();
 		}
 
 		public function dashboard(){

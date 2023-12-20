@@ -284,16 +284,25 @@ function sessionUsuario(int $idsUsuario)
 
 function sessionStart(){
     session_start();
+    //session_regenerate_id(true);
     $inactive=TIMESESSION;//usuario va a permanercer logueado en segundos 60segundos 60=>30s 360>3minustos 120x1minut
-    if(isset($_SESSION['timeout'])){
+    if(isset($_SESSION['timeout'])){//Ingresa solo si existe alguna sesion
         $session_in = time()-$_SESSION['inicio'];
         //putMessageLogFile($session_in);
         if($session_in>$inactive){//paso el tiempo en que usuario permanece logueado
             //putMessageLogFile($session_in);
-            header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducasdo
+            header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducado
         }
+        //putMessageLogFile($_SESSION);
+        //putMessageLogFile("Estado ".$_SESSION['loginEstado']);
+        //Revisa si la Session esta Activa Caso contrario la envia a login
+        if(empty($_SESSION['loginEstado'])){
+            header('Location: '.base_url().'/login');
+            die();
+        }
+
     }else{
-        header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducasdo
+        header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducado
     }
 }
 
@@ -519,6 +528,7 @@ function getGenerarMenu()
             }
         }
     }
+    $menu .='<li><a class="app-menu__item" href="' . base_url() .'/salida"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>';
     $menu .= '</ul>';
     echo $menu;
 }

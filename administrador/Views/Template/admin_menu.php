@@ -8,9 +8,5 @@
           <p class="app-sidebar__user-designation"><?= $_SESSION['usuarioData']['Rol']; ?></p>
         </div>
       </div>
-      <ul class="app-menu">
-         <?php //putMessageLogFile($_SESSION) ?>
-         <?= getGenerarMenu() ?>
-        <li><a class="app-menu__item" href="<?= base_url(); ?>/salida"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>
-      </ul>
+      <?= getGenerarMenu() ?>
     </aside>
