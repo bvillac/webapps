@@ -287,14 +287,10 @@ function sessionStart(){
     session_regenerate_id(true);
     $inactive=TIMESESSION;//usuario va a permanercer logueado en segundos 60segundos 60=>30s 360>3minustos 120x1minut
     if(isset($_SESSION['timeout'])){//Ingresa solo si existe alguna sesion
-        $session_in = time()-$_SESSION['inicio'];
-        //putMessageLogFile($session_in);
+        /*$session_in = time()-$_SESSION['inicio'];
         if($session_in>$inactive){//paso el tiempo en que usuario permanece logueado
-            //putMessageLogFile($session_in);
             header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducado
-        }
-        //putMessageLogFile($_SESSION);
-        //putMessageLogFile("Estado ".$_SESSION['loginEstado']);
+        }*/
         //Revisa si la Session esta Activa Caso contrario la envia a login
         if(empty($_SESSION['loginEstado'])){
             header('Location: '.base_url().'/login');
@@ -534,12 +530,11 @@ function getGenerarMenu()
     echo $menu;
 }
 
-
-
 function menuPadre($val)
 {
+    $icono=($val['icono']!='')?$val['icono']:'fa fa-laptop';
     return '<a class="app-menu__item" href="#" data-toggle="treeview">
-                <i class="app-menu__icon fa fa-laptop"></i>
+                <i class="app-menu__icon '.$icono.' "></i>
                     <span class="app-menu__label">' . $val['titulo'] . '</span>
                 <i class="treeview-indicator fa fa-angle-right"></i>
             </a>';

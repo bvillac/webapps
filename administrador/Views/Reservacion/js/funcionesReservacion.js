@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   if (typeof accionFormAut !== "undefined") {
-    console.log("ingresoa ="+fechaDia);
+    //console.log("ingresoa ="+fechaDia);
     fntupdateInstructor(resultInst);
     fntupdateSalones(resultSalon);
     fntupdateNivel(resultNivel);

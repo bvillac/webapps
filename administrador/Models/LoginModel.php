@@ -100,8 +100,7 @@ class LoginModel extends Mysql
 
 	public function permisosModulo(int $usu_id, int $emp_id,int $rolId)
 	{
-		//$db_name = $this->getDbNameMysql();
-		$sql = "SELECT a.mod_id,SUBSTRING(a.mod_id, 1, LENGTH(a.mod_id) - 2) idPadre,b.mod_nombre,b.mod_url,a.r,a.w,a.u,a.d ";
+		$sql = "SELECT a.mod_id,SUBSTRING(a.mod_id, 1, LENGTH(a.mod_id) - 2) idPadre,b.mod_nombre,b.mod_url,b.mod_icono,a.r,a.w,a.u,a.d ";
 		$sql .= "	FROM " . $this->db_name . ".permiso a ";
 		$sql .= "		INNER JOIN " . $this->db_name . ".modulo b ";
 		$sql .= "			ON a.mod_id=b.mod_id ";
@@ -126,6 +125,7 @@ class LoginModel extends Mysql
 					'id' => $item['mod_id'],
 					'titulo' => $item['mod_nombre'],
 					'enlace' => $item['mod_url'],
+					'icono' => $item['mod_icono'],
 					'r' => $item['r'],
 					'w' => $item['w'],
 					'u' => $item['u'],

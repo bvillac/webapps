@@ -5,6 +5,8 @@ require_once("Models/InstructorModel.php");
 require_once("Models/ActividadModel.php");
 require_once("Models/ValoracionModel.php");
 require_once("Models/NivelModel.php");
+use Spipu\Html2Pdf\Html2Pdf;
+require 'vendor/autoload.php';
 class Asistencia extends Controllers
 {
     public function __construct()
@@ -78,7 +80,42 @@ class Asistencia extends Controllers
 
   
 
-
+    public function generarAsistenciaPDF(){
+        
+		if($_SESSION['permisosMod']['r']){
+            if ($_GET) {
+                //dep($_GET);
+                if (empty($_GET['centro']) || empty($_GET['fechaDia']) ) {
+                    $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+                } else {
+                    $request = "";
+                    //$datos = isset($_POST['reservar']) ? json_decode($_POST['reservar'], true) : array();
+                    $centro = isset($_GET['centro']) ? $_GET['centro'] : "";
+                    $InsId = isset($_GET['InsId']) ? $_GET['InsId'] : "";
+                    $hora = isset($_GET['hora']) ? $_GET['hora'] : "";
+                    $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : "";
+                    $plaId=0;
+                    $data['result'] = $this->model->consultarAsistenciaFechaHora($centro,$plaId,$InsId,$fechaDia,$hora);
+            
+                    //putMessageLogFile($data);
+      
+					ob_end_clean();
+                    $data['Titulo']="Asistencía de Usuarios";
+					$html =getFile("Asistencia/Reporte/controlPDF",$data);
+					$html2pdf = new Html2Pdf('p','A4','es','true','UTF-8');
+					$html2pdf->writeHTML($html);
+                    $FechaActual= date('m-d-Y H:i:s a', time()); 
+                    //$html2pdf->pdf->SetDisplayMode('fullpage');
+                    $html2pdf->output('CONTROL_'.$FechaActual.'.pdf','D');
+                }
+    
+            }
+            //die();
+		}else{
+			header('Location: '.base_url().'/login');
+			die();
+		}
+	}
 
 
 

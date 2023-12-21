@@ -143,6 +143,8 @@ class Academico extends Controllers
 			die();
 		}
 	}
+
+    
    
 
 }

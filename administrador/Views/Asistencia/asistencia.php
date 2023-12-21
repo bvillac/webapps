@@ -53,7 +53,8 @@
                 </select>
               </div>
               <div class="form-group col-md-12">
-                <button type="button" class="btn btn-dark" id="btn_buscar">Buscar</button>
+                <button type="button" class="btn btn-dark" id="btn_buscar"><i class="fa fa-magnifying-glass"></i>Buscar</button>
+                <button type="button" class="btn btn-success" id="btn_imprimir"><i class="fa fa-print"></i>Imprimir</button>
               </div>
               
           </div>

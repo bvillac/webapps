@@ -6,6 +6,18 @@ $(document).ready(function () {
     buscarReservaciones();;
   });
 
+  $("#btn_imprimir").click(function () {
+    var parametros = {
+      centro: ($('#cmb_CentroAtencion').val() != 0) ? $('#cmb_CentroAtencion').val() : 0,
+      InsId: ($('#cmb_instructor').val() != 0) ? $('#cmb_instructor').val() : 0,
+      hora: ($('#cmb_hora').val() != 0) ? $('#cmb_hora').val() : 0,
+      fechaDia: $("#dtp_fecha").val()
+    };
+    var url = base_url + '/Asistencia/generarAsistenciaPDF?' + new URLSearchParams(parametros).toString();
+    // Redirigir a la nueva URL
+    window.location.href = url;
+  });
+
   
 
 });

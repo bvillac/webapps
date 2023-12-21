@@ -14,7 +14,6 @@
 			$data['page_tag'] = "Login";
 			$data['page_name'] = "Login";
 			$data['page_title'] = "Login <small> ".TITULO_EMPRESA ."</small>";
-			//$data['fileJS'] = "funcionesLogin.js";
 			//dep($data);
 			$this->views->getView($this,"login",$data);
 		}
