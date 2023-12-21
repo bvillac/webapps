@@ -2,13 +2,9 @@
 
 	class Roles extends Controllers{
 		public function __construct(){
-			sessionStart();
 			parent::__construct();
-			if(empty($_SESSION['loginEstado'])){
-				header('Location: '.base_url().'/login');
-				die();
-			}
-			//getPermisos(8);//Control de Permisos Segun el Ids de la base de Datos
+			sessionStart();
+			getPermisos();			
 		}
 
 		public function Roles(){

@@ -284,7 +284,7 @@ function sessionUsuario(int $idsUsuario)
 
 function sessionStart(){
     session_start();
-    //session_regenerate_id(true);
+    session_regenerate_id(true);
     $inactive=TIMESESSION;//usuario va a permanercer logueado en segundos 60segundos 60=>30s 360>3minustos 120x1minut
     if(isset($_SESSION['timeout'])){//Ingresa solo si existe alguna sesion
         $session_in = time()-$_SESSION['inicio'];
@@ -455,6 +455,7 @@ function getPermisos()
     //putMessageLogFile($_SERVER["REQUEST_URI"]);
     $controller = strtolower($uriData[3]); //Obtiene el Controlador
     $menuApp = $_SESSION['menuData'];
+    //putMessageLogFile($menuApp);
     $claveEncontrada = buscarEnArray($menuApp, $controller);
     //putMessageLogFile($claveEncontrada);
     if ($claveEncontrada !== false) {

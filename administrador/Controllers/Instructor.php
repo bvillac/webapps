@@ -7,12 +7,8 @@ class Instructor extends Controllers
 
 	public function __construct()
 	{
-		sessionStart();
 		parent::__construct();
-		if (empty($_SESSION['loginEstado'])) {
-			header('Location: ' . base_url() . '/login');
-			die();
-		}
+		sessionStart();
 		getPermisos();
 	}
 

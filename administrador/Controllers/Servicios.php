@@ -4,8 +4,8 @@ class Servicios extends Controllers{
 	public function __construct()
 	{
 		parent::__construct();
-		session_start();
-		//getPermisos(MDPAGINAS);
+        sessionStart();
+        getPermisos();
 	}
 
 	public function nosotros(){

@@ -9,12 +9,8 @@ class Asistencia extends Controllers
 {
     public function __construct()
     {
-        sessionStart();
         parent::__construct();
-        if (empty($_SESSION['loginEstado'])) {
-            header('Location: ' . base_url() . '/login');
-            die();
-        }
+        sessionStart();
         getPermisos();
     }
 
@@ -44,7 +40,7 @@ class Asistencia extends Controllers
             } else {
                 if($_SESSION['permisosMod']['r']){
                     $catId = isset($_POST['catId']) ? $_POST['catId'] : 0;
-                    //$plaId = isset($_POST['plaId']) ? $_POST['plaId'] : 0;
+                    $plaId = 0;//isset($_POST['plaId']) ? $_POST['plaId'] : 0;
                     $insId = isset($_POST['insId']) ? $_POST['insId'] : 0;
                     $fechaDia = isset($_POST['fechaDia']) ? $_POST['fechaDia'] : '';
                     $hora = isset($_POST['hora']) ? $_POST['hora'] : 0;        

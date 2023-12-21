@@ -10,13 +10,16 @@
 	class Usuarios extends Controllers{
 		public function __construct(){
 			parent::__construct();
+        	sessionStart();
+        	getPermisos();
+			/*parent::__construct();
 			session_start();
 			//session_regenerate_id(true);//Seguridad en Session hace que IDsesion Php anteriores se eliminen y que no se puedan usar
 			if(empty($_SESSION['loginEstado'])){
 				header('Location: '.base_url().'/login');
 				die();
 			}
-			getPermisos(3);//Control de Permisos Segun el Ids de la base de Datos
+			getPermisos(3);//Control de Permisos Segun el Ids de la base de Datos*/
 		}
 
 		public function Usuarios(){
