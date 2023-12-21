@@ -14,17 +14,17 @@ $resultset = $data['result'];
 		$auxHora = "";
 		$thoras =$resultset[$c]['Reservado'];
 		$h=0;
+		$strFila = "";
 		while ($h < sizeof($thoras)) {
 			if ($auxHora != $thoras[$h]['ResHora'] ) { 
 				if ($h != 0) {
-				  //fntNewTable(auxHora,thoras[h],strFila)
-				  $this->fntNewTable($auxHora,$thoras[$h],$strFila);
+				  fntNewTable($auxHora,$thoras[$h],$strFila);
 				  $strFila = "";
 				}                         
 				$auxHora = $thoras[$h]['ResHora'];
 			  }
-			  //console.log(thoras[h].ResId+" "+thoras[h].ResHora+" "+thoras[h].BenNombre);
-			$strFila += fntRowHora(thoras[h]);
+			//$strFila = fntRowHora($thoras[$h]);
+			//echo $strFila;
 			$h++;
 		}
 		
@@ -47,13 +47,13 @@ $resultset = $data['result'];
 		$nSalon = "SALÓN: " . $thoras['SalNombre'];
 		$strtable = "<h1 class='tile-title'>{$nHora}  {$nSalon}</h1>";
 		$strtable .= "<table id='tabHor_{$auxHora}' class='table table-hover'>";
-		$strtable .= $this->fntHeadHora();
+		$strtable .= fntHeadHora();
 		$strtable .= '<tbody>';
 		$strtable .= $strFila;
 		$strtable .= '</tbody>';
 		$strtable .= '</table>';
 		$strtable .= '<br>';
-		//$('#list_tables').append(strtable);
+		echo $strtable;
 	}
 
 	function fntHeadHora() {
@@ -67,6 +67,16 @@ $resultset = $data['result'];
 			$strtable .= '</tr>';
 		$strtable .= '</thead>';
 		return $strtable;
+	  }
+
+	  function fntRowHora($thoras) {
+		$strFila = '<td>' . $thoras['NivNombre'] . '</td>';
+		$strFila .= '<td>' . $thoras['ResUnidad'] . '</td>';
+		$strFila .= '<td>' . $thoras['ActNombre'] . '</td>';
+		$strFila .= '<td>' . $thoras['BenNombre'] . '</td>';
+		$nCheck=($thoras['Estado']=="A")?"SI":"NO";	
+		$strFila .= '<td>' . $nCheck . '</td>';		
+		return '<tr>' . $strFila . '</tr>';
 	  }
 ?>
 
