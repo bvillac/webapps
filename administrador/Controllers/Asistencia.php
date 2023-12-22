@@ -95,9 +95,30 @@ class Asistencia extends Controllers
                     $hora = isset($_GET['hora']) ? $_GET['hora'] : "";
                     $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : "";
                     $plaId=0;
-                    $data['result'] = $this->model->consultarAsistenciaFechaHora($centro,$plaId,$InsId,$fechaDia,$hora);
+                    //$data['result'] = $this->model->consultarAsistenciaFechaHora($centro,$plaId,$InsId,$fechaDia,$hora);
+                    $dataSet = $this->model->consultarAsistenciaFechaHora($centro,$plaId,$InsId,$fechaDia,$hora);
+                    $c = 0;
+                    $rowData=[];
+                    while ($c < sizeof($dataSet)) {
+                        putMessageLogFile($dataSet[$c]['InsNombre']);
+                        //$rowData+=$dataSet[$c];
+                        $thoras = $dataSet[$c]['Reservado'];
+                        //$dataSet[$c]['Reservado']="";
+                        $h = 0;
+                        $aux="";
+                        while ($h < sizeof($thoras)) {
+                            if($aux!=$thoras[$h]['ResHora']){
+                                $subHijo=[];
+                                $aux=$thoras[$h]['ResHora'];
+                            }
+                            $subHijo+=$thoras[$h];
+                            $h++;
+                        }
+                        $c++;
+                    }
+                    
             
-                    //putMessageLogFile($data);
+                    //putMessageLogFile($rowData);
       
 					ob_end_clean();
                     $data['Titulo']="Asistencía de Usuarios";
