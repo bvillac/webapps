@@ -1,8 +1,7 @@
 <?php 
     adminHeader($data);
     adminMenu($data); 
-    //filelang(Setlanguage,"general") 
-    getModal('modalSecuencias',$data);
+    require_once "Views/Secuencias/Modals/modalSecuencias.php";
 ?>
     <div id="contentAjax"></div> 
     <main class="app-content">

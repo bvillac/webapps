@@ -8,7 +8,7 @@
 		}
 
 		public function consultarDatos(){
-			$sql = "SELECT a.sec_id Ids,CONCAT(c.est_numero,'-',b.pemi_numero) Punto,a.sec_tipo Tipo, ";
+			$sql = "SELECT a.sec_id Ids,CONCAT(c.est_numero,'-',b.pemi_numero) Punto,a.sec_tipo Tipo,a.sec_numero Numero, ";
 			$sql .= "  CONCAT(c.est_numero,'-',b.pemi_numero,'-',a.sec_numero) Secuencia,a.sec_nombre Documento,a.estado_logico Estado ";
 			$sql .= "   FROM ". $this->db_name .".secuencias a  ";
 			$sql .= "      INNER JOIN (". $this->db_name .".punto_emision b  ";
@@ -36,7 +36,7 @@
 		}
 
 		public function consultarDatosId(int $Ids){
-			$sql = "SELECT a.sec_id Ids,c.est_id,c.est_numero Establecimiento,b.pemi_id,b.pemi_numero Punto,a.sec_tipo Tipo, ";
+			$sql = "SELECT a.sec_id Ids,c.est_id,c.est_numero Establecimiento,b.pemi_id,b.pemi_numero Punto,a.sec_tipo Tipo,a.sec_numero Numero, ";
 			$sql .= "   CONCAT(c.est_numero,'-',b.pemi_numero,'-',a.sec_numero) Secuencia,a.sec_nombre Documento,a.estado_logico Estado,date(a.fecha_creacion) FechaIng";
 			$sql .= "   FROM ". $this->db_name .".secuencias a  ";
 			$sql .= "      INNER JOIN (". $this->db_name .".punto_emision b  ";

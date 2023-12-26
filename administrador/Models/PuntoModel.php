@@ -19,6 +19,7 @@ require_once("Libraries/Core/Conexion.php");
 			$request = $this->select_all($sql);
 			return $request;
 		}
+
 		public function consultarEstablecimiento(){
 			$sql = "SELECT est_id Ids, CONCAT(est_numero,'',est_nombre) Nombre ";
 			$sql .= " FROM ". $this->db_name .".establecimiento WHERE estado_logico!=0 ";
@@ -96,6 +97,13 @@ require_once("Libraries/Core/Conexion.php");
 			$sql = "UPDATE " . $this->db_name . ".punto_emision SET estado_logico = ?,usuario_modificacion=1,fecha_modificacion = CURRENT_TIMESTAMP() WHERE pemi_id = {$Ids} ";
 			$arrData = array(0);
 			$request = $this->update($sql, $arrData);
+			return $request;
+		}
+
+		public function consultarPuntoEmision(int $Ids){
+			$sql = "SELECT pemi_id Ids, CONCAT(pemi_numero,' ',pemi_nombre) Nombre ";
+			$sql .= " FROM ". $this->db_name .".punto_emision WHERE estado_logico!=0 and pemi_id='{$Ids}' ORDER BY pemi_nombre ASC";
+			$request = $this->select_all($sql);
 			return $request;
 		}
 

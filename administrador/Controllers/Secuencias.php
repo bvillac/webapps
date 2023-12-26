@@ -1,4 +1,6 @@
 <?php
+require_once("Models/EstablecimientoModel.php");
+require_once("Models/PuntoModel.php");
 class Secuencias extends Controllers
 {
 	//private $pagView="Secuencias";
@@ -14,6 +16,13 @@ class Secuencias extends Controllers
 		if (empty($_SESSION['permisosMod']['r'])) {
 			header("Location:" . base_url() . '/dashboard');
 		}
+		$Establecimiento = new EstablecimientoModel();
+		$EstData = $Establecimiento->consultarEstablecimiento();
+		$data['Establecimiento'] = $EstData;
+		$Punto= new PuntoModel();
+		$data['Punto'] = $Punto->consultarPuntoEmision($EstData[0]['Ids']);
+		putMessageLogFile($data['Punto']);
+		$data['idsEmpresa']=$_SESSION['idEmpresa'];		
 		$data['page_tag'] = "Secuencias";
 		$data['page_name'] = "Secuencias";
 		$data['page_title'] = "Secuencias <small> " . TITULO_EMPRESA . "</small>";
@@ -49,20 +58,7 @@ class Secuencias extends Controllers
 		die();
 	}
 
-	public function getEstablecimiento()
-	{
-		$model = new SecuenciasModel();
-		$htmlOptions = "";
-		$arrData = $model->consultarEstablecimiento();
-		if (count($arrData) > 0) {
-			$htmlOptions = '<option value="0">SELECCIONAR</option>';
-			for ($i = 0; $i < count($arrData); $i++) {
-				$htmlOptions .= '<option value="' . $arrData[$i]['Ids'] . '">' . $arrData[$i]['Nombre'] . '</option>';
-			}
-		}
-		echo $htmlOptions;
-		die();
-	}
+	
 
 	public function getPunto(int $ids)
 	{
@@ -79,12 +75,32 @@ class Secuencias extends Controllers
 		die();
 	}
 
+	public function editarSecuencia(int $ids)
+	{
+		if ($_SESSION['permisosMod']['r']) {
+			$ids = intval(strClean($ids));
+			$model = new SecuenciasModel();
+			if ($ids > 0) {
+				$arrData = $model->consultarDatosId($ids);
+				//dep($arrData);
+				if (empty($arrData)) {
+					$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+				} else {
+					$arrResponse = array('status' => true, 'data' => $arrData);
+				}
+				echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+			}
+		}
+		die();
+	}
+
 	public function getSecuencia(int $ids)
 	{
 		if ($_SESSION['permisosMod']['r']) {
 			$ids = intval(strClean($ids));
 			$model = new SecuenciasModel();
 			if ($ids > 0) {
+				
 				$arrData = $model->consultarDatosId($ids);
 				//dep($arrData);
 				if (empty($arrData)) {

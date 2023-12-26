@@ -1,4 +1,3 @@
-
 var tableSec;
 
 //Cuando se cargue todo ejecuta las funciones
@@ -78,15 +77,15 @@ document.addEventListener('DOMContentLoaded', function(){
 
 //Se ejecuta en los eventos de Controles
 $(document).ready(function() {
-    $('#cmb_establecimiento').change(function () {        
+    /*$('#cmb_establecimiento').change(function () {        
         if ($('#cmb_establecimiento').val() != 0) {            
             fntPunto();
         } else {
             $('#cmb_punto option').remove();
-            $('#cmb_punto').selectpicker('refresh')
+            //$('#cmb_punto').selectpicker('refresh')
             swal("Error", "Selecione Establecimiento" , "error");
         }
-    });
+    });*/
 
     /*$("#ids-sx").keyup(function() {
         //codigo
@@ -108,28 +107,9 @@ function openModal(){
 	$('#modalFormSec').modal('show');
 }
 
-window.addEventListener('load', function() {
-    fntEstablecimiento();
-}, false);
 
 
-
-function fntEstablecimiento(){
-    var ajaxUrl = base_url+'/Secuencias/getEstablecimiento';
-    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    request.open("GET",ajaxUrl,true);
-    request.send();
-    request.onreadystatechange = function(){
-        if(request.readyState == 4 && request.status == 200){
-            document.querySelector('#cmb_establecimiento').innerHTML = request.responseText;
-            document.querySelector('#cmb_establecimiento').value = 0;
-            $('#cmb_establecimiento').selectpicker('render');
-        }
-    }
-    
-}
-
-function fntPunto(){
+/*function fntPunto(){
     var ids=$('#cmb_establecimiento').val();
         var ajaxUrl = base_url + '/Secuencias/getPunto/' + ids;
         var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
@@ -147,7 +127,7 @@ function fntPunto(){
         }
     
     
-}
+}*/
 
 //FUNCION PARA VISTA DE REGISTRO
 function fntViewSec(ids){
@@ -195,20 +175,20 @@ function fntEditSec(ids){
             if(objData.status){
                 document.querySelector("#txth_ids").value = objData.data.Ids;
                 document.querySelector('#txt_sec_tipo').value=objData.data.Tipo;
-                document.querySelector('#txt_sec_numero').value=objData.data.Secuencia;
+                document.querySelector('#txt_sec_numero').value=objData.data.Numero;
                 document.querySelector('#txt_sec_nombre').value=objData.data.Documento;
                 document.querySelector("#cmb_establecimiento").value =objData.data.est_id;
-                $('#cmb_establecimiento').selectpicker('render');
-                fntPunto();
-                document.querySelector('#cmb_punto').value=objData.data.pemi_id;
-                $('#cmb_punto').selectpicker('render');
+                //$('#cmb_establecimiento').selectpicker('render');
+                //fntPunto();-
+                //document.querySelector('#cmb_punto').value=objData.data.pemi_id;
+                //$('#cmb_punto').selectpicker('render');
 
                 if(objData.data.Estado == 1){
                     document.querySelector("#cmb_estado").value = 1;
                 }else{
                     document.querySelector("#cmb_estado").value = 2;
                 }
-                $('#cmb_estado').selectpicker('render');
+                //$('#cmb_estado').selectpicker('render');
             }
         }
         $('#modalFormSec').modal('show');
