@@ -90,7 +90,7 @@ class PersonaModel extends Mysql
 				$sql .= " AND (a.per_nombre LIKE '%{$parametro}%' OR a.per_apellido LIKE '%{$parametro}%') ";
 			}
 		}
-		$sql .= LIMIT;
+		//$sql .= LIMIT;
 		$request = $this->select_all($sql);
 		return $request;
 	}

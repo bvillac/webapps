@@ -147,7 +147,7 @@ class BeneficiarioModel extends MysqlAcademico
 				$sql .= " AND (c.per_nombre LIKE '%{$parametro}%' OR c.per_apellido LIKE '%{$parametro}%') ";
 			}
 		}
-		$sql .= LIMIT;
+		//$sql .= LIMIT;
 		$request = $this->select_all($sql);
 		return $request;
 	}

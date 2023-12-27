@@ -200,7 +200,7 @@ class ClienteMillerModel extends Mysql
 				$sql .= " AND (b.per_nombre LIKE '%{$parametro}%' OR b.per_apellido LIKE '%{$parametro}%' OR a.cli_razon_social LIKE '%{$parametro}%') ";
 			}
 		}
-        $sql .= LIMIT;
+        //$sql .= LIMIT;
 		$request = $this->select_all($sql);
 		return $request;
 	}

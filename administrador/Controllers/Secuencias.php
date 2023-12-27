@@ -21,7 +21,6 @@ class Secuencias extends Controllers
 		$data['Establecimiento'] = $EstData;
 		$Punto= new PuntoModel();
 		$data['Punto'] = $Punto->consultarPuntoEmision($EstData[0]['Ids']);
-		putMessageLogFile($data['Punto']);
 		$data['idsEmpresa']=$_SESSION['idEmpresa'];		
 		$data['page_tag'] = "Secuencias";
 		$data['page_name'] = "Secuencias";

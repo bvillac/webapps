@@ -99,26 +99,37 @@ class Asistencia extends Controllers
                     $dataSet = $this->model->consultarAsistenciaFechaHora($centro,$plaId,$InsId,$fechaDia,$hora);
                     $c = 0;
                     $rowData=[];
+                    //putMessageLogFile($dataSet);
                     while ($c < sizeof($dataSet)) {
                         putMessageLogFile($dataSet[$c]['InsNombre']);
                         //$rowData+=$dataSet[$c];
                         $thoras = $dataSet[$c]['Reservado'];
+                        putMessageLogFile($thoras);
                         //$dataSet[$c]['Reservado']="";
                         $h = 0;
+                        $x = -1;
                         $aux="";
+                        $horas=[];
+                        //$rowData=[];
                         while ($h < sizeof($thoras)) {
+                            putMessageLogFile($thoras[$h]['ResHora']);
                             if($aux!=$thoras[$h]['ResHora']){
-                                $subHijo=[];
-                                $aux=$thoras[$h]['ResHora'];
+                                $x++;
+                                $rowData[$x]['Id']=$thoras[$h]['ResHora'];
+                                $horas=[];
+                                $aux=$thoras[$h]['ResHora'];   
                             }
-                            $subHijo+=$thoras[$h];
+                            putMessageLogFile($horas);
+                            $horas+=$thoras[$h];
                             $h++;
+                            $rowData[$x]['Horas']=$horas;
                         }
+                        $dataSet[$c]['Reservado']=$rowData;
                         $c++;
                     }
                     
             
-                    //putMessageLogFile($rowData);
+                    putMessageLogFile($dataSet);
       
 					ob_end_clean();
                     $data['Titulo']="Asistencía de Usuarios";
