@@ -48,7 +48,7 @@ adminMenu($data);
                         </div>
                         <div class="form-group col-md-6">
                             <label for="txt_cli_cedula_ruc">Identificación Cédula/Ruc</label>
-                            <input type="text" class="form-control valid validarNumber " id="txt_cli_cedula_ruc" name="txt_cli_cedula_ruc" value="<?= $data['Cedula'] ?>" required="" onkeypress="return controlTagEvent(event);" disabled>
+                            <input type="text" class="form-control valid validarNumber " id="txt_cli_cedula_ruc" name="txt_cli_cedula_ruc" value="<?= $data['Cedula'] ?>" required="" onkeypress="return controlTagEvent(event);" >
                         </div>
                     </div>
                     <div class="form-row">
