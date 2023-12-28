@@ -689,6 +689,7 @@ function listaDetalle() {
                     rowGrid.CodigoBeneficiario = Grid[i]['CodigoBeneficiario'];
                     rowGrid.TBenfId = Grid[i]['tipoBeneficiarioID'];
                     rowGrid.CentroAtencionID = Grid[i]['CentroAtencionID'];
+                    rowGrid.EdadBeneficirio = Grid[i]['EdadBeneficirio'];
                     rowGrid.PaqueteEstudiosID = Grid[i]['PaqueteEstudiosID'];
                     rowGrid.NMeses = Grid[i]['numero_meses'];
                     rowGrid.NHoras = Grid[i]['numero_horas'];

@@ -92,6 +92,7 @@ class ContratoModel extends MysqlAcademico
                         $contId,
                         $Detalle[$i]['PerIdBenef'],
                         $Detalle[$i]['TBenfId'],
+                        $Detalle[$i]['EdadBeneficirio'],
                         retornaUser(),1
                     ); 
 					$benId=$this->insertarBeneficiario($con, $arrBeneficiario);
@@ -181,8 +182,8 @@ class ContratoModel extends MysqlAcademico
 
     private function insertarBeneficiario($con, $arrDetalle){ 
         $SqlQuery  = "INSERT INTO " . $this->db_name . ".beneficiario ";
-        $SqlQuery .= "(`con_id`,`per_id`,`ben_tipo`,`ben_usuario_creacion`,`ben_estado_logico`) ";
-        $SqlQuery .= " VALUES (?,?,?,?,?) ";
+        $SqlQuery .= "(`con_id`,`per_id`,`ben_tipo`,`ben_edad`,`ben_usuario_creacion`,`ben_estado_logico`) ";
+        $SqlQuery .= " VALUES (?,?,?,?,?,?) ";
         return $this->insertConTrasn($con, $SqlQuery, $arrDetalle);
     }
 

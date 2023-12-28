@@ -167,7 +167,7 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_EdadBeneficirio">Edad <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_EdadBeneficirio" name="txt_EdadBeneficirio" type="text" disabled>
+                                            <input class="form-control valid validarNumber" id="txt_EdadBeneficirio" name="txt_EdadBeneficirio" maxlength="3" type="text" value="0" required="" onkeypress="return controlTagEvent(event);">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_TelefonoBeneficirio">Teléfono <span class="required">*</span></label>
@@ -201,11 +201,11 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_numero_meses">Número de Meses <span class="required">*</span></label>
-                                            <input class="form-control valid validarNumber" id="txt_numero_meses" name="txt_numero_meses" type="text" value="0" required="" onkeypress="return controlTagEvent(event);">
+                                            <input class="form-control valid validarNumber" id="txt_numero_meses"  name="txt_numero_meses" maxlength="3" type="text" value="0" required="" onkeypress="return controlTagEvent(event);">
                                         </div>
                                         <div class="form-group col-md-3">
                                             <label for="txt_numero_horas">Número de Horas <span class="required">*</span></label>
-                                            <input class="form-control valid validarNumber" id="txt_numero_horas" name="txt_numero_horas" type="text" value="0" required="" onkeypress="return controlTagEvent(event);">
+                                            <input class="form-control valid validarNumber" id="txt_numero_horas" name="txt_numero_horas" maxlength="3" type="text" value="0" required="" onkeypress="return controlTagEvent(event);">
                                         </div>
 
                                     </div>
@@ -305,7 +305,7 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                     <div class="mb-3 row">
                                         <label for="txt_NumeroCuota" class="col-sm-2 col-form-label text-right">Número de Cuotas</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control valid validarNumber" id="txt_NumeroCuota" value="0">
+                                            <input type="text" class="form-control valid validarNumber" id="txt_NumeroCuota" maxlength="3" value="0" onkeypress="return controlTagEvent(event);" >
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
