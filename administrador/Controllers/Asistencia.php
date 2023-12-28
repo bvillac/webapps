@@ -95,42 +95,37 @@ class Asistencia extends Controllers
                     $hora = isset($_GET['hora']) ? $_GET['hora'] : "";
                     $fechaDia = isset($_GET['fechaDia']) ? $_GET['fechaDia'] : "";
                     $plaId=0;
-                    //$data['result'] = $this->model->consultarAsistenciaFechaHora($centro,$plaId,$InsId,$fechaDia,$hora);
                     $dataSet = $this->model->consultarAsistenciaFechaHora($centro,$plaId,$InsId,$fechaDia,$hora);
                     $c = 0;
                     $rowData=[];
-                    //putMessageLogFile($dataSet);
                     while ($c < sizeof($dataSet)) {
-                        putMessageLogFile($dataSet[$c]['InsNombre']);
-                        //$rowData+=$dataSet[$c];
                         $thoras = $dataSet[$c]['Reservado'];
-                        putMessageLogFile($thoras);
-                        //$dataSet[$c]['Reservado']="";
                         $h = 0;
                         $x = -1;
+                        $z=0; 
                         $aux="";
                         $horas=[];
-                        //$rowData=[];
                         while ($h < sizeof($thoras)) {
-                            putMessageLogFile($thoras[$h]['ResHora']);
                             if($aux!=$thoras[$h]['ResHora']){
                                 $x++;
-                                $rowData[$x]['Id']=$thoras[$h]['ResHora'];
+                                $rowData[$x]['Hora']=$thoras[$h]['ResHora'];
+                                $rowData[$x]['Salon']=$thoras[$h]['SalNombre'];
                                 $horas=[];
-                                $aux=$thoras[$h]['ResHora'];   
+                                $aux=$thoras[$h]['ResHora'];
+                                $z=0; 
+                                $horas=$this->retonarHoras($thoras,$h,$horas,$z);  
+                            }else{
+                                $z++;
+                                $horas+=$this->retonarHoras($thoras,$h,$horas,$z);
                             }
-                            putMessageLogFile($horas);
-                            $horas+=$thoras[$h];
                             $h++;
                             $rowData[$x]['Horas']=$horas;
                         }
                         $dataSet[$c]['Reservado']=$rowData;
                         $c++;
                     }
-                    
-            
-                    putMessageLogFile($dataSet);
-      
+                    $data['result']=$dataSet;
+                    $data['fechaAsistencia']=$fechaDia;
 					ob_end_clean();
                     $data['Titulo']="Asistencía de Usuarios";
 					$html =getFile("Asistencia/Reporte/controlPDF",$data);
@@ -148,6 +143,20 @@ class Asistencia extends Controllers
 			die();
 		}
 	}
+
+    private function retonarHoras($result,$i,$horas,$h){
+        $horas[$h]['ResId']=$result[$i]['ResId'];
+        $horas[$h]['ResHora']=$result[$i]['ResHora'];
+        $horas[$h]['ActNombre']=$result[$i]['ActNombre'];
+        $horas[$h]['NivNombre']=$result[$i]['NivNombre'];
+        $horas[$h]['ResUnidad']=$result[$i]['ResUnidad'];
+        $horas[$h]['BenId']=$result[$i]['BenId'];
+        $horas[$h]['BenNombre']=$result[$i]['BenNombre'];
+        $horas[$h]['SalId']=$result[$i]['SalId'];
+        $horas[$h]['SalNombre']=$result[$i]['SalNombre'];
+        $horas[$h]['Estado']=$result[$i]['Estado'];
+        return $horas;
+    }
 
 
 
