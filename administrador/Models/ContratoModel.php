@@ -32,7 +32,8 @@ class ContratoModel extends MysqlAcademico
         try {
             $PuntoEmision=$_SESSION['empresaData']['PuntoEmisId'];
             $objSecuencia=new SecuenciasModel;
-			$numGenerado=$objSecuencia->newSecuence("CON",$PuntoEmision,true,$con);
+			//$numGenerado=$objSecuencia->newSecuence("CON",$PuntoEmision,true,$con);
+            $numGenerado=$Cabecera['numeroContrato'];
             if((int)$numGenerado>0){//Si Es mayor a 0 continua guardando
                 $contId=$this->insertarContrato($con,$Cabecera,$numGenerado); 
                 //INSERTAR COBRANZAS
@@ -284,7 +285,8 @@ class ContratoModel extends MysqlAcademico
     public function consultarBeneficiarioContrato(int $codigo){
         $sql = "SELECT a.ben_tipo,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres,b.per_telefono TelCelular, ";
         $sql .= "  c.apr_numero_meses NMeses,c.apr_numero_horas NHoras,c.apr_examen_internacional Examen, ";
-        $sql .= "  FLOOR(DATEDIFF(CURDATE(),b.per_fecha_nacimiento) / 365.25) Edad , ";
+        //$sql .= "  FLOOR(DATEDIFF(CURDATE(),b.per_fecha_nacimiento) / 365.25) Edad , ";
+        $sql .= "  a.ben_edad Edad , ";
         $sql .= "  (SELECT paq_nombre FROM " . $this->db_name . ".paquete where paq_id=c.paq_id) Paquete, ";
         $sql .= "  (SELECT idi_nombre FROM " . $this->db_name . ".idioma where idi_id=c.idi_id) Idioma, ";
         $sql .= "  (SELECT mas_nombre FROM " . $this->db_name . ".modalidad_asistencia where mas_id=c.mas_id) Modalidad, ";

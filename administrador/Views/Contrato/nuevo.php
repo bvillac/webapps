@@ -35,11 +35,11 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                             <h4>R.U.C. <?= $data['Ruc'] ?></h4>
                             </p>
                         </div>
-                        <div class="col-md-3">
-                            <p>
-                            <h4 id="lbl_secuencia">N° <?= $data['secuencia'] ?></h4>
-                            </p>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">N° Contrato</label>
+                            <input class="form-control valid validarNumber" type="text" id="txt_NumeroContrato" maxlength="10" name="txt_NumeroContrato" placeholder="0000000000" onkeypress="return controlTagEvent(event);" >
                         </div>
+                       
 
                         <div class="form-group col-md-3">
                             <label for="dtp_fecha_inicio">Fecha del Contrato</label>
@@ -124,7 +124,7 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                             <input class="form-control" id="txt_ocupacion" name="txt_ocupacion" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_forma_pago">Forma de Pago <span class="required">*</span></label>
+                                            <label for="txt_forma_pago">Tipo Contrato <span class="required">*</span></label>
                                             <input class="form-control" id="txt_forma_pago" name="txt_forma_pago" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">

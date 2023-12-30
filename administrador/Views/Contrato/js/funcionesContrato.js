@@ -662,6 +662,7 @@ function listaCabecera() {
     var cabecera = new Object();
     cabecera.cliIds = $('#txth_ids').val();
     cabecera.codigoPersona = $('#txt_CodigoPersona').val();
+    cabecera.numeroContrato = $('#txt_NumeroContrato').val();
     cabecera.fecha_inicio = $('#dtp_fecha_inicio').val();
     cabecera.numero_recibo = $('#txt_numero_recibo').val();
     cabecera.numero_deposito = $('#txt_numero_deposito').val();
