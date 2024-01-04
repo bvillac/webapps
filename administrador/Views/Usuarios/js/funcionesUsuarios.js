@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             let strIds = document.querySelector('#txth_ids').value;
             let strDni = document.querySelector('#txt_dni').value;
-            let strFecNac = document.querySelector('#dtp_fec_nacimiento').value;
+            let strFecNac = document.querySelector('#dtp_fecha_nacimiento').value;
             let strNombre = document.querySelector('#txt_nombre').value;
             let strApellido = document.querySelector('#txt_apellido').value;
             let strTelefono = document.querySelector('#txt_telefono').value;
@@ -100,12 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 swal("Atención", "La clave no puede tener más de 16 caracteres", "error");
                 return false;
             }
-
-
-
-
-
-
 
             //Verificas los elementos conl clase valid para controlar que esten ingresados
             let elementsValid = document.getElementsByClassName("valid");

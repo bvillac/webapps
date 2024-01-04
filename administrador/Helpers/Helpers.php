@@ -285,6 +285,7 @@ function sessionUsuario(int $idsUsuario)
 function sessionStart(){
     session_start();
     session_regenerate_id(true);
+    //putMessageLogFile("tiempo ".$_SESSION['timeout']);
     $inactive=TIMESESSION;//usuario va a permanercer logueado en segundos 60segundos 60=>30s 360>3minustos 120x1minut
     if(isset($_SESSION['timeout'])){//Ingresa solo si existe alguna sesion
         /*$session_in = time()-$_SESSION['inicio'];

@@ -1,6 +1,4 @@
 <?php 
-	//namespace Controllers;
-	//use Models\UsuariosModel;
 	require_once("Models/UsuariosModel.php");
 	require_once("Models/PersonaModel.php");
 	require_once("Models/EmpresaModel.php");

@@ -27,7 +27,7 @@
 					$model=new LoginModel();
 					$strUsuario  =  strtolower(strClean($_POST['txt_Email']));//minusculas
 					$strClave = hash("SHA256",$_POST['txt_clave']);//Se encripta para comparar en la base
-					$request = $model->loginData($strUsuario, $strClave);				
+					$request = $model->loginData($strUsuario, $strClave);			
 					if(empty($request)){
 						$arrResponse = array('status' => false, 'msg' => 'El usuario o la contraseña es incorrecto.' ); 
 					}else{
@@ -45,7 +45,6 @@
 							//Para que la Session no se cierre en algunos navegadores.
 							$_SESSION['timeout'] = true;
 							$_SESSION['inicio'] = time();//Devuelve la hora en numero entero
-
 							
 							$arrData = $model->sessionLogin($_SESSION['idsUsuario']);								
 							sessionUsuario($_SESSION['idsUsuario']);//Actualiza la Session del usuario.
@@ -54,9 +53,13 @@
 							$empId = $_SESSION['idEmpresa'];
 							$_SESSION['menuData'] = $model->permisosModulo($usuId,$empId,$idrol);							
 							$arrResponse = array('status' => true, 'msg' => 'ok');
+							//putMessageLogFile($arrResponse);
+							//echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+							//die();
 						}else{
 							$arrResponse = array('status' => false, 'msg' => 'Usuario inactivo.');
 						}
+						//putMessageLogFile($arrResponse);
 					}
 				}
 				echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
