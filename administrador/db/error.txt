@@ -1,0 +1,12 @@
+Error Code: 1055. Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'db_academico.a.res_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+Agregar solo un modo a sql_mode sin eliminar los existentes:
+
+SET sql_mode=(SELECT CONCAT(@@sql_mode,',<mode_to_add>'));
+Eliminar solo un modo específico de sql_mode sin eliminar otros:
+
+SET sql_mode=(SELECT REPLACE(@@sql_mode,'<mode_to_remove>',''));
+En su caso, si desea eliminar ONLY_FULL_GROUP_BYel modo único, utilice el siguiente comando:
+select @@sql_mode;
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
+SELECT list is not in GROUP BY clause and contains nonaggregated column

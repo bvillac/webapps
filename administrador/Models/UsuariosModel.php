@@ -207,9 +207,6 @@ class UsuariosModel extends Mysql
 	}
 
 
-
-
-
 	public function updateData(
 		int $UsuId,
 		string $Dni,

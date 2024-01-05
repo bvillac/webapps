@@ -125,6 +125,9 @@
 				if($_SESSION['permisosMod']['d']){
 					$btnOpciones .='<button class="btn btn-danger btn-sm btnDelUsu" onClick="fntDelUsu('.$arrData[$i]['Ids'].')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
 				}
+				if ($_SESSION['permisosMod']['u']) {
+                    $btnOpciones .= ' <a title="Evaluar Beneficiario" href="' . base_url() . '/Usuario/rol/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-list-alt"></i> </a> ';
+                }
 				//$btnOpciones .='<button class="btn btn-info btn-sm btnViewUsu" onClick="fntViewUsu('.$arrData[$i]['Ids'].')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
 				//$btnOpciones .='<button class="btn btn-primary  btn-sm btnEditUsu" onClick="fntEditUsu('.$arrData[$i]['Ids'].')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
 				//$btnOpciones .='<button class="btn btn-danger btn-sm btnDelUsu" onClick="fntDelUsu('.$arrData[$i]['Ids'].')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
@@ -284,6 +287,36 @@
 			}
 			die();
 		}
+
+
+	public function rol($ids)
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            if (is_numeric($ids)) {
+                $data = $this->model->consultarDatosId($ids);
+                if (empty($data)) {
+                    echo "Datos no encontrados";
+                } else {
+                    $data['control'] = $this->model->consultarBenefId($ids);
+                    $valoracion = new ValoracionModel();
+                    $data['valoracion'] = $valoracion->consultarValoracion();
+                    $data['porcentaje'] = range(0, 100);
+                    $data['page_tag'] = "Control Académico";
+                    $data['page_name'] = "Control Académico";
+                    $data['page_title'] = "Control Académico <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_back'] = "academico";
+                    $this->views->getView($this, "rol", $data);
+                }
+            } else {
+                echo "Dato no válido";
+            }
+        } else {
+            header('Location: ' . base_url() . '/login');
+            die();
+        }
+        die();
+    }
+
 
 
 	}

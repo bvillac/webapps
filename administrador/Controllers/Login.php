@@ -33,7 +33,7 @@
 					}else{
 						$arrData = $request;
 						//putMessageLogFile($arrData);
-						if($arrData['Estado'] == 1){
+						if($arrData['Estado'] == 1){							
 							//Obtener datos empresa 
 							$arrEmpresa=datosEmpresaEstablePunto(ID_EMPRESA);
 							$_SESSION['empresaData']=$arrEmpresa;
@@ -51,7 +51,10 @@
 							$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
 							$usuId = $_SESSION['idsUsuario'];
 							$empId = $_SESSION['idEmpresa'];
-							$_SESSION['menuData'] = $model->permisosModulo($usuId,$empId,$idrol);							
+							putMessageLogFile("entro 3");				
+							$idrol=($idrol!="")?$idrol:4;//Si no tiene asignado Rol se envia un rol=4 Usuario
+							putMessageLogFile("rol ".$idrol);
+							$_SESSION['menuData'] = $model->permisosModulo($usuId,$empId,$idrol);						
 							$arrResponse = array('status' => true, 'msg' => 'ok');
 							//putMessageLogFile($arrResponse);
 							//echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
