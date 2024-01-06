@@ -623,7 +623,7 @@ function guardarContrato() {
     let accion = 'Create';
     var vSaldoTotal = parseFloat($('#txt_SaldoTotal').val());
     var vFecha = $('#dtp_fecha_inicio').val();
-    if ($('#txt_cedula').val() != "" && vSaldoTotal > 0 && vFecha != "") {
+    if ($('#txt_cedula').val() != "" && vSaldoTotal >= 0 && vFecha != "") {
         //$("#cmd_guardar").attr('disabled', true);
         //var ID = (accion == "edit") ? $('#txth_PedID').val() : 0;
         let link = base_url + '/Contrato/ingresarContrato';
