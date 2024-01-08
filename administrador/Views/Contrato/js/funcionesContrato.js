@@ -667,6 +667,7 @@ function listaCabecera() {
     cabecera.numero_recibo = $('#txt_numero_recibo').val();
     cabecera.numero_deposito = $('#txt_numero_deposito').val();
     cabecera.idsFPago = $('#txth_idsFPago').val();
+    cabecera.tipoPago = $('#cmb_tipo_pago').val();
     cabecera.valor = $('#txt_valor').val();
     cabecera.cuotaInicial = $('#txt_CuotaInicial').val();
     cabecera.numeroCuota = $('#txt_NumeroCuota').val();
@@ -734,6 +735,45 @@ function openModaladdPersona() {
     document.querySelector('#titleModal').innerHTML = "Nueva Persona";
     document.querySelector("#formPersona").reset();
     $('#modalFormPersona').modal('show');
+}
+
+
+function fntDesactivarContrato(ids) {
+    swal({
+        title: "Desactivar Registro",
+        text: "¿Realmente quiere Desactivar el Contrato?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, Desactivar!",
+        cancelButtonText: "No, cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: true
+    }, function (isConfirm) {
+
+        if (isConfirm) {
+            var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+            var ajaxUrl = base_url + '/Contrato/desativarContrato';
+            var strData = "ids=" + ids;
+            request.open("POST", ajaxUrl, true);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            request.send(strData);
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    var objData = JSON.parse(request.responseText);
+                    if (objData.status) {
+                        swal("Atención!", objData.msg, "success");
+                        tableContrato.api().ajax.reload(function () {
+
+                        });
+                    } else {
+                        swal("Atención!", objData.msg, "error");
+                    }
+                }
+            }
+        }
+
+    });
+
 }
 
 

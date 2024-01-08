@@ -18,7 +18,8 @@ class ContratoModel extends MysqlAcademico
 		$sql .= "FROM " . $this->db_name . ".contrato a ";
 		$sql .= "	INNER JOIN 	" . $this->db_nameAdmin . ".cliente b ";
 		$sql .= "		ON a.cli_id=b.cli_id and b.estado_logico!=0 ";
-        $sql .= "   WHERE a.con_estado_logico!=0 ORDER BY a.con_numero ASC ";
+        //$sql .= "   WHERE a.con_estado_logico!=0 ORDER BY a.con_numero ASC ";
+        $sql .= "   ORDER BY a.con_numero ASC ";
         $request = $this->select_all($sql);
         return $request;
     }
@@ -155,6 +156,7 @@ class ContratoModel extends MysqlAcademico
             null,
             $Cabecera['numero_recibo'],
             $Cabecera['numero_deposito'],
+            $Cabecera['tipoPago'],
             $Cabecera['idsFPago'],
             $Cabecera['valor'],
             $Cabecera['cuotaInicial'],
@@ -164,9 +166,9 @@ class ContratoModel extends MysqlAcademico
         );     
         $SqlQuery  = "INSERT INTO " . $this->db_name . ".contrato ";
         $SqlQuery .= "(`emp_id`,`cli_id`,`con_numero`,`con_fecha_inicio`,`con_fecha_fin`,`con_num_recibo_inscripcion`,`con_num_deposito`,
-                        `con_tipo_pago`,`con_valor`,`con_valor_cuota_inicial`,`con_numero_pagos`,`con_valor_cuota_mensual`,`con_usuario_creacion`,
+                        `con_tipo_pago`,`con_forma_pago`,`con_valor`,`con_valor_cuota_inicial`,`con_numero_pagos`,`con_valor_cuota_mensual`,`con_usuario_creacion`,
                         `con_estado_logico`) ";
-        $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+        $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
         return $this->insertConTrasn($con, $SqlQuery, $arrData);        
     }
 
@@ -300,5 +302,17 @@ class ContratoModel extends MysqlAcademico
         $request = $this->select_all($sql);
         return $request;
     }
+
+
+    public function desativarContrato(int $Ids)
+    {
+        $usuario = retornaUser();
+        $sql = "UPDATE " . $this->db_name . ".contrato SET con_estado_logico = ?,con_usuario_modificacion='{$usuario}',
+                        con_fecha_modificacion = CURRENT_TIMESTAMP() WHERE con_id = {$Ids} ";
+        $arrData = array(0);
+        $request = $this->update($sql, $arrData);
+        return $request;
+    }
+
 
 }

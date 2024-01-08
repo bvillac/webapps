@@ -124,11 +124,10 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                             <input class="form-control" id="txt_ocupacion" name="txt_ocupacion" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_forma_pago">Tipo Contrato <span class="required">*</span></label>
+                                            <label for="txt_forma_pago">Forma de Pago <span class="required">*</span></label>
                                             <input class="form-control" id="txt_forma_pago" name="txt_forma_pago" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
-
                                         </div>
                                     </div>
                                     <h5 class="mb-3 line-head" id="type-blockquotes"></h5>
@@ -141,8 +140,15 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                             <label for="txt_numero_deposito">Número de Deposito <span class="required">*</span></label>
                                             <input class="form-control valid validarNumber" onkeyup="TextMayus(this);" id="txt_numero_deposito" name="txt_numero_deposito" type="text" maxlength="10">
                                         </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="cmb_tipo_pago">Tipo Contrato <span class="required">*</span></label>
+                                            <select class="form-control" id="cmb_tipo_pago" name="cmb_tipo_pago" required="">
+                                                <option value="EFE">Contado</option>
+                                                <option value="CRE">Crédito</option>
+                                            </select>
+                                        </div>
                                     </div>
-
+                                    
 
 
                                 </div>

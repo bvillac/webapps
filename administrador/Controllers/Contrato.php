@@ -50,7 +50,7 @@ class Contrato extends Controllers
                     //$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/ClienteMiller/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
                 }
                 if ($_SESSION['permisosMod']['d']) {
-                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteCliente(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDesactivarContrato(' . $arrData[$i]['Ids'] . ')" title="Desactivar Contrato"><i class="fa fa-times-circle"></i></button>';
                 }
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
             }
@@ -145,6 +145,24 @@ class Contrato extends Controllers
 			die();
 		}
 	}
+
+	public function desativarContrato()
+    {
+        if ($_POST) {
+
+            if ($_SESSION['permisosMod']['d']) {
+                $ids = intval($_POST['ids']);
+                $request = $this->model->desativarContrato($ids);
+                if ($request) {
+                    $arrResponse = array('status' => true, 'msg' => 'Se ha Desactivado el Contrato');
+                } else {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al Desactivar el Contrato.');
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        die();
+    }
 
 
 }
