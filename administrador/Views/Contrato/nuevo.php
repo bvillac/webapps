@@ -292,13 +292,13 @@ require_once "Views/Contrato/Modals/modalPersona.php";
 
                                         <label for="txt_valor" class="col-sm-2 col-form-label text-right">Valor US$</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control valid validarNumber" id="txt_valor" value="0.00">
+                                            <input type="text" class="form-control valid validarDecimal" id="txt_valor" value="0.00">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label for="txt_CuotaInicial" class="col-sm-2 col-form-label text-right">Cuota Inicial/Anticipo</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control valid validarNumber" id="txt_CuotaInicial" value="0.00">
+                                            <input type="text" class="form-control valid validarDecimal" id="txt_CuotaInicial" value="0.00">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">

@@ -30,6 +30,16 @@ function esEntero(intCant){
     }
 }
 
+//Validar Datos que seran decimales
+function validarDecimal(input) {
+    var regex = /^\d*\.?\d*$/;
+    if (!regex.test(input.value)) {
+        return false
+    } else {
+        return true;
+    }
+}
+
 //Verificar si es Email
 function esEmail(email){
     var stringEmail = new RegExp(/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})$/);

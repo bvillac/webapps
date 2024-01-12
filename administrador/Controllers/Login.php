@@ -50,8 +50,7 @@
 							sessionUsuario($_SESSION['idsUsuario']);//Actualiza la Session del usuario.
 							$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
 							$usuId = $_SESSION['idsUsuario'];
-							$empId = $_SESSION['idEmpresa'];
-							putMessageLogFile("entro 3");				
+							$empId = $_SESSION['idEmpresa'];			
 							$idrol=($idrol!="")?$idrol:4;//Si no tiene asignado Rol se envia un rol=4 Usuario
 							putMessageLogFile("rol ".$idrol);
 							$_SESSION['menuData'] = $model->permisosModulo($usuId,$empId,$idrol);						
