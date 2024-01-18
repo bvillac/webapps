@@ -413,6 +413,7 @@ function generarPlanificiacionAut(nLunes, nMartes, nMiercoles, nJueves, nViernes
             fila += "</td>";
           } else {
             //fila +='<td><button type="button" id="' +idPlan + '" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
+            fila +='<td></td>';
           }
         }
         fila += "</tr>";
