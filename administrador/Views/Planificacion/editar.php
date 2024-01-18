@@ -70,7 +70,7 @@ require_once "Views/Planificacion/Modals/modalSalon.php";
             <label for="cmb_Salon">Salones</label>
             <select class="form-control" id="cmb_Salon" name="cmb_Salon">
               <?php
-              echo '<option value="0">SELECCIONAR</option>';
+              echo '<option value="0">NINGUNO</option>';
               foreach ($data['dataSalon'] as $opcion) {
                 echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
               }

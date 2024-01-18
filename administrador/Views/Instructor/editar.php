@@ -94,7 +94,7 @@ $dataHoras = $data['Horas'];
               <tbody>
                 <?php
                 $numero = 8;
-                for ($i = 0; $i < 13; $i++) {
+                for ($i = 0; $i < 14; $i++) {
                   /*$LUCheck = str_contains($dataHoras, 'LU' . $numero)  ? " checked " : "";
                   $MACheck = str_contains($dataHoras, 'MA' . $numero)  ? " checked " : "";
                   $MICheck = str_contains($dataHoras, 'MI' . $numero)  ? " checked " : "";

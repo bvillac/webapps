@@ -52,6 +52,13 @@ class PlanificacionModel extends MysqlAcademico
 
     public function insertData($Cabecera, $Detalle)
     {
+        $diaLunes="";
+        $diaMartes="";
+        $diaMiercoles="";
+        $diaJueves="";
+        $diaViernes="";
+        $diaSabado="";
+        $diaDomingo="";
         $con = $this->getConexion();
         $sql = "SELECT * FROM " . $this->db_name . ".planificacion_temp 
                   where tpla_estado_logico=1 and cat_id='{$Cabecera['centro']}' and tpla_fecha_incio='{$Cabecera['fechaInicio']}' ";

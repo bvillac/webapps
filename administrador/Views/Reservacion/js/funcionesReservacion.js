@@ -387,7 +387,7 @@ function generarPlanificiacionAut(nLunes, nMartes, nMiercoles, nJueves, nViernes
       var tabla = $("#dts_PlanificiacionAut tbody");
       $("#dts_PlanificiacionAut tbody").html("");
       
-      for (var i = 0; i < 13; i++) {
+      for (var i = 0; i < 14; i++) {
         //GENERA LAS FILAS
         var fila = "<tr><td>" + numeroHora + ":00</td>";
         for (var col = 0; col < Grid.length; col++) {

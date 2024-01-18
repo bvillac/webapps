@@ -109,7 +109,7 @@ require_once "Views/Instructor/Modals/modalPersona.php";
                 <?php
                 $numero = 8;
                 //$modulos = $data['modulos'];//Obtiene lo que tiene el campo
-                for ($i = 0; $i < 13; $i++) {
+                for ($i = 0; $i < 14; $i++) {
 
                 ?>
                   <tr>

@@ -389,7 +389,7 @@ function generarPlanificiacion(accionMove) {
       numeroHora = 8;
       var tabla = $("#dts_Planificiacion tbody");
       $("#dts_Planificiacion tbody").html("");
-      for (var i = 0; i < 13; i++) {
+      for (var i = 0; i < 14; i++) {
         //GENERA LAS FILAS
         var fila = "<tr><td>" + numeroHora + ":00</td>";
         for (var col = 0; col < Grid.length; col++) {
@@ -467,8 +467,18 @@ function fnt_eventoPlanificado(comp) {
       }
     }
   } else {
-    nEstado = false;
-    swal("Información", "Seleccionar un Salón", "info");
+      //ELIMINAR SALON RESERVADO
+      var respuesta = confirm("Seleccionar un Salón / Eliminar la reservacion.");
+      if (respuesta) {
+        //'" class="btn ms-auto btn-lg btn-light" onclick="fnt_eventoPlanificado(this)">AGREGAR</button></td>';
+        $("#" + comp.id).removeClass("asignado-true").addClass("btn-light");
+        $("#" + comp.id).removeAttr("style");
+        $("#" + comp.id).html("AGREGAR");
+      }
+      nEstado = false;
+      //swal("Información", "Seleccionar un Salón / Eliminar la reservacion.", "info");
+      
+    
   }
 
   if (nEstado) {
@@ -737,7 +747,7 @@ function generarPlanificiacionEdit(accionMove, nLunes, nMartes, nMiercoles, nJue
       }
       var tabla = $("#dts_Planificiacion tbody");
       $("#dts_Planificiacion tbody").html("");
-      for (var i = 0; i < 13; i++) {
+      for (var i = 0; i < 14; i++) {
         //GENERA LAS FILAS
         var fila = "<tr><td>" + numeroHora + ":00</td>";
         for (var col = 0; col < Grid.length; col++) {
@@ -987,7 +997,7 @@ function generarPlanificiacionAut(accionMove, nLunes, nMartes, nMiercoles, nJuev
       }
       var tabla = $("#dts_PlanificiacionAut tbody");
       $("#dts_PlanificiacionAut tbody").html("");
-      for (var i = 0; i < 13; i++) {
+      for (var i = 0; i < 14; i++) {
         //GENERA LAS FILAS
         var fila = "<tr><td>" + numeroHora + ":00</td>";
         for (var col = 0; col < Grid.length; col++) {
