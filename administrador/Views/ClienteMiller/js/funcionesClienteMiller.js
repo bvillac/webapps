@@ -338,6 +338,7 @@ function guardarCliente(accion) {
     dataObj.estado = cmb_estado;
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
 
+    $("#cmd_guardar").prop("disabled", true);
     let link = base_url + '/clienteMiller/ingresarCliente';
     $.ajax({
         type: 'POST',
@@ -350,10 +351,12 @@ function guardarCliente(accion) {
         success: function (data) {
             if (data.status) {
                 //sessionStorage.removeItem('cabeceraOrden');
+                $("#cmd_guardar").prop("disabled", false);
                 swal("Instructor", data.msg, "success");
                 window.location = base_url + '/clienteMiller';
             } else {
                 swal("Error", data.msg, "error");
+                $("#cmd_guardar").prop("disabled", false);
             }
         },
         dataType: "json"
