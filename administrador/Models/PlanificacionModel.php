@@ -195,6 +195,8 @@ class PlanificacionModel extends MysqlAcademico
             }
 
             $arrData = array(
+                $Cabecera['fechaInicio'],
+                $Cabecera['fechaFin'],
                 empty(!$diaLunes) ? $diaLunes : "",
                 empty(!$diaMartes) ? $diaMartes : "",
                 empty(!$diaMiercoles) ? $diaMiercoles : "",
@@ -207,7 +209,8 @@ class PlanificacionModel extends MysqlAcademico
             );
 
             $sql = "UPDATE " . $this->db_name . ".planificacion_temp 
-						SET tpla_lunes = ?, tpla_martes = ?,tpla_miercoles = ?,tpla_jueves = ?,tpla_viernes = ?,tpla_sabado = ?,tpla_domingo = ?,
+                        SET tpla_fecha_incio=?,tpla_fecha_fin=?,
+						tpla_lunes = ?, tpla_martes = ?,tpla_miercoles = ?,tpla_jueves = ?,tpla_viernes = ?,tpla_sabado = ?,tpla_domingo = ?,
                         tpla_fechas_rango = ?,tpla_usuario_modificacion = ?,tpla_fecha_modificacion = CURRENT_TIMESTAMP() WHERE tpla_id={$Ids}  ";
             $request = $this->update($sql, $arrData);
             $arroout["status"] = ($request) ? true : false;
