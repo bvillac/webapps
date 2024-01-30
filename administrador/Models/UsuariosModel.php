@@ -167,13 +167,15 @@ class UsuariosModel extends Mysql
 	{
 		$db_name = $this->getDbNameMysql();
 		$idsEmpresa = $_SESSION['idEmpresa'];
+		$rolId=$_SESSION['usuarioData']['RolID'];
 
 		$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,p.per_cedula,p.per_nombre,p.per_apellido,a.estado_logico Estado  	";
 		$sql .= "	FROM " . $db_name . ".usuario a ";
 		$sql .= "		INNER JOIN " . $db_name . ".persona p ";
 		$sql .= "			ON a.per_id=p.per_id AND p.estado_logico!=0 	";
-		$sql .= "	WHERE a.estado_logico!=0 ";
-
+		if($rolId!=1){//Diferente de rol administrador
+			$sql .= "	WHERE a.estado_logico!=0 ";
+		}
 		//putMessageLogFile($sql);
 		$request = $this->select_all($sql);
 		return $request;
@@ -192,16 +194,19 @@ class UsuariosModel extends Mysql
 	public function consultarDatosId(int $Ids)
 	{
 		$db_name = $this->getDbNameMysql();
-		$idsEmpresa = $_SESSION['idEmpresa'];
+		//$idsEmpresa = $_SESSION['idEmpresa'];
 		$sql = "SELECT distinct(a.usu_id) Ids,a.per_id,a.usu_correo,a.usu_alias Alias,p.per_cedula Dni,p.per_nombre Nombre,p.per_apellido Apellido,p.per_fecha_nacimiento FechaNac, ";
-		$sql .= "	r.rol_nombre Rol,p.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,p.per_telefono Telefono,p.per_direccion Direccion,c.rol_id RolID ";
+		//$sql .= "	r.rol_nombre Rol,c.rol_id RolID,p.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,p.per_telefono Telefono,p.per_direccion Direccion ";
+		$sql .= "	p.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,p.per_telefono Telefono,p.per_direccion Direccion ";
 		$sql .= " FROM " . $db_name . ".usuario a ";
 		$sql .= "	INNER JOIN " . $db_name . ".persona p ";
-		$sql .= "		ON a.per_id=p.per_id AND p.estado_logico!=0 ";
-		$sql .= "	INNER JOIN (" . $db_name . ".permiso c ";
-		$sql .= "			INNER JOIN " . $db_name . ".rol r ON c.rol_id=r.rol_id) ";
-		$sql .= "		ON a.usu_id=c.usu_id AND c.estado_logico!=0 ";
-		$sql .= " WHERE a.estado_logico!=0 AND c.emp_id='{$idsEmpresa}' AND a.usu_id={$Ids} ";
+		//$sql .= "		ON a.per_id=p.per_id AND p.estado_logico!=0 ";
+		$sql .= "		ON a.per_id=p.per_id ";
+		//$sql .= "	INNER JOIN (" . $db_name . ".permiso c ";
+		//$sql .= "			INNER JOIN " . $db_name . ".rol r ON c.rol_id=r.rol_id) ";
+		//$sql .= "		ON a.usu_id=c.usu_id AND c.estado_logico!=0 ";
+		//$sql .= " WHERE a.estado_logico!=0 AND c.emp_id='{$idsEmpresa}' AND a.usu_id={$Ids} ";
+		$sql .= " WHERE  a.usu_id={$Ids} ";
 		$request = $this->select($sql);
 		return $request;
 	}

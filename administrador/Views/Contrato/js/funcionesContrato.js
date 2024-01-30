@@ -201,7 +201,9 @@ $(document).ready(function () {
                             rowResult.Nombres = objeto.Nombre + " " + objeto.Apellido;;
                             rowResult.FechaNacimiento = objeto.FechaNacimiento;
                             rowResult.Telefono = objeto.Telefono;
-                            rowResult.Edad = objeto.Edad;
+                            
+                            //rowResult.Edad = objeto.Edad;
+                            rowResult.Edad = calcularEdad(objeto.FechaNacimiento);
                             arrayList[c] = rowResult;
                             c += 1;
                         }
@@ -295,7 +297,8 @@ $(document).ready(function () {
         if ($('#cmb_PaqueteEstudios').val() != 0) {
             let idsMes = $('#cmb_PaqueteEstudios').val();
             let arrayDeCadenas = idsMes.split("-");
-            $('#txt_numero_meses').val(arrayDeCadenas[1]);
+            //$('#txt_numero_meses').val(arrayDeCadenas[1]);
+            $('#txt_numero_meses').val("0");
         } else {
             //$('#cmb_punto option').remove();
             //$('#cmb_punto').selectpicker('refresh')
@@ -594,7 +597,8 @@ function guardarPersona() {
                 $('#txt_CodigoBeneficiario').val(per_cedula);
                 $('#txt_NombreBeneficirio').val(per_nombre + " " + per_apellido);
                 $('#txt_TelefonoBeneficirio').val(per_telefono);
-                $('#dtp_fecha_nacimiento').val(calcularEdad(per_fecha_nacimiento));
+                //$('#dtp_fecha_nacimiento').val(calcularEdad(per_fecha_nacimiento));
+                $('#txt_EdadBeneficirio').val(calcularEdad(per_fecha_nacimiento));
                 //alert("IDS = " + data.numero);                
                 $('#modalFormPersona').modal("hide");
                 limpiarTexboxPersona();

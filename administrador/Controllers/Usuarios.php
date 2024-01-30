@@ -143,11 +143,13 @@
 			$ids = intval(strClean($ids));
 			$model=new UsuariosModel();
 			if($ids > 0){
-				$arrData = $model->consultarDatosId($ids);
+				$arrData = $model->consultarDatosId($ids);			
 				//dep($arrData);
 				if(empty($arrData)){
+					
 					$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
 				}else{
+					$arrData['RolID']=4;//$_SESSION['usuarioData']['RolID'];//Usuario por Defecto
 					$arrResponse = array('status' => true, 'data' => $arrData);
 				}
 				echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
