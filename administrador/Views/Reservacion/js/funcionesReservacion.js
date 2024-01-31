@@ -141,7 +141,7 @@ $(document).ready(function () {
     },
     minLength: minLengthGeneral,
     select: function (event, ui) {
-      alert(ui.item.ContId);
+      //alert(ui.item.ContId);
       openModalPagos(ui.item.ContId);
       $('#txt_NombreBeneficirio').val(ui.item.Nombres);
       $('#txt_CodigoBeneficiario').val(ui.item.Cedula);
@@ -667,9 +667,45 @@ function openModalPagos(contId) {
   //document.querySelector('#btnText').innerHTML = "Guardar";
   //document.querySelector('#titleModal').innerHTML = "Nuevo Salón";
   //document.querySelector("#formSalon").reset();
-  alert('ingre');
+
+  let url = base_url + "/Cuota/consultarPagos";
+  var metodo = 'POST';
+  var datos = { IdsCont: contId, parametro2: 'valor2' };
+  peticionAjax(url, metodo, datos, function(data) {
+    // Manejar el éxito de la solicitud aquí
+    //console.log(data);
+    recargarGridPagos(data.data.movimiento);
+
+  }, function(jqXHR, textStatus, errorThrown) {
+    // Manejar el error de la solicitud aquí
+    console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+  });
   $('#modalViewPagos').modal('show');
 }
+//movimiento
+function recargarGridPagos(arr_Grid) {
+  var tGrid = 'dts_Control';
+  $('#' + tGrid + ' tbody').html("");
+  if (arr_Grid.length > 0) {    
+    for (var i = 0; i < arr_Grid.length; i++) {
+      $('#' + tGrid).append(retornaFilaData(i, arr_Grid));
+    }
+  }
+
+}
+
+function retornaFilaData(c, Grid) {
+  var strFila = "";
+  strFila += '<td>' + Grid[c]['NUMERO'] + '</td>';
+  strFila += '<td>' + Grid[c]['FECHA_VENCE'] + '</td>';
+  strFila += '<td>' + (Grid[c]['FECHA_PAGO']!="")? Grid[c]['FECHA_PAGO']:""; + '</td>';
+  strFila += '<td>' + Grid[c]['CREDITO'] + '</td>';
+  strFila += '<td>' + Grid[c]['SALDO'] + '</td>';
+  strFila += '<td>' + Grid[c]['CANCELADO'] + '</td>';
+  strFila = '<tr class="odd gradeX">' + strFila + '</tr>';
+  return strFila;
+}
+
 
 
 

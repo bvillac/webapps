@@ -272,3 +272,36 @@ function findAndRemove(array, property, value) {
     return array;
 }
 
+
+function peticionAjax(url, metodo, datos, exitoCallback, errorCallback) {
+    $.ajax({
+      url: url,
+      method: metodo,
+      data: datos,
+      dataType: 'json', // Puedes ajustar esto según el tipo de datos que esperas
+      success: function(data) {
+        if (exitoCallback && typeof exitoCallback === 'function') {
+          exitoCallback(data);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        if (errorCallback && typeof errorCallback === 'function') {
+          errorCallback(jqXHR, textStatus, errorThrown);
+        }
+      }
+    });
+  }
+  
+  /*// Ejemplo de uso:
+  var url = 'tu/url/aqui';
+  var metodo = 'GET';
+  var datos = { parametro1: 'valor1', parametro2: 'valor2' };
+  
+  realizarSolicitudAjax(url, metodo, datos, function(data) {
+    // Manejar el éxito de la solicitud aquí
+    console.log(data);
+  }, function(jqXHR, textStatus, errorThrown) {
+    // Manejar el error de la solicitud aquí
+    console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+  });*/
+  
