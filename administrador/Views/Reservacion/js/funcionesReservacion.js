@@ -120,6 +120,7 @@ $(document).ready(function () {
               rowResult.value = objeto.NumeroContrato;
 
               rowResult.id = objeto.Ids;
+              rowResult.ContId=objeto.ContId;
               rowResult.Cedula = objeto.Cedula;
               rowResult.Nombres = objeto.Nombre + " " + objeto.Apellido;;
               //rowResult.FechaNacimiento = objeto.FechaNacimiento;
@@ -140,6 +141,8 @@ $(document).ready(function () {
     },
     minLength: minLengthGeneral,
     select: function (event, ui) {
+      alert(ui.item.ContId);
+      openModalPagos(ui.item.ContId);
       $('#txt_NombreBeneficirio').val(ui.item.Nombres);
       $('#txt_CodigoBeneficiario').val(ui.item.Cedula);
       //$('#txt_EdadBeneficirio').val(ui.item.Edad);
@@ -654,6 +657,18 @@ function limpiarTextReservacion(){
   $("#txt_NumeroContrato").val("");
   $("#txt_CodigoBeneficiario").val("");
   $("#txt_NombreBeneficirio").val("");
+}
+
+
+function openModalPagos(contId) {
+  //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
+  //document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
+  //document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
+  //document.querySelector('#btnText').innerHTML = "Guardar";
+  //document.querySelector('#titleModal').innerHTML = "Nuevo Salón";
+  //document.querySelector("#formSalon").reset();
+  alert('ingre');
+  $('#modalViewPagos').modal('show');
 }
 
 

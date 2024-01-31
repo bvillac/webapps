@@ -127,7 +127,7 @@ class BeneficiarioModel extends MysqlAcademico
     }
 
     public function beneficiarioContratoNombres(string $parametro){
-        $sql = "SELECT a.ben_id Ids,b.con_numero NumeroContrato,a.ben_tipo TipoBenefiario,CONCAT(c.per_nombre,' ',c.per_apellido) Nombres,c.per_telefono Telefono, ";
+        $sql = "SELECT a.ben_id Ids,b.con_id ContId,b.con_numero NumeroContrato,a.ben_tipo TipoBenefiario,CONCAT(c.per_nombre,' ',c.per_apellido) Nombres,c.per_telefono Telefono, ";
         $sql .= "c.per_cedula Cedula,c.per_nombre Nombre,c.per_apellido Apellido,c.per_fecha_nacimiento FechaNacimiento,c.per_genero Genero, c.estado_logico Estado, ";
         $sql .= "c.per_direccion Direccion,a.ben_estado_logico Estado,FLOOR(DATEDIFF(CURDATE(),c.per_fecha_nacimiento) / 365.25) AS Edad ";
         $sql .= "FROM db_academico.beneficiario a ";
