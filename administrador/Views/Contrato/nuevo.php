@@ -72,6 +72,7 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#beneficiarios">BENEFICIARIOS</a></li>
                                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Referencias">REFERENCIAS</a></li>
                                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#totales">TOTALES</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#observacion">OBSERVACIÓN</a></li>
                                 <!-- <li class="nav-item"><a class="nav-link disabled" href="#detalle">Detalle</a></li> -->
                             </ul>
                             <div class="tab-content" id="myTabContent">
@@ -88,13 +89,14 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                             <input class="form-control" id="txt_cargo" name="txt_cargo" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_ingreso_mensual">Ingreso Mensual <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_ingreso_mensual" name="txt_ingreso_mensual" type="text" disabled>
+                                            <label for="txt_ocupacion">Ocupación <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_ocupacion" name="txt_ocupacion" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_antiguedad">Antiguedad <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_antiguedad" name="txt_antiguedad" type="text" disabled>
+                                            <label for="txt_forma_pago">Forma de Pago <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_forma_pago" name="txt_forma_pago" type="text" disabled>
                                         </div>
+                                        
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
@@ -114,22 +116,23 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                             <input class="form-control" id="txt_tel_trabajo" name="txt_tel_trabajo" type="text" disabled>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <!-- <div class="row">
                                         <div class="form-group col-md-3">
                                             <label for="txt_referencia">Referencía Bancaria <span class="required">*</span></label>
                                             <input class="form-control" id="txt_referencia" name="txt_referencia" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_ocupacion">Ocupación <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_ocupacion" name="txt_ocupacion" type="text" disabled>
+                                            <label for="txt_ingreso_mensual">Ingreso Mensual <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_ingreso_mensual" name="txt_ingreso_mensual" type="text" disabled>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="txt_forma_pago">Forma de Pago <span class="required">*</span></label>
-                                            <input class="form-control" id="txt_forma_pago" name="txt_forma_pago" type="text" disabled>
+                                            <label for="txt_antiguedad">Antiguedad <span class="required">*</span></label>
+                                            <input class="form-control" id="txt_antiguedad" name="txt_antiguedad" type="text" disabled>
                                         </div>
+                                        
                                         <div class="form-group col-md-3">
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <h5 class="mb-3 line-head" id="type-blockquotes"></h5>
                                     <div class="row">
                                         <div class="form-group col-md-3">
@@ -382,6 +385,16 @@ require_once "Views/Contrato/Modals/modalPersona.php";
                                         </div>
                                     </div>
                                     
+                                </div>
+                                <div class="tab-pane fade" id="observacion">
+                                    <BR>
+                                    
+                                    
+                                    <div class="form-group col-md-6">
+                                        <label for="txta_observacion" class="form-label">Observaciónes</label>
+                                        <textarea class="form-control" id="txta_observacion" rows="3"></textarea>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

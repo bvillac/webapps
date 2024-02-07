@@ -94,10 +94,10 @@ require_once "Views/ClienteMiller/Modals/modalUsuarios.php";
                             <label for="txt_cli_correo">Correo Electrónico</label>
                             <input type="text" class="form-control valid validarEmail " id="txt_cli_correo" name="txt_cli_correo" placeholder="ejemplo@gmail.com" required="">
                         </div>
-                        <div class="form-group col-md-6">
+                        <!-- <div class="form-group col-md-6">
                             <label for="txt_cli_referencia_bancaria">Referencía Bancaria</label>
                             <input type="text" maxlength="100" class="form-control valid validText" id="txt_cli_referencia_bancaria" onkeyup="TextMayus(this);" name="txt_cli_referencia_bancaria" placeholder="Referencía Bancaria" required="">
-                        </div>
+                        </div> -->
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
@@ -112,21 +112,22 @@ require_once "Views/ClienteMiller/Modals/modalUsuarios.php";
                                 ?>
                             </select>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_ingreso_mensual">Ingresos Mensuales</label>
-                            <input type="text" maxlength="10" class="form-control valid validText" id="txt_cli_ingreso_mensual" onkeyup="TextMayus(this);" name="txt_cli_ingreso_mensual" placeholder="Ingresos Mensuales" required="">
-                        </div>
-                    </div>
-                    <div class="form-row">
+                        
                         <div class="form-group col-md-6">
                             <label for="txt_cli_cargo">Cargo</label>
                             <input type="text" maxlength="100" class="form-control valid validText" id="txt_cli_cargo" name="txt_cli_cargo" onkeyup="TextMayus(this);" placeholder="Cargo" required="">
+                        </div>
+                    </div>
+                    <!-- <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="txt_cli_ingreso_mensual">Ingresos Mensuales</label>
+                            <input type="text" maxlength="10" class="form-control valid validText" id="txt_cli_ingreso_mensual" onkeyup="TextMayus(this);" name="txt_cli_ingreso_mensual" placeholder="Ingresos Mensuales" required="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="txt_cli_antiguedad">Antiguedad</label>
                             <input type="text" maxlength="20" class="form-control valid validText" id="txt_cli_antiguedad" name="txt_cli_antiguedad" onkeyup="TextMayus(this);" placeholder="Antiguedad" required="">
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-row">
                         <div class="form-group col-md-6">

@@ -295,16 +295,16 @@ function guardarCliente(accion) {
     let txt_cli_telefono = document.querySelector('#txt_cli_telefono').value;
     let txt_cli_telefono_oficina = document.querySelector('#txt_cli_telefono_oficina').value;
     let txt_cli_correo = document.querySelector('#txt_cli_correo').value;
-    let txt_cli_referencia_bancaria = document.querySelector('#txt_cli_referencia_bancaria').value;
+    //let txt_cli_referencia_bancaria = document.querySelector('#txt_cli_referencia_bancaria').value;
     let txt_cli_cargo = document.querySelector('#txt_cli_cargo').value;
-    let txt_cli_antiguedad = document.querySelector('#txt_cli_antiguedad').value;
+    //let txt_cli_antiguedad = document.querySelector('#txt_cli_antiguedad').value;
     let cmb_pago = document.querySelector('#cmb_pago').value;
     let cmb_ocupacion = document.querySelector('#cmb_ocupacion').value;
-    let cli_ingreso_mensual = document.querySelector('#txt_cli_ingreso_mensual').value;   
+    //let cli_ingreso_mensual = document.querySelector('#txt_cli_ingreso_mensual').value;   
     let cmb_estado = document.querySelector('#cmb_estado').value;
 
     if (txth_per_id == '' || txt_cli_cedula_ruc == '' || txt_cli_razon_social == '' || txt_cli_telefono == '' || txt_cli_direccion == ''
-        || cmb_pago == 0 || cmb_ocupacion == 0 || txt_cli_correo == '' || txt_cli_referencia_bancaria == '' || txt_cli_cargo == '' || cli_ingreso_mensual == '') {
+        || cmb_pago == 0  || txt_cli_correo == '' || txt_cli_cargo == '' ) {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;
     }
@@ -330,11 +330,11 @@ function guardarCliente(accion) {
     dataObj.cli_correo = txt_cli_correo;
 
     dataObj.cli_telefono_oficina = txt_cli_telefono_oficina;
-    dataObj.cli_referencia_bancaria = txt_cli_referencia_bancaria;
+    dataObj.cli_referencia_bancaria =""; //txt_cli_referencia_bancaria;
     dataObj.cli_cargo = txt_cli_cargo;
-    dataObj.cli_antiguedad = txt_cli_antiguedad;
+    dataObj.cli_antiguedad =""; //txt_cli_antiguedad;
     dataObj.ocupacion = cmb_ocupacion;
-    dataObj.cli_ingreso_mensual = cli_ingreso_mensual;
+    dataObj.cli_ingreso_mensual ="";// cli_ingreso_mensual;
     dataObj.estado = cmb_estado;
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
 

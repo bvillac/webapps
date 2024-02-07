@@ -139,7 +139,7 @@ class ContratoModel extends MysqlAcademico
         } catch (Exception $e) {
             $con->rollBack();
             //putMessageLogFile($e);
-            //throw $e;
+            throw $e;
             $arroout["status"] = false;
             $arroout["message"] = "Fallo: " . $e->getMessage();
             return $arroout;
@@ -162,13 +162,14 @@ class ContratoModel extends MysqlAcademico
             $Cabecera['cuotaInicial'],
             $Cabecera['numeroCuota'],
             $Cabecera['valorMensual'],
+            $Cabecera['observacion'],
             retornaUser(),1
         );     
         $SqlQuery  = "INSERT INTO " . $this->db_name . ".contrato ";
         $SqlQuery .= "(`emp_id`,`cli_id`,`con_numero`,`con_fecha_inicio`,`con_fecha_fin`,`con_num_recibo_inscripcion`,`con_num_deposito`,
-                        `con_tipo_pago`,`con_forma_pago`,`con_valor`,`con_valor_cuota_inicial`,`con_numero_pagos`,`con_valor_cuota_mensual`,`con_usuario_creacion`,
-                        `con_estado_logico`) ";
-        $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+                        `con_tipo_pago`,`con_forma_pago`,`con_valor`,`con_valor_cuota_inicial`,`con_numero_pagos`,`con_valor_cuota_mensual`,
+                        `con_observacion`,`con_usuario_creacion`,`con_estado_logico`) ";
+        $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
         return $this->insertConTrasn($con, $SqlQuery, $arrData);        
     }
 

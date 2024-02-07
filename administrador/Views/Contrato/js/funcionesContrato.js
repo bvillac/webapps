@@ -677,6 +677,8 @@ function listaCabecera() {
     cabecera.cuotaInicial = $('#txt_CuotaInicial').val();
     cabecera.numeroCuota = $('#txt_NumeroCuota').val();
     cabecera.valorMensual = $('#txt_ValorMensual').val();
+    cabecera.observacion = $('#txta_observacion').val();
+    console.log(cabecera.observacion);
     cabecera.estado = '1';
     sessionStorage.cabeceraContrato = JSON.stringify(cabecera);
     //return JSON.stringify(JSON.stringify(cabecera));

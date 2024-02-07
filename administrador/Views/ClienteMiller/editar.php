@@ -77,10 +77,10 @@ adminMenu($data);
                             <label for="txt_cli_correo">Correo Electrónico</label>
                             <input type="text" class="form-control valid validarEmail " id="txt_cli_correo" value="<?= $data['Correo'] ?>" name="txt_cli_correo" placeholder="ejemplo@gmail.com" required="">
                         </div>
-                        <div class="form-group col-md-6">
+                        <!-- <div class="form-group col-md-6">
                             <label for="txt_cli_referencia_bancaria">Referencía Bancaria</label>
                             <input type="text" maxlength="100" class="form-control valid validText" value="<?= $data['RefBanco'] ?>" id="txt_cli_referencia_bancaria" onkeyup="TextMayus(this);" name="txt_cli_referencia_bancaria" placeholder="Referencía Bancaria" required="">
-                        </div>
+                        </div> -->
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
@@ -100,21 +100,22 @@ adminMenu($data);
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="txt_cli_ingreso_mensual">Ingresos Mensuales</label>
-                            <input type="text" maxlength="10" class="form-control valid validText" value="<?= $data['IngMensual'] ?>" id="txt_cli_ingreso_mensual" onkeyup="TextMayus(this);" name="txt_cli_ingreso_mensual" placeholder="Ingresos Mensuales" required="">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
                             <label for="txt_cli_cargo">Cargo</label>
                             <input type="text" maxlength="100" class="form-control valid validText" value="<?= $data['Cargo'] ?>"  id="txt_cli_cargo" name="txt_cli_cargo" onkeyup="TextMayus(this);" placeholder="Cargo" required="">
+                        </div>
+                        
+                    </div>
+                    <!-- <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="txt_cli_ingreso_mensual">Ingresos Mensuales</label>
+                            <input type="text" maxlength="10" class="form-control valid validText" value="<?= $data['IngMensual'] ?>" id="txt_cli_ingreso_mensual" onkeyup="TextMayus(this);" name="txt_cli_ingreso_mensual" placeholder="Ingresos Mensuales" required="">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="txt_cli_antiguedad">Antiguedad</label>
                             <input type="text" maxlength="20" class="form-control valid validText" value="<?= $data['Antiguedad'] ?>"  id="txt_cli_antiguedad" name="txt_cli_antiguedad" onkeyup="TextMayus(this);" placeholder="Antiguedad" required="">
                         </div>
                     </div>
-
+ -->
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="cmb_pago">Forma de Pago</label>

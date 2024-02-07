@@ -17,7 +17,7 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_per_cedula">DNI</label>
-              <input type="text" class="form-control valid validarNumber" maxlength="15" id="txt_per_cedula" name="txt_per_cedula" required="" onkeypress="return controlTagEvent(event);" >
+              <input type="text" class="form-control valid validText" maxlength="15" id="txt_per_cedula" name="txt_per_cedula" required="" >
             </div>
             <div class="form-group col-md-6">
               <label for="dtp_fecha_nacimiento">Fecha de Nacimiento</label>
