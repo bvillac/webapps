@@ -296,7 +296,7 @@ require 'vendor/autoload.php';
 					//}
 					$model=new ItemsModel;
 					$data = $model->consultarReporteItemPDF($idItem);
-					putMessageLogFile($data);
+					//putMessageLogFile($data);
 					if(empty($data)){
 						echo "Datos no encontrados";
 					}else{

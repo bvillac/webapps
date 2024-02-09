@@ -256,7 +256,7 @@
 			$arrData = array($NumCompra);
 			$sql = "UPDATE ". $db_name .".compras SET com_numero= ?
 						   WHERE sec_tipo='OC' AND com_numero_orden='{$NumOrden}' ";
-			putMessageLogFile($sql);
+			//putMessageLogFile($sql);
 			$result = $con->prepare($sql);
 			$result->execute($arrData);
 		}

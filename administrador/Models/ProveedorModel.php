@@ -19,7 +19,6 @@
 			$sql .= "WHERE a.estado_logico!=0  ";
 			
 			$request = $this->select_all($sql);
-			putMessageLogFile($request);
 			return $request;
 		}
 		public function consultarPago(){
@@ -164,7 +163,6 @@
 			$sql .= "WHERE a.estado_logico!=0  ";
 			
 			$request = $this->select_all($sql);
-			putMessageLogFile($request);
 			return $request;
 		}
 

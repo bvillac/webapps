@@ -662,7 +662,6 @@ function guardarContrato() {
     }
 }
 
-
 function listaCabecera() {
     var cabecera = new Object();
     cabecera.cliIds = $('#txth_ids').val();

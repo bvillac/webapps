@@ -52,7 +52,6 @@
 							$usuId = $_SESSION['idsUsuario'];
 							$empId = $_SESSION['idEmpresa'];			
 							$idrol=($idrol!="")?$idrol:4;//Si no tiene asignado Rol se envia un rol=4 Usuario
-							putMessageLogFile("rol ".$idrol);
 							$_SESSION['menuData'] = $model->permisosModulo($usuId,$empId,$idrol);						
 							$arrResponse = array('status' => true, 'msg' => 'ok');
 							//putMessageLogFile($arrResponse);

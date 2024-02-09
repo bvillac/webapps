@@ -151,7 +151,7 @@ require 'vendor/autoload.php';
 				//}
 				$model=new ClienteModel;
 				$data = $model->consultarReporteClientePDF($idCliente);
-				putMessageLogFile($data);
+				//putMessageLogFile($data);
 				if(empty($data)){
 					echo "Datos no encontrados";
 				}else{

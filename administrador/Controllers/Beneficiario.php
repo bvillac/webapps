@@ -160,13 +160,11 @@ class Beneficiario extends Controllers
 			//dep($_POST);
 			$Buscar = isset($_POST['buscar']) ? $_POST['buscar'] : "";
 			$request = $this->model->beneficiarioContratoNombres($Buscar);
-            putMessageLogFile($request);
 			if ($request) {
 				$arrResponse = array('status' => true, 'data' => $request, 'msg' => 'Datos Retornados correctamente.');
 			} else {
 				$arrResponse = array('status' => false, 'msg' => 'No Existen Datos');
-			}
-			//putMessageLogFile($arrResponse);	
+			}	
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();
