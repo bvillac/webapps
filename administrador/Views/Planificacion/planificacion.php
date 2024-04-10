@@ -2,6 +2,7 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
+require_once "Views/Planificacion/Modals/modalPlaClonar.php";
 ?>
 <div id="contentAjax"></div>
 <main class="app-content">

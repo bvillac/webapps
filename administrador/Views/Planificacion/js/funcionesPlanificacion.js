@@ -183,6 +183,11 @@ $(document).ready(function () {
   $("#btn_anteriorAut").click(function () {
     generarPlanificiacionAut("Back", nLunes, nMartes, nMiercoles, nJueves, nViernes, nSabado, nDomingo,fechaIni,fechaFin);
   });
+
+  $("#cmd_clonar").click(function () {
+    fntSaveClonar();
+  });
+
 });
 
 function fntSalones(ids) {
@@ -842,10 +847,41 @@ function fntDeletePlanificacion(ids) {
   });
 }
 
+function fntSaveClonar(){
+    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+    var ajaxUrl = base_url + '/Planificacion/clonar';
+    var strData = "ids=" + ids;
+    request.open("POST", ajaxUrl, true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.send(strData);
+    request.onreadystatechange = function () {
+      if (request.readyState == 4 && request.status == 200) {
+        var objData = JSON.parse(request.responseText);
+        if (objData.status) {
+          swal("Clonado!", objData.msg, "success");
+          tablePlanificacion.api().ajax.reload(function () {
+
+          });
+        } else {
+          swal("Atención!", objData.msg, "error");
+        }
+      }
+    }
+  
+}
+
 
 //CLONAR PLANIFICACION
 function fntClonarPlanificacion(ids) {
-  var ids = ids;
+  alert("llego");
+  $('#txth_ids').val(ids);
+  document.querySelector('#titleModal').innerHTML = "Clonar Planificación";
+  //document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
+  //document.querySelector('#cmd_clonar').classList.replace("btn-primary", "btn-info");
+  //document.querySelector('#btnText').innerHTML = "Clonar";
+  $('#modalFormClonar').modal('show');
+
+  /*var ids = ids;
   swal({
     title: "Clonar Planificación",
     text: "¿Realmente quiere Clonar el Registro?",
@@ -879,7 +915,7 @@ function fntClonarPlanificacion(ids) {
       }
     }
 
-  });
+  });*/
 }
 
 

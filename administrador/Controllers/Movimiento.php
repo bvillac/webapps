@@ -4,13 +4,8 @@
 
 		public function __construct(){
 			parent::__construct();
-			session_start();
-			session_regenerate_id(true);
-			if(empty($_SESSION['loginEstado'])){
-				header('Location: '.base_url().'/login');
-				die();
-			}
-			getPermisos(4);
+        	sessionStart();
+        	getPermisos();
 		}
 
 		public function Movimiento(){

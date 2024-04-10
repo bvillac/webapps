@@ -17,6 +17,8 @@ class Planificacion extends Controllers
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
+        $modelCentro = new CentroAtencionModel();
+        $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
         $data['page_tag'] = "Planificación";
         $data['page_name'] = "Planificación";
         $data['page_title'] = "Planificación <small> " . TITULO_EMPRESA . "</small>";
