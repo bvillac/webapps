@@ -315,8 +315,10 @@ class Planificacion extends Controllers
         if ($_POST) {
 
             if ($_SESSION['permisosMod']['u']) {
-                $ids = intval($_POST['ids']);
-                $request = $this->model->clonarRegistro($ids);
+                //$ids = intval($_POST['ids']);
+                $datos = isset($_POST['data']) ? json_decode($_POST['data'], true) : array();
+                $request = $this->model->clonarRegistro($datos);
+                
                 if ($request) {
                     $arrResponse = array('status' => true, 'msg' => 'Se ha Clonado el Registro');
                 } else {

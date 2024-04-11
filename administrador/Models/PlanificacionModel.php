@@ -234,14 +234,18 @@ class PlanificacionModel extends MysqlAcademico
         return $request;
     }
 
-    public function clonarRegistro(int $Ids)
+    public function clonarRegistro($dataObj)
     {
+        $Ids=$dataObj['ids'];
+        $centroId=$dataObj['CentroAtencionID'];
+        $fecha_desde=$dataObj['fecIni'];
+        $fecha_hasta=$dataObj['fecFin'];
         $usuario = retornaUser();
         $sql = "INSERT INTO " . $this->db_name . ".planificacion_temp 
                         (`cat_id`,`tpla_fecha_incio`,`tpla_fecha_fin`,`tpla_lunes`,`tpla_martes`,`tpla_miercoles`,`tpla_jueves`,
                         `tpla_viernes`,`tpla_sabado`,`tpla_domingo`,`tpla_fechas_rango`,`tpla_estado`,`tpla_usuario_creacion`,`tpla_estado_logico`)
-                        SELECT `cat_id`,`tpla_fecha_incio`,`tpla_fecha_fin`,`tpla_lunes`,`tpla_martes`,`tpla_miercoles`,`tpla_jueves`,
-                         `tpla_viernes`,`tpla_sabado`,`tpla_domingo`,`tpla_fechas_rango`,`tpla_estado`,'{$usuario}',1
+                        SELECT '{$centroId}','{$fecha_desde}','{$fecha_hasta}',`tpla_lunes`,`tpla_martes`,`tpla_miercoles`,`tpla_jueves`,
+                         `tpla_viernes`,`tpla_sabado`,`tpla_domingo`,'',`tpla_estado`,'{$usuario}',1
                                 FROM " . $this->db_name . ".planificacion_temp WHERE tpla_id = {$Ids} ";
 
         $arrData = array();

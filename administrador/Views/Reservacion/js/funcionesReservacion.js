@@ -661,19 +661,12 @@ function limpiarTextReservacion(){
 
 
 function openModalPagos(contId) {
-  //document.querySelector('#txth_ids').value = "";//IDS oculto hiden
-  //document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
-  //document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
-  //document.querySelector('#btnText').innerHTML = "Guardar";
-  //document.querySelector('#titleModal').innerHTML = "Nuevo Salón";
-  //document.querySelector("#formSalon").reset();
-
   let url = base_url + "/Cuota/consultarPagos";
   var metodo = 'POST';
   var datos = { IdsCont: contId, parametro2: 'valor2' };
   peticionAjax(url, metodo, datos, function(data) {
     // Manejar el éxito de la solicitud aquí
-    //console.log(data);
+    console.log(data);
     recargarGridPagos(data.data.movimiento);
 
   }, function(jqXHR, textStatus, errorThrown) {
@@ -696,9 +689,11 @@ function recargarGridPagos(arr_Grid) {
 
 function retornaFilaData(c, Grid) {
   var strFila = "";
+  let nFechaPago=(Grid[c]['FECHA_PAGO']!="" || Grid[c]['FECHA_PAGO']=="null" )? Grid[c]['FECHA_PAGO']:"";
   strFila += '<td>' + Grid[c]['NUMERO'] + '</td>';
   strFila += '<td>' + Grid[c]['FECHA_VENCE'] + '</td>';
-  strFila += '<td>' + (Grid[c]['FECHA_PAGO']!="")? Grid[c]['FECHA_PAGO']:""; + '</td>';
+  //strFila += '<td>' + Grid[c]['FECHA_PAGO'] + '</td>';
+  strFila += '<td>' + nFechaPago + '</td>';
   strFila += '<td>' + Grid[c]['CREDITO'] + '</td>';
   strFila += '<td>' + Grid[c]['SALDO'] + '</td>';
   strFila += '<td>' + Grid[c]['CANCELADO'] + '</td>';

@@ -848,74 +848,42 @@ function fntDeletePlanificacion(ids) {
 }
 
 function fntSaveClonar(){
-    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    var ajaxUrl = base_url + '/Planificacion/clonar';
-    var strData = "ids=" + ids;
-    request.open("POST", ajaxUrl, true);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.send(strData);
-    request.onreadystatechange = function () {
-      if (request.readyState == 4 && request.status == 200) {
-        var objData = JSON.parse(request.responseText);
-        if (objData.status) {
-          swal("Clonado!", objData.msg, "success");
-          tablePlanificacion.api().ajax.reload(function () {
-
-          });
-        } else {
-          swal("Atención!", objData.msg, "error");
-        }
-      }
-    }
-  
+    let accion="";
+    var dataObj = new Object();
+    dataObj.ids = document.querySelector('#txth_ids').value;
+    dataObj.CentroAtencionID = $('#cmb_CentroAtencion').val();
+    dataObj.fecIni = $("#dtp_fecha_desde").val();
+    dataObj.fecFin = $("#dtp_fecha_hasta").val();
+    let link = base_url + '/Planificacion/clonar';
+    $.ajax({
+        type: 'POST',
+        url: link,
+        data: {
+            "data": JSON.stringify(dataObj),
+            "accion": accion
+        },
+        success: function (data) {
+            if (data.status) {
+                //sessionStorage.removeItem('cabeceraOrden');
+                swal("Clonado!", data.msg, "success");
+                tablePlanificacion.api().ajax.reload(function () { });
+                $('#modalFormClonar').modal('hide');
+                //$('#modalFormClonar').modal('dispose');
+            } else {
+                swal("Atención!", data.msg, "error");
+            }
+        },
+        dataType: "json"
+    });
+    
 }
 
 
 //CLONAR PLANIFICACION
 function fntClonarPlanificacion(ids) {
-  alert("llego");
   $('#txth_ids').val(ids);
   document.querySelector('#titleModal').innerHTML = "Clonar Planificación";
-  //document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
-  //document.querySelector('#cmd_clonar').classList.replace("btn-primary", "btn-info");
-  //document.querySelector('#btnText').innerHTML = "Clonar";
   $('#modalFormClonar').modal('show');
-
-  /*var ids = ids;
-  swal({
-    title: "Clonar Planificación",
-    text: "¿Realmente quiere Clonar el Registro?",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Si, Continuar!",
-    cancelButtonText: "No, cancelar!",
-    closeOnConfirm: false,
-    closeOnCancel: true
-  }, function (isConfirm) {
-
-    if (isConfirm) {
-      var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-      var ajaxUrl = base_url + '/Planificacion/clonar';
-      var strData = "ids=" + ids;
-      request.open("POST", ajaxUrl, true);
-      request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      request.send(strData);
-      request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
-          var objData = JSON.parse(request.responseText);
-          if (objData.status) {
-            swal("Clonado!", objData.msg, "success");
-            tablePlanificacion.api().ajax.reload(function () {
-
-            });
-          } else {
-            swal("Atención!", objData.msg, "error");
-          }
-        }
-      }
-    }
-
-  });*/
 }
 
 
