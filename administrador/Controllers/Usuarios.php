@@ -72,7 +72,6 @@
 					$Genero = strtoupper(strClean($_POST['cmb_genero']));
 					$rol_id = intval(strClean($_POST['cmb_rol']));
 					$estado = intval(strClean($_POST['cmb_estado']));
-
 					if($usu_id == 0){
 						$option = 1;
 						$Clave =  empty($_POST['txt_Password']) ? hash("SHA256",passGenerator()) : hash("SHA256",$_POST['txt_Password']);
@@ -85,7 +84,6 @@
 													$Correo,$Clave,	$Genero, $Direccion, $Alias, $rol_id,$estado,$per_id,$eusu_id );	
 
 					}
-
 					if($result["status"]){
 						if($option == 1){
 							$arrResponse = array('status' => true, 'dato' => $result["numero"],'msg' => 'Datos guardados correctamente.');

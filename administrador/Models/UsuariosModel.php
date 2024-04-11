@@ -242,10 +242,11 @@ class UsuariosModel extends Mysql
 			$strClave = ($Clave != "") ? ",usu_clave='{$Clave}'" : "";
 			//Actualizar Usuario
 			$SqlQuery  = "UPDATE " . $db_name . ".usuario  ";
-			$SqlQuery .= "SET usu_alias = ?,usu_correo = ?, usu_clave = ?, estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP(){$strClave}";
+			$SqlQuery .= "SET usu_alias = ?,usu_correo = ?, estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP(){$strClave}";
 			$SqlQuery .= " WHERE usu_id = '{$UsuId}' ";
 			$update = $con->prepare($SqlQuery);
-			$arrDataUsu = array($Alias, $Correo, $Clave, $estado, $idsUsuMod);
+			//$arrDataUsu = array($Alias, $Correo, $Clave, $estado, $idsUsuMod);
+			$arrDataUsu = array($Alias, $Correo, $estado, $idsUsuMod);
 			$update->execute($arrDataUsu);
 
 			//Actualizar Personas
@@ -258,20 +259,23 @@ class UsuariosModel extends Mysql
 			$update->execute($arrDataPer);
 
 			//Actualizar Empresa Usuario Rol
-			$SqlQuery  = "UPDATE " . $db_name . ".empresa_usuario  ";
+			/*$SqlQuery  = "UPDATE " . $db_name . ".empresa_usuario  ";
 			$SqlQuery .= "SET rol_id = ?,estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() ";
 			$SqlQuery .= " WHERE emp_id = '{$idsEmpresa}' AND usu_id = '{$UsuId}' ";
 			$update = $con->prepare($SqlQuery);
 			$arrDataEmp = array($rol_id, $estado, $idsUsuMod);
-			$update->execute($arrDataEmp);
+			$update->execute($arrDataEmp);*/
 
 			$con->commit();
-			return true;
+			$arroout["status"] = true;
+			return $arroout;
 		} catch (Exception $e) {
 			$con->rollBack();
 			//echo "Fallo: " . $e->getMessage();
 			//throw $e;
-			return false;
+			$arroout["message"] = $e->getMessage();
+			$arroout["status"] = false;
+			return $arroout;
 		}
 	}
 
