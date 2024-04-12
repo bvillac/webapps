@@ -666,7 +666,6 @@ function openModalPagos(contId) {
   var datos = { IdsCont: contId, parametro2: 'valor2' };
   peticionAjax(url, metodo, datos, function(data) {
     // Manejar el éxito de la solicitud aquí
-    console.log(data);
     recargarGridPagos(data.data.movimiento);
 
   }, function(jqXHR, textStatus, errorThrown) {
@@ -689,7 +688,7 @@ function recargarGridPagos(arr_Grid) {
 
 function retornaFilaData(c, Grid) {
   var strFila = "";
-  let nFechaPago=(Grid[c]['FECHA_PAGO']!="" || Grid[c]['FECHA_PAGO']=="null" )? Grid[c]['FECHA_PAGO']:"";
+  let nFechaPago=(Grid[c]['FECHA_PAGO']=="" || Grid[c]['FECHA_PAGO']===null )?"": Grid[c]['FECHA_PAGO'];
   strFila += '<td>' + Grid[c]['NUMERO'] + '</td>';
   strFila += '<td>' + Grid[c]['FECHA_VENCE'] + '</td>';
   //strFila += '<td>' + Grid[c]['FECHA_PAGO'] + '</td>';
