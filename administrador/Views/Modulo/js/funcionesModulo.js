@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', function(){
             {"data":"Estado"},
             {"data":"options"}
         ],
+        "columnDefs": [
+            { 'className': "textleft", "targets": [0] },
+            { "type": "string", "targets": [0] }
+        ],
         'dom': 'lBfrtip',
         'buttons': [
             /* {
@@ -53,10 +57,10 @@ document.addEventListener('DOMContentLoaded', function(){
                 "className": "btn btn-info"
             } */
         ],
-        "resonsieve":"true",
+        "resonsieve":true,
         "bDestroy": true,
         "iDisplayLength": 10,//Numero Items Retornados
-        "order":[[0,"desc"]]  //Orden por defecto 1 columna
+        "order":[[0,"asc"]]  //Orden por defecto 1 columna
     });
 
     //NUEVO

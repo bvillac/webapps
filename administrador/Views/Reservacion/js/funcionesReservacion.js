@@ -589,19 +589,6 @@ function reservarUsuario(accion) {
   let hora = $("#txth_hora").val();
   let diaLetra = $("#txth_diaLetra").val();
 
-  
-
-  //let fechaInicio = $("#dtp_fecha_desde").val();
-  //let fechaFin = $("#dtp_fecha_hasta").val();
-
-  /*if (fechaInicio == "" || fechaFin == "" || centroAT == 0) {
-    swal(
-      "Atención",
-      "Todos los Fecha inicio,fecha fin, y Centro de Atención son obligatorios.",
-      "error"
-    );
-    return false;
-  }*/
   if (niv_id!=0) {
     let objEnt = new Object();
     objEnt.idsModal = idsModal;
@@ -666,7 +653,6 @@ function openModalPagos(contId) {
   var datos = { IdsCont: contId, parametro2: 'valor2' };
   peticionAjax(url, metodo, datos, function(data) {
     // Manejar el éxito de la solicitud aquí
-    console.log(data);
     recargarGridPagos(data.data.movimiento);
 
   }, function(jqXHR, textStatus, errorThrown) {
@@ -689,10 +675,9 @@ function recargarGridPagos(arr_Grid) {
 
 function retornaFilaData(c, Grid) {
   var strFila = "";
-  let nFechaPago=(Grid[c]['FECHA_PAGO']!="" || Grid[c]['FECHA_PAGO']=="null" )? Grid[c]['FECHA_PAGO']:"";
+  let nFechaPago=(Grid[c]['FECHA_PAGO']=="" || Grid[c]['FECHA_PAGO']===null )? "":Grid[c]['FECHA_PAGO'];
   strFila += '<td>' + Grid[c]['NUMERO'] + '</td>';
   strFila += '<td>' + Grid[c]['FECHA_VENCE'] + '</td>';
-  //strFila += '<td>' + Grid[c]['FECHA_PAGO'] + '</td>';
   strFila += '<td>' + nFechaPago + '</td>';
   strFila += '<td>' + Grid[c]['CREDITO'] + '</td>';
   strFila += '<td>' + Grid[c]['SALDO'] + '</td>';

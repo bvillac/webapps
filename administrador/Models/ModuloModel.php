@@ -1,5 +1,5 @@
 <?php 
-require_once("Libraries/Core/Conexion.php");
+//require_once("Libraries/Core/Conexion.php");
 	class ModuloModel extends Mysql{
 		private $db_name;
 
@@ -9,11 +9,15 @@ require_once("Libraries/Core/Conexion.php");
 		}
 
 		public function consultarDatos(){
+			//$sql = "SELECT @secuencia := @secuencia + 1 AS orden,a.mod_id Ids,a.mod_nombre Nombre, a.mod_url Url, ";
 			$sql = "SELECT a.mod_id Ids,a.mod_nombre Nombre, a.mod_url Url, ";
 			$sql .= " a.estado_logico Estado ";
-			$sql .= "   FROM modulo a  ";
+			$sql .= "   FROM ". $this->db_name .".modulo a  ";
+			//$sql .= ", (SELECT @secuencia := 0) AS temp ";
 			$sql .= "WHERE a.estado_logico!=0  ";
+			$sql .= "ORDER BY  a.mod_id ";
 			$request = $this->select_all($sql);
+			//putMessageLogFile($request);
 			return $request;
 		}
 
@@ -79,7 +83,8 @@ require_once("Libraries/Core/Conexion.php");
 	}
 
 		public function deleteRegistro(int $Ids){
-			$sql = "UPDATE " . $this->db_name . ".modulo SET estado_logico = ?,usuario_modificacion=1,fecha_modificacion = CURRENT_TIMESTAMP() WHERE mod_id = {$Ids} ";
+			$usuario = retornaUser();
+			$sql = "UPDATE " . $this->db_name . ".modulo SET estado_logico = ?,usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE mod_id = {$Ids} ";
 			$arrData = array(0);
 			$request = $this->update($sql, $arrData);
 			return $request;

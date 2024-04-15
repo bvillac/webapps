@@ -2,7 +2,8 @@
     adminHeader($data);
     adminMenu($data); 
     //filelang(Setlanguage,"general") 
-    getModal('modalModulo',$data);
+    //getModal('modalModulo',$data);
+    require_once "Views/Modulo/Modals/modalModulo.php";
 ?>
     <div id="contentAjax"></div> 
     <main class="app-content">
