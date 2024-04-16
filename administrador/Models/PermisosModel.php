@@ -19,7 +19,13 @@
 			$sql = "SELECT * FROM " . $this->db_name . ".modulo WHERE estado_logico != 0";
 			$request = $this->select_all($sql);
 			return $request;
-		}	
+		}
+		
+		public function selectModulosPermiso(){
+			$sql = "SELECT * FROM " . $this->db_name . ".modulo WHERE estado_logico = 1";
+			$request = $this->select_all($sql);
+			return $request;
+		} 
 		public function selectPermisosRol(int $ids){
 			$sql = "SELECT * FROM " . $this->db_name . ".permiso WHERE rol_id = {$ids}";
 			$request = $this->select_all($sql);

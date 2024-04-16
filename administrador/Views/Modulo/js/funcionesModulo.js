@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 "className": "btn btn-info"
             } */
         ],
-        "resonsieve":true,
+        "resonsieve":"true",
         "bDestroy": true,
         "iDisplayLength": 10,//Numero Items Retornados
         "order":[[0,"asc"]]  //Orden por defecto 1 columna
@@ -69,10 +69,11 @@ document.addEventListener('DOMContentLoaded', function(){
         e.preventDefault();//Parar el envio de datos y que se resfresque la pagina
         //Captura de Campos
         var Ids = document.querySelector('#txth_ids').value;
+        var mod_codigo = document.querySelector('#txt_mod_codigo').value;
         var mod_nombre = document.querySelector('#txt_mod_nombre').value;
         var mod_url = document.querySelector('#txt_mod_url').value;
         var estado = document.querySelector('#cmb_estado').value;       
-        if(mod_nombre == '' || mod_url == '' || estado == '')//Validacin de Campos
+        if(mod_codigo == '' || mod_nombre == '' || mod_url == '' || estado == '')//Validacin de Campos
           {
               swal("Atención", "Todos los campos son obligatorios." , "error");
               return false;
@@ -86,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function(){
              } 
          } 
         //Variable Request para los navegadores segun el Navegador (egde,firefox,chrome)
+        
         var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
         var ajaxUrl = base_url+'/Modulo/setModulo'; 
         var formData = new FormData(formModulo);//Objeto de Formulario capturado
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function(){
         request.send(formData);
         request.onreadystatechange = function(){
            if(request.readyState == 4 && request.status == 200){//Responde  
-                console.log(request.responseText); //Ver el Retorno             
+                //console.log(request.responseText); //Ver el Retorno             
                 var objData = JSON.parse(request.responseText);//Casting Object
                 if(objData.status) {
                     $('#modalFormModulo').modal("hide");//Oculta el Modal
@@ -124,6 +126,7 @@ function openModal(){
     document.querySelector('#btnText').innerHTML ="Guardar";
     document.querySelector('#titleModal').innerHTML = "Nuevo Módulo";
     document.querySelector("#formModulo").reset();
+    $("#txt_mod_codigo").prop("disabled", false);
 	$('#modalFormModulo').modal('show');
 }
 
@@ -143,6 +146,7 @@ function fntViewModulo(ids){
                var estadoReg = objData.data.Estado == 1 ? 
                 '<span class="badge badge-success">Activo</span>' : 
                 '<span class="badge badge-danger">Inactivo</span>';
+                document.querySelector("#lbl_nom_codigo").innerHTML = objData.data.Ids;
                 document.querySelector("#lbl_nom_modulo").innerHTML = objData.data.Nombre;
                 document.querySelector("#lbl_url_modulo").innerHTML = objData.data.Url;
                 document.querySelector("#lbl_estado").innerHTML = estadoReg;
@@ -171,7 +175,9 @@ function fntEditModulo(ids){
         if(request.readyState == 4 && request.status == 200){
             var objData = JSON.parse(request.responseText);
             if(objData.status){
+                $("#txt_mod_codigo").prop("disabled", true);
                 document.querySelector("#txth_ids").value = objData.data.Ids;
+                document.querySelector("#txt_mod_codigo").value = objData.data.Ids;
                 document.querySelector("#txt_mod_nombre").value = objData.data.Nombre;
                 document.querySelector("#txt_mod_url").value = objData.data.Url;
                 if(objData.data.Estado == 1){

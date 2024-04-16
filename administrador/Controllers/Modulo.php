@@ -80,14 +80,17 @@ class Modulo extends Controllers
 			if (empty($_POST['txt_mod_nombre']) || empty($_POST['txt_mod_url']) || empty($_POST['cmb_estado'])) {
 				$arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
 			} else {
-				$Ids = intval($_POST['txth_ids']);
+				//$Ids = intval($_POST['txth_ids']);
+				$Ids = strClean($_POST['txth_ids']);
+				$mod_codigo = strClean($_POST['txt_mod_codigo']);
 				$mod_nombre = strClean($_POST['txt_mod_nombre']);
 				$mod_url = strClean($_POST['txt_mod_url']);
 				$estado = intval($_POST['cmb_estado']);
-				if ($Ids == 0) {
+				//if ($Ids == 0) {
+				if ($Ids == "") {
 					$option = 1;
 					if ($_SESSION['permisosMod']['w']) {
-						$result = $model->insertData($Ids, $mod_nombre, $mod_url, $estado);
+						$result = $model->insertData($mod_codigo, $mod_nombre, $mod_url, $estado);
 					}
 				} else {
 					$option = 2;

@@ -20,19 +20,16 @@
               <input type="text" class="form-control valid validText" id="txt_mod_codigo" name="txt_mod_codigo"   required="" >
             </div>
             <div class="form-group col-md-6">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
               <label for="txt_mod_nombre">Nombre de Módulo</label>
               <input type="text" class="form-control valid validText" id="txt_mod_nombre" name="txt_mod_nombre" onkeyup="TextMayus(this);"  required="" >
             </div>
+          </div>
+          <div class="form-row">
+            
             <div class="form-group col-md-6">
               <label for="txt_mod_url">Url de Módulo</label>
               <input type="text" class="form-control valid validText" id="txt_mod_url" name="txt_mod_url"  required="" >
             </div>
-          </div>
-          <div class="form-row">
             <div class="form-group col-md-6">
               <label for="cmb_estado">Estado</label>
               <select class="form-control" id="cmb_estado" name="cmb_estado" required="">
@@ -40,8 +37,8 @@
                 <option value="2">Inactivo</option>
               </select>
             </div>
-            <div class="form-group col-md-6"></div>
           </div>
+         
 
 
           <div class="tile-footer">
@@ -69,6 +66,10 @@
       <div class="modal-body">
         <table class="table table-bordered">
           <tbody>
+            <tr>
+              <td>Código:</td>
+              <td id="lbl_nom_codigo"></td>
+            </tr>
             <tr>
               <td>Nombre de Módulo:</td>
               <td id="lbl_nom_modulo"></td>

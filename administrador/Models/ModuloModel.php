@@ -1,5 +1,4 @@
 <?php 
-//require_once("Libraries/Core/Conexion.php");
 	class ModuloModel extends Mysql{
 		private $db_name;
 
@@ -31,19 +30,19 @@
 			return $request;
 		}
 
-		public function insertData(int $Ids, string $mod_nombre, string $mod_url, int $estado){
+		public function insertData(string $Ids, string $mod_nombre, string $mod_url, int $estado){
 			//$return = "";
 			//$query_insert  = "INSERT INTO " . $this->db_name . ".modulo (mod_nombre, mod_url, estado_logico) VALUES(?,?,?) WHERE mod_id = {$Ids} AND mod_nombre = {$mod_nombre} ";
 			$db_name=$this->getDbNameMysql();
 			$return = "";
-			$sql = "SELECT * FROM ". $db_name .".modulo WHERE mod_nombre = '{$mod_nombre}'   ";
+			//$sql = "SELECT * FROM ". $db_name .".modulo WHERE mod_nombre = '{$mod_nombre}'   ";
+			$sql = "SELECT * FROM ". $db_name .".modulo WHERE mod_id = '{$Ids}'   ";
 			$request = $this->select_all($sql);
 			if(empty($request)){
 				$con=$this->getConexion();
 				$con->beginTransaction();
 				try{
-				  
-					 $arrData = array( $mod_nombre, $mod_url, $estado);
+					$arrData = array( $Ids,$mod_nombre, $mod_url, $estado);
 					$request_insert =$this->insertarModulo($con,$db_name,$arrData);
 					$return = $request_insert;//Retorna el Ultimo IDS(0) No inserta y si es >0 si inserto
 					$con->commit();
@@ -62,8 +61,8 @@
 	
 		}
 		private function insertarModulo($con,$db_name,$arrData){
-
-			$SqlQuery  = "INSERT INTO ". $db_name .".modulo (mod_nombre, mod_url, estado_logico) VALUES(?,?,?) ";
+            $usuario = retornaUser();
+			$SqlQuery  = "INSERT INTO ". $db_name .".modulo (mod_id,mod_nombre, mod_url, estado_logico,usuario_creacion) VALUES(?,?,?,?,'{$usuario}') ";
 			$insert = $con->prepare($SqlQuery);
         	$resInsert = $insert->execute($arrData);
         	if($resInsert){
@@ -74,9 +73,10 @@
 	        return $lastInsert; 
 		}	
 
-	public function updateData(int $Ids, string $mod_nombre, string $mod_url, int $estado){
+	public function updateData(string $Ids, string $mod_nombre, string $mod_url, int $estado){
+		$usuario = retornaUser();
 		$sql = "UPDATE " . $this->db_name . ".modulo 
-						SET mod_nombre = ?, mod_url = ?, estado_logico = ?, fecha_modificacion = CURRENT_TIMESTAMP() WHERE mod_id = {$Ids} ";
+						SET mod_nombre = ?, mod_url = ?, estado_logico = ?, usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE mod_id = '{$Ids}' ";
 		$arrData = array( $mod_nombre,  $mod_url, $estado);
 		$request = $this->update($sql, $arrData);
 		return $request;
@@ -84,7 +84,7 @@
 
 		public function deleteRegistro(int $Ids){
 			$usuario = retornaUser();
-			$sql = "UPDATE " . $this->db_name . ".modulo SET estado_logico = ?,usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE mod_id = {$Ids} ";
+			$sql = "UPDATE " . $this->db_name . ".modulo SET estado_logico = ?,usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE mod_id = '{$Ids}' ";
 			$arrData = array(0);
 			$request = $this->update($sql, $arrData);
 			return $request;

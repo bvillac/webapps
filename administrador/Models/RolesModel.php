@@ -11,7 +11,8 @@
 
 		public function selectRoles(){
 			//EXTRAE ROLES
-			$sql = "SELECT * FROM ". $this->db_name .".rol WHERE estado_logico != 0";
+			//$sql = "SELECT * FROM ". $this->db_name .".rol WHERE estado_logico != 0";
+			$sql = "SELECT * FROM ". $this->db_name .".rol WHERE estado_logico = 1";
 			$request = $this->select_all($sql);
 			return $request;
 		}
