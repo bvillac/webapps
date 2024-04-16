@@ -589,19 +589,6 @@ function reservarUsuario(accion) {
   let hora = $("#txth_hora").val();
   let diaLetra = $("#txth_diaLetra").val();
 
-  
-
-  //let fechaInicio = $("#dtp_fecha_desde").val();
-  //let fechaFin = $("#dtp_fecha_hasta").val();
-
-  /*if (fechaInicio == "" || fechaFin == "" || centroAT == 0) {
-    swal(
-      "Atención",
-      "Todos los Fecha inicio,fecha fin, y Centro de Atención son obligatorios.",
-      "error"
-    );
-    return false;
-  }*/
   if (niv_id!=0) {
     let objEnt = new Object();
     objEnt.idsModal = idsModal;
@@ -691,7 +678,6 @@ function retornaFilaData(c, Grid) {
   let nFechaPago=(Grid[c]['FECHA_PAGO']=="" || Grid[c]['FECHA_PAGO']===null )?"": Grid[c]['FECHA_PAGO'];
   strFila += '<td>' + Grid[c]['NUMERO'] + '</td>';
   strFila += '<td>' + Grid[c]['FECHA_VENCE'] + '</td>';
-  //strFila += '<td>' + Grid[c]['FECHA_PAGO'] + '</td>';
   strFila += '<td>' + nFechaPago + '</td>';
   strFila += '<td>' + Grid[c]['CREDITO'] + '</td>';
   strFila += '<td>' + Grid[c]['SALDO'] + '</td>';
