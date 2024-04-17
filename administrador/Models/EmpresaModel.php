@@ -9,7 +9,7 @@
 
 		public function consultarDatos(){
 			$sql = "SELECT a.emp_id Ids,CONCAT(b.mon_simbolo,'-',b.mon_nombre) Moneda,a.emp_ruc Ruc, ";
-			$sql .= "   a.emp_razon_social Razon,a.emp_nombre_comercial	Nombre,a.emp_direccion Direccion,a.emp_correo Correo,a.emo_ruta_logo Logo,a.estado_logico Estado ";
+			$sql .= "   a.emp_razon_social Razon,a.emp_nombre_comercial	Nombre,a.emp_direccion Direccion,a.emp_correo Correo,a.emp_ruta_logo Logo,a.estado_logico Estado ";
 			$sql .= "   FROM ". $this->db_name .".empresa a  ";
 			$sql .= "      INNER JOIN ". $this->db_name .".moneda b  ";
 			$sql .= "      ON a.mon_id=b.mon_id AND b.estado_logico!=0  ";
@@ -28,7 +28,7 @@
 		
 		public function consultarDatosId(int $Ids){
 			$sql = "SELECT a.emp_id Ids,b.mon_id,b.mon_nombre Moneda,a.emp_ruc Ruc,a.mon_id IdMoneda, ";
-			$sql .= "   a.emp_razon_social Razon,a.emp_nombre_comercial	Nombre,a.emp_direccion Direccion,a.emp_correo Correo,a.emo_ruta_logo Logo,a.estado_logico Estado,date(a.fecha_creacion) FechaIng";
+			$sql .= "   a.emp_razon_social Razon,a.emp_nombre_comercial	Nombre,a.emp_direccion Direccion,a.emp_correo Correo,a.emp_ruta_logo Logo,a.estado_logico Estado,date(a.fecha_creacion) FechaIng";
 			$sql .= "   FROM ". $this->db_name .".empresa a  ";
 			$sql .= "      INNER JOIN ". $this->db_name .".moneda b  ";
 			$sql .= "      ON a.mon_id=b.mon_id AND b.estado_logico!=0  ";
@@ -88,7 +88,7 @@
 
 		public function updateData(int $Ids, string $ruc, string $razon, string $nombre, string $direccion, string $correo, string $logo, int $moneda, int $estado){
 			$sql = "UPDATE " . $this->db_name . ".empresa 
-							SET emp_ruc = ?,emp_razon_social= ?,emp_nombre_comercial = ?,emp_direccion = ?,emp_correo = ?,emo_ruta_logo = ?,mon_id = ?, estado_logico = ?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE emp_id = {$Ids} ";
+							SET emp_ruc = ?,emp_razon_social= ?,emp_nombre_comercial = ?,emp_direccion = ?,emp_correo = ?,emp_ruta_logo = ?,mon_id = ?, estado_logico = ?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE emp_id = {$Ids} ";
 			$arrData = array($ruc,$razon,$nombre,$direccion,$correo,$logo,$moneda,$estado);
 			$request = $this->update($sql, $arrData);
 			return $request;

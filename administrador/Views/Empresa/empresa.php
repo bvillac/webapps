@@ -2,7 +2,8 @@
     adminHeader($data);
     adminMenu($data); 
     //filelang(Setlanguage,"general") 
-    getModal('modalEmpresa',$data);
+    //getModal('modalEmpresa',$data);
+    require_once "Views/Empresa/Modals/modalEmpresa.php";
 ?>
     <div id="contentAjax"></div> 
     <main class="app-content">
@@ -34,8 +35,6 @@
                           <th>Nombre Comercial</th>
                           <th>Dirección de Empresa</th>
                           <th>Correo Electrónico</th>
-                          <th>Logo</th>
-                          <th>Moneda</th>
                           <th>Estado</th>
                           <th>Acciones</th>
                         </tr>

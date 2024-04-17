@@ -14,14 +14,15 @@
 			$data['page_tag'] = "Empresa";
 			$data['page_name'] = "Empresa";
 			$data['page_title'] = "Empresa <small> ".TITULO_EMPRESA ."</small>";
-			$data['fileJS'] = "funcionesEmpresa.js";
+			//$data['fileJS'] = "funcionesEmpresa.js";
+			$data['page_back'] = "empresa";
 			$this->views->getView($this,"empresa",$data);
 		}
 
 		public function getEmpresas(){
 			if($_SESSION['permisosMod']['r']){
-				$model=new EmpresaModel();
-				$arrData = $model->consultarDatos();
+				//$model=new EmpresaModel();
+				$arrData = $this->model->consultarDatos();
 				for ($i=0; $i < count($arrData); $i++) {
 					$btnOpciones="";
 					if($arrData[$i]['Estado'] == 1){
@@ -65,9 +66,9 @@
 		public function getEmpresa(int $ids){
 			if($_SESSION['permisosMod']['r']){
 				$ids = intval(strClean($ids));
-				$model=new EmpresaModel();
+				//$model=new EmpresaModel();
 				if($ids > 0){
-					$arrData = $model->consultarDatosId($ids);
+					$arrData = $this->model->consultarDatosId($ids);
 					//dep($arrData);
 					if(empty($arrData)){
 						$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
