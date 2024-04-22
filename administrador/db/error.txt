@@ -11,3 +11,6 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 FLUSH PRIVILEGES;
 
 SELECT list is not in GROUP BY clause and contains nonaggregated column
+
+
+############ REVISAR EL LOAD PARA VER SI NO SE VA POR ERROR  ###########

@@ -5,7 +5,6 @@ class Errors extends Controllers
 	public function __construct()
 	{
 		parent::__construct();
-		//sessionStart();	
 		if (empty($_SESSION['loginEstado'])) {
 			header('Location: ' . base_url() . '/login');
 			die();

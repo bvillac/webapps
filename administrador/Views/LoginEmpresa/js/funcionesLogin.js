@@ -187,14 +187,17 @@ function iniciarSession() {
 		//var datosEncriptados = encryptData(JSON.stringify(datos), clavePrivate);
 		peticionAjax(url, metodo, {datos: btoa(JSON.stringify(datos)) }, function (data) {
 			// Manejar el éxito de la solicitud aquí
+			//recargarGridPagos(data.data.movimiento);
+			console.log(data);
+			alert(data.msg);
+			/*var objData = JSON.parse(request.responseText);
 			if (data.status) {
-				//alert("redireciona: "+base_url+'/Loginempresa/loginempresa');
-				window.location = base_url+'/LoginEmpresa';
-				//window.location.reload(false);
+				//window.location = base_url+'/dashboard';
+				window.location.reload(false);
 			} else {
-				swal("Atención", data.msg, "error");
+				swal("Atención", objData.msg, "error");
 				document.querySelector('#txt_clave').value = "";
-			}
+			}*/
 
 		}, function (jqXHR, textStatus, errorThrown) {
 			// Manejar el error de la solicitud aquí

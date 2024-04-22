@@ -137,6 +137,18 @@
 			$request = $this->select($sql);
 			return $request;
 		}
+		/*######################################
+		NUEVAS FUNCIONES  21-04-2024 
+		######################################*/
 
+		public function consultarEmpresaUsuario(){
+			$sql = "SELECT b.emp_id Ids,b.emp_nombre_comercial NombreComercial ";
+			$sql .= "	FROM ". $this->db_name .".empresa_usuario a ";
+			$sql .= "		INNER JOIN ". $this->db_name .".empresa b ";
+			$sql .= "			ON a.emp_id=b.emp_id ";
+			$sql .= "	WHERE a.estado_logico=1; ";
+			$request = $this->select_all($sql);
+			return $request;
+		}
 	}
  ?>

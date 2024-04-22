@@ -1,3 +1,4 @@
+var clavePrivate = "EIhyWpvOuPhIBhTKG54dyTJ2HtFc";
 (function () {
     "use strict";
     var treeviewMenu = $('.app-menu');
@@ -304,4 +305,20 @@ function peticionAjax(url, metodo, datos, exitoCallback, errorCallback) {
     // Manejar el error de la solicitud aquí
     console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
   });*/
+
+// Función para encriptar los datos con AES
+function encryptData(data, key) {
+    // Convertir la clave a un formato adecuado
+    const keyBytes = CryptoJS.enc.Utf8.parse(key);
+    
+    // Encriptar los datos utilizando AES con la clave proporcionada
+    const encryptedData = CryptoJS.AES.encrypt(data, keyBytes, {
+        mode: CryptoJS.mode.ECB, // Modo de operación: Electronic Codebook (ECB)
+        padding: CryptoJS.pad.Pkcs7 // Relleno: PKCS #7
+    });
+
+    // Devolver el resultado en formato Base64
+    return encryptedData.toString();
+}
+
   

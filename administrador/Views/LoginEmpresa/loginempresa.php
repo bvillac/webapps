@@ -25,42 +25,40 @@
     <div class="login-box">
 
       <form class="login-form" name="frm_Login" id="frm_Login" action="">
-      
-          <img class="loguinInicio" src="<?= media() ?>/logo/logo-miller.jpg" alt="Miller Logo">
-   
-        <!--<h3 class="login-head"><?= TITULO_EMPRESA ?></h3>-->
         <div class="form-group">
-          <label class="control-label">USUARIO</label>
-          <input id="txt_Email" name="txt_Email" class="form-control" type="email" placeholder="Email" autofocus>
+              <label for="cmb_empresa">EMPRESA</label>
+              <select class="form-control" id="cmb_empresa" name="cmb_empresa" >
+                <?php
+                echo '<option value="0">SELECCIONAR</option>';
+                foreach ($data['empresa'] as $opcion) {
+                  $seleted = "";//($opcion['Ids'] == $data['idsEmpresa']) ? 'selected' : '';
+                  echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['NombreComercial'] . '</option>';
+                }
+                ?>
+              </select>
         </div>
         <div class="form-group">
-          <label class="control-label">CLAVE</label>
-          <input id="txt_clave" name="txt_clave" class="form-control" type="password" placeholder="Clave">
-          <span class="mdi mdi-eye" id="mostrar"> <span class="pwdtxt" style="cursor:pointer;">Mostrar contraseña</span></span>
+          <label for="cmb_centro">CENTRO DE ATENCIÓN</label>
+          <select class="form-control" id="cmb_centro" name="cmb_centro" disabled>
+                <?php
+                echo '<option value="0">SELECCIONAR</option>';
+                ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cmb_punto">PUNTO DE ATENCIÓN</label>
+          <select class="form-control" id="cmb_punto" name="cmb_punto" disabled>
+                <?php
+                echo '<option value="0">SELECCIONAR</option>';
+                ?>
+          </select>
         </div>
         
-        <div class="form-group">
-          <div class="utility">
-            <p class="semibold-text mb-2"><a href="#" data-toggle="flip">¿Recuperar tu clave?</a></p>
-          </div>
-        </div>
+    
         <div id="alertLogin" class="text-center"></div>
         <div class="form-group btn-container">
           <!-- <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> INICIAR SESIÓN</button> -->
           <button type="button" id="btn_login" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> INICIAR SESIÓN</button>
-        </div>
-      </form>
-      <form id="formRecetPass" name="formRecetPass" class="forget-form" action="">
-        <h3 class="login-head"><i class="fa fa-lg fa-fw fa-lock"></i>¿Recuperar clave?</h3>
-        <div class="form-group">
-          <label class="control-label">EMAIL</label>
-          <input id="txt_Email_Reset" name="txt_Email_Reset" class="form-control" type="email" placeholder="Email">
-        </div>
-        <div class="form-group btn-container">
-          <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-unlock fa-lg fa-fw"></i>Recuperar</button>
-        </div>
-        <div class="form-group mt-3">
-          <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="fa fa-angle-left fa-fw"></i> Regresar</a></p>
         </div>
       </form>
     </div>
