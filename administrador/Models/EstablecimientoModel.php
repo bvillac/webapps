@@ -105,6 +105,13 @@ require_once("Libraries/Core/Conexion.php");
 			return $request;
 		}
 
+		public function consultarEstablecimientoEmpresa($idsEmpresa){
+			$sql = "SELECT est_id Ids,CONCAT(est_numero,' ',est_nombre) Nombre ";
+			$sql .= " FROM ". $this->db_name .".establecimiento WHERE estado_logico!=0 and emp_id='{$idsEmpresa}' ORDER BY est_nombre ASC";
+			$request = $this->select_all($sql);
+			return $request;
+		}
+
 
 	}
  ?>

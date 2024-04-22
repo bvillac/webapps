@@ -107,6 +107,16 @@ require_once("Libraries/Core/Conexion.php");
 			return $request;
 		}
 
+		/*##############################
+		NUEVAS FUNCIONES 22-04-2023
+		##############################*/
+		public function consultarEstablecimientoPunto(int $Ids){
+			$sql = "SELECT pemi_id Ids, CONCAT(pemi_numero,' ',pemi_nombre) Nombre ";
+			$sql .= " FROM ". $this->db_name .".punto_emision WHERE estado_logico!=0 and est_id='{$Ids}' ORDER BY pemi_nombre ASC";
+			$request = $this->select_all($sql);
+			return $request;
+		}
+
 
 	}
  ?>

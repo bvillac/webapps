@@ -27,7 +27,7 @@
       <form class="login-form" name="frm_Login" id="frm_Login" action="">
         <div class="form-group">
               <label for="cmb_empresa">EMPRESA</label>
-              <select class="form-control" id="cmb_empresa" name="cmb_empresa" >
+              <select class="form-control" id="cmb_empresa" name="cmb_empresa" onchange="fntCentro(this.value)" >
                 <?php
                 echo '<option value="0">SELECCIONAR</option>';
                 foreach ($data['empresa'] as $opcion) {
@@ -38,10 +38,10 @@
               </select>
         </div>
         <div class="form-group">
-          <label for="cmb_centro">CENTRO DE ATENCIÓN</label>
-          <select class="form-control" id="cmb_centro" name="cmb_centro" disabled>
+          <label for="cmb_establecimiento">ESTABLECIMIENTO</label>
+          <select class="form-control" id="cmb_establecimiento" name="cmb_establecimiento" disabled>
                 <?php
-                echo '<option value="0">SELECCIONAR</option>';
+                //echo '<option value="0">SELECCIONAR</option>';
                 ?>
           </select>
         </div>
@@ -49,10 +49,19 @@
           <label for="cmb_punto">PUNTO DE ATENCIÓN</label>
           <select class="form-control" id="cmb_punto" name="cmb_punto" disabled>
                 <?php
-                echo '<option value="0">SELECCIONAR</option>';
+                //echo '<option value="0">SELECCIONAR</option>';
                 ?>
           </select>
         </div>
+        <div class="form-group">
+          <label for="cmb_centro">CENTRO DE ATENCIÓN</label>
+          <select class="form-control" id="cmb_centro" name="cmb_centro" disabled>
+                <?php
+                //echo '<option value="0">SELECCIONAR</option>';
+                ?>
+          </select>
+        </div>
+        
         
     
         <div id="alertLogin" class="text-center"></div>
