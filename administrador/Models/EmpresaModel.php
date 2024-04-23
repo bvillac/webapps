@@ -142,12 +142,18 @@
 		######################################*/
 
 		public function consultarEmpresaUsuario(){
-			$sql = "SELECT b.emp_id Ids,b.emp_nombre_comercial NombreComercial ";
+			$sql = "SELECT a.eusu_id Ids,b.emp_nombre_comercial NombreComercial ";
 			$sql .= "	FROM ". $this->db_name .".empresa_usuario a ";
 			$sql .= "		INNER JOIN ". $this->db_name .".empresa b ";
 			$sql .= "			ON a.emp_id=b.emp_id ";
 			$sql .= "	WHERE a.estado_logico=1; ";
 			$request = $this->select_all($sql);
+			return $request;
+		}
+
+		public function getIdEmpresaUsuario(int $Ids){
+			$sql = "SELECT emp_id FROM ". $this->db_name .".empresa_usuario WHERE eusu_id={$Ids} ";
+			$request = $this->select($sql);
 			return $request;
 		}
 	}

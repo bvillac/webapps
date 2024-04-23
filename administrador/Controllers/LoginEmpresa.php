@@ -101,12 +101,15 @@ class LoginEmpresa extends Controllers
 	public function bucarCentro()
 	{
 		if ($_POST) {
-			$modelCentro = new CentroAtencionModel();
-			$modelEstablecimiento = new EstablecimientoModel();			
+						
 			$decodedData = base64_decode($_POST['datos']);
 			$data = json_decode($decodedData, true);
 			$ids = intval(strClean($data['Ids']));
 			if ($ids > 0) {
+				$modelCentro = new CentroAtencionModel();
+				$modelEstablecimiento = new EstablecimientoModel();
+				$modelEmpresa = new EmpresaModel();
+				$idEmpresa=$modelEmpresa->getIdEmpresaUsuario($ids);
 				$arrData['Centro'] = $modelCentro->consultarCentroEmpresaIds($ids);
 				$arrData['Establecimiento'] = $modelEstablecimiento->consultarEstablecimientoEmpresa($ids);
 				//dep($arrData);
