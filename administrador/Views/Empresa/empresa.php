@@ -30,7 +30,6 @@
                     <table class="table table-hover table-bordered" id="tableEmpresa">
                       <thead>
                         <tr>
-                          <th>Id</th>
                           <th>Ruc</th>
                           <th>Razón Social</th>
                           <th>Nombre Comercial</th>

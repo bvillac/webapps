@@ -37,7 +37,7 @@ class LoginEmpresa extends Controllers
 	private function countEmpresa()
 	{
 		$modelEmpresa = new EmpresaModel();
-		$this->dataEmpresa = $modelEmpresa->consultarEmpresaUsuario();
+		$this->dataEmpresa = $modelEmpresa->consultarEmpresaUsuario($_SESSION['Usu_id']);
 		return sizeof($this->dataEmpresa); //Retorna el Numero de Empresas
 	}
 
@@ -46,7 +46,7 @@ class LoginEmpresa extends Controllers
 		$data['empresa'] = $this->dataEmpresa;
 		$data['page_tag'] = "Login Empresa";
 		$data['page_name'] = "Login Empresa";
-		$data['page_title'] = "Login <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Login <small> " . private $nombreEmpresa=$_SESSION['empresaData']['NombreComercial']; . "</small>";
 		$data['page_back'] = "loginempresa";
 		//dep($data);
 		$this->views->getView($this, "loginempresa", $data);
@@ -66,15 +66,7 @@ class LoginEmpresa extends Controllers
 				//Obtener datos empresa 
 				$this->datosSession($data['Empresa']);
 				//Variables de Session		
-
-				/*$arrData = $model->sessionLogin($_SESSION['Usu_id']);
-				sessionUsuario($_SESSION['Usu_id']); //Actualiza la Session del usuario.
-				$idrol = $_SESSION['usuarioData']['RolID']; //se obtiene el rol de la seccion
-				$usuId = $_SESSION['Usu_id'];
-				$empId = $_SESSION['Emp_Id'];
-				$idrol = ($idrol != "") ? $idrol : 4; //Si no tiene asignado Rol se envia un rol=4 Usuario
-				$_SESSION['menuData'] = $model->permisosModulo($usuId, $empId, $idrol);*/
-
+				//$idrol = ($idrol != "") ? $idrol : 4; //Si no tiene asignado Rol se envia un rol=4 Usuario
 				$arrResponse = array('status' => true, 'msg' => 'ok');
 				//putMessageLogFile($arrResponse);
 			}
@@ -103,12 +95,13 @@ class LoginEmpresa extends Controllers
 				$_SESSION['usuarioData']['Rol_nombre'] = $resulRol[0]['rol_nombre'];
 				//DATOS PERMISO MODULO
 				$_SESSION['menuData'] = $modelLoguin->permisosModulo($Eusu_id,$resulRol[0]['erol_id']);
+
 			}else{
 				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa ");
 				require_once("Controllers/Error.php");
 			} 
 			
-			//putMessageLogFile($_SESSION);
+			putMessageLogFile($_SESSION);
 
 		}else{
 			putMessageLogFile("EmpresaUsuario con Id no existe= ".$Eusu_id);

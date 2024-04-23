@@ -141,12 +141,12 @@
 		NUEVAS FUNCIONES  21-04-2024 
 		######################################*/
 
-		public function consultarEmpresaUsuario(){
+		public function consultarEmpresaUsuario(int $Usu_id){
 			$sql = "SELECT a.eusu_id Ids,b.emp_nombre_comercial NombreComercial ";
 			$sql .= "	FROM ". $this->db_name .".empresa_usuario a ";
 			$sql .= "		INNER JOIN ". $this->db_name .".empresa b ";
 			$sql .= "			ON a.emp_id=b.emp_id ";
-			$sql .= "	WHERE a.estado_logico=1; ";
+			$sql .= "	WHERE a.estado_logico=1 AND a.usu_id={$Usu_id} ";
 			$request = $this->select_all($sql);
 			return $request;
 		}

@@ -18,56 +18,6 @@
 			$this->views->getView($this,"login",$data);
 		}
 
-		/*public function loginUsuario(){
-			//dep($_POST);
-			if($_POST){
-				if(empty($_POST['txt_Email']) || empty($_POST['txt_clave'])){
-					$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
-				}else{
-					$model=new LoginModel();
-					$strUsuario  =  strtolower(strClean($_POST['txt_Email']));//minusculas
-					$strClave = hash("SHA256",$_POST['txt_clave']);//Se encripta para comparar en la base
-					$request = $model->loginData($strUsuario, $strClave);			
-					if(empty($request)){
-						$arrResponse = array('status' => false, 'msg' => 'El usuario o la contraseña es incorrecto.' ); 
-					}else{
-						$arrData = $request;
-						//putMessageLogFile($arrData);
-						if($arrData['Estado'] == 1){							
-							//Obtener datos empresa 
-							$arrEmpresa=datosEmpresaEstablePunto(ID_EMPRESA);
-							$_SESSION['empresaData']=$arrEmpresa;
-							//Variables de Session
-							$_SESSION['Usu_id'] = $arrData['usu_id'];
-							$_SESSION['Emp_Id'] = $arrEmpresa['EmpIds'];//Cambiar por el retornado y seleccionado
-							$_SESSION['Per_id'] = $arrData['per_id'];
-							$_SESSION['loginEstado'] = true;//estado de la Session Login
-							//Para que la Session no se cierre en algunos navegadores.
-							$_SESSION['timeout'] = true;
-							$_SESSION['inicio'] = time();//Devuelve la hora en numero entero
-							
-							$arrData = $model->sessionLogin($_SESSION['Usu_id']);								
-							sessionUsuario($_SESSION['Usu_id']);//Actualiza la Session del usuario.
-							$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
-							$usuId = $_SESSION['Usu_id'];
-							$empId = $_SESSION['Emp_Id'];			
-							$idrol=($idrol!="")?$idrol:4;//Si no tiene asignado Rol se envia un rol=4 Usuario
-							$_SESSION['menuData'] = $model->permisosModulo($usuId,$empId,$idrol);						
-							$arrResponse = array('status' => true, 'msg' => 'ok');
-							//putMessageLogFile($arrResponse);
-							//echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
-							//die();
-						}else{
-							$arrResponse = array('status' => false, 'msg' => 'Usuario inactivo.');
-						}
-						//putMessageLogFile($arrResponse);
-					}
-				}
-				echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
-			}
-			die();
-		}*/
-
 		public function loginUsuario(){
 			//dep($_POST);
 			if($_POST){
@@ -106,30 +56,6 @@
 							$_SESSION['inicio'] = time();//Devuelve la hora en numero entero
 							$_SESSION['loginEstado'] = true;//estado de la Session Login
 							$arrResponse = array('status' => true, 'msg' => 'ok');
-
-							//Obtener datos empresa 
-							/*$arrEmpresa=datosEmpresaEstablePunto(ID_EMPRESA);
-							$_SESSION['empresaData']=$arrEmpresa;
-							//Variables de Session
-							$_SESSION['Usu_id'] = $arrData['usu_id'];
-							$_SESSION['Emp_Id'] = $arrEmpresa['EmpIds'];//Cambiar por el retornado y seleccionado
-							$_SESSION['Per_id'] = $arrData['per_id'];
-							$_SESSION['loginEstado'] = true;//estado de la Session Login
-							//Para que la Session no se cierre en algunos navegadores.
-							$_SESSION['timeout'] = true;
-							$_SESSION['inicio'] = time();//Devuelve la hora en numero entero
-							
-							$arrData = $model->sessionLogin($_SESSION['Usu_id']);								
-							sessionUsuario($_SESSION['Usu_id']);//Actualiza la Session del usuario.
-							$idrol = $_SESSION['usuarioData']['RolID'];//se obtiene el rol de la seccion
-							$usuId = $_SESSION['Usu_id'];
-							$empId = $_SESSION['Emp_Id'];			
-							$idrol=($idrol!="")?$idrol:4;//Si no tiene asignado Rol se envia un rol=4 Usuario
-							$_SESSION['menuData'] = $model->permisosModulo($usuId,$empId,$idrol);						
-							$arrResponse = array('status' => true, 'msg' => 'ok');*/
-							//putMessageLogFile($arrResponse);
-							//echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
-							//die();
 						}else{
 							$arrResponse = array('status' => false, 'msg' => 'Usuario inactivo.');
 						}
