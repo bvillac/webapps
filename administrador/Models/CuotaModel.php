@@ -12,7 +12,7 @@ class CuotaModel extends MysqlAcademico
 
     public function consultarDatos()
     {
-        $empId = $_SESSION['idEmpresa'];
+        $empId = $_SESSION['Emp_Id'];
         $sql = "SELECT b.con_id ContIds,c.cli_cedula_ruc DNI,c.cli_razon_social RazonSolcial,date(b.con_fecha_inicio) FechaContrato,CONCAT(a.original_transaccion,a.original_documento) Contrato,b.con_numero_pagos NumeroPagos, ";
         $sql .= "   b.con_valor_cuota_mensual ValorMensual,b.con_valor ValorDebito,SUM(a.valor_cancelado) ValorAbonos, (b.con_valor-SUM(a.valor_cancelado)) Saldo, ";
         $sql .= "   max(date(a.fecha_pago_debito)) FechaUltPago,if((b.con_valor-SUM(a.valor_cancelado))<b.con_valor,'PENDIENTE','CANCELADO') EstadoCancelado ";

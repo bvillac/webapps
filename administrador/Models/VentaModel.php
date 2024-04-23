@@ -79,7 +79,7 @@
 
 		public function despacharDocumento(string $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE ". $db_name .".pedidos SET estado_entrega = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE ped_id={$Ids} AND estado_logico=1 ";
 			$arrData = array(1,$idsUsuario);
 			$request = $this->update($sql,$arrData);

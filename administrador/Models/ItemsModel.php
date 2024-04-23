@@ -87,7 +87,7 @@
 			
 			$db_name=$this->getDbNameMysql();
 			$return = "";
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			//Verifica que el correo no existe
 			$sql = "SELECT * FROM ". $db_name .".item  WHERE item_nombre = '{$Nombre}'";
 			$request = $this->select_all($sql);
@@ -158,7 +158,7 @@
 		                            string $Por2,string $Precio2,string $Por3,string $Precio3,string $Por4,string $Precio4,string $Max,string $Min,string $Bodega,string $Estado){
 
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 		
 			//$con=$this->getConexion();
 			//$con->beginTransaction();
@@ -268,7 +268,7 @@
 
 		public function deleteItem(string $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE ". $db_name .".item SET estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE item_id='{$Ids}' ";
 			$arrData = array(0,$idsUsuario);
 			$request = $this->update($sql,$arrData);

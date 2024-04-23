@@ -50,8 +50,7 @@
 			return $total;
 		}
 		public function cantPedidos(){
-			//$rolid = $_SESSION['idsUsuario'];
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$db_name=$this->getDbNameMysql();
 
 			$sql = "SELECT COUNT(*) as total FROM ". $this->db_name .".pedidos WHERE estado_logico != 0 ";

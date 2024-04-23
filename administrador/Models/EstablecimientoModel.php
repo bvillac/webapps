@@ -98,7 +98,7 @@ require_once("Libraries/Core/Conexion.php");
 		}
 
 		public function consultarEstablecimiento(){
-			$idsEmpresa=$_SESSION['idEmpresa'];
+			$idsEmpresa=$_SESSION['Emp_Id'];
 			$sql = "SELECT est_id Ids,CONCAT(est_numero,' ',est_nombre) Nombre ";
 			$sql .= " FROM ". $this->db_name .".establecimiento WHERE estado_logico!=0 and emp_id='{$idsEmpresa}' ORDER BY est_nombre ASC";
 			$request = $this->select_all($sql);

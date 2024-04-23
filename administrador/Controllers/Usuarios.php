@@ -264,7 +264,7 @@
 					$arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
 				}else{
 					$model=new UsuariosModel;
-					$idUsuario = $_SESSION['idsUsuario'];
+					$idUsuario = $_SESSION['Usu_id'];
 					$strNombre = strClean($_POST['txt_nombre']);
 					$strApellido = strClean($_POST['txt_apellido']);
 					$intTelefono = intval(strClean($_POST['txt_Telefono']));
@@ -276,7 +276,7 @@
 					}
 					$request = $model->updateDataPerfil($idUsuario,$strNombre,$strApellido,$intTelefono,$strDireccion,$strAlias,$strPassword);
 					if($request){
-						sessionUsuario($_SESSION['idsUsuario']);
+						sessionUsuario($_SESSION['Usu_id']);
 						$arrResponse = array('status' => true, 'msg' => 'Datos Actualizados correctamente.');
 					}else{
 						$arrResponse = array("status" => false, "msg" => 'No es posible actualizar los datos.');

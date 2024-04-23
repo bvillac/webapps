@@ -21,7 +21,7 @@ class Secuencias extends Controllers
 		$data['Establecimiento'] = $EstData;
 		$Punto= new PuntoModel();
 		$data['Punto'] = $Punto->consultarPuntoEmision($EstData[0]['Ids']);
-		$data['idsEmpresa']=$_SESSION['idEmpresa'];		
+		$data['idsEmpresa']=$_SESSION['Emp_Id'];		
 		$data['page_tag'] = "Secuencias";
 		$data['page_name'] = "Secuencias";
 		$data['page_title'] = "Secuencias <small> " . TITULO_EMPRESA . "</small>";

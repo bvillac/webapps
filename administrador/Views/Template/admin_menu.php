@@ -5,7 +5,7 @@
         <img class="app-sidebar__user-avatar" src="<?= media() ?>/images/fotoAdmin.jpg" alt="User Image">
         <div>
           <p class="app-sidebar__user-name"><?= $_SESSION['usuarioData']['Nombres']; ?></p>
-          <p class="app-sidebar__user-designation"><?= $_SESSION['usuarioData']['Rol']; ?></p>
+          <p class="app-sidebar__user-designation"><?= $_SESSION['usuarioData']['Rol_nombre']; ?></p>
         </div>
       </div>
       <?= getGenerarMenu() ?>

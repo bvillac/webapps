@@ -103,7 +103,7 @@
 		}
 
 		public function consultarEmpresaId(){
-			$IdsEmp=$_SESSION['idEmpresa'];
+			$IdsEmp=$_SESSION['Emp_Id'];
 			$sql = "SELECT a.emp_id Ids,a.emp_ruc Ruc,a.mon_id IdMoneda, ";
 			$sql .= "   a.emp_razon_social Razon,a.emp_nombre_comercial	Nombre,a.emp_direccion Direccion, ";
 			$sql .= "	a.emp_correo Correo,a.emp_ruta_logo Logo";
@@ -151,10 +151,13 @@
 			return $request;
 		}
 
-		public function getIdEmpresaUsuario(int $Ids){
-			$sql = "SELECT emp_id FROM ". $this->db_name .".empresa_usuario WHERE eusu_id={$Ids} ";
+		public function getIdEmpresaUsuario(int $Eusu_id){
+			$sql = "SELECT emp_id FROM ". $this->db_name .".empresa_usuario WHERE eusu_id={$Eusu_id} ";
 			$request = $this->select($sql);
-			return $request;
+			//empty($request) => una cadena vacía, valor nulo,valor entero 0,array vacío y variable no definida
+			//Si existen datos retonar el valor caso contario retorna 0
+			return (!empty($request))?$request['emp_id']:0;
+			//return 0;
 		}
 	}
  ?>

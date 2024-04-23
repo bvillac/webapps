@@ -147,7 +147,7 @@ class ContratoModel extends MysqlAcademico
     }
 
     private function insertarContrato($con, $Cabecera,$numGenerado){   
-        $empId = $_SESSION['idEmpresa'];
+        $empId = $_SESSION['Emp_Id'];
         $arrData = array(
             $empId,
             $Cabecera['cliIds'],

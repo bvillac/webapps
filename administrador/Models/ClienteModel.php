@@ -46,7 +46,7 @@ require_once("Libraries/Core/Conexion.php");
 
 		public function insertData(string $Ids, string $tipo, string $cedula, string $nombre, string $direccion,  string $correo,string $telefono, int $distribuidor, int $precio, string $url,  int $pago, int $estado){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$return = 0;
 			$sql = "SELECT * FROM " . $db_name . ".cliente WHERE  cli_correo = '{$correo}' AND cli_nombre ='{$nombre}'  ";
 			$request = $this->select_all($sql);
@@ -67,7 +67,7 @@ require_once("Libraries/Core/Conexion.php");
 
 		public function updateData(string $Ids, string $tipo, string $cedula, string $nombre, string $direccion, string $correo,string $telefono, int $distribuidor, int $precio, string $url,  int $pago, int $estado){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE " . $db_name . ".cliente 
 							SET cli_tipo_dni = ?,cli_cedula_ruc = ?,cli_nombre = ?,cli_direccion = ?,cli_correo = ?, cli_telefono = ?, cli_distribuidor = ?, 
 							cli_tipo_precio = ?, cli_ruta_certificado_ruc = ?, fpag_id = ?, estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP()
@@ -81,7 +81,7 @@ require_once("Libraries/Core/Conexion.php");
 
 		public function deleteRegistro(string $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE " . $db_name . ".cliente SET estado_logico = ?,usuario_modificacion={$idsUsuario},fecha_modificacion = CURRENT_TIMESTAMP() WHERE cli_codigo = '{$Ids}' ";
 			$arrData = array(0);
 			$request = $this->update($sql, $arrData);

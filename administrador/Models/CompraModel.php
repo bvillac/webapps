@@ -42,7 +42,7 @@
 
 		public function insertData($Cabecera, $Detalle){
 			$db_name = $this->getDbNameMysql();
-			$idsUsuario = $_SESSION['idsUsuario'];
+			$idsUsuario = $_SESSION['Usu_id'];
 			$bodega = 1;
 			$objItem=new ItemsModel;
 			$con = $this->getConexion();
@@ -125,7 +125,7 @@
 
 		public function actualizarCabecera($con, $db_name, $arrData){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE ". $db_name .".compras SET 
 						sec_tipo= ?,com_numero= ?,pro_codigo= ?,com_fecha= ?,com_valor_bruto= ?,
 						com_biva0= ?,com_biva12= ?,com_valor_iva= ?,com_valor_neto= ?,
@@ -185,7 +185,7 @@
 
 		public function anularCompra(string $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE ". $db_name .".compras SET estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE com_id={$Ids} ";
 			$arrData = array(2,$idsUsuario);
 			$request = $this->update($sql,$arrData);
@@ -198,7 +198,7 @@
 
 		public function autorizarOrden(string $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE ". $db_name .".compras SET com_estado_autoriza = ?,com_usuario_autoriza=?,com_fecha_autoriza = CURRENT_TIMESTAMP() WHERE com_id={$Ids} AND estado_logico=1 ";
 			$arrData = array(1,$idsUsuario);
 			$request = $this->update($sql,$arrData);
@@ -239,7 +239,7 @@
 
 		public function actualizarBodega($con, $db_name,$codigo,$bodega,$stock){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario = $_SESSION['idsUsuario'];
+			$idsUsuario = $_SESSION['Usu_id'];
 			$arrData = array(
 				$stock,1, $idsUsuario
 			);

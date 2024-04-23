@@ -29,7 +29,7 @@
 
 		public function insertData($Cabecera, $Detalle){
 			$db_name = $this->getDbNameMysql();
-			$idsUsuario = $_SESSION['idsUsuario'];
+			$idsUsuario = $_SESSION['Usu_id'];
 			$bodega = 1;
 			$con = $this->getConexion();
 			$con->beginTransaction();
@@ -98,7 +98,7 @@
 
 		public function anularOrden(string $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE ". $db_name .".compras SET estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE com_id={$Ids} ";
 			$arrData = array(2,$idsUsuario);
 			$request = $this->update($sql,$arrData);
@@ -110,7 +110,7 @@
 
 		public function autorizarOrden(string $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE ". $db_name .".compras SET com_estado_autoriza = ?,com_usuario_autoriza=?,com_fecha_autoriza = CURRENT_TIMESTAMP() WHERE com_id={$Ids} AND estado_logico=1 ";
 			$arrData = array(1,$idsUsuario);
 			$request = $this->update($sql,$arrData);

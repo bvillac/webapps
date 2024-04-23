@@ -34,11 +34,6 @@ class LoginModel extends Mysql
 		$sql .= "				ON a.per_id=b.per_id";
 		$sql .= "	WHERE a.estado_logico=1 AND a.usu_id={$IdsUser}";
 		$request = $this->select($sql);
-		/*$_SESSION['usuarioData'] = $request;
-		//Obtener el Rol de la Persona
-		$resulRol = $this->selectRolesPermiso($_SESSION['idsUsuario'], $_SESSION['idEmpresa']); //IMPLMENTAR LO DE EMPRESAS
-		$_SESSION['usuarioData']['RolID'] = $resulRol['Ids'];
-		$_SESSION['usuarioData']['Rol'] = $resulRol['rol_nombre'];*/
 		return $request;
 	}
 
@@ -84,35 +79,23 @@ class LoginModel extends Mysql
 	}
 
 	//Nueva Funciones 2023-04
-	public function selectRolesPermiso(int $usu_id, int $emp_id)
+	public function consultarUsuarioEmpresaRol(int $Eurol_id)
 	{
-		/*$db_name = $this->getDbNameMysql();
-		$sql = "SELECT distinct(a.rol_id) Ids,b.rol_nombre ";
-		$sql .= "	FROM " . $db_name . ".permiso a ";
-		$sql .= "		INNER JOIN " . $db_name . ".rol b ";
-		$sql .= "			ON a.rol_id=b.rol_id ";
-		$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id} ";*/
-
-		$sql = "SELECT a.eurol_id Ids,a.rol_id,b.rol_nombre ";
-		$sql .= "FROM " . $this->db_name . ".empresa_usuario_rol a ";
-		$sql .= "	INNER JOIN " . $this->db_name . ".rol b ";
-		$sql .= "		ON a.rol_id=b.rol_id ";
-		$sql .= " WHERE a.estado_logico!=0 AND a.emp_id={$emp_id} AND a.usu_id={$usu_id} ";
+		$sql = "SELECT a.eurol_id,a.erol_id,c.rol_id,c.rol_nombre ";
+		$sql .= "	FROM " . $this->db_name . ".empresa_usuario_rol a ";
+		$sql .= "		INNER JOIN (" . $this->db_name . ".empresa_rol b ";
+		$sql .= "				INNER JOIN " . $this->db_name . ".rol c ";
+		$sql .= "					ON c.rol_id=b.rol_id) ";
+		$sql .= "			ON a.erol_id=b.erol_id ";
+		$sql .= "	WHERE a.estado_logico!=0 AND a.eurol_id={$Eurol_id} ";
 		//$request = $this->select_all($sql);//Devuelve mas de 1
-		$request = $this->select($sql); //Devuelve solo 1
+		$request = $this->select_all($sql); //Devuelve solo 1
 		return $request;
 	}
 
-	public function permisosModulo(int $usu_id, int $emp_id,int $rolId)
+	public function permisosModulo(int $Eusu_id, int $Erol_id)
 	{
-		/*$sql = "SELECT a.mod_id,SUBSTRING(a.mod_id, 1, LENGTH(a.mod_id) - 2) idPadre,b.mod_nombre,b.mod_url,b.mod_icono,a.r,a.w,a.u,a.d ";
-		$sql .= "	FROM " . $this->db_name . ".permiso a ";
-		$sql .= "		INNER JOIN " . $this->db_name . ".modulo b ";
-		$sql .= "			ON a.mod_id=b.mod_id ";
-		$sql .= "	WHERE a.estado_logico!=0 AND a.usu_id={$usu_id} AND a.emp_id={$emp_id} AND a.rol_id={$rolId} ";
-		$sql .= "		ORDER BY a.mod_id ASC ";*/
-
-		$sql = "SELECT a.perm_id,b.emod_id,c.mod_id,SUBSTRING(c.mod_id, 1, LENGTH(c.mod_id) - 2) idPadre, ";	
+		/*$sql = "SELECT a.perm_id,b.emod_id,c.mod_id,SUBSTRING(c.mod_id, 1, LENGTH(c.mod_id) - 2) idPadre, ";	
      	$sql .= "	c.mod_nombre,c.mod_url,c.mod_icono,a.r,a.w,a.u,a.d ";		
 		$sql .= "	FROM db_administrador.permiso a ";
 		$sql .= "		INNER JOIN db_administrador.empresa_usuario_rol d ";
@@ -121,8 +104,14 @@ class LoginModel extends Mysql
 		$sql .= "			LEFT JOIN db_administrador.modulo c ";					
 		$sql .= "				ON c.mod_id=b.mod_id) 	";		
 		$sql .= "			ON a.emod_id=b.emod_id ";
-		$sql .= "WHERE a.estado_logico!=0; ";
+		$sql .= "WHERE a.estado_logico!=0; ";*/
 
+		$sql = "SELECT a.perm_id,a.emod_id,c.mod_id,SUBSTRING(c.mod_id, 1, LENGTH(c.mod_id) - 2) idPadre, 	";
+		$sql .= "		c.mod_nombre,c.mod_url,c.mod_icono,a.r,a.w,a.u,a.d   ";
+		$sql .= "	FROM " . $this->db_name . ".permiso a ";
+		$sql .= "		INNER JOIN " . $this->db_name . ".modulo c  ";
+		$sql .= "			ON a.mod_id=c.mod_id ";
+		$sql .= "	WHERE a.estado_logico!=0 AND a.eusu_id={$Eusu_id} AND a.erol_id={$Erol_id} ";
 		$request = $this->select_all($sql);
 		$menuArray = $this->construirMenu($request,"");
 		//putMessageLogFile($menuArray);

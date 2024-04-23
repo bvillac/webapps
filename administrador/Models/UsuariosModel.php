@@ -29,7 +29,7 @@ class UsuariosModel extends Mysql
 		int $estado
 	) {
 		$db_name = $this->getDbNameMysql();
-		$idsEmpresa = $_SESSION['idEmpresa'];
+		$idsEmpresa = $_SESSION['Emp_Id'];
 		$idsUsuCre = retornaUser();
 		//Verifica que el correo no existe
 		$sql = "SELECT * FROM " . $this->db_name . ".persona WHERE per_cedula = '{$Dni}' AND per_nombre = '{$Nombre}' AND per_apellido = '{$Apellido}'   ";
@@ -104,7 +104,7 @@ class UsuariosModel extends Mysql
 				$busqueda = " AND p.personaid =".$idpersona;
 			}*/
 		//$empresa = 1;
-		$IdsEmpresa = $_SESSION['idEmpresa'];
+		$IdsEmpresa = $_SESSION['Emp_Id'];
 		$ObjEmp = new EmpresaModel;
 		$request = array();
 		$requestEmpresa = $ObjEmp->consultarEmpresaId($IdsEmpresa);
@@ -124,7 +124,7 @@ class UsuariosModel extends Mysql
 	public function consultarCabecerDoc(string $IdsEmpresa)
 	{
 		//$db_name=$this->getDbNameMysql();
-		$IdsEmpresa = $_SESSION['idEmpresa'];
+		$IdsEmpresa = $_SESSION['Emp_Id'];
 		$sql = "SELECT a.usu_id Ids,b.per_id ,a.usu_correo Correo,a.usu_alias Alias,a.usu_clave Clave,b.per_cedula Cedula,b.per_nombre Nombre,b.per_apellido Apellido, ";
 		$sql .= "	a.estado_logico Estado  ";
 		$sql .= "	FROM " . $this->db_name . ".usuario a ";
@@ -139,7 +139,7 @@ class UsuariosModel extends Mysql
 	{
 		//$db_name=$this->getDbNameMysql();
 		//$IdsEmpresa="1";
-		$IdsEmpresa = $_SESSION['idEmpresa'];
+		$IdsEmpresa = $_SESSION['Emp_Id'];
 		$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,b.per_cedula,b.per_nombre,b.per_apellido, ";
 		$sql .= "	a.estado_logico Estado  ";
 		$sql .= "	FROM " . $this->db_name . ".usuario a ";
@@ -153,7 +153,7 @@ class UsuariosModel extends Mysql
 	public function consultarDatosUsuarios()
 	{
 		//$db_name=$this->getDbNameMysql();
-		$IdsEmpresa = $_SESSION['idEmpresa'];
+		$IdsEmpresa = $_SESSION['Emp_Id'];
 		$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,b.per_cedula,b.per_nombre,b.per_apellido, ";
 		$sql .= "	a.estado_logico Estado  ";
 		$sql .= "	FROM " . $this->db_name . ".usuario a ";
@@ -166,7 +166,7 @@ class UsuariosModel extends Mysql
 	public function consultarDatos()
 	{
 		$db_name = $this->getDbNameMysql();
-		$idsEmpresa = $_SESSION['idEmpresa'];
+		$idsEmpresa = $_SESSION['Emp_Id'];
 		$rolId=$_SESSION['usuarioData']['RolID'];
 
 		$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,p.per_cedula,p.per_nombre,p.per_apellido,a.estado_logico Estado  	";
@@ -194,7 +194,7 @@ class UsuariosModel extends Mysql
 	public function consultarDatosId(int $Ids)
 	{
 		$db_name = $this->getDbNameMysql();
-		//$idsEmpresa = $_SESSION['idEmpresa'];
+		//$idsEmpresa = $_SESSION['Emp_Id'];
 		$sql = "SELECT distinct(a.usu_id) Ids,a.per_id,a.usu_correo,a.usu_alias Alias,p.per_cedula Dni,p.per_nombre Nombre,p.per_apellido Apellido,p.per_fecha_nacimiento FechaNac, ";
 		//$sql .= "	r.rol_nombre Rol,c.rol_id RolID,p.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,p.per_telefono Telefono,p.per_direccion Direccion ";
 		$sql .= "	p.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,p.per_telefono Telefono,p.per_direccion Direccion ";
@@ -232,7 +232,7 @@ class UsuariosModel extends Mysql
 
 		$db_name = $this->getDbNameMysql();
 		//$idsUsuMod=1;
-		$idsUsuMod = $_SESSION['idsUsuario'];
+		$idsUsuMod = $_SESSION['Usu_id'];
 		$idsEmpresa = 1;
 
 
@@ -282,7 +282,7 @@ class UsuariosModel extends Mysql
 	public function updateDataPerfil(int $UsuId, string $Nombre, string $Apellido, int $Telefono, string $Direccion, string $Alias, string $Clave)
 	{
 		$db_name = $this->getDbNameMysql();
-		$per_id = $_SESSION['idsPersona'];
+		$per_id = $_SESSION['Per_id'];
 		$con = $this->getConexion();
 		$con->beginTransaction();
 		try {
@@ -318,7 +318,7 @@ class UsuariosModel extends Mysql
 	{
 		$db_name = $this->getDbNameMysql();
 		//$idsUsuMod=1;
-		$idsUsuMod = $_SESSION['idsUsuario'];
+		$idsUsuMod = $_SESSION['Usu_id'];
 		$sql = "UPDATE " . $db_name . ".usuario SET estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE usu_id = {$Ids} ";
 		$arrData = array(0, $idsUsuMod);
 		$request = $this->update($sql, $arrData);

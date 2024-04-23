@@ -33,16 +33,16 @@
 		}
 
 		public function deletePermisos(int $ids){
-			$usuId = $_SESSION['idsUsuario'];
-			$empId = $_SESSION['idEmpresa'];
+			$usuId = $_SESSION['Usu_id'];
+			$empId = $_SESSION['Emp_Id'];
 			$sql = "DELETE FROM " . $this->db_name . ".permiso WHERE rol_id = {$ids} AND usu_id={$usuId} AND emp_id={$empId}";
 			$request = $this->delete($sql);
 			return $request;
 		}
 
 		public function insertPermisos(int $rol_id, int $mod_id, int $r, int $w, int $u, int $d){
-			$usuId = $_SESSION['idsUsuario'];
-			$empId = $_SESSION['idEmpresa'];
+			$usuId = $_SESSION['Usu_id'];
+			$empId = $_SESSION['Emp_Id'];
 			$usuario = retornaUser();
 			$query_insert  = "INSERT INTO  " . $this->db_name . ".permiso 
 								(usu_id,mod_id,emp_id,rol_id,r,w,u,d,estado_logico,usuario_creacion)

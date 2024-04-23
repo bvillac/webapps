@@ -32,7 +32,7 @@
 <body class="app sidebar-mini">
   <div id="spinner">Cargando...</div>
   <!-- Navbar-->
-  <header class="app-header"><a class="app-header__logo font-weight-bold" href="<?= base_url(); ?>/dashboard"><?= TITULO_EMPRESA ?></a>
+  <header class="app-header"><a class="app-header__logo font-weight-bold" href="<?= base_url(); ?>/dashboard"><?= $_SESSION['empresaData']['NombreComercial'] ?></a>
     <!-- Sidebar toggle button-->
     <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"><i class="fa fa-bars fa-lg"></i></a>
     <!-- Navbar Right Menu-->

@@ -276,10 +276,11 @@ function datosEmpresaEstablePunto(int $IdEmpresa)
 
 function sessionUsuario(int $idsUsuario)
 {
-    require_once("Models/LoginModel.php");
+    putMessageLogFile("paso sessionUsuario helpers");
+    /*require_once("Models/LoginModel.php");
     $objLogin = new LoginModel();
     $request = $objLogin->sessionLogin($idsUsuario);
-    return $request;
+    return $request;*/
 }
 
 function sessionStart(){

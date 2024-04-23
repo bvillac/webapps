@@ -42,7 +42,7 @@ class ClienteMillerModel extends Mysql
     {
         $idsUsuario = retornaUser();
         $strPerID = $dataObj['per_id'];
-        $empId = $_SESSION['idEmpresa'];
+        $empId = $_SESSION['Emp_Id'];
         $con = $this->getConexion();
         $sql = "SELECT * FROM " . $this->db_name . ".cliente where per_id={$strPerID}";
         $request = $this->select_all($sql);

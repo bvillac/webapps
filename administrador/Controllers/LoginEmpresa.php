@@ -20,7 +20,7 @@ class LoginEmpresa extends Controllers
 				die();
 			}else{
 				//Verifica si ya tiene logueado la empresa
-				if (isset($_SESSION['idEmpresa'])) {
+				if (isset($_SESSION['Emp_Id'])) {
 					header('Location: ' . base_url() . '/dashboard'); //Lo direciona al  dashboard
 					die();
 				}
@@ -67,11 +67,11 @@ class LoginEmpresa extends Controllers
 				$this->datosSession($data['Empresa']);
 				//Variables de Session		
 
-				/*$arrData = $model->sessionLogin($_SESSION['idsUsuario']);
-				sessionUsuario($_SESSION['idsUsuario']); //Actualiza la Session del usuario.
+				/*$arrData = $model->sessionLogin($_SESSION['Usu_id']);
+				sessionUsuario($_SESSION['Usu_id']); //Actualiza la Session del usuario.
 				$idrol = $_SESSION['usuarioData']['RolID']; //se obtiene el rol de la seccion
-				$usuId = $_SESSION['idsUsuario'];
-				$empId = $_SESSION['idEmpresa'];
+				$usuId = $_SESSION['Usu_id'];
+				$empId = $_SESSION['Emp_Id'];
 				$idrol = ($idrol != "") ? $idrol : 4; //Si no tiene asignado Rol se envia un rol=4 Usuario
 				$_SESSION['menuData'] = $model->permisosModulo($usuId, $empId, $idrol);*/
 
@@ -83,19 +83,38 @@ class LoginEmpresa extends Controllers
 		die();
 	}
 
-	private function datosSession(int $EmpId){
+	private function datosSession(int $Eusu_id){
 		$modelLoguin=new LoginModel();
-		//GUARDA SESSION DATOS DE EMPRESA
-		$arrEmpresa = datosEmpresaEstablePunto($EmpId);
-		$_SESSION['idEmpresa'] = $EmpId; 
-		$_SESSION['empresaData'] = $arrEmpresa;
-		$_SESSION['usuarioData']=$modelLoguin->sessionLogin($_SESSION['idsUsuario']);//Datos de usuario
+		$modelEmpresa=new EmpresaModel();
+		$Emp_Id=$modelEmpresa->getIdEmpresaUsuario($Eusu_id);
+		if ($Emp_Id !=0){
+			//GUARDA SESSION DATOS DE EMPRESA
+			$_SESSION['Emp_Id'] = $Emp_Id; 
+			$_SESSION['Eusu_id'] = $Eusu_id;
+			$_SESSION['empresaData'] = $modelEmpresa->consultarEmpresaEstPunto($Emp_Id);
+			$_SESSION['usuarioData']=$modelLoguin->sessionLogin($_SESSION['Usu_id']);//Datos de usuario
+			
+			//DATOS ROL DE USUARIO
+			$resulRol = $modelLoguin->consultarUsuarioEmpresaRol($Eusu_id);
+			if(count($resulRol)>0){
+				$_SESSION['usuarioData']['Eurol_id'] = $resulRol[0]['eurol_id'];
+				$_SESSION['usuarioData']['Erol_id'] = $resulRol[0]['erol_id'];
+				$_SESSION['usuarioData']['Rol_id'] = $resulRol[0]['rol_id'];
+				$_SESSION['usuarioData']['Rol_nombre'] = $resulRol[0]['rol_nombre'];
+				//DATOS PERMISO MODULO
+				$_SESSION['menuData'] = $modelLoguin->permisosModulo($Eusu_id,$resulRol[0]['erol_id']);
+			}else{
+				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa ");
+				require_once("Controllers/Error.php");
+			} 
+			
+			//putMessageLogFile($_SESSION);
 
-		$resulRol = $modelLoguin->selectRolesPermiso($_SESSION['idsUsuario'], $_SESSION['idEmpresa']); //IMPLMENTAR LO DE EMPRESAS
-		$_SESSION['usuarioData']['RolID'] = $resulRol['Ids'];
-		$_SESSION['usuarioData']['Rol'] = $resulRol['rol_nombre'];
-		$_SESSION['menuData'] = $modelLoguin->permisosModulo($_SESSION['idsUsuario'], $_SESSION['idEmpresa'],$resulRol['Ids']);
-		putMessageLogFile($_SESSION);
+		}else{
+			putMessageLogFile("EmpresaUsuario con Id no existe= ".$Eusu_id);
+			require_once("Controllers/Error.php");
+		}
+		
 	}
 
 	public function bucarCentro()

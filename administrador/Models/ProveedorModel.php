@@ -45,7 +45,7 @@
 
 		public function insertData(string $Ids, string $tipo, string $cedula, string $nombre, string $direccion, string $telefono, string $correo, int $pago, int $estado){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];		
+			$idsUsuario= $_SESSION['Usu_id'];		
 			//$query_insert  = "INSERT INTO " . $db_name . " .proveedor (pro_codigo,pro_tipo_dni,pro_cedula_ruc,pro_nombre,pro_direccion,pro_telefono,pro_correo,fpag_id,estado_logico,usuario_creacion) VALUES(?,?,?,?,?,?,?,?,?,?) WHERE pro_codigo = '{$Ids}' AND pro_cedula_ruc= {$cedula} AND pro_nombre= {$nombre} ";
 	        //$arrData = array($Ids,$tipo,$cedula,$nombre,$direccion,$telefono,$correo,$pago,$estado,$idsUsuario);
 	        $return = "";
@@ -89,7 +89,7 @@
 
 		public function updateData(string $Ids, string $tipo, string $cedula, string $nombre, string $direccion, string $telefono, string $correo, int $pago, int $estado){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE " . $db_name . ".proveedor 
 							SET pro_tipo_dni = ?,pro_cedula_ruc = ?,pro_nombre = ?,pro_direccion = ?,pro_telefono = ?,pro_correo = ?,
 							fpag_id = ?, estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE pro_codigo ='{$Ids}' ";
@@ -113,7 +113,7 @@
 
 		public function deleteRegistro(string $Ids){
 			$db_name=$this->getDbNameMysql();
-			$idsUsuario= $_SESSION['idsUsuario'];
+			$idsUsuario= $_SESSION['Usu_id'];
 			$sql = "UPDATE " . $db_name . ".proveedor SET estado_logico = ?,usuario_modificacion={$idsUsuario},fecha_modificacion = CURRENT_TIMESTAMP() WHERE pro_codigo = '{$Ids}' ";
 			$arrData = array(0);
 			$request = $this->update($sql, $arrData);

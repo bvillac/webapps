@@ -9,7 +9,7 @@
       <div class="profile">
         <div class="info"><img class="user-img" src="<?= media();?>/images/site/avatar.png">
           <h4><?= $_SESSION['usuarioData']['Nombres'] ?></h4>
-          <p><?= $_SESSION['usuarioData']['Rol']; ?></p>
+          <p><?= $_SESSION['usuarioData']['Rol_nombre']; ?></p>
         </div>
         <div class="cover-image"></div>
       </div>
