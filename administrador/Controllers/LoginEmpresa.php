@@ -119,8 +119,7 @@ class LoginEmpresa extends Controllers
 
 	public function bucarCentro()
 	{
-		if ($_POST) {
-						
+		if ($_POST) {			
 			$decodedData = base64_decode($_POST['datos']);
 			$data = json_decode($decodedData, true);
 			$ids = intval(strClean($data['Ids']));

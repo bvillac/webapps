@@ -4,6 +4,7 @@
     //filelang(Setlanguage,"general") 
     //getModal('modalEmpresa',$data);
     require_once "Views/Empresa/Modals/modalEmpresa.php";
+    require_once "Views/Empresa/Modals/modalEmpresaModulo.php";
 ?>
     <div id="contentAjax"></div> 
     <main class="app-content">

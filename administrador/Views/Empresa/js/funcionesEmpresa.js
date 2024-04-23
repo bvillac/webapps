@@ -272,5 +272,59 @@ function fntDeleteEmpresa(ids){
 
 }
 
+function fntModuloEmpresa(ids){
+    if (ids != 0) {
+		let url = base_url + '/Empresa/getEmpresaModulos';
+		var metodo = 'POST';
+		var datos = { Ids: ids };
+		peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
+			// Manejar el éxito de la solicitud aquí
+			if (data.status) {
+				//fntDataEstablecimiento(data.data);
+				//fntDataCentro(data.data);
+
+
+			} else {
+				swal("Atención", data.msg, "error");
+			}
+		}, function (jqXHR, textStatus, errorThrown) {
+			// Manejar el error de la solicitud aquí
+			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+		});
+	} else {
+		//$("#cmb_centro").prop("disabled", true);
+		swal("Información", "Seleccionar una Empresa", "info");
+	}
+
+
+    /*var ids = ids;
+    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+    var ajaxUrl = base_url+'/Empresa/getEmpresa/'+ids;
+    request.open("GET",ajaxUrl,true);
+    request.send();
+    request.onreadystatechange = function(){
+        if(request.readyState == 4 && request.status == 200){
+            var objData = JSON.parse(request.responseText);
+            if(objData.status){
+               var estadoReg = objData.data.Estado == 1 ? 
+                '<span class="badge badge-success">Activo</span>' : 
+                '<span class="badge badge-danger">Inactivo</span>';
+                document.querySelector("#lbl_ruc").innerHTML = objData.data.Ruc;
+                document.querySelector("#lbl_razon").innerHTML = objData.data.Razon;
+                document.querySelector("#lbl_nombre").innerHTML = objData.data.Nombre;
+                document.querySelector("#lbl_direccion").innerHTML = objData.data.Direccion;
+                document.querySelector("#lbl_correo").innerHTML = objData.data.Correo;
+                document.querySelector("#lbl_logo").innerHTML = objData.data.Logo;
+                document.querySelector("#lbl_moneda").innerHTML = objData.data.Moneda;
+                document.querySelector("#lbl_estado").innerHTML = estadoReg;
+                document.querySelector("#lbl_fecIng").innerHTML = objData.data.FechaIng; 
+                $('#modalViewEmpresa').modal('show');
+            }else{
+                swal("Error", objData.msg , "error");
+            }
+        }
+    }*/
+}
+
 
 
