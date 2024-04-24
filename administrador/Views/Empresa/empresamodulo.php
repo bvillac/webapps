@@ -21,37 +21,37 @@
         <div class="col-md-3">
           <div class="tile row">
               <div class="form-group col-md-12">
-                <label for="cmb_CentroAtencion">Centro Atención</label>
-                <select class="form-control" id="cmb_CentroAtencion" name="cmb_CentroAtencion" onchange="fntInstructor(this.value)">
+                <label for="cmb_empresa">Empresa</label>
+                <select class="form-control" id="cmb_empresa" name="cmb_empresa" onchange="fntInstructor(this.value)">
                   <?php
                   echo '<option value="0">SELECCIONAR</option>';
-                  foreach ($data['centroAtencion'] as $opcion) {
+                  foreach ($data['Empresas'] as $opcion) {
+                    echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['NombreComercial'] . '</option>';
+                  }
+                  ?>
+                </select>
+              </div>
+              <div class="form-group col-md-12">
+                <label for="cmb_Emp_modulos">Presione CTRL y haga clic para seleccionar varias opciones a la vez.</label>
+                <select class="form-control" multiple id="cmb_Emp_modulos" name="cmb_Emp_modulos" >
+                <?php
+                  foreach ($data['EmpModulo'] as $opcion) {
                     echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
                   }
                   ?>
                 </select>
               </div>
               <div class="form-group col-md-12">
-                <label for="cmb_instructor">Instructor</label>
-                <select class="form-control" data-live-search="true" id="cmb_instructor" name="cmb_instructor" title="SELECCIONAR INSTRUCTOR" >
-                </select>
-              </div>
-              <div class="form-group col-md-12">
-                <label for="dtp_fecha">Fecha</label>
-                <input type="date" class="form-control " id="dtp_fecha" name="mdtp_fecha" placeholder="1988-01-01" pattern="^\d{4}\/\d{2}\/\d{2}$" required="">
-              </div>
-              <div class="form-group col-md-12">
-                <label for="cmb_hora">Hora</label>
-                <select class="form-control" id="cmb_hora" name="cmb_hora" >
-                  <?php
-                  echo '<option value="0">SELECCIONAR</option>';
-                  foreach ($data['horarios'] as $opcion) {
-                    echo '<option value="' . $opcion . '" >' . $opcion . ':00</option>';
+                <label for="cmb_modulos">Presione CTRL y haga clic para seleccionar varias opciones a la vez.</label>
+                <select class="form-control" multiple id="cmb_modulos" name="cmb_modulos" >
+                <?php
+                  foreach ($data['Modulos'] as $opcion) {
+                    echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
                   }
-                  
                   ?>
                 </select>
               </div>
+              
               <div class="form-group col-md-12">
                 <button type="button" class="btn btn-dark" id="btn_buscar"><i class="fa fa-magnifying-glass"></i>Buscar</button>
                 <button type="button" class="btn btn-success" id="btn_imprimir"><i class="fa fa-print"></i>Imprimir</button>

@@ -1,5 +1,6 @@
 <?php
-
+require_once("Models/EmpresaModel.php");
+require_once("Models/ModuloModel.php");
 class Empresa extends Controllers {
 
     public function __construct()
@@ -184,27 +185,27 @@ class Empresa extends Controllers {
         die();
     }
 
-    public function getEmpresaModulos( $ids ) {
-        if ( empty( $_SESSION[ 'permisosMod' ][ 'r' ] ) ) {
-            header( 'Location:' . base_url() . '/dashboard' );
+    public function getEmpresaModulos($ids)
+    {
+        if (empty($_SESSION['permisosMod']['r'])) {
+            header('Location:' . base_url() . '/dashboard');
             die();
         }
-        $ids = base64_decode( $ids );
-        if ( is_numeric( $ids ) ) {
-            $data = $this->model->consultarDatosId( $ids );
-            if (!empty( $data ) ) {
-                //$modelCentro = new CentroAtencionModel();
-                //$data[ 'centroAtencion' ] = $modelCentro->consultarCentroEmpresa();
-                $data[ 'page_tag' ] = 'Empresa Modulo';
-                $data[ 'page_name' ] = 'Empresa Modulo';
-                $data[ 'page_title' ] = 'Empresa Modulo <small> ' . TITULO_EMPRESA . '</small>';
-                $data[ 'page_back' ] = 'empresamodulo';
-                $this->views->getView( $this, 'empresamodulo', $data );
-            }
+        $ids = base64_decode($ids);
+        if (is_numeric($ids)) {
+            $modelEmpresa = new EmpresaModel();
+            $data['Empresas'] = $modelEmpresa->consultarEmpresaUsuario($_SESSION['Usu_id']);
+            $modelModel = new ModuloModel();
+            $data['EmpModulo'] = $modelModel->getEmpresaModulo($_SESSION['Emp_Id']);
+            $data['Modulos'] = $modelModel->getModuloAll();
+            $data['page_tag'] = 'Empresa Modulo';
+            $data['page_name'] = 'Empresa Modulo';
+            $data['page_title'] = 'Empresa Modulo <small> ' . TITULO_EMPRESA . '</small>';
+            $data['page_back'] = 'empresamodulo';
+            $this->views->getView($this, 'empresamodulo', $data);
         } else {
-            
             putMessageLogFile("EmpresaModulo Error");
-			require_once("Controllers/Error.php");
+            require_once("Controllers/Error.php");
         }
 
         die();

@@ -46,7 +46,7 @@ class LoginEmpresa extends Controllers
 		$data['empresa'] = $this->dataEmpresa;
 		$data['page_tag'] = "Login Empresa";
 		$data['page_name'] = "Login Empresa";
-		$data['page_title'] = "Login <small> " . private $nombreEmpresa=$_SESSION['empresaData']['NombreComercial']; . "</small>";
+		$data['page_title'] = "Login <small> " . $_SESSION['empresaData']['NombreComercial'] .  "</small>";
 		$data['page_back'] = "loginempresa";
 		//dep($data);
 		$this->views->getView($this, "loginempresa", $data);
@@ -85,7 +85,6 @@ class LoginEmpresa extends Controllers
 			$_SESSION['Eusu_id'] = $Eusu_id;
 			$_SESSION['empresaData'] = $modelEmpresa->consultarEmpresaEstPunto($Emp_Id);
 			$_SESSION['usuarioData']=$modelLoguin->sessionLogin($_SESSION['Usu_id']);//Datos de usuario
-			
 			//DATOS ROL DE USUARIO
 			$resulRol = $modelLoguin->consultarUsuarioEmpresaRol($Eusu_id);
 			if(count($resulRol)>0){
@@ -101,7 +100,7 @@ class LoginEmpresa extends Controllers
 				require_once("Controllers/Error.php");
 			} 
 			
-			putMessageLogFile($_SESSION);
+			//putMessageLogFile($_SESSION);
 
 		}else{
 			putMessageLogFile("EmpresaUsuario con Id no existe= ".$Eusu_id);
