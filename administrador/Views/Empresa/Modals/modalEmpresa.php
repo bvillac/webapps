@@ -14,49 +14,56 @@
           <input type="hidden" id="txth_ids" name="txth_ids" value="">
           <p class="text-primary">Todos los campos son obligatorios.</p>
           <div class="form-row">
-            
+
             <div class="form-group col-md-6">
               <label for="txt_emp_ruc">Ruc</label>
-              <input type="text" class="form-control valid validarNumber " id="txt_emp_ruc" name="txt_emp_ruc"  required="">
+              <input type="text" class="form-control valid validarNumber " id="txt_emp_ruc" name="txt_emp_ruc" required="">
             </div>
             <div class="form-group col-md-6">
-              
+
             </div>
 
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_emp_razon_social">Razón Social</label>
-              <input type="text" class="form-control valid validText" id="txt_emp_razon_social" name="txt_emp_razon_social" onkeyup="TextMayus(this);" required="" >
+              <input type="text" class="form-control valid validText" id="txt_emp_razon_social" name="txt_emp_razon_social" onkeyup="TextMayus(this);" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="txt_emp_nombre_comercial">Nombre Comercial</label>
-              <input type="text" class="form-control valid validText" id="txt_emp_nombre_comercial" name="txt_emp_nombre_comercial" onkeyup="TextMayus(this);" required="" >
+              <input type="text" class="form-control valid validText" id="txt_emp_nombre_comercial" name="txt_emp_nombre_comercial" onkeyup="TextMayus(this);" required="">
             </div>
 
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_emp_direccion">Dirección de Empresa</label>
-              <input type="text" class="form-control valid validText" id="txt_emp_direccion" name="txt_emp_direccion" onkeyup="TextMayus(this);"  required="" >
+              <input type="text" class="form-control valid validText" id="txt_emp_direccion" name="txt_emp_direccion" onkeyup="TextMayus(this);" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="txt_emp_correo">Correo Electrónico</label>
-              <input type="text" class="form-control valid validarEmail" id="txt_emp_correo" name="txt_emp_correo" placeholder="ejemplo@gmail.com"  required="" >
+              <input type="text" class="form-control valid validarEmail" id="txt_emp_correo" name="txt_emp_correo" placeholder="ejemplo@gmail.com" required="">
             </div>
 
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_emp_ruta_logo">Ruta Logo</label>
-              <input type="text" class="form-control valid validText" id="txt_emp_ruta_logo" name="txt_emp_ruta_logo"  required="" >
+              <input type="text" class="form-control valid validText" id="txt_emp_ruta_logo" name="txt_emp_ruta_logo" required="">
             </div>
+
             <div class="form-group col-md-6">
               <label for="cmb_moneda">Moneda</label>
-              <select class="form-control" data-live-search="true" id="cmb_moneda" name="cmb_moneda"  required="" >
-              </select>  
+              <select class="form-control" id="cmb_moneda" name="cmb_moneda">
+                <?php
+                echo '<option value="0">SELECCIONAR</option>';
+                foreach ($data['moneda'] as $opcion) {
+                  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
+                }
+                ?>
+              </select>
             </div>
-            
+
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
@@ -67,12 +74,12 @@
               </select>
             </div>
             <div class="form-group col-md-6">
-             
+
             </div>
-            
-            
+
+
           </div>
-          
+
 
           <div class="tile-footer">
             <button id="btnActionForm" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
@@ -87,7 +94,7 @@
 
 <!-- Modal View -->
 <div class="modal fade" id="modalViewEmpresa" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" >
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header header-primary">
         <h5 class="modal-title" id="titleModal">Empresa</h5>
@@ -144,7 +151,7 @@
               <td>Fecha Ingreso:</td>
               <td id="lbl_fecIng"></td>
             </tr>
-            
+
           </tbody>
         </table>
       </div>
@@ -154,4 +161,3 @@
     </div>
   </div>
 </div>
-

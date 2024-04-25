@@ -26,11 +26,12 @@ adminMenu($data);
             <label for="cmb_empresa">
               <h3 class="title">Empresa Módulo</h3>
             </label>
-            <select class="form-control" id="cmb_empresa" name="cmb_empresa" onchange="fntInstructor(this.value)">
+            <select class="form-control" id="cmb_empresa" name="cmb_empresa" onchange="fntEmpresaModulos(this.value)">
               <?php
               echo '<option value="0">SELECCIONAR</option>';
               foreach ($data['Empresas'] as $opcion) {
-                echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['NombreComercial'] . '</option>';
+                $seleted=($opcion['Ids']==$data['Eusu_id'])?'selected':'';
+                echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['NombreComercial'] . '</option>';
               }
               ?>
             </select>
@@ -44,6 +45,7 @@ adminMenu($data);
           </div>
           <div class="row">
             <div class="form-group col-md-5">
+              <label for="txt_emp_ruta_logo">Módulos</label>
               <select class="form-control" multiple id="cmb_modulos" name="cmb_modulos" style="height: 300px;">
                 <?php
                 foreach ($data['Modulos'] as $opcion) {
@@ -53,21 +55,22 @@ adminMenu($data);
               </select>
             </div>
             <div class="form-group col-md-2 align-items-center" >
-              <button type="button" class="btn btn-dark" id="btn_generar"><i class="fa fa-fast-forward"
+              <br><br><br>
+              <button type="button" class="btn btn-dark" id="btn_next_all"><i class="fa fa-fast-forward"
                   aria-hidden="true">&nbsp;&nbsp;TODO</i>
               </button>
-              <button type="button" class="btn btn-dark" id="btn_generar"><i class="fa fa-step-forward"
+              <button type="button" class="btn btn-dark" id="btn_next_one"><i class="fa fa-step-forward"
                   aria-hidden="true">&nbsp;&nbsp;UNO</i>
               </button>
-              <button type="button" class="btn btn-dark" id="btn_generar"><i class="fa fa-fast-backward"
+              <button type="button" class="btn btn-dark" id="btn_back_all"><i class="fa fa-fast-backward"
                   aria-hidden="true">&nbsp;&nbsp;TODO</i>
               </button>
-              <button type="button" class="btn btn-dark" id="btn_generar"><i class="fa fa-step-backward"
+              <button type="button" class="btn btn-dark" id="btn_back_one"><i class="fa fa-step-backward"
                   aria-hidden="true">&nbsp;&nbsp;UNO</i>
               </button>
             </div>
             <div class="form-group col-md-5">
-
+              <label for="txt_emp_ruta_logo">Empresa Módulos</label>
               <select class="form-control" multiple id="cmb_Emp_modulos" name="cmb_Emp_modulos" style="height: 300px;">
                 <?php
                 foreach ($data['EmpModulo'] as $opcion) {

@@ -98,7 +98,7 @@ class ModuloModel extends Mysql
 	}
 
 	public function getEmpresaModulo(int $Emp_id){
-		$sql = "SELECT a.emod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),b.mod_nombre) Nombre ";
+		$sql = "SELECT a.emod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),b.mod_nombre) Nombre,a.mod_id ";
 		$sql .= "	FROM ". $this->db_name .".empresa_modulo a ";
 		$sql .= "			INNER JOIN ". $this->db_name .".modulo b ";
 		$sql .= "		ON a.mod_id=b.mod_id ";
@@ -108,7 +108,7 @@ class ModuloModel extends Mysql
 	}
 
 	public function getModuloAll(){
-		$sql = "SELECT a.mod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),a.mod_nombre) Nombre ";
+		$sql = "SELECT a.mod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),a.mod_nombre) Nombre,a.mod_id ";
 		$sql .= "      FROM ". $this->db_name .".modulo a ";
         $sql .= "   WHERE a.estado_logico!=0 ";
 		$request = $this->select_all($sql);

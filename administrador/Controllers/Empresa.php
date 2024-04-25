@@ -15,6 +15,7 @@ class Empresa extends Controllers {
         if ( empty( $_SESSION[ 'permisosMod' ][ 'r' ] ) ) {
             header( 'Location:' . base_url() . '/dashboard' );
         }
+        $data[ 'moneda' ] = $this->model->consultarMoneda();
         $data[ 'page_tag' ] = 'Empresa';
         $data[ 'page_name' ] = 'Empresa';
         $data[ 'page_title' ] = 'Empresa <small> ' . TITULO_EMPRESA . '</small>';
@@ -158,7 +159,7 @@ class Empresa extends Controllers {
         die();
     }
 
-    public function getEmpresaModulos2()
+    public function getModulosPorEmpresa()
     {
         if ( $_POST ) {
 
@@ -166,13 +167,11 @@ class Empresa extends Controllers {
             $data = json_decode( $decodedData, true );
             $ids = intval( strClean( $data[ 'Ids' ] ) );
             if ( $ids > 0 ) {
-                /*$modelCentro = new CentroAtencionModel();
-                $modelEstablecimiento = new EstablecimientoModel();
                 $modelEmpresa = new EmpresaModel();
-                $idEmpresa = $modelEmpresa->getIdEmpresaUsuario( $ids );
-                $arrData[ 'Centro' ] = $modelCentro->consultarCentroEmpresaIds( $ids );
-                $arrData[ 'Establecimiento' ] = $modelEstablecimiento->consultarEstablecimientoEmpresa( $ids );
-                */
+                $Emp_Id=$modelEmpresa->getIdEmpresaUsuario($ids);
+                $modelModel = new ModuloModel();
+                $arrData['Modulo'] = $modelModel->getEmpresaModulo($Emp_Id);
+                
                 //dep( $arrData );
                 if ( empty( $arrData ) ) {
                     $arrResponse = array( 'status' => false, 'msg' => 'Datos no encontrados.' );
@@ -194,6 +193,7 @@ class Empresa extends Controllers {
         $ids = base64_decode($ids);
         if (is_numeric($ids)) {
             $modelEmpresa = new EmpresaModel();
+            $data['Eusu_id']=$_SESSION['Eusu_id'];
             $data['Empresas'] = $modelEmpresa->consultarEmpresaUsuario($_SESSION['Usu_id']);
             $modelModel = new ModuloModel();
             $data['EmpModulo'] = $modelModel->getEmpresaModulo($_SESSION['Emp_Id']);
