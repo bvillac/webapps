@@ -4,6 +4,10 @@ adminMenu($data);
 //filelang(Setlanguage,"general") 
 //require_once "Views/Salon/Modals/modalSalon.php";
 ?>
+
+<script>
+  const nEmpresa = <?= json_encode($data['Modulos']) ?>;
+</script>
 <div id="contentAjax"></div>
 <main class="app-content">
   <div class="app-title">
@@ -97,10 +101,6 @@ adminMenu($data);
       </div>
     </div>
   </div>
-
-
-
-
 
 </main>
 <?php adminFooter($data); ?>

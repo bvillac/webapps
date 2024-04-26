@@ -108,7 +108,7 @@ class ModuloModel extends Mysql
 	}
 
 	public function getModuloAll(){
-		$sql = "SELECT a.mod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),a.mod_nombre) Nombre,a.mod_id ";
+		$sql = "SELECT a.mod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),a.mod_nombre) Nombre,a.mod_id,SUBSTRING(a.mod_id, 1, LENGTH(a.mod_id) - 2) idPadre ";
 		$sql .= "      FROM ". $this->db_name .".modulo a ";
         $sql .= "   WHERE a.estado_logico!=0 ";
 		$request = $this->select_all($sql);

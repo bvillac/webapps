@@ -63,6 +63,10 @@ document.addEventListener('DOMContentLoaded', function () {
         "order": [[0, "desc"]]  //Orden por defecto 1 columna
     });
 
+    if (typeof nEmpresa !== "undefined") {
+        fnt_inicio(nEmpresa);
+    } 
+
     //NUEVO 
     var formEmpresa = document.querySelector("#formEmpresa");//Nombre del formulario 
     if (formEmpresa === null || typeof formEmpresa === 'undefined') {
@@ -307,19 +311,21 @@ function fntEmpresaModulos(ids) {
                 var result = data.data.Modulo;
                 var arrayList = new Array();
                 for (var i = 0; i < result.length; i++) {
-                    $("#cmb_Emp_modulos").append(
+                    /*$("#cmb_Emp_modulos").append(
                         '<option value="' + result[i].Ids + '"  >' +
                         result[i].Nombre +
                         "</option>"
-                    );
+                    );*/
                     let rowMod = new Object();
                     rowMod.ids = result[i].Ids;
                     rowMod.IdMod = result[i].mod_id;
-                    rowMod.Nombre = result[i].Nombre;                    
+                    //rowMod.IdPadre = result[i].idPadre;                       
+                    rowMod.Nombre = result[i].Nombre;         
                     arrayList[c] = rowMod;
                     c += 1;
                 }
                 sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
+                ActualizarEmpModulo();
             } else {
                 swal("Atención", data.msg, "error");
             }
@@ -334,6 +340,26 @@ function fntEmpresaModulos(ids) {
 
 }
 
+function ActualizarEmpModulo(){
+    var arrayList = new Array();
+    if (sessionStorage.dts_EmpresaModulo) {
+        result = JSON.parse(sessionStorage.dts_EmpresaModulo);
+        $("#cmb_Emp_modulos").html('');
+        if (result.length > 0) {
+            //var array = findAndRemove(Grid, "dia", nDia);
+            //sessionStorage.dts_PlaTemporal = JSON.stringify(array);
+            for (var i = 0; i < result.length; i++) {
+                $("#cmb_Emp_modulos").append(
+                    '<option value="' + result[i].Ids + '"  >' +
+                    result[i].Nombre +
+                    "</option>"
+                );
+                
+            }
+        }
+    }
+}
+
 
 function fnt_next_all() {
     console.log("fnt_next_all");
@@ -342,15 +368,34 @@ function fnt_next_all() {
     //    .map(option => option.value)
     //let opcionesSeleccionadas = Array.from(element.selectedOptions)
     //    .map(option => ({ id: option.IdMod, nombre: option.value }));
-    const opcionesSeleccionadas = Array.from(element.selectedOptions).map(option => {
+    const selectEmpMod = Array.from(element.selectedOptions).map(option => {
         return {
-            id: option.value,
-            nombre: option.textContent // Dividir el contenido para obtener el nombre
+            Ids: option.value,
+            Nombre: option.textContent // Dividir el contenido para obtener el nombre
         };
     });
+    console.log(selectEmpMod);
+    var arrayList = new Array();
+    for (var i = 0; i < selectEmpMod.length; i++) {
+        alert(selectEmpMod[i].Ids);
+        if (codigoExiste(selectEmpMod[i].Ids, "Ids", sessionStorage.dts_EmpresaModulo)) {//Si no existe lo agrega
+            alert('nuevo');
+            let rowMod = new Object();
+            rowMod.Ids = selectEmpMod[i].Ids;
+            //rowMod.IdMod = selectEmpMod[i].mod_id;
+            //rowMod.IdPadre = result[i].idPadre;                       
+            rowMod.Nombre = selectEmpMod[i].Nombre;  
+            //return rowGrid;
+            //arrayList = JSON.parse(sessionStorage.dts_EmpresaModulo);
+            arrayList[arrayList.length] = rowMod;//objDataRow(nLetIni);
+            sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
 
-    console.log(opcionesSeleccionadas);
-    alert(opcionesSeleccionadas);//selectedSalon.toString();
+        }
+    }
+    ActualizarEmpModulo();
+
+    //console.log(opcionesSeleccionadas);
+    //alert(opcionesSeleccionadas);//selectedSalon.toString();
 }
 function fnt_next_one(){
     console.log("fnt_next_one");
@@ -360,6 +405,20 @@ function fnt_back_all(){
 }
 function fnt_back_one(){
     console.log("fnt_back_one");
+}
+
+function fnt_inicio(resultEmp) {
+    var arrayList = new Array();
+    var c = 0;
+    for (var i = 0; i < resultEmp.length; i++) {
+        let rowInst = new Object();
+        rowInst.ids = resultEmp[i].Ids;
+        rowInst.Nombre = resultEmp[i].Nombre;
+        rowInst.idPadre = resultEmp[i].idPadre;
+        arrayList[c] = rowInst;
+        c += 1;
+    }
+    sessionStorage.dts_Modulos = JSON.stringify(arrayList);
 }
 
 
