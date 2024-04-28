@@ -113,4 +113,14 @@ class Mysql extends Conexion
 		}
 		return $lastInsert; 
 	}
+
+	//Actualiza registros Con Transaccion
+	public function updateConTrasn($con, string $query, array $arrValues)
+	{
+		$this->strquery = $query;
+		$this->arrValues = $arrValues;
+		$update = $con->prepare($this->strquery);
+		$resExecute = $update->execute($this->arrValues);
+		return $resExecute;
+	}
 }

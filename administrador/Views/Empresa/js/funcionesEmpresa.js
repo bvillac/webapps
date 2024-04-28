@@ -418,6 +418,8 @@ function fnt_back_one(){
     for (var i = 0; i < selectEmpMod.length; i++) {
         console.log(selectEmpMod[i]);
         arrayResult = findAndRemove(result, "ids", selectEmpMod[i].Ids);
+        //result=sessionStorage.OrdenadoIds = arrayOrdenado;
+        //arrayOrden = findAndRemove(result, "ids", selectEmpMod[i].Ids);
     }
     sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayResult);
     ActualizarEmpModulo();
@@ -446,7 +448,7 @@ function fnt_saveEmpModulo(){
     let EmpId=($('#cmb_empresa').val()!=0)?$('#cmb_empresa').val():0;
     if (EmpId != 0) {
         //arrayModulo = JSON.parse(sessionStorage.dts_Modulos);
-        let url = base_url + '/Empresa/ingresarEmpresaModulo';
+        let url = base_url + '/Empresa/actualizarEmpresaModulo';
         var metodo = 'POST';
         //var datos = { Ids: ids };
         var datos= {
@@ -456,20 +458,10 @@ function fnt_saveEmpModulo(){
         };
         peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
             // Manejar el éxito de la solicitud aquí
+            console.log(data);
             if (data.status) {
-                var c = 0;
-                $("#cmb_Emp_modulos").html('');
-                var result = data.data.Modulo;
-                let arrayList = result.map(function(objeto) {
-                        return { ids: objeto.mod_id, Nombre: objeto.Nombre };
-                    });
-                // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
-                let arrayIds = result.map(function(objeto) {
-                    return objeto.mod_id;
-                });
-                sessionStorage.OrdenadoIds = arrayIds;
-                sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
-                ActualizarEmpModulo();
+                
+                //var result = data.data.Modulo;         
             } else {
                 swal("Atención", data.msg, "error");
             }
@@ -478,7 +470,7 @@ function fnt_saveEmpModulo(){
             console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
         });
     } else {
-        $("#cmb_centro").prop("disabled", true);
+        //$("#cmb_centro").prop("disabled", true);
         swal("Información", "Seleccionar un Empresa", "info");
     }
 
