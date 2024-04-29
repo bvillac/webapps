@@ -374,28 +374,26 @@ function fnt_next_all() {
             Nombre: option.textContent // Dividir el contenido para obtener el nombre
         };
     });
-    console.log(selectEmpMod);
+    //console.log(selectEmpMod);
     var arrayList = new Array();
     for (var i = 0; i < selectEmpMod.length; i++) {
         alert(selectEmpMod[i].Ids);
         if (codigoExiste(selectEmpMod[i].Ids, "Ids", sessionStorage.dts_EmpresaModulo)) {//Si no existe lo agrega
-            alert('nuevo');
+            //alert('nuevo');
             let rowMod = new Object();
             rowMod.Ids = selectEmpMod[i].Ids;
             //rowMod.IdMod = selectEmpMod[i].mod_id;
             //rowMod.IdPadre = result[i].idPadre;                       
             rowMod.Nombre = selectEmpMod[i].Nombre;  
             //return rowGrid;
-            //arrayList = JSON.parse(sessionStorage.dts_EmpresaModulo);
+            arrayList = JSON.parse(sessionStorage.dts_EmpresaModulo);
             arrayList[arrayList.length] = rowMod;//objDataRow(nLetIni);
+            arrayList.sort();
             sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
 
         }
     }
     ActualizarEmpModulo();
-
-    //console.log(opcionesSeleccionadas);
-    //alert(opcionesSeleccionadas);//selectedSalon.toString();
 }
 function fnt_next_one(){
     console.log("fnt_next_one");
@@ -418,7 +416,10 @@ function fnt_inicio(resultEmp) {
         arrayList[c] = rowInst;
         c += 1;
     }
+    sessionStorage.removeItem("dts_EmpresaModulo");
+    sessionStorage.removeItem("dts_Modulos");
     sessionStorage.dts_Modulos = JSON.stringify(arrayList);
+
 }
 
 

@@ -34,7 +34,7 @@ adminMenu($data);
               <?php
               echo '<option value="0">SELECCIONAR</option>';
               foreach ($data['Empresas'] as $opcion) {
-                $seleted=($opcion['Ids']==$data['Eusu_id'])?'selected':'';
+                $seleted=0;//($opcion['Ids']==$data['Eusu_id'])?'selected':'';
                 echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['NombreComercial'] . '</option>';
               }
               ?>
@@ -77,9 +77,9 @@ adminMenu($data);
               <label for="txt_emp_ruta_logo">Empresa Módulos</label>
               <select class="form-control" multiple id="cmb_Emp_modulos" name="cmb_Emp_modulos" style="height: 300px;">
                 <?php
-                foreach ($data['EmpModulo'] as $opcion) {
-                  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
-                }
+                //foreach ($data['EmpModulo'] as $opcion) {
+                //  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
+                //}
                 ?>
               </select>
             </div>
