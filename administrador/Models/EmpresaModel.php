@@ -159,5 +159,45 @@
 			return (!empty($request))?$request['emp_id']:0;
 			//return 0;
 		}
+
+		public function insertDataEmpModulo(string $data, string $Eusu_id){
+			$arrayIds = explode(",", $data);
+			//$return = "";
+			
+				//$query_insert  = "INSERT INTO ". $this->db_name .".empresa (emp_ruc,emp_razon_social,emp_nombre_comercial,emp_direccion,emp_correo,emp_ruta_logo,mon_id,estado_logico) VALUES(?,?,?,?,?,?,?,?)  ";
+				$db_name=$this->getDbNameMysql();
+				$return = "";
+				$sql = "SELECT * FROM ". $db_name .".empresa WHERE emp_razon_social = '{$razon}'   ";
+				$request = $this->select_all($sql);
+				if(empty($request)){
+					$con=$this->getConexion();
+					$con->beginTransaction();
+					try{
+					  
+						 $arrData = array( $ruc, $razon, $nombre, $direccion, $correo, $logo, $moneda, $estado);
+						$request_insert =$this->insertarEmpresa($con,$db_name,$arrData);
+						$return = $request_insert;//Retorna el Ultimo IDS(0) No inserta y si es >0 si inserto
+						$con->commit();
+						return true;
+					}catch(Exception $e) {
+						$con->rollBack(); 
+						//echo "Fallo: " . $e->getMessage();
+						//throw $e;
+						return false;
+					}   
+					}else{
+						return false;
+						$return = "exist";
+					}
+					return $return;
+		
+		}
+
+		public function deleteEmpresaModulo(int $Ids){
+			$sql = "UPDATE " . $this->db_name . ".empresa SET estado_logico = ?,usuario_modificacion=1,fecha_modificacion = CURRENT_TIMESTAMP() WHERE emp_id = {$Ids} ";
+			$arrData = array(0);
+			$request = $this->update($sql, $arrData);
+			return $request;
+		}
 	}
  ?>

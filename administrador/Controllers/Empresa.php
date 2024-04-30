@@ -211,4 +211,48 @@ class Empresa extends Controllers {
         die();
     }
 
+    public function ingresarEmpresaModulo()
+    {
+        if ($_POST) {
+            //dep($_POST);
+            $decodedData = base64_decode( $_POST[ 'datos' ] );
+            $data = json_decode( $decodedData, true );
+            //$ids = intval( strClean( $data[ 'Ids' ] ) );
+            
+
+            if (empty($data['eusu_id']) || empty($data['ids']) || empty($data['accion'])) {
+                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+            } else {
+                $request = "";
+                putMessageLogFile($data);
+                $datos = isset($data['ids']) ? $data['ids']:"";
+                $Eusu_id = isset($data['eusu_id']) ? $data['eusu_id']:"0";
+                $accion = isset($data['accion']) ? $data['accion'] : "";
+                if ($accion == "Create") {
+                    $option = 1;
+
+                    if ($_SESSION['permisosMod']['w']) {
+                        $request = $this->model->insertDataEmpModulo($datos,$Eusu_id);
+                    }
+                } else {
+                    $option = 2;
+                    if ($_SESSION['permisosMod']['u']) {
+                        $request = $this->model->updateData($datos);
+                    }
+                }
+                if ($request["status"]) {
+                    if ($option == 1) {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
+                    } else {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
+                    }
+                } else {
+                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
+                }
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+
 }

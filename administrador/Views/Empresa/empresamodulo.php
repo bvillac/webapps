@@ -43,9 +43,15 @@ adminMenu($data);
         </div>
         <div class="tile-body">
           <div class="row">
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-8">
               <h5>Presione CTRL y haga clic para seleccionar varias opciones a la vez.</h5>
             </div>
+            <div class="form-group col-md-2">
+              <button type="button" class="btn btn-dark" id="btn_guardarModulo"><i class="fa fa-fast-forward"
+                  aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
+              </button>
+            </div>
+            
           </div>
           <div class="row">
             <div class="form-group col-md-5">
@@ -60,17 +66,18 @@ adminMenu($data);
             </div>
             <div class="form-group col-md-2 align-items-center" >
               <br><br><br>
-              <button type="button" class="btn btn-dark" id="btn_next_all"><i class="fa fa-fast-forward"
+              <!-- <button type="button" class="btn btn-dark" id="btn_next_all"><i class="fa fa-fast-forward"
                   aria-hidden="true">&nbsp;&nbsp;TODO</i>
-              </button>
+              </button> -->
               <button type="button" class="btn btn-dark" id="btn_next_one"><i class="fa fa-step-forward"
-                  aria-hidden="true">&nbsp;&nbsp;UNO</i>
+                  aria-hidden="true">&nbsp;&nbsp;AGREGAR</i>
               </button>
-              <button type="button" class="btn btn-dark" id="btn_back_all"><i class="fa fa-fast-backward"
+              <br><br>
+              <!-- <button type="button" class="btn btn-dark" id="btn_back_all"><i class="fa fa-fast-backward"
                   aria-hidden="true">&nbsp;&nbsp;TODO</i>
-              </button>
+              </button> -->
               <button type="button" class="btn btn-dark" id="btn_back_one"><i class="fa fa-step-backward"
-                  aria-hidden="true">&nbsp;&nbsp;UNO</i>
+                  aria-hidden="true">&nbsp;&nbsp;QUITAR</i>
               </button>
             </div>
             <div class="form-group col-md-5">

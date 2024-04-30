@@ -157,18 +157,16 @@ $(document).ready(function () {
 
     });
 
-
-    $("#btn_next_all").click(function () {
-		fnt_next_all();
-	});
     $("#btn_next_one").click(function () {
 		fnt_next_one();
 	});
-    $("#btn_back_all").click(function () {
-		fnt_back_all();
-	});
+    
     $("#btn_back_one").click(function () {
 		fnt_back_one();
+	});
+
+    $("#btn_guardarModulo").click(function () {
+		fnt_saveEmpModulo();
 	});
 
 });
@@ -309,21 +307,14 @@ function fntEmpresaModulos(ids) {
                 var c = 0;
                 $("#cmb_Emp_modulos").html('');
                 var result = data.data.Modulo;
-                var arrayList = new Array();
-                for (var i = 0; i < result.length; i++) {
-                    /*$("#cmb_Emp_modulos").append(
-                        '<option value="' + result[i].Ids + '"  >' +
-                        result[i].Nombre +
-                        "</option>"
-                    );*/
-                    let rowMod = new Object();
-                    rowMod.ids = result[i].Ids;
-                    rowMod.IdMod = result[i].mod_id;
-                    //rowMod.IdPadre = result[i].idPadre;                       
-                    rowMod.Nombre = result[i].Nombre;         
-                    arrayList[c] = rowMod;
-                    c += 1;
-                }
+                let arrayList = result.map(function(objeto) {
+                        return { ids: objeto.mod_id, Nombre: objeto.Nombre };
+                    });
+                // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
+                let arrayIds = result.map(function(objeto) {
+                    return objeto.mod_id;
+                });
+                sessionStorage.OrdenadoIds = arrayIds;
                 sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
                 ActualizarEmpModulo();
             } else {
@@ -350,7 +341,7 @@ function ActualizarEmpModulo(){
             //sessionStorage.dts_PlaTemporal = JSON.stringify(array);
             for (var i = 0; i < result.length; i++) {
                 $("#cmb_Emp_modulos").append(
-                    '<option value="' + result[i].Ids + '"  >' +
+                    '<option value="' + result[i].ids + '"  >' +
                     result[i].Nombre +
                     "</option>"
                 );
@@ -361,8 +352,39 @@ function ActualizarEmpModulo(){
 }
 
 
-function fnt_next_all() {
-    console.log("fnt_next_all");
+
+function ActualizarModulos(){
+    var arrayList = new Array();
+    let result=sessionStorage.OrdenadoIds.split(',')
+    console.log(result);
+    arrayModulo = JSON.parse(sessionStorage.dts_Modulos);
+    for (var i = 0; i < result.length; i++) {
+        let indice = retornarIndexArray(arrayModulo,"ids",result[i]);
+        if(indice!==-1){
+            console.log(arrayModulo[indice]['ids'])
+            let rowInst = new Object();
+            rowInst.ids = result[i];
+            rowInst.Nombre =arrayModulo[indice]['Nombre'];
+            arrayList[i] = rowInst;
+        }
+    }
+    sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
+}
+
+function ordenarSecuencias(arrayString, nuevaSecuencia) {
+    array = arrayString.split(',');//Convierte la cadena a un string
+    let indiceExistente = array.indexOf(nuevaSecuencia);
+    // Si la nuevaSecuencia no existe, agregarla al array
+    if (indiceExistente === -1) {
+        array.push(nuevaSecuencia);
+    }
+    // Ordenar el array alfabéticamente
+    array.sort();
+    // Retornar el array ordenado
+    return array;
+}
+
+function fnt_next_one(){
     let element = document.getElementById('cmb_modulos');//obtienes los itmes seleccionados
     //let selectedSalon = Array.from(element.selectedOptions)
     //    .map(option => option.value)
@@ -374,35 +396,31 @@ function fnt_next_all() {
             Nombre: option.textContent // Dividir el contenido para obtener el nombre
         };
     });
-    //console.log(selectEmpMod);
-    var arrayList = new Array();
     for (var i = 0; i < selectEmpMod.length; i++) {
-        alert(selectEmpMod[i].Ids);
-        if (codigoExiste(selectEmpMod[i].Ids, "Ids", sessionStorage.dts_EmpresaModulo)) {//Si no existe lo agrega
-            //alert('nuevo');
-            let rowMod = new Object();
-            rowMod.Ids = selectEmpMod[i].Ids;
-            //rowMod.IdMod = selectEmpMod[i].mod_id;
-            //rowMod.IdPadre = result[i].idPadre;                       
-            rowMod.Nombre = selectEmpMod[i].Nombre;  
-            //return rowGrid;
-            arrayList = JSON.parse(sessionStorage.dts_EmpresaModulo);
-            arrayList[arrayList.length] = rowMod;//objDataRow(nLetIni);
-            arrayList.sort();
-            sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
-
-        }
+        var arrayOrdenado = ordenarSecuencias(sessionStorage.OrdenadoIds, selectEmpMod[i].Ids);
+        sessionStorage.OrdenadoIds = arrayOrdenado;
     }
+    ActualizarModulos();
     ActualizarEmpModulo();
 }
-function fnt_next_one(){
-    console.log("fnt_next_one");
-}
-function fnt_back_all(){
-    console.log("fnt_back_all");
-}
+
 function fnt_back_one(){
+    var arrayResult = new Array();
     console.log("fnt_back_one");
+    let element = document.getElementById('cmb_Emp_modulos');//obtienes los itmes seleccionados
+    const selectEmpMod = Array.from(element.selectedOptions).map(option => {
+        console.log(option);
+        return {
+            Ids: option.value,
+        };
+    });
+    result = JSON.parse(sessionStorage.dts_EmpresaModulo);
+    for (var i = 0; i < selectEmpMod.length; i++) {
+        console.log(selectEmpMod[i]);
+        arrayResult = findAndRemove(result, "ids", selectEmpMod[i].Ids);
+    }
+    sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayResult);
+    ActualizarEmpModulo();
 }
 
 function fnt_inicio(resultEmp) {
@@ -418,10 +436,53 @@ function fnt_inicio(resultEmp) {
     }
     sessionStorage.removeItem("dts_EmpresaModulo");
     sessionStorage.removeItem("dts_Modulos");
+    sessionStorage.removeItem("OrdenadoIds");
     sessionStorage.dts_Modulos = JSON.stringify(arrayList);
 
 }
 
+function fnt_saveEmpModulo(){
+    let accion ="Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
+    let EmpId=($('#cmb_empresa').val()!=0)?$('#cmb_empresa').val():0;
+    if (EmpId != 0) {
+        //arrayModulo = JSON.parse(sessionStorage.dts_Modulos);
+        let url = base_url + '/Empresa/ingresarEmpresaModulo';
+        var metodo = 'POST';
+        //var datos = { Ids: ids };
+        var datos= {
+            eusu_id: EmpId,
+            ids: sessionStorage.OrdenadoIds,
+            accion: accion
+        };
+        peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
+            // Manejar el éxito de la solicitud aquí
+            if (data.status) {
+                var c = 0;
+                $("#cmb_Emp_modulos").html('');
+                var result = data.data.Modulo;
+                let arrayList = result.map(function(objeto) {
+                        return { ids: objeto.mod_id, Nombre: objeto.Nombre };
+                    });
+                // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
+                let arrayIds = result.map(function(objeto) {
+                    return objeto.mod_id;
+                });
+                sessionStorage.OrdenadoIds = arrayIds;
+                sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
+                ActualizarEmpModulo();
+            } else {
+                swal("Atención", data.msg, "error");
+            }
+        }, function (jqXHR, textStatus, errorThrown) {
+            // Manejar el error de la solicitud aquí
+            console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+        });
+    } else {
+        $("#cmb_centro").prop("disabled", true);
+        swal("Información", "Seleccionar un Empresa", "info");
+    }
+
+}
 
 
 
