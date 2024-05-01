@@ -409,11 +409,12 @@ function fnt_back_one(){
     console.log("fnt_back_one");
     let element = document.getElementById('cmb_Emp_modulos');//obtienes los itmes seleccionados
     const selectEmpMod = Array.from(element.selectedOptions).map(option => {
-        console.log(option);
+        //console.log(option);
         return {
             Ids: option.value,
         };
     });
+    console.log(selectEmpMod);
     result = JSON.parse(sessionStorage.dts_EmpresaModulo);
     for (var i = 0; i < selectEmpMod.length; i++) {
         console.log(selectEmpMod[i]);
@@ -444,13 +445,12 @@ function fnt_inicio(resultEmp) {
 }
 
 function fnt_saveEmpModulo(){
-    let accion ="Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
+    //let accion ="Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
     let EmpId=($('#cmb_empresa').val()!=0)?$('#cmb_empresa').val():0;
     if (EmpId != 0) {
         //arrayModulo = JSON.parse(sessionStorage.dts_Modulos);
         let url = base_url + '/Empresa/actualizarEmpresaModulo';
         var metodo = 'POST';
-        //var datos = { Ids: ids };
         var datos= {
             eusu_id: EmpId,
             ids: sessionStorage.OrdenadoIds,
@@ -458,7 +458,7 @@ function fnt_saveEmpModulo(){
         };
         peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
             // Manejar el éxito de la solicitud aquí
-            console.log(data);
+            //console.log(data);
             if (data.status) {
                 
                 //var result = data.data.Modulo;         
