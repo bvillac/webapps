@@ -97,13 +97,63 @@ adminMenu($data);
     <div class="col-md-6">
       <div class="tile">
         <div class="tile-title-w-btn">
-          <h3 class="title">SweetAlert</h3>
-          <p><a class="btn btn-primary icon-btn" href="http://t4t5.github.io/sweetalert/" target="_blank"><i
-                class="fa fa-file"></i>Docs</a></p>
+          <div class="form-group">
+            <label for="cmb_empresa">
+              <h3 class="title">Empresa Rol</h3>
+            </label>
+            <select class="form-control" id="cmb_empresa2" name="cmb_empresa2" onchange="fntEmpresaRoles(this.value)">
+              <?php
+              echo '<option value="0">SELECCIONAR</option>';
+              foreach ($data['Empresas'] as $opcion) {
+                $seleted=0;//($opcion['Ids']==$data['Eusu_id'])?'selected':'';
+                echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['NombreComercial'] . '</option>';
+              }
+              ?>
+            </select>
+          </div>
         </div>
         <div class="tile-body">
-          <p>This plugin can be used as the replacement of native javascript alert, confirm and prompt functions.</p>
-          <h4>Demo</h4><a class="btn btn-info" id="demoSwal" href="#">Sample Alert</a>
+          <div class="row">
+            <div class="form-group col-md-8">
+              <h5>Presione CTRL y haga clic para seleccionar varias opciones a la vez.</h5>
+            </div>
+            <div class="form-group col-md-2">
+              <button type="button" class="btn btn-dark" id="btn_guardarRoles"><i class="fa fa-fast-forward"
+                  aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
+              </button>
+            </div>
+            
+          </div>
+          <div class="row">
+            <div class="form-group col-md-5">
+              <label for="cmb_roles">Roles</label>
+              <select class="form-control" multiple id="cmb_roles" name="cmb_roles" style="height: 300px;">
+                <?php
+                foreach ($data['Roles'] as $opcion) {
+                  echo '<option value="' . $opcion['Ids'] . '" >' . $opcion['Nombre'] . '</option>';
+                }
+                ?>
+              </select>
+            </div>
+            <div class="form-group col-md-2 align-items-center" >
+              <br><br><br>
+  
+              <button type="button" class="btn btn-dark" id="btn_next_one_rol"><i class="fa fa-step-forward"
+                  aria-hidden="true">&nbsp;&nbsp;AGREGAR</i>
+              </button>
+              <br><br>
+
+              <button type="button" class="btn btn-dark" id="btn_back_one_rol"><i class="fa fa-step-backward"
+                  aria-hidden="true">&nbsp;&nbsp;QUITAR</i>
+              </button>
+            </div>
+            <div class="form-group col-md-5">
+              <label for="cmb_Emp_roles">Empresa Roles</label>
+              <select class="form-control" multiple id="cmb_Emp_roles" name="cmb_Emp_roles" style="height: 300px;">
+      
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>

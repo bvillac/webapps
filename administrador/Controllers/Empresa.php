@@ -1,5 +1,6 @@
 <?php
 require_once("Models/EmpresaModel.php");
+require_once("Models/RolesModel.php");
 require_once("Models/ModuloModel.php");
 class Empresa extends Controllers {
 
@@ -193,11 +194,13 @@ class Empresa extends Controllers {
         $ids = base64_decode($ids);
         if (is_numeric($ids)) {
             $modelEmpresa = new EmpresaModel();
+            $modelRol = new RolesModel();
             $data['Eusu_id']=$_SESSION['Eusu_id'];
             $data['Empresas'] = $modelEmpresa->consultarEmpresaUsuario($_SESSION['Usu_id']);
             $modelModel = new ModuloModel();
             $data['EmpModulo'] = $modelModel->getEmpresaModulo($_SESSION['Emp_Id']);
             $data['Modulos'] = $modelModel->getModuloAll();
+            $data['Roles'] = $modelRol->getRolAll();
             $data['page_tag'] = 'Empresa Modulo';
             $data['page_name'] = 'Empresa Modulo';
             $data['page_title'] = 'Empresa Modulo <small> ' . TITULO_EMPRESA . '</small>';
@@ -251,5 +254,73 @@ class Empresa extends Controllers {
         }
         die();
     }
+
+    public function getRolesPorEmpresa()
+    {
+        if ( $_POST ) {
+
+            $decodedData = base64_decode( $_POST[ 'datos' ] );
+            $data = json_decode( $decodedData, true );
+            $ids = intval( strClean( $data[ 'Ids' ] ) );
+            if ( $ids > 0 ) {
+                $modelEmpresa = new EmpresaModel();
+                $Emp_Id=$modelEmpresa->getIdEmpresaUsuario($ids);
+                $modelRol = new RolesModel();
+                $arrData['Modulo'] = $modelRol->getEmpresaRol($Emp_Id);
+                
+                //dep( $arrData );
+                if ( empty( $arrData ) ) {
+                    $arrResponse = array( 'status' => false, 'msg' => 'Datos no encontrados.' );
+                } else {
+                    $arrResponse = array( 'status' => true, 'data' => $arrData );
+                }
+                echo json_encode( $arrResponse, JSON_UNESCAPED_UNICODE );
+            }
+        }
+        die();
+    }
+
+    public function actualizarEmpresaRoles()
+    {
+        if ($_POST) {
+            //dep($_POST);
+            $decodedData = base64_decode( $_POST[ 'datos' ] );
+            $data = json_decode( $decodedData, true );
+            if (empty($data['eusu_id']) || empty($data['ids']) || empty($data['accion'])) {
+                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+            } else {
+                $request = "";
+                $datos = isset($data['ids']) ? $data['ids']:"";
+                $Eusu_id = isset($data['eusu_id']) ? $data['eusu_id']:"0";
+                $accion = isset($data['accion']) ? $data['accion'] : "";
+                if ($accion == "Create") {
+                    $option = 1;
+                    $modelEmpresa = new EmpresaModel();
+                    $Emp_Id=$modelEmpresa->getIdEmpresaUsuario($Eusu_id);
+                    if ($_SESSION['permisosMod']['w']) {
+                        $modelRol = new RolesModel();
+                        $request = $modelRol->insertDataEmpRol($datos,$Emp_Id);
+                    }
+                } else {
+                    //$option = 2;
+                    //if ($_SESSION['permisosMod']['u']) {
+                    //    $request = $this->model->updateData($datos);
+                    //}
+                }
+                if ($request["status"]) {
+                    if ($option == 1) {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
+                    } else {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
+                    }
+                } else {
+                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
+                }
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+
 
 }
