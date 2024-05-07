@@ -116,7 +116,7 @@ class RolesModel extends Mysql
 							if($request_insert==0){//si es igual 0 no inserto nada
 								$con->rollBack();
 								$arroout["status"] = false;
-								$arroout["message"] = "Error al insertar Empresa Modulo!.";
+								$arroout["message"] = "Error al insertar Empresa Roles!.";
 							}
 							//$return = $request_insert;//Retorna el Ultimo IDS(0) No inserta y si es >0 si inserto
 	
@@ -125,14 +125,14 @@ class RolesModel extends Mysql
 				}else{
 					$con->rollBack();
 					$arroout["status"] = false;
-					$arroout["message"] = "Error al Actualizar Empresa Modulo!.";
+					$arroout["message"] = "Error al Actualizar Empresa Roles!.";
 				}
 				$con->commit();
 				$arroout["status"] = true;
 			}else{
 				$con->rollBack();
 				$arroout["status"] = false;
-				$arroout["message"] = "Error al Eliminar los modulos!.";
+				$arroout["message"] = "Error al Eliminar los Roles!.";
 			}
 			return $arroout;
 		}
