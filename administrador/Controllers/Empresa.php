@@ -323,4 +323,32 @@ class Empresa extends Controllers {
     }
 
 
+    public function getModuloRolesPorEmpresa()
+    {
+        if ( $_POST ) {
+
+            $decodedData = base64_decode( $_POST[ 'datos' ] );
+            $data = json_decode( $decodedData, true );
+            $ids = intval( strClean( $data[ 'Ids' ] ) );
+            if ( $ids > 0 ) {
+                $modelEmpresa = new EmpresaModel();
+                $Emp_Id=$modelEmpresa->getIdEmpresaUsuario($ids);
+                $modelRol = new RolesModel();
+                $arrData['Modulo'] = $modelRol->getEmpresaRol($Emp_Id);
+                $modelModel = new ModuloModel();
+                $arrData['EmpresaModulo'] = $modelModel->getEmpresaModulo($Emp_Id);
+                
+                //dep( $arrData );
+                if ( empty( $arrData ) ) {
+                    $arrResponse = array( 'status' => false, 'msg' => 'Datos no encontrados.' );
+                } else {
+                    $arrResponse = array( 'status' => true, 'data' => $arrData );
+                }
+                echo json_encode( $arrResponse, JSON_UNESCAPED_UNICODE );
+            }
+        }
+        die();
+    }
+
+
 }

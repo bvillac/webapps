@@ -625,3 +625,128 @@ function fnt_saveEmpRoles(){
 }
 
 
+/*
+EMPRESA MODULO ROLES
+*/
+function fntEmpresaModuloRoles(ids) {
+    if (ids != 0) {
+        sessionStorage.removeItem("dts_EmpresaModuloRol");
+        sessionStorage.removeItem("dts_RolModuloEmpresa");
+        let url = base_url + '/Empresa/getModuloRolesPorEmpresa';
+        var metodo = 'POST';
+        var datos = { Ids: ids };
+        peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
+            // Manejar el éxito de la solicitud aquí
+            if (data.status) {
+                var c = 0;
+                //$("#cmb_empresa_modulo_roles").html('');
+                var result = data.data.Modulo;
+                let arrayList = result.map(function(objeto) {
+                        return { ids: objeto.rol_id, Nombre: objeto.Nombre };
+                    });
+                result = data.data.EmpresaModulo;
+                let arrayList2 = result.map(function(objeto) {
+                        return { ids: objeto.mod_id, Nombre: objeto.Nombre };
+                    });
+                // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
+                //let arrayIds = result.map(function(objeto) {
+                //    return objeto.rol_id;
+                //});
+                //sessionStorage.OrdenadoIdsRol = arrayIds;
+                sessionStorage.dts_EmpresaModuloRol = JSON.stringify(arrayList);
+                sessionStorage.dts_RolModuloEmpresa = JSON.stringify(arrayList2);
+                ActualizarListModuloRoles();
+                ActualizarListRolModuloEmpresa();
+            } else {
+                swal("Atención", data.msg, "error");
+            }
+        }, function (jqXHR, textStatus, errorThrown) {
+            // Manejar el error de la solicitud aquí
+            console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+        });
+    } else {
+        //$("#cmb_centro").prop("disabled", true);
+        swal("Información", "Seleccionar un Empresa Modulo", "info");
+    }
+
+}
+
+function ActualizarListModuloRoles(){
+    if (sessionStorage.dts_EmpresaModuloRol) {
+        result = JSON.parse(sessionStorage.dts_EmpresaModuloRol);
+        $("#cmb_empresa_modulo_roles").html('');
+        if (result.length > 0) {
+            for (var i = 0; i < result.length; i++) {
+                $("#cmb_empresa_modulo_roles").append(
+                    '<option value="' + result[i].ids + '"  >' +
+                    result[i].Nombre +
+                    "</option>"
+                );
+                
+            }
+        }
+    }
+}
+
+function ActualizarListRolModuloEmpresa(){
+    if (sessionStorage.dts_RolModuloEmpresa) {
+        result = JSON.parse(sessionStorage.dts_RolModuloEmpresa);
+        $("#list_EmpresaModuloroles").html('');
+        if (result.length > 0) {
+            for (var i = 0; i < result.length; i++) {
+                $("#list_EmpresaModuloroles").append(
+                    '<option value="' + result[i].ids + '"  >' +
+                    result[i].Nombre +
+                    "</option>"
+                );
+                
+            }
+        }
+    }
+}
+
+
+function fntListarModuloporRol(ids) {
+    if (ids != 0) {
+        //sessionStorage.removeItem("dts_EmpresaModuloRol");
+        //sessionStorage.removeItem("dts_RolModuloEmpresa");
+        let url = base_url + '/Empresa/getModuloRolesPorEmpresa';
+        var metodo = 'POST';
+        var datos = { Ids: ids };
+        peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
+            // Manejar el éxito de la solicitud aquí
+            if (data.status) {
+                var c = 0;
+                //$("#cmb_empresa_modulo_roles").html('');
+                var result = data.data.Modulo;
+                let arrayList = result.map(function(objeto) {
+                        return { ids: objeto.rol_id, Nombre: objeto.Nombre };
+                    });
+                result = data.data.EmpresaModulo;
+                let arrayList2 = result.map(function(objeto) {
+                        return { ids: objeto.mod_id, Nombre: objeto.Nombre };
+                    });
+                // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
+                //let arrayIds = result.map(function(objeto) {
+                //    return objeto.rol_id;
+                //});
+                //sessionStorage.OrdenadoIdsRol = arrayIds;
+                sessionStorage.dts_EmpresaModuloRol = JSON.stringify(arrayList);
+                sessionStorage.dts_RolModuloEmpresa = JSON.stringify(arrayList2);
+                ActualizarListModuloRoles();
+                ActualizarListRolModuloEmpresa();
+            } else {
+                swal("Atención", data.msg, "error");
+            }
+        }, function (jqXHR, textStatus, errorThrown) {
+            // Manejar el error de la solicitud aquí
+            console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+        });
+    } else {
+        //$("#cmb_centro").prop("disabled", true);
+        swal("Información", "Seleccionar un Empresa Modulo", "info");
+    }
+
+}
+
+

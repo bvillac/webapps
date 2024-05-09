@@ -114,4 +114,18 @@ class ModuloModel extends Mysql
 		$request = $this->select_all($sql);
 		return $request;
 	}
+
+	public function getModuloRolEmpresa(int $Emod_id,int $Erol_id){
+		$sql = "SELECT a.emod_id,CONCAT(RPAD(c.mod_id, 20-LENGTH(c.mod_id), ' '),c.mod_nombre) Nombre  ";
+		$sql .= "	FROM (". $this->db_name .".empresa_modulo_rol a ";
+		$sql .= "		INNER JOIN (db_administrador.empresa_modulo b ";
+		$sql .= "				INNER JOIN ". $this->db_name .".modulo c  ";
+		$sql .= "					ON  c.mod_id=b.mod_id)  ";
+		$sql .= "			ON a.emod_id=b.emod_id) ";
+		$sql .= "	WHERE a.estado_logico!=0 AND a.erol_id={$Erol_id} AND b.emod_id={$Emod_id} ";
+		$request = $this->select_all($sql);
+		return $request;
+	}
+
+	
 }
