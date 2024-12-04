@@ -716,7 +716,7 @@ function fntListarModuloporRol(ids) {
         peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
             // Manejar el éxito de la solicitud aquí
             if (data.status) {
-                var c = 0;
+                /*var c = 0;
                 //$("#cmb_empresa_modulo_roles").html('');
                 var result = data.data.Modulo;
                 let arrayList = result.map(function(objeto) {
@@ -734,7 +734,7 @@ function fntListarModuloporRol(ids) {
                 sessionStorage.dts_EmpresaModuloRol = JSON.stringify(arrayList);
                 sessionStorage.dts_RolModuloEmpresa = JSON.stringify(arrayList2);
                 ActualizarListModuloRoles();
-                ActualizarListRolModuloEmpresa();
+                ActualizarListRolModuloEmpresa();*/
             } else {
                 swal("Atención", data.msg, "error");
             }

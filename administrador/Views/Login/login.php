@@ -26,7 +26,7 @@
 
       <form class="login-form" name="frm_Login" id="frm_Login" action="">
       
-          <img class="loguinInicio" src="<?= media() ?>/logo/logo-miller.jpg" alt="Miller Logo">
+          <img class="loguinInicio" style="height: 20%;" src="<?= media() ?>/logo/logo-sea.png" alt="SEA Logo">
    
         <!--<h3 class="login-head"><?= TITULO_EMPRESA ?></h3>-->
         <div class="form-group">
