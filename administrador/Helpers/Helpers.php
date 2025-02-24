@@ -510,11 +510,6 @@ function getGenerarMenu()
             foreach ($itemN1['hijos'] as $itemN2) { //Nivel 2
                 //putMessageLogFile($itemN2['id'] . " hijo");
                 $menu .= menuHijoLink($itemN2);
-                //if (!empty($itemN2['hijos'])) {
-                //    foreach ($itemN2['hijos'] as $itemN3) {
-                //        putMessageLogFile($itemN3['id'] . " hijo");
-                //    }
-                //}
             }
             $menu .= '</ul>';
             $menu .= '</li>';

@@ -19,7 +19,7 @@ class Empresa extends Controllers {
         $data[ 'moneda' ] = $this->model->consultarMoneda();
         $data[ 'page_tag' ] = 'Empresa';
         $data[ 'page_name' ] = 'Empresa';
-        $data[ 'page_title' ] = 'Empresa <small> ' . TITULO_EMPRESA . '</small>';
+        $data[ 'page_title' ] = 'Empresa <small> ' . $_SESSION['empresaData']['NombreComercial'] . '</small>';
         $data[ 'page_back' ] = 'empresa';
         $this->views->getView( $this, 'empresa', $data );
     }
@@ -203,7 +203,7 @@ class Empresa extends Controllers {
             $data['Roles'] = $modelRol->getRolAll();
             $data['page_tag'] = 'Empresa Modulo';
             $data['page_name'] = 'Empresa Modulo';
-            $data['page_title'] = 'Empresa Modulo <small> ' . TITULO_EMPRESA . '</small>';
+            $data['page_title'] = 'Empresa Modulo <small> ' . $_SESSION['empresaData']['NombreComercial'] . '</small>';
             $data['page_back'] = 'empresamodulo';
             $this->views->getView($this, 'empresamodulo', $data);
         } else {

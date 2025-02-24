@@ -19,7 +19,7 @@ class Salon extends Controllers
         $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
         $data['page_tag'] = "Salon";
         $data['page_name'] = "Salon";
-        $data['page_title'] = "Salon <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_title'] = "Salon <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
         $data['page_back'] = "salon";
         $this->views->getView($this, "salon", $data);
     }

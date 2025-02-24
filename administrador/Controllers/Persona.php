@@ -15,7 +15,7 @@ class Persona extends Controllers
 		}
 		$data['page_tag'] = "Persona";
 		$data['page_name'] = "Persona";
-		$data['page_title'] = "Persona <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Persona <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$data['fileJS'] = "funcionesPersona.js";
 		$this->views->getView($this, "persona", $data);
 	}

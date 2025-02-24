@@ -14,7 +14,7 @@
 			}
 			$data['page_tag'] = "Linea";
 			$data['page_name'] = "Linea";
-			$data['page_title'] = "Línea <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Línea <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesLinea.js";
 			$this->views->getView($this,"linea",$data);
 		}

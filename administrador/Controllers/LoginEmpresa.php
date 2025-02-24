@@ -59,7 +59,7 @@ class LoginEmpresa extends Controllers
 		if ($_POST) {
 		   $data=recibirData($_POST['data']);
 			if (empty($data['Empresa']) || empty($data['Establecimiento']) || empty($data['Punto'])) {
-				$arrResponse = array('status' => false, 'msg' => 'Error de datos');
+				$arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
 			} else {
 				//Obtener datos empresa 
 				$this->datosSession($data['Empresa']);

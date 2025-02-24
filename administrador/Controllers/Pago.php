@@ -13,7 +13,7 @@
 			}
 			$data['page_tag'] = "Forma de Pago";
 			$data['page_name'] = "Forma de Pago";
-			$data['page_title'] = "Forma de Pago <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Forma de Pago <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesPago.js";
 			$this->views->getView($this,"pago",$data);
 		}

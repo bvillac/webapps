@@ -15,7 +15,7 @@ require 'vendor/autoload.php';
 				header("Location:".base_url().'/dashboard');
 			}
 			$data['page_tag'] = "Productos(Items)";
-			$data['page_title'] = "Productos(Items) <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Productos(Items) <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Productos(Items)";
 			$data['fileJS'] = "funcionesItems.js";
 			$this->views->getView($this,"items",$data);

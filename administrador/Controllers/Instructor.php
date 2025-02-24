@@ -19,7 +19,7 @@ class Instructor extends Controllers
 		}
 		$data['page_tag'] = "Instructor";
 		$data['page_name'] = "Instructor";
-		$data['page_title'] = "Instructor <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Instructor <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "instructor", $data);
 	}
 
@@ -32,7 +32,7 @@ class Instructor extends Controllers
 		$data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
 		$data['page_tag'] = "Nuevo Instructor";
 		$data['page_name'] = "Nuevo Instructor";
-		$data['page_title'] = "Nuevo Instructor <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Nuevo Instructor <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "nuevo", $data);
 	}
 
@@ -155,7 +155,7 @@ class Instructor extends Controllers
 				$data['dataSalon'] = $modelSalon->consultarSalones($data['CentroId']);
 				$data['page_tag'] = "Editar Instructor";
 				$data['page_name'] = "Editar Instructor";
-				$data['page_title'] = "Editar Instructor <small> " . TITULO_EMPRESA . "</small>";
+				$data['page_title'] = "Editar Instructor <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 				//$data['fileJS'] = "funcionesInstructor.js";
 				$this->views->getView($this, "editar", $data);
 			}

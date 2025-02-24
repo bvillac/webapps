@@ -88,6 +88,7 @@ class LoginModel extends Mysql
 		$sql .= "					ON c.rol_id=b.rol_id) ";
 		$sql .= "			ON a.erol_id=b.erol_id ";
 		$sql .= "	WHERE a.estado_logico!=0 AND a.eurol_id={$Eurol_id} ";
+		//putMessageLogFile($sql);
 		//$request = $this->select_all($sql);//Devuelve mas de 1
 		$request = $this->select_all($sql); //Devuelve solo 1
 		return $request;
@@ -95,17 +96,6 @@ class LoginModel extends Mysql
 
 	public function permisosModulo(int $Eusu_id, int $Erol_id)
 	{
-		/*$sql = "SELECT a.perm_id,b.emod_id,c.mod_id,SUBSTRING(c.mod_id, 1, LENGTH(c.mod_id) - 2) idPadre, ";	
-     	$sql .= "	c.mod_nombre,c.mod_url,c.mod_icono,a.r,a.w,a.u,a.d ";		
-		$sql .= "	FROM db_administrador.permiso a ";
-		$sql .= "		INNER JOIN db_administrador.empresa_usuario_rol d ";
-		$sql .= "			ON a.eurol_id=d.eurol_id AND d.emp_id={$emp_id} and d.usu_id={$usu_id} ";
-		$sql .= "		LEFT JOIN (db_administrador.empresa_modulo b 	"; 			
-		$sql .= "			LEFT JOIN db_administrador.modulo c ";					
-		$sql .= "				ON c.mod_id=b.mod_id) 	";		
-		$sql .= "			ON a.emod_id=b.emod_id ";
-		$sql .= "WHERE a.estado_logico!=0; ";*/
-
 		$sql = "SELECT a.perm_id,a.emod_id,c.mod_id,SUBSTRING(c.mod_id, 1, LENGTH(c.mod_id) - 2) idPadre, 	";
 		$sql .= "		c.mod_nombre,c.mod_url,c.mod_icono,a.r,a.w,a.u,a.d   ";
 		$sql .= "	FROM " . $this->db_name . ".permiso a ";
@@ -113,6 +103,7 @@ class LoginModel extends Mysql
 		$sql .= "			ON a.mod_id=c.mod_id ";
 		$sql .= "	WHERE a.estado_logico!=0 AND a.eusu_id={$Eusu_id} AND a.erol_id={$Erol_id} ";
 		$request = $this->select_all($sql);
+		//putMessageLogFile($sql);
 		$menuArray = $this->construirMenu($request,"");
 		//putMessageLogFile($menuArray);
 		return $menuArray;

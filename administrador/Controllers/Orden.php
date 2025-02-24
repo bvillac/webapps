@@ -21,7 +21,7 @@
 			//}		
 
 			$data['page_tag'] = "Orden de Pedido";
-			$data['page_title'] = "Orden de Pedido <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Orden de Pedido <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Orden de Pedido";
 			$data['fileJS'] = "funcionesOrden.js";			
 			$this->views->getView($this,"orden",$data);
@@ -33,7 +33,7 @@
 			//}
 			$objSec=new SecuenciasModel;
 			$data['page_tag'] = "Orden de Compra";
-			$data['page_title'] = "Orden de Compra <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Orden de Compra <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Orden de Compra";
 			$data['fileJS'] = "funcionesOrden.js";
 			$data['Secuencia'] = $objSec->newSecuence("OC",1,FALSE);

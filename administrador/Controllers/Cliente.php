@@ -16,7 +16,7 @@ require 'vendor/autoload.php';
 			}
 			$data['page_tag'] = "Cliente";
 			$data['page_name'] = "Cliente";
-			$data['page_title'] = "Cliente <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Cliente <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesCliente.js";
 			$this->views->getView($this,"cliente",$data);
 		}

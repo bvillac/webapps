@@ -13,7 +13,7 @@
 			}
 			$data['page_tag'] = "Establecimiento";
 			$data['page_name'] = "Establecimiento";
-			$data['page_title'] = "Establecimiento <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Establecimiento <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesEstablecimiento.js";
 			$this->views->getView($this,"establecimiento",$data);
 		}

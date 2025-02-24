@@ -13,7 +13,7 @@
 			}
 			$data['page_tag'] = "Moneda";
 			$data['page_name'] = "Moneda";
-			$data['page_title'] = "Moneda <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Moneda <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesMoneda.js";
 			$this->views->getView($this,"moneda",$data);
 		}

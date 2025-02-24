@@ -13,7 +13,7 @@
 			}
 			$data['page_tag'] = "Punto de Emisión";
 			$data['page_name'] = "Punto de Emisión";
-			$data['page_title'] = "Punto de Emisión <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Punto de Emisión <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesPunto.js";
 			$this->views->getView($this,"punto",$data);
 		}

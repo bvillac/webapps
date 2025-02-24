@@ -9,7 +9,7 @@
 		public function contacto(){
 			$data['page_tag'] = "Contacto";
             $data['page_name'] = "Contacto";
-            $data['page_title'] = "Contacto <small> ".TITULO_EMPRESA ."</small>";
+            $data['page_title'] = "Contacto <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$this->views->getView($this,"contacto",$data); 
 
 			/*$pageContent = getPageRout('contacto');

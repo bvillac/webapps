@@ -19,7 +19,7 @@ class Cuota extends Controllers
         }
         $data['page_tag'] = "Cuota Pago";
         $data['page_name'] = "Cuota Pago";
-        $data['page_title'] = "Cuota Pago <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_title'] = "Cuota Pago <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
         $data['page_back'] = "cuota";
         $this->views->getView($this, "cuota", $data);
     }
@@ -55,7 +55,7 @@ class Cuota extends Controllers
                 } else {
                     $data['page_tag'] = "Detalle Pagos";
                     $data['page_name'] = "Detalle Pagos";
-                    $data['page_title'] = "Detalle Pagos <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_title'] = "Detalle Pagos <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
                     $data['page_back'] = "cuota";
                     $this->views->getView($this, "detallepago", $data);
                 }

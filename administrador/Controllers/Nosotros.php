@@ -10,7 +10,7 @@
 
                 $data['page_tag'] = "Contacto";
                 $data['page_name'] = "Contacto";
-                $data['page_title'] = "Contacto <small> ".TITULO_EMPRESA ."</small>";
+                $data['page_title'] = "Contacto <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 				$this->views->getView($this,"nosotros",$data);  
 			/*$pageContent = getPageRout('nosotros');
 			if(empty($pageContent)){
@@ -19,7 +19,7 @@
 				//$data['page'] = $pageContent;
                 $data['page_tag'] = "Contacto";
                 $data['page_name'] = "Contacto";
-                $data['page_title'] = "Usuarios <small> ".TITULO_EMPRESA ."</small>";
+                $data['page_title'] = "Usuarios <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
                 //$data['fileJS'] = "funcionesUsuarios.js";
 				$this->views->getView($this,"nosotros",$data);  
 			}*/

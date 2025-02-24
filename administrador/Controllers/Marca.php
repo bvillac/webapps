@@ -14,7 +14,7 @@
 			}
 			$data['page_tag'] = "Marca";
 			$data['page_name'] = "Marca";
-			$data['page_title'] = "Marca <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Marca <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesMarca.js";
 			$this->views->getView($this,"marca",$data);
 		}

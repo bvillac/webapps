@@ -21,7 +21,7 @@ class Planificacion extends Controllers
         $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
         $data['page_tag'] = "Planificación";
         $data['page_name'] = "Planificación";
-        $data['page_title'] = "Planificación <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_title'] = "Planificación <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
         $this->views->getView($this, "planificacion", $data);
     }
 
@@ -33,7 +33,7 @@ class Planificacion extends Controllers
         }
         $data['page_tag'] = "Planificación Autorizada";
         $data['page_name'] = "Planificación Autorizada";
-        $data['page_title'] = "Planificación Autorizada <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_title'] = "Planificación Autorizada <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
         $this->views->getView($this, "autorizado", $data);
     }
 
@@ -105,7 +105,7 @@ class Planificacion extends Controllers
         $data['page_tag'] = "Nueva Planificación";
         $data['page_name'] = "Nueva Planificación";
         $data['plugin'] = "calendar";
-        $data['page_title'] = "Nueva Planificación <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_title'] = "Nueva Planificación <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
         $this->views->getView($this, "nuevo", $data);
     }
 
@@ -125,7 +125,7 @@ class Planificacion extends Controllers
                     $data['dataSalon'] = $modelSalon->consultarSalones($data['cat_id']);
                     $data['page_tag'] = "Editar Planificación";
                     $data['page_name'] = "Editar Planificación";
-                    $data['page_title'] = "Editar Planificación <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_title'] = "Editar Planificación <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
                     $this->views->getView($this, "editar", $data);
                 }
             } else {
@@ -155,7 +155,7 @@ class Planificacion extends Controllers
                     $data['dataSalon'] = $modelSalon->consultarSalones($data['cat_id']);
                     $data['page_tag'] = "Planificación Aprobada";
                     $data['page_name'] = "Planificación Aprobada";
-                    $data['page_title'] = "Planificación Aprobada <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_title'] = "Planificación Aprobada <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
                     $this->views->getView($this, "aprobado", $data);
                 }
             } else {

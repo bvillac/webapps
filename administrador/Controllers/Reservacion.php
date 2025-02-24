@@ -22,7 +22,7 @@ class Reservacion extends Controllers
         }
         $data['page_tag'] = "Reservación";
         $data['page_name'] = "Reservación";
-        $data['page_title'] = "Reservación <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_title'] = "Reservación <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
         $this->views->getView($this, "reservacion", $data);
     }
 
@@ -85,7 +85,7 @@ class Reservacion extends Controllers
                     $data['dataNivel'] = $modelNivel->consultarNivel();
                     $data['page_tag'] = "Agendar";
                     $data['page_name'] = "Agendar";
-                    $data['page_title'] = "Agendar <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_title'] = "Agendar <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
                     $this->views->getView($this, "agendar", $data);
                 }
             } else {
@@ -137,7 +137,7 @@ class Reservacion extends Controllers
                 $data['dataNivel'] = $modelNivel->consultarNivel();
                 $data['page_tag'] = "Agendar";
                 $data['page_name'] = "Agendar";
-                $data['page_title'] = "Agendar <small> " . TITULO_EMPRESA . "</small>";
+                $data['page_title'] = "Agendar <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
                 $this->views->getView($this, "agendar", $data);
 
                 

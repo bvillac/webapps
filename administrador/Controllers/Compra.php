@@ -20,7 +20,7 @@
 			//}		
 			
 			$data['page_tag'] = "Compra";
-			$data['page_title'] = "Compra <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Compra <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Compra";
 			$data['fileJS'] = "funcionesCompra.js";			
 			$this->views->getView($this,"compra",$data);
@@ -34,7 +34,7 @@
 			//}
 			//$objSec=new SecuenciasModel;
 			$data['page_tag'] = "Orden de Compra";
-			$data['page_title'] = "Orden de Compra <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Orden de Compra <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Orden de Compra";
 			$data['fileJS'] = "funcionesCompra.js";
 			///$data['Secuencia'] = $objSec->newSecuence("OC",1,FALSE);
@@ -128,7 +128,7 @@
 			$model=new CompraModel;	
 			$objSec=new SecuenciasModel;
 			$data['page_tag'] = "Compra";
-			$data['page_title'] = "Compra <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Compra <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Compra";
 			$data['fileJS'] = "funcionesCompra.js";
 			$data['Secuencia'] = $objSec->newSecuence("CO",1,FALSE);
@@ -146,7 +146,7 @@
 			$model=new CompraModel;	
 			$objSec=new SecuenciasModel;
 			$data['page_tag'] = "Compra";
-			$data['page_title'] = "Compra <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Compra <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Compra";
 			$data['fileJS'] = "funcionesCompra.js";
 			$data['Secuencia'] = $objSec->newSecuence("CO",1,FALSE);

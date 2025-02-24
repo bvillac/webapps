@@ -12,7 +12,7 @@ class Servicios extends Controllers{
 
 		$data['page_tag'] = "Contacto";
 		$data['page_name'] = "Contacto";
-		$data['page_title'] = "Contacto <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Contacto <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "nosotros", $data);
 	}
 
@@ -20,21 +20,21 @@ class Servicios extends Controllers{
 
 		$data['page_tag'] = "Soporte";
 		$data['page_name'] = "Soporte";
-		$data['page_title'] = "Soporte <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Soporte <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "soporte", $data);
 	}
 
 	public function consultoria(){
 		$data['page_tag'] = "Consultoria";
 		$data['page_name'] = "Consultoria";
-		$data['page_title'] = "Consultoria <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Consultoria <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "consultoria", $data);
 	}
 
 	public function sistemasea(){
 		$data['page_tag'] = "Sistema SEA";
 		$data['page_name'] = "Sistema SEA";
-		$data['page_title'] = "SEA <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "SEA <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "sistemasea", $data);
 	}
 }

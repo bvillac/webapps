@@ -21,7 +21,7 @@ class Academico extends Controllers
         //$data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
         $data['page_tag'] = "Control Académico";
         $data['page_name'] = "Control Académico";
-        $data['page_title'] = "Control Académico <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_title'] = "Control Académico <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
         $data['page_back'] = "academico";
         $this->views->getView($this, "academico", $data);
     }
@@ -74,7 +74,7 @@ class Academico extends Controllers
                     $data['porcentaje'] = range(0, 100);
                     $data['page_tag'] = "Control Académico";
                     $data['page_name'] = "Control Académico";
-                    $data['page_title'] = "Control Académico <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_title'] = "Control Académico <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
                     $data['page_back'] = "academico";
                     $this->views->getView($this, "evaluar", $data);
                 }

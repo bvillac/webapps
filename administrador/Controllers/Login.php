@@ -13,7 +13,7 @@
 		public function login(){
 			$data['page_tag'] = "Login";
 			$data['page_name'] = "Login";
-			$data['page_title'] = "Login <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Login <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			//dep($data);
 			$this->views->getView($this,"login",$data);
 		}

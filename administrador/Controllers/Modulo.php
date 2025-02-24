@@ -16,7 +16,7 @@ class Modulo extends Controllers
 		}
 		$data['page_tag'] = "Modulo";
 		$data['page_name'] = "Modulo";
-		$data['page_title'] = "Modulo <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Modulo <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$data['fileJS'] = "funcionesModulo.js";
 		$data['page_back'] = "modulo";
 		$this->views->getView($this, "modulo", $data);

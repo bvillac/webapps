@@ -16,7 +16,7 @@ class TipoItem extends Controllers
 		}
 		$data['page_tag'] = "TipoItem";
 		$data['page_name'] = "TipoItem";
-		$data['page_title'] = "TipoItem <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "TipoItem <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$data['fileJS'] = "funcionesTipoItem.js";
 		$this->views->getView($this, "tipoitem", $data);
 	}

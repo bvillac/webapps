@@ -22,7 +22,7 @@ class Beneficiario extends Controllers
         
         $data['page_tag'] = "Beneficiarío";
         $data['page_name'] = "Beneficiarío";
-        $data['page_title'] = "Beneficiarío <small> " . TITULO_EMPRESA . "</small>";
+        $data['page_title'] = "Beneficiarío <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
         $this->views->getView($this, "beneficiario", $data);
     }
 
@@ -123,7 +123,7 @@ class Beneficiario extends Controllers
                     $data['idioma'] = $modelIdioma->consultarIdioma();
                     $data['page_tag'] = "Editar Beneficiarío";
                     $data['page_name'] = "Editar Beneficiarío";
-                    $data['page_title'] = "Editar Beneficiarío <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_title'] = "Editar Beneficiarío <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
                     $this->views->getView($this, "editar", $data);
                 }
             } else {

@@ -13,7 +13,7 @@
 			}
 			$data['page_tag'] = "UnidadMedida";
 			$data['page_name'] = "UnidadMedida";
-			$data['page_title'] = "UnidadMedida <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "UnidadMedida <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesUnidadMedida.js";
 			$this->views->getView($this,"unidadmedida",$data);
 		}

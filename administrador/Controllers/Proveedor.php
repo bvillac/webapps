@@ -16,7 +16,7 @@
 			}
 			$data['page_tag'] = "Proveedor";
 			$data['page_name'] = "Proveedor";
-			$data['page_title'] = "Proveedor <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Proveedor <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesProveedor.js";
 			$this->views->getView($this,"proveedor",$data);
 		}

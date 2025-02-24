@@ -29,7 +29,7 @@
 			$data['usuario_rol'] = $this->model->consultarRoles();
 			$data['page_tag'] = "Usuarios";
 			$data['page_name'] = "Usuarios";
-			$data['page_title'] = "Usuarios <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Usuarios <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$this->views->getView($this,"usuarios",$data);
 			
 		}
@@ -251,7 +251,7 @@
 
 		public function perfil(){
 			$data['page_tag'] = "Perfil";			
-			$data['page_title'] = "Perfil  <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Perfil  <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Perfil Usuario";
 			$data['fileJS'] = "funcionesUsuarios.js";
 			$this->views->getView($this,"perfil",$data);
@@ -303,7 +303,7 @@
                     $data['porcentaje'] = range(0, 100);
                     $data['page_tag'] = "Control Académico";
                     $data['page_name'] = "Control Académico";
-                    $data['page_title'] = "Control Académico <small> " . TITULO_EMPRESA . "</small>";
+                    $data['page_title'] = "Control Académico <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
                     $data['page_back'] = "academico";
                     $this->views->getView($this, "rol", $data);
                 }

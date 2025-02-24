@@ -12,7 +12,7 @@
 			}
 			$data['page_tag'] = "Bodega";
 			$data['page_name'] = "Bodega";
-			$data['page_title'] = "Bodega <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Bodega <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['fileJS'] = "funcionesBodega.js";
 			$this->views->getView($this,"bodega",$data);
 		}

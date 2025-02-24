@@ -20,7 +20,7 @@
 			//}		
 			dep("lleg");
 			$data['page_tag'] = "Venta";
-			$data['page_title'] = "Venta <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Venta <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Venta";
 			$data['fileJS'] = "funcionesVenta.js";			
 			$this->views->getView($this,"venta",$data);
@@ -99,7 +99,7 @@
 			//}		
 			dep("lleg");
 			$data['page_tag'] = "Despachos";
-			$data['page_title'] = "Despachos <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Despachos <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Despachos";
 			$data['fileJS'] = "funcionesVenta.js";			
 			$this->views->getView($this,"despacho",$data);

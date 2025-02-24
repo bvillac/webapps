@@ -23,7 +23,7 @@ class Contrato extends Controllers
 		}
 		$data['page_tag'] = "Contrato";
 		$data['page_name'] = "Contrato";
-		$data['page_title'] = "Contrato <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Contrato <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "contrato", $data);
 	}
 
@@ -79,7 +79,7 @@ class Contrato extends Controllers
 		$data['Ruc'] = $_SESSION['empresaData']['Ruc'];
 		$data['page_tag'] = "Nuevo Contrato";
 		$data['page_name'] = "Nuevo Contrato";
-		$data['page_title'] = "Nuevo Contrato <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Nuevo Contrato <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "nuevo", $data);
 	}
 

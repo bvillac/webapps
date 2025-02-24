@@ -24,7 +24,7 @@ class Secuencias extends Controllers
 		$data['idsEmpresa']=$_SESSION['Emp_Id'];		
 		$data['page_tag'] = "Secuencias";
 		$data['page_name'] = "Secuencias";
-		$data['page_title'] = "Secuencias <small> " . TITULO_EMPRESA . "</small>";
+		$data['page_title'] = "Secuencias <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
 		$this->views->getView($this, "secuencias", $data);
 	}
 

@@ -13,7 +13,7 @@
 				header("Location:".base_url().'/dashboard');
 			}
 			$data['page_tag'] = "Movimiento";
-			$data['page_title'] = "Movimiento <small> ".TITULO_EMPRESA ."</small>";
+			$data['page_title'] = "Movimiento <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Movimiento";
 			$data['fileJS'] = "funcionesMovimiento.js";
 			$this->views->getView($this,"movimiento",$data);
