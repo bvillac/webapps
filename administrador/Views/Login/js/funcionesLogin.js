@@ -184,8 +184,7 @@ function iniciarSession() {
 		let url = base_url + '/Login/loginUsuario';
 		var metodo = 'POST';
 		var datos = { txt_Email: strEmail, txt_clave: strPassword };
-		//var datosEncriptados = encryptData(JSON.stringify(datos), clavePrivate);
-		peticionAjax(url, metodo, {datos: btoa(JSON.stringify(datos)) }, function (data) {
+		peticionAjaxSSL(url, metodo, datos, function (data) {
 			// Manejar el éxito de la solicitud aquí
 			if (data.status) {
 				//alert("redireciona: "+base_url+'/Loginempresa/loginempresa');

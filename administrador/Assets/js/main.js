@@ -1,4 +1,7 @@
-var clavePrivate = "EIhyWpvOuPhIBhTKG54dyTJ2HtFc";
+//var clavePrivate = "EIhyWpvOuPhIBhTKG54dyTJ2HtFc";
+const key = CryptoJS.enc.Utf8.parse("2024567890120156"); 
+const iv = CryptoJS.enc.Utf8.parse("1234567820123456"); 
+
 (function () {
     "use strict";
     var treeviewMenu = $('.app-menu');
@@ -273,7 +276,6 @@ function findAndRemove(array, property, value) {
     return array;
 }
 
-
 function peticionAjax(url, metodo, datos, exitoCallback, errorCallback) {
     $.ajax({
       url: url,
@@ -292,33 +294,29 @@ function peticionAjax(url, metodo, datos, exitoCallback, errorCallback) {
       }
     });
   }
-  
-  /*// Ejemplo de uso:
-  var url = 'tu/url/aqui';
-  var metodo = 'GET';
-  var datos = { parametro1: 'valor1', parametro2: 'valor2' };
-  
-  realizarSolicitudAjax(url, metodo, datos, function(data) {
-    // Manejar el éxito de la solicitud aquí
-    console.log(data);
-  }, function(jqXHR, textStatus, errorThrown) {
-    // Manejar el error de la solicitud aquí
-    console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
-  });*/
 
-// Función para encriptar los datos con AES
-function encryptData(data, key) {
-    // Convertir la clave a un formato adecuado
-    const keyBytes = CryptoJS.enc.Utf8.parse(key);
-    
-    // Encriptar los datos utilizando AES con la clave proporcionada
-    const encryptedData = CryptoJS.AES.encrypt(data, keyBytes, {
-        mode: CryptoJS.mode.ECB, // Modo de operación: Electronic Codebook (ECB)
-        padding: CryptoJS.pad.Pkcs7 // Relleno: PKCS #7
+  function peticionAjaxSSL(url, metodo, datos, exitoCallback, errorCallback) {
+    $.ajax({
+      url: url,
+      method: metodo,
+      data: `data=${dataEncript(JSON.stringify(datos))}`,
+      dataType: 'json', // Puedes ajustar esto según el tipo de datos que esperas
+      success: function(data) {
+        if (exitoCallback && typeof exitoCallback === 'function') {
+          exitoCallback(data);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        if (errorCallback && typeof errorCallback === 'function') {
+          errorCallback(jqXHR, textStatus, errorThrown);
+        }
+      }
     });
-
-    // Devolver el resultado en formato Base64
-    return encryptedData.toString();
+  }
+  function dataEncript(postData){
+	const encrypted = CryptoJS.AES.encrypt(postData, key, { iv: iv }).toString();
+	const base64Data = btoa(encrypted);
+	return encodeURIComponent(base64Data);
 }
 
   

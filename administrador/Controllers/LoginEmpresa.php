@@ -57,9 +57,7 @@ class LoginEmpresa extends Controllers
 	{
 		//dep($_POST);
 		if ($_POST) {
-			$decodedData = base64_decode($_POST['datos']);
-			// Decodificar los datos JSON
-			$data = json_decode($decodedData, true);
+		   $data=recibirData($_POST['data']);
 			if (empty($data['Empresa']) || empty($data['Establecimiento']) || empty($data['Punto'])) {
 				$arrResponse = array('status' => false, 'msg' => 'Error de datos');
 			} else {

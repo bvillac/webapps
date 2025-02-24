@@ -8,6 +8,7 @@
 <script src="<?= media() ?>/js/jquery-3.3.1.min.js"></script>
 <script src="<?= media() ?>/js/popper.min.js"></script>
 <script src="<?= media() ?>/js/bootstrap.min.js"></script>
+<script src="<?= media() ?>/js/crypto-js.min.js"></script>
 <script src="<?= media() ?>/js/main.js"></script>
 <script src="<?= media(); ?>/js/fontawesome.js"></script>
 

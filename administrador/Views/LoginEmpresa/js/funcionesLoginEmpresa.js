@@ -13,7 +13,8 @@ function fntCentro(ids) {
 	if (ids != 0) {
 		let url = base_url + '/LoginEmpresa/bucarCentro';
 		var metodo = 'POST';
-		var datos = { Ids: ids };
+		const datos = { Ids: ids };
+		//EncriptAjax(url, metodo, datos, function (data) {
 		peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
 			// Manejar el éxito de la solicitud aquí
 			if (data.status) {
@@ -119,8 +120,7 @@ function iniciarSessionEmpresa() {
 	let url = base_url + '/LoginEmpresa/loginUsuarioEmpresa';
 	var metodo = 'POST';
 	var datos = { Empresa: nEmpresa, Establecimiento: nEstablecimiento, Punto: nPunto, Centro: nCentro };
-	//var datosEncriptados = encryptData(JSON.stringify(datos), clavePrivate);
-	peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
+	peticionAjaxSSL(url, metodo, datos, function (data) {
 		// Manejar el éxito de la solicitud aquí
 		if (data.status) {
 			//Hace un refress del sitio

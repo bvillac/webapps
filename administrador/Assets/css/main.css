@@ -16390,6 +16390,7 @@ be a descendant of the grid when it is being dragged.
   font-weight: 400;
 }
 
+
 .login-content .login-box {
   position: relative;
   min-width: 350px;
@@ -16404,6 +16405,8 @@ be a descendant of the grid when it is being dragged.
   transition: all 0.5s ease-in-out;
 }
 
+
+
 .login-content .login-box .login-head {
   margin-top: 0;
   margin-bottom: 20px;
@@ -16411,6 +16414,8 @@ be a descendant of the grid when it is being dragged.
   border-bottom: 1px solid #ddd;
   text-align: center;
 }
+
+
 
 .login-content .login-box label {
   color: #666;

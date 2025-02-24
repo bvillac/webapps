@@ -560,3 +560,13 @@ function retornaUser()
     $dataSession = $_SESSION['usuarioData'];
     return strstr($dataSession['usu_correo'], '@', true);
 }
+
+function recibirData($datos)
+{
+    // Decodificar Base64
+    $encryptedData = base64_decode($datos);
+    // Descifrar los datos
+    $decryptedData = openssl_decrypt($encryptedData,'AES-128-CBC',key,0,iv);
+   // Convertir JSON a un arreglo PHP
+   return json_decode($decryptedData, true);
+}

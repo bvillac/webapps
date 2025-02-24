@@ -12,7 +12,7 @@
 			
 			$data['page_id'] = 2;
 			$data['page_tag'] = "Dashboard";
-			$data['page_title'] = "Dashboard - " .TITULO_EMPRESA;
+			$data['page_title'] = "Dashboard - " .$_SESSION['empresaData']['NombreComercial'];
 			$data['page_name'] = "dashboard";
 			
 

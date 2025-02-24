@@ -21,20 +21,7 @@
 		public function loginUsuario(){
 			//dep($_POST);
 			if($_POST){
-				$decodedData = base64_decode($_POST['datos']);
-				//putMessageLogFile($decodedData);
-				//$datosDescifrados = openssl_decrypt(base64_decode($datosEncriptados), 'aes-256-ecb', ClavePrivate, OPENSSL_RAW_DATA);
-				// Verificar si hubo algún error al descifrar los datos
-				/*if ($datosDescifrados === false) {
-					// Capturar el mensaje de error
-					$error = openssl_error_string();
-					putMessageLogFile("Error al descifrar los datos: $error") ;
-					// Puedes registrar este error en un archivo de registro, enviar un correo electrónico al administrador, etc.
-					die();// Detener la ejecución del script
-				}*/
-			
-				// Decodificar los datos JSON
-				$data = json_decode($decodedData, true);
+				$data=recibirData($_POST['data']);
 				if(empty($data['txt_Email']) || empty($data['txt_clave'])){
 					$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
 				}else{
