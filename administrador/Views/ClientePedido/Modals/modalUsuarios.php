@@ -61,30 +61,12 @@
               </select>
             </div>
           </div>
+          
+
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_correo">Usuario/Correo Electrónico</label>
               <input type="email" class="form-control valid validarEmail" id="txt_correo" name="txt_correo" placeholder="ejemplo@gmail.com" required="">
-            </div>
-            <div class="form-group col-md-6">
-              <label for="txt_Password">Clave</label>
-              <input type="password" class="form-control" id="txt_Password" name="txt_Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="La contraseña debe contener 8 o más caracteres que son de por lo menos un número, una mayúscula y minúscula" placeholder="Abcdef123">
-              <span class="mdi mdi-eye" id="mostrar"> <span class="pwdtxt" style="cursor:pointer;">Mostrar contraseña</span></span>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="cmb_rol">Rol Asignado</label>
-              <select class="form-control" data-live-search="true" id="cmb_rol" name="cmb_rol" required="">
-                <?php
-                // Recorre el array y genera las opciones del select
-                echo '<option value="0">SELECCIONAR</option>';
-                foreach ($data['usuario_rol'] as $opcion) {
-                  echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
-                }
-                ?>
-              </select>
             </div>
             <div class="form-group col-md-6">
               <label for="cmb_estado">Estado</label>

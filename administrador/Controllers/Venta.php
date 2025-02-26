@@ -97,7 +97,6 @@
 			//if(empty($_SESSION['permisosMod']['r'])){
 				//header("Location:".base_url().'/dashboard');
 			//}		
-			dep("lleg");
 			$data['page_tag'] = "Despachos";
 			$data['page_title'] = "Despachos <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
 			$data['page_name'] = "Despachos";
