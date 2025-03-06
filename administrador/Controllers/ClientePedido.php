@@ -45,7 +45,7 @@ class ClientePedido extends Controllers
                 }
                 if ($_SESSION['permisosMod']['u']) {
                     //$btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditInstructor" onClick="fntEditInstructor(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-                    $btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/ClienteMiller/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
+                    $btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/clientePedido/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
                 }
                 if ($_SESSION['permisosMod']['d']) {
                     $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelInstructor" onClick="fntDeleteCliente(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
@@ -76,27 +76,28 @@ class ClientePedido extends Controllers
         $data['page_tag'] = "Cliente";
         $data['page_name'] = "Cliente";
         $data['page_title'] = "Cliente <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
-        $data['page_back'] = "clientePedido";
+        $data['page_back'] = "clientepedido";
         $this->views->getView($this, "nuevo", $data);
     }
 
     public function editar($ids)
     {
+        putMessageLogFile('lego');
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
                 $data = $this->model->consultarDatosId($ids);
-
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
+                    putMessageLogFile($data);
                     $formaPago = new PagoModel();
-                    $usuarioRol = new UsuariosModel();
-                    $data['ocupacion'] = $this->model->consultarProfesion();
+                    //$usuarioRol = new UsuariosModel();
+                    //$data['ocupacion'] = $this->model->consultarProfesion();
                     $data['forma_pago'] = $formaPago->consultarPago();
                     $data['page_tag'] = "Editar Cliente";
                     $data['page_name'] = "Editar Cliente";
                     $data['page_title'] = "Editar Cliente <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
-                    $data['page_back'] = "clienteMiller";
+                    $data['page_back'] = "clientepedido";
                     $this->views->getView($this, "editar", $data);
                 }
             } else {

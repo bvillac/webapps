@@ -10,7 +10,7 @@
 <script src="<?= media() ?>/js/bootstrap.min.js"></script>
 <script src="<?= media() ?>/js/crypto-js.min.js"></script>
 <script src="<?= media() ?>/js/main.js"></script>
-<script src="<?= media(); ?>/js/fontawesome.js"></script>
+<script src="<?= media() ?>/js/fontawesome.js"></script>
 
 <!-- The javascript plugin to display page loading on top-->
 <script src="<?= media(); ?>/js/plugins/pace.min.js"></script>
