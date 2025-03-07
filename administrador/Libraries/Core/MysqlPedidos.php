@@ -1,6 +1,6 @@
 <?php
 
-class MysqlAcademico extends ConPedidos
+class MysqlPedidos extends ConPedidos
 {
 	private $conexion;
 	private $strquery;

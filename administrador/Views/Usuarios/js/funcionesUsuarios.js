@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         "resonsieve": "true",
         "bDestroy": true,
         "iDisplayLength": numPaginado,
-        "order": [[0, "asc"]]
+        "order": [[0, orderBy]]
     });
 
 

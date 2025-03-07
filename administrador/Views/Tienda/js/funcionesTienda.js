@@ -1,21 +1,22 @@
-let tableSalon;
+let tableTienda;
 
 document.addEventListener('DOMContentLoaded', function () {
-    tableSalon = $('#tableSalon').dataTable({
+    tableTienda = $('#tableTienda').dataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
             "url": cdnTable
         },
         "ajax": {
-            "url": " " + base_url + "/Tienda/consultarSalon",
+            "url": " " + base_url + "/Tienda/consultarTienda",
             "dataSrc": ""
         },
         "columns": [
-            { "data": "NombreCentro" },
-            { "data": "NombreSalon" },
-            { "data": "CupoMinimo" },
-            { "data": "CupoMaximo" },
+            { "data": "NombreTienda" },
+            { "data": "Direccion" },
+            { "data": "Cupo" },
+            { "data": "RazonSocial" },
+            { "data": "ContactoTienda" },
             { "data": "Estado" },
             { "data": "options" }
         ],
@@ -24,15 +25,16 @@ document.addEventListener('DOMContentLoaded', function () {
             { 'className': "textleft", "targets": [1] },//Agregamos la clase que va a tener la columna
             { 'className': "textleft", "targets": [2] },
             { 'className': "textleft", "targets": [3] },
-            { 'className': "textcenter", "targets": [4] },
-            { 'className': "textcenter", "targets": [5] }
+            { 'className': "textleft", "targets": [4] },
+            { 'className': "textcenter", "targets": [5] },
+            { 'className': "textcenter", "targets": [6] }
         ],
         'dom': 'lBfrtip',
         'buttons': [],
         "resonsieve": "true",
         "bDestroy": true,
-        "iDisplayLength": 10,//Numero Items Retornados
-        "order": [[1, "desc"]]  //Orden por defecto 1 columna
+        "iDisplayLength": numPaginado,//Numero Items Retornados
+        "order": [[1, orderBy]]  //Orden por defecto 1 columna
     });
 
 });
@@ -40,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 $(document).ready(function () {
     $("#cmd_guardar").click(function () {
-        guardarSalon();
+        guardarTienda();
     });
 
 
@@ -52,30 +54,30 @@ function openModal() {
     document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
     document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
     document.querySelector('#btnText').innerHTML = "Guardar";
-    document.querySelector('#titleModal').innerHTML = "Nuevo Salón";
-    document.querySelector("#formSalon").reset();
-    $('#modalFormSalon').modal('show');
+    document.querySelector('#titleModal').innerHTML = "Nuevo Tienda";
+    document.querySelector("#formTienda").reset();
+    $('#modalFormTienda').modal('show');
 }
 
 function limpiarText() {
     $('#txth_ids').val("");
     $('#cmb_CentroAtencion').val("0");
-    $('#txt_nombreSalon').val("");
+    $('#txt_nombreTienda').val("");
     $('#txt_cupoMinimo').val("0");
     $('#txt_cupoMaximo').val("0");
     $('#cmb_estado').val("1");
 }
 
-function guardarSalon() {
+function guardarTienda() {
     let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
     let Ids = document.querySelector('#txth_ids').value;
     let centro_id = $('#cmb_CentroAtencion').val();
-    let nombresalon = $('#txt_nombreSalon').val();
+    let nombreTienda = $('#txt_nombreTienda').val();
     let cupominimo = $('#txt_cupoMinimo').val();
     let cupomaximo = $('#txt_cupoMaximo').val();
     let color = $('#txt_color').val();
     let estado = $('#cmb_estado').val();
-    if (centro_id == '0' || nombresalon == '' || cupominimo == '0' || cupomaximo == '0') {
+    if (centro_id == '0' || nombreTienda == '' || cupominimo == '0' || cupomaximo == '0') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;
     }
@@ -90,25 +92,25 @@ function guardarSalon() {
     var dataObj = new Object();
     dataObj.ids = Ids;
     dataObj.CentroAtencionID = centro_id;
-    dataObj.nombre = nombresalon;
+    dataObj.nombre = nombreTienda;
     dataObj.cupominimo = cupominimo;
     dataObj.cupomaximo = cupomaximo;
     dataObj.color = color;
     dataObj.estado = estado;
     //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
-    let link = base_url + '/Salon/ingresarSalon';
+    let link = base_url + '/Tienda/ingresarTienda';
     $.ajax({
         type: 'POST',
         url: link,
         data: {
-            "salon": JSON.stringify(dataObj),
+            "tienda": JSON.stringify(dataObj),
             "accion": accion
         },
         success: function (data) {
             if (data.status) {
                 //sessionStorage.removeItem('cabeceraOrden');
                 swal("Beneficiarios", data.msg, "success");
-                window.location = base_url + '/Salon/salon';
+                window.location = base_url + '/Tienda/tienda';
             } else {
                 swal("Error", data.msg, "error");
             }
@@ -118,13 +120,13 @@ function guardarSalon() {
 }
 
 //Editar Registro
-function editarSalon(ids) {
+function editarTienda(ids) {
     document.querySelector('#titleModal').innerHTML = "Actualizar Salón";
     document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
     document.querySelector('#cmd_guardar').classList.replace("btn-primary", "btn-info");
     document.querySelector('#btnText').innerHTML = "Actualizar";
     var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    var ajaxUrl = base_url + '/Salon/consultarSalonId/' + ids;
+    var ajaxUrl = base_url + '/Tienda/consultarTiendaId/' + ids;
     request.open("GET", ajaxUrl, true);
     request.send();
     request.onreadystatechange = function () {
@@ -133,7 +135,7 @@ function editarSalon(ids) {
             if (objData.status) {
                 $('#txth_ids').val(objData.data.Ids);
                 $('#cmb_CentroAtencion').val(objData.data.cat_id);
-                $('#txt_nombreSalon').val(objData.data.NombreSalon);
+                $('#txt_nombreTienda').val(objData.data.NombreTienda);
                 $('#txt_cupoMinimo').val(objData.data.CupoMinimo);
                 $('#txt_cupoMaximo').val(objData.data.CupoMaximo); 
                 $('#txt_color').val(objData.data.Color);      
@@ -145,11 +147,11 @@ function editarSalon(ids) {
 
             }
         }
-        $('#modalFormSalon').modal('show');
+        $('#modalFormTienda').modal('show');
     }
 }
 
-function fntDeleteSalon(ids) {
+function fntDeleteTienda(ids) {
     swal({
         title: "Eliminar Registro",
         text: "¿Realmente quiere eliminar el Registro?",
@@ -163,7 +165,7 @@ function fntDeleteSalon(ids) {
 
         if (isConfirm) {
             var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-            var ajaxUrl = base_url + '/Salon/eliminarSalon';
+            var ajaxUrl = base_url + '/Tienda/eliminarTienda';
             var strData = "ids=" + ids;
             request.open("POST", ajaxUrl, true);
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -173,7 +175,7 @@ function fntDeleteSalon(ids) {
                     var objData = JSON.parse(request.responseText);
                     if (objData.status) {
                         swal("Eliminar!", objData.msg, "success");
-                        tableSalon.api().ajax.reload(function () {
+                        tableTienda.api().ajax.reload(function () {
 
                         });
                     } else {
@@ -188,9 +190,9 @@ function fntDeleteSalon(ids) {
 }
 
 //FUNCION PARA VISTA DE REGISTRO
-function fntViewSalon(ids){
+function fntViewTienda(ids){
     var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    var ajaxUrl = base_url+'/Salon/consultarSalonId/'+ids;
+    var ajaxUrl = base_url+'/Tienda/consultarTiendaId/'+ids;
     request.open("GET",ajaxUrl,true);
     request.send();
     request.onreadystatechange = function(){
@@ -201,12 +203,12 @@ function fntViewSalon(ids){
                 '<span class="badge badge-success">Activo</span>' : 
                 '<span class="badge badge-danger">Inactivo</span>';
                 document.querySelector("#lbl_centro").innerHTML = objData.data.NombreCentro;
-                document.querySelector("#lbl_nombre").innerHTML = objData.data.NombreSalon;
+                document.querySelector("#lbl_nombre").innerHTML = objData.data.NombreTienda;
                 document.querySelector("#lbl_cupominimo").innerHTML = objData.data.CupoMinimo;
                 document.querySelector("#lbl_cupomaximo").innerHTML = objData.data.CupoMaximo;
                 document.querySelector("#lbl_estado").innerHTML = estadoReg;
                 document.querySelector("#lbl_fecIng").innerHTML = objData.data.FechaIngreso; 
-                $('#modalViewSalon').modal('show');
+                $('#modalViewTienda').modal('show');
             }else{
                 swal("Error", objData.msg , "error");
             }

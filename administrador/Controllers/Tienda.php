@@ -1,5 +1,5 @@
 <?php
-require_once("Models/CentroAtencionModel.php");
+require_once("Models/ClientePedidoModel.php");
 class Tienda extends Controllers
 {
     public function __construct()
@@ -15,8 +15,6 @@ class Tienda extends Controllers
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
-        $modelCentro = new CentroAtencionModel();
-        $data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();
         $data['page_tag'] = "Tienda";
         $data['page_name'] = "Tienda";
         $data['page_title'] = "Tienda <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
@@ -24,7 +22,7 @@ class Tienda extends Controllers
         $this->views->getView($this, "tienda", $data);
     }
 
-    public function consultarSalon()
+    public function consultarTienda()
     {
         if ($_SESSION['permisosMod']['r']) {
             $arrData = $this->model->consultarDatos();
@@ -38,14 +36,14 @@ class Tienda extends Controllers
 
 
                 if ($_SESSION['permisosMod']['r']) {
-                    $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+                    $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['u']) {
                     //$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Beneficiario/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
-                    $btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarSalon(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+                    $btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['d']) {
-                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteSalon(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
+                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteTienda(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
                 }
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
             }
@@ -54,15 +52,15 @@ class Tienda extends Controllers
         die();
     }
 
-    public function ingresarSalon()
+    public function ingresarTienda()
     {
         if ($_POST) {
             //dep($_POST);
-            if (empty($_POST['salon']) || empty($_POST['accion'])) {
+            if (empty($_POST['tienda']) || empty($_POST['accion'])) {
                 $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
             } else {
                 $request = "";
-                $datos = isset($_POST['salon']) ? json_decode($_POST['salon'], true) : array();
+                $datos = isset($_POST['Tienda']) ? json_decode($_POST['Tienda'], true) : array();
                 $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
                 if ($accion == "Create") {
                     $option = 1;
@@ -91,7 +89,7 @@ class Tienda extends Controllers
     }
 
 
-    public function consultarSalonId(int $ids)
+    public function consultarTiendaId(int $ids)
     {
         if ($_SESSION['permisosMod']['r']) {
             $ids = intval(strClean($ids));
@@ -111,7 +109,7 @@ class Tienda extends Controllers
     }
 
 
-    public function eliminarSalon()
+    public function eliminarTienda()
     {
         if ($_POST) {
 
@@ -129,14 +127,14 @@ class Tienda extends Controllers
         die();
     }
 
-    public function bucarSalonCentro()
+    public function bucarTiendaCentro()
     {
         if ($_POST) {
             if ($_SESSION['permisosMod']['r']) {
-                $modelSalon = new SalonModel();
+                $modelTienda = new TiendaModel();
                 $ids = intval(strClean($_POST['Ids']));
                 if ($ids > 0) {
-                    $arrData = $modelSalon->consultarSalones($ids);
+                    $arrData = $modelTienda->consultarTiendaes($ids);
                     //dep($arrData);
                     if (empty($arrData)) {
                         $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');

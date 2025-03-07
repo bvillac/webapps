@@ -1,23 +1,23 @@
 ﻿<!-- Modal -->
-<div class="modal fade" id="modalFormSalon" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modalFormTienda" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document"><!-- modal-dialog-centered -->
     <div class="modal-content">
       <div class="modal-header headerRegister">
         <!-- Cambiar de color-->
-        <h5 class="modal-title" id="titleModal">Nuevo Salón</h5>
+        <h5 class="modal-title" id="titleModal">Nuevo Tienda</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form id="formSalon" name="formSalon" class="form-horizontal">
+        <form id="formTienda" name="formTienda" class="form-horizontal">
           <input type="hidden" id="txth_ids" name="txth_ids" value="">
           <p class="text-primary">Todos los campos son obligatorios.</p>
 
 
           <div class="form-row">
             <div class="form-group col-md-6">
-            <label for="cmb_CentroAtencion">Centro Atención</label>
+            <label for="cmb_CentroAtencion">Cliente</label>
                             <select class="form-control" data-live-search="true" id="cmb_CentroAtencion" name="cmb_CentroAtencion" required="">
                                 <?php
                                 // Recorre el array y genera las opciones del select
@@ -30,8 +30,8 @@
                             </select>
             </div>
             <div class="form-group col-md-6">
-              <label for="txt_nombreSalon">Nombre Salon</label>
-              <input type="text" class="form-control valid validText " maxlength="100" id="txt_nombreSalon" name="txt_nombreSalon" onkeyup="TextMayus(this);" required="">
+              <label for="txt_nombreTienda">Nombre Tienda</label>
+              <input type="text" class="form-control valid validText " maxlength="100" id="txt_nombreTienda" name="txt_nombreTienda" onkeyup="TextMayus(this);" required="">
             </div>
 
 
@@ -76,7 +76,7 @@
 
 
 <!-- Modal View -->
-<div class="modal fade" id="modalViewSalon" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modalViewTienda" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" >
     <div class="modal-content">
       <div class="modal-header header-primary">

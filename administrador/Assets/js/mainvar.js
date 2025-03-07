@@ -7,4 +7,5 @@ var npass = "M1ll3r2024";
 var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 var minLengthGeneral=3;
 var numPaginado=10;
+var orderBy="desc";
 var opciones = { timeZone: 'America/Guayaquil' };

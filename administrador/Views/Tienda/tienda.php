@@ -25,13 +25,14 @@
               <div class="tile">
                 <div class="tile-body">
                   <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="tableSalon">
+                    <table class="table table-hover table-bordered" id="tableTienda">
                       <thead>
                         <tr>
-                          <th>Centro</th>
-                          <th>Salon</th>
+                          <th>Nombre</th>
+                          <th>Dirección</th>
                           <th>Cupo Minmimo</th>
-                          <th>Cupo Máximo</th>
+                          <th>Cliente</th>
+                          <th>Contacto</th>
                           <th>Estado</th>
                           <th>Acciones</th>
                         </tr>

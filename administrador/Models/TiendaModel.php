@@ -1,5 +1,5 @@
 <?php
-class Tienda extends MysqlAcademico
+class TiendaModel extends MysqlPedidos
 {
     private $db_name;
     private $db_nameAdmin;
@@ -12,13 +12,12 @@ class Tienda extends MysqlAcademico
 
     public function consultarDatos()
     {
-        $sql = "SELECT a.sal_id Ids,a.cat_id,b.cat_nombre NombreCentro,a.sal_nombre NombreSalon,a.sal_color Color, ";
-        $sql .= "	a.sal_cupo_minimo CupoMinimo,a.sal_cupo_maximo CupoMaximo,a.sal_estado_logico Estado ";
-        $sql .= "	FROM " . $this->db_name . ".salon a ";
-        $sql .= "		inner join " . $this->db_name . ".centro_atencion b ";
-        $sql .= "			on a.cat_id=b.cat_id ";
-        $sql .= " where a.sal_estado_logico!=0 ";
-
+        $sql = "SELECT a.tie_id Ids,a.tie_nombre NombreTienda, a.tie_direccion Direccion,a.tie_cupo Cupo, ";
+        $sql .= "  b.cli_razon_social RazonSocial,a.tie_contacto ContactoTienda,a.tie_est_log Estado ";
+	    $sql .= "       FROM " . $this->db_name . ".tienda a ";
+		$sql .= "           inner join " . $this->db_nameAdmin . ".cliente b  ";
+		$sql .= "           on a.cli_id=b.cli_id	";
+        $sql .= "   where a.tie_est_log !=0;";
         $request = $this->select_all($sql);
         return $request;
     }
