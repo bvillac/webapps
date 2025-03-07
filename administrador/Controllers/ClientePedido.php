@@ -1,7 +1,7 @@
 <?php
 use Spipu\Html2Pdf\Html2Pdf;
 require 'vendor/autoload.php';
-//require_once("Models/PagoModel.php");
+require_once("Models/PagoModel.php");
 require_once("Models/UsuariosModel.php");
 class ClientePedido extends Controllers
 {
@@ -68,11 +68,10 @@ class ClientePedido extends Controllers
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
-        //$formaPago = new PagoModel();
+        $formaPago = new PagoModel();
         $usuarioRol = new UsuariosModel();
-        $data['ocupacion'] = $this->model->consultarProfesion();
         $data['usuario_rol'] = $usuarioRol->consultarRoles();
-        //$data['forma_pago'] = $formaPago->consultarPago();
+        $data['forma_pago'] = $formaPago->consultarPago();
         $data['page_tag'] = "Cliente";
         $data['page_name'] = "Cliente";
         $data['page_title'] = "Cliente <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
@@ -82,17 +81,13 @@ class ClientePedido extends Controllers
 
     public function editar($ids)
     {
-        putMessageLogFile('lego');
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
                 $data = $this->model->consultarDatosId($ids);
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
-                    putMessageLogFile($data);
                     $formaPago = new PagoModel();
-                    //$usuarioRol = new UsuariosModel();
-                    //$data['ocupacion'] = $this->model->consultarProfesion();
                     $data['forma_pago'] = $formaPago->consultarPago();
                     $data['page_tag'] = "Editar Cliente";
                     $data['page_name'] = "Editar Cliente";

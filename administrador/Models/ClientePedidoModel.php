@@ -168,13 +168,6 @@ class ClientePedidoModel extends Mysql
         return $request;
     }
 
-    public function consultarProfesion()
-    {
-        $sql = "SELECT ocu_id Ids, ocu_nombre Nombre ";
-        $sql .= " FROM " . $this->db_name . ".ocupacion WHERE estado_logico=1 ORDER BY ocu_nombre ASC";
-        $request = $this->select_all($sql);
-        return $request;
-    }
 
     public function consultarDatosCedulaNombres(string $parametro){
 
