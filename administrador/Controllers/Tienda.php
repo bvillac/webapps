@@ -15,6 +15,8 @@ class Tienda extends Controllers
         if (empty($_SESSION['permisosMod']['r'])) {
             header("Location:" . base_url() . '/dashboard');
         }
+        $modelCliente = new ClientePedidoModel();
+        $data['cliente'] = $modelCliente->consultarClienteTienda();
         $data['page_tag'] = "Tienda";
         $data['page_name'] = "Tienda";
         $data['page_title'] = "Tienda <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";

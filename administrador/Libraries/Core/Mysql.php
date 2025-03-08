@@ -59,19 +59,27 @@ class Mysql extends Conexion
 		}
 	}
 	//Devuelve todos los registros
-	public function select_all(string $query)
+	public function select_all(string $query, array $params = [])
 	{
 		try {
 			$this->strquery = $query;
 			$result = $this->con->prepare($this->strquery);
+			// Si hay parámetros, los enlazamos de forma segura
+			if (!empty($params)) {
+				foreach ($params as $key => $value) {
+					$result->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+				}
+			}
 			$result->execute();
-			$data = $result->fetchall(PDO::FETCH_ASSOC);
-			return $data;
+			return $result->fetchAll(PDO::FETCH_ASSOC);
 		} catch (\Throwable $e) {
-			echo "Mensaje de Error: " . $e->getMessage();
-			putMessageLogFile("ERROR: " . $e->getMessage() . $e);
+			putMessageLogFile("ERROR: " . $e->getMessage());
+			return false; // Retornar false en caso de error
 		}
 	}
+
+
+
 	//Actualiza registros
 	public function update(string $query, array $arrValues)
 	{

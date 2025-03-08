@@ -17,12 +17,12 @@
 
           <div class="form-row">
             <div class="form-group col-md-6">
-            <label for="cmb_CentroAtencion">Cliente</label>
-                            <select class="form-control" data-live-search="true" id="cmb_CentroAtencion" name="cmb_CentroAtencion" required="">
+            <label for="cmb_Cliente">Cliente</label>
+                            <select class="form-control" data-live-search="true" id="cmb_Cliente" name="cmb_Cliente" required="">
                                 <?php
                                 // Recorre el array y genera las opciones del select
                                 echo '<option value="0">SELECCIONAR</option>';
-                                foreach ($data['centroAtencion'] as $opcion) {
+                                foreach ($data['cliente'] as $opcion) {
                                     $seleted=0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
                                     echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['Nombre'] . '</option>';
                                 }
@@ -39,18 +39,40 @@
 
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label for="txt_cupoMinimo">Cupo Minimo</label>
-              <input type="text" class="form-control valid validarNumber" value="0" maxlength="2" id="txt_cupoMinimo" name="txt_cupoMinimo" onkeypress="return controlTagEvent(event);" required="">
+              <label for="txt_telefono">Teléfono/Celular</label>
+              <input type="text" maxlength="10" class="form-control valid validarNumber" id="txt_telefono" name="txt_telefono" placeholder="0999999999" required="">
             </div>
             <div class="form-group col-md-6">
-              <label for="txt_cupoMaximo">Cupo Máximo</label>
-              <input type="text" class="form-control valid validarNumber" value="0" maxlength="2" id="txt_cupoMaximo" name="txt_cupoMaximo" onkeypress="return controlTagEvent(event);" required="">
+              <label for="txt_direccion">Dirección</label>
+              <input type="text" class="form-control " id="txt_direccion" name="txt_direccion" onkeyup="TextMayus(this);" required="">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="txt_contacto">Contacto</label>
+              <input type="text" class="form-control " id="txt_contacto" name="txt_contacto" onkeyup="TextMayus(this);" required="">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="txt_lugar">Lugar Entrega</label>
+              <input type="text" class="form-control " id="txt_lugar" name="txt_lugar" onkeyup="TextMayus(this);" required="">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="txt_diainicio">Día Inicio</label>
+              <input type="text" class="form-control valid validarNumber" value="0" maxlength="2" id="txt_diainicio" name="txt_diainicio" onkeypress="return controlTagEvent(event);" required="">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="txt_diafin">Día Fin</label>
+              <input type="text" class="form-control valid validarNumber" value="0" maxlength="2" id="txt_diafin" name="txt_diafin" onkeypress="return controlTagEvent(event);" required="">
             </div>
           </div>
           <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="txt_color">Color Salón</label>
-              <input type="color" class="form-control"  id="txt_color" name="txt_color" >
+          <div class="form-group col-md-6">
+              <label for="txt_cupo">Cupo Otorgado</label>
+              <input type="text" class="form-control valid validarNumber" value="0" maxlength="2" id="txt_cupo" name="txt_cupo" onkeypress="return controlTagEvent(event);" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="cmb_estado">Estado</label>

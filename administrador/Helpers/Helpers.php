@@ -65,6 +65,12 @@ function putMessageLogFile($message)
     file_put_contents($rutaLog, $message, FILE_APPEND | LOCK_EX);
 }
 
+function logFileSystem($message)
+{
+	$fechaHoraLog = date("Y-m-d H:i:s");
+    error_log("[$fechaHoraLog] Info: $message. \n", 3, FILE_LOGS);
+}
+
 //Agregar Archivos JS
 function incluirJs()
 {
