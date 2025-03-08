@@ -319,4 +319,20 @@ function peticionAjax(url, metodo, datos, exitoCallback, errorCallback) {
 	return encodeURIComponent(base64Data);
 }
 
+//Retronar Estadospert
+function estadoLogico(estado) {
+    var estadoReg = "";
+    switch (estado) {
+        case "1":
+            estadoReg = '<span class="badge badge-success">Activo</span>';
+            break;
+        case "2":
+            estadoReg = '<span class="badge badge-danger">Inactivo</span>';
+            break;
+        default:
+            //estadoReg = "NULL"
+    }
+    return estadoReg;
+}
+
   

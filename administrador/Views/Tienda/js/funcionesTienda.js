@@ -61,23 +61,33 @@ function openModal() {
 
 function limpiarText() {
     $('#txth_ids').val("");
-    $('#cmb_CentroAtencion').val("0");
+    $('#cmb_Cliente').val("0");
     $('#txt_nombreTienda').val("");
-    $('#txt_cupoMinimo').val("0");
-    $('#txt_cupoMaximo').val("0");
+    $('#txt_telefono').val("");
+    $('#txt_direccion').val("");
+    $('#txt_contacto').val("");
+    $('#txt_lugar').val("");
+    $('#txt_diainicio').val("0");
+    $('#txt_diafin').val("0");
+    $('#txt_cupo').val("0");
     $('#cmb_estado').val("1");
 }
 
 function guardarTienda() {
     let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
     let Ids = document.querySelector('#txth_ids').value;
-    let centro_id = $('#cmb_CentroAtencion').val();
+    let cliente_id = $('#cmb_Cliente').val();
     let nombreTienda = $('#txt_nombreTienda').val();
-    let cupominimo = $('#txt_cupoMinimo').val();
-    let cupomaximo = $('#txt_cupoMaximo').val();
-    let color = $('#txt_color').val();
+    let telefono = $('#txt_telefono').val();
+    let direccion = $('#txt_direccion').val();
+    let contacto = $('#txt_contacto').val();
+    let lugar = $('#txt_lugar').val();
+    let diainicio = $('#txt_diainicio').val();
+    let diafin = $('#txt_diafin').val();
+    let cupo = $('#txt_cupo').val();
     let estado = $('#cmb_estado').val();
-    if (centro_id == '0' || nombreTienda == '' || cupominimo == '0' || cupomaximo == '0') {
+    if (cliente_id == '0' || nombreTienda == '' || telefono == '' || direccion == '' || contacto == '' || contacto == '' || lugar == '' 
+            || diainicio == '0' || diafin == '0' || cupo == '0') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;
     }
@@ -91,37 +101,38 @@ function guardarTienda() {
 
     var dataObj = new Object();
     dataObj.ids = Ids;
-    dataObj.CentroAtencionID = centro_id;
-    dataObj.nombre = nombreTienda;
-    dataObj.cupominimo = cupominimo;
-    dataObj.cupomaximo = cupomaximo;
-    dataObj.color = color;
+    dataObj.cliente_id = cliente_id;
+    dataObj.nombreTienda = nombreTienda;
+    dataObj.telefono = telefono;
+    dataObj.direccion = direccion;
+    dataObj.contacto = contacto;
+    dataObj.lugar = lugar;
+    dataObj.diainicio = diainicio;
+    dataObj.diafin = diafin;
+    dataObj.cupo = cupo;
     dataObj.estado = estado;
-    //sessionStorage.dataInstructor = JSON.stringify(dataInstructor);
-    let link = base_url + '/Tienda/ingresarTienda';
-    $.ajax({
-        type: 'POST',
-        url: link,
-        data: {
-            "tienda": JSON.stringify(dataObj),
-            "accion": accion
-        },
-        success: function (data) {
-            if (data.status) {
-                //sessionStorage.removeItem('cabeceraOrden');
-                swal("Beneficiarios", data.msg, "success");
+
+    let url = base_url + '/Tienda/ingresarTienda';
+		var metodo = 'POST';
+		var dataPost = { accion: accion, dataObj: dataObj };
+		peticionAjaxSSL(url, metodo, dataPost, function (data) {
+			// Manejar el éxito de la solicitud aquí
+			if (data.status) {
+				swal("Tienda", data.msg, "success");
                 window.location = base_url + '/Tienda/tienda';
-            } else {
-                swal("Error", data.msg, "error");
-            }
-        },
-        dataType: "json"
-    });
+			} else {
+				swal("Atención", data.msg, "error");
+			}
+
+		}, function (jqXHR, textStatus, errorThrown) {
+			// Manejar el error de la solicitud aquí
+			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+		});
 }
 
 //Editar Registro
 function editarTienda(ids) {
-    document.querySelector('#titleModal').innerHTML = "Actualizar Salón";
+    document.querySelector('#titleModal').innerHTML = "Actualizar Tienda";
     document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
     document.querySelector('#cmd_guardar').classList.replace("btn-primary", "btn-info");
     document.querySelector('#btnText').innerHTML = "Actualizar";
@@ -134,17 +145,17 @@ function editarTienda(ids) {
             var objData = JSON.parse(request.responseText);
             if (objData.status) {
                 $('#txth_ids').val(objData.data.Ids);
-                $('#cmb_CentroAtencion').val(objData.data.cat_id);
+                $('#cmb_Cliente').val(objData.data.Cli_Ids);
+                //$('#txt_nombreTienda').val(objData.data.RazonSocial);
                 $('#txt_nombreTienda').val(objData.data.NombreTienda);
-                $('#txt_cupoMinimo').val(objData.data.CupoMinimo);
-                $('#txt_cupoMaximo').val(objData.data.CupoMaximo); 
-                $('#txt_color').val(objData.data.Color);      
-                if (objData.data.Estado == 1) {
-                    $('#cmb_estado').val("1");
-                } else {
-                    $('#cmb_estado').val("1");
-                }
-
+                $('#txt_telefono').val(objData.data.Telefono);
+                $('#txt_direccion').val(objData.data.Direccion);
+                $('#txt_contacto').val(objData.data.ContactoTienda);
+                $('#txt_lugar').val(objData.data.LugarEntrega);
+                $('#txt_diainicio').val(objData.data.FecIni);
+                $('#txt_diafin').val(objData.data.FecFin);
+                $('#txt_cupo').val(objData.data.Cupo);     
+                $('#cmb_estado').val(objData.data.Estado == 1 ? "1" : "0");
             }
         }
         $('#modalFormTienda').modal('show');
@@ -199,14 +210,16 @@ function fntViewTienda(ids){
         if(request.readyState == 4 && request.status == 200){
             var objData = JSON.parse(request.responseText);
             if(objData.status){
-               var estadoReg = objData.data.Estado == 1 ? 
-                '<span class="badge badge-success">Activo</span>' : 
-                '<span class="badge badge-danger">Inactivo</span>';
-                document.querySelector("#lbl_centro").innerHTML = objData.data.NombreCentro;
+                document.querySelector("#lbl_cliente").innerHTML = objData.data.RazonSocial;
                 document.querySelector("#lbl_nombre").innerHTML = objData.data.NombreTienda;
-                document.querySelector("#lbl_cupominimo").innerHTML = objData.data.CupoMinimo;
-                document.querySelector("#lbl_cupomaximo").innerHTML = objData.data.CupoMaximo;
-                document.querySelector("#lbl_estado").innerHTML = estadoReg;
+                document.querySelector("#lbl_telefono").innerHTML = objData.data.Telefono;
+                document.querySelector("#lbl_direccion").innerHTML = objData.data.Direccion;
+                document.querySelector("#lbl_contacto").innerHTML = objData.data.ContactoTienda;
+                document.querySelector("#lbl_lugar").innerHTML = objData.data.LugarEntrega;
+                document.querySelector("#lbl_diainicio").innerHTML = objData.data.FecIni;
+                document.querySelector("#lbl_diafin").innerHTML = objData.data.FecFin;
+                document.querySelector("#lbl_cupo").innerHTML = objData.data.Cupo;
+                document.querySelector("#lbl_estado").innerHTML = estadoLogico(objData.data.Estado);
                 document.querySelector("#lbl_fecIng").innerHTML = objData.data.FechaIngreso; 
                 $('#modalViewTienda').modal('show');
             }else{

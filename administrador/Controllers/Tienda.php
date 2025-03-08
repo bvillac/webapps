@@ -36,12 +36,10 @@ class Tienda extends Controllers
                     $arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>'; //target="_blanck"  
                 }
 
-
                 if ($_SESSION['permisosMod']['r']) {
                     $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['u']) {
-                    //$btnOpciones .= ' <a title="Editar Datos" href="' . base_url() . '/Beneficiario/editar/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-pencil"></i> </a> ';
                     $btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
                 }
                 if ($_SESSION['permisosMod']['d']) {
@@ -58,12 +56,13 @@ class Tienda extends Controllers
     {
         if ($_POST) {
             //dep($_POST);
-            if (empty($_POST['tienda']) || empty($_POST['accion'])) {
-                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
+            $data=recibirData($_POST['data']);
+            if (empty($data['dataObj']) || empty($data['accion'])) {
+                $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
             } else {
                 $request = "";
-                $datos = isset($_POST['Tienda']) ? json_decode($_POST['Tienda'], true) : array();
-                $accion = isset($_POST['accion']) ? $_POST['accion'] : "";
+                $datos = isset($data['dataObj']) ? $data['dataObj'] : array();
+                $accion = isset($data['accion']) ? $data['accion'] : "";
                 if ($accion == "Create") {
                     $option = 1;
                     if ($_SESSION['permisosMod']['w']) {

@@ -30,7 +30,7 @@
                         <tr>
                           <th>Nombre</th>
                           <th>Dirección</th>
-                          <th>Cupo Minmimo</th>
+                          <th>Cupo Asignado</th>
                           <th>Cliente</th>
                           <th>Contacto</th>
                           <th>Estado</th>

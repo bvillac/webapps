@@ -72,7 +72,7 @@
           <div class="form-row">
           <div class="form-group col-md-6">
               <label for="txt_cupo">Cupo Otorgado</label>
-              <input type="text" class="form-control valid validarNumber" value="0" maxlength="2" id="txt_cupo" name="txt_cupo" onkeypress="return controlTagEvent(event);" required="">
+              <input type="text" class="form-control valid validarDecimal" value="0.00" maxlength="6" id="txt_cupo" name="txt_cupo" onkeypress="return controlTagEvent(event);" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="cmb_estado">Estado</label>
@@ -111,20 +111,40 @@
         <table class="table table-bordered">
           <tbody>
             <tr>
-              <td>Centro Atención:</td>
-              <td id="lbl_centro"></td>
+              <td>Cliente:</td>
+              <td id="lbl_cliente"></td>
             </tr>
             <tr>
-              <td>Nombre:</td>
+              <td>Nombre Tienda:</td>
               <td id="lbl_nombre"></td>
             </tr>
             <tr>
-              <td>Centro Cupo Minimo:</td>
-              <td id="lbl_cupominimo"></td>
+              <td>Teléfono:</td>
+              <td id="lbl_telefono"></td>
             </tr>
             <tr>
-              <td>Cupo Máximo:</td>
-              <td id="lbl_cupomaximo"></td>
+              <td>Dirección:</td>
+              <td id="lbl_direccion"></td>
+            </tr>
+            <tr>
+              <td>Contacto:</td>
+              <td id="lbl_contacto"></td>
+            </tr>
+            <tr>
+              <td>Lugar de Entrega:</td>
+              <td id="lbl_lugar"></td>
+            </tr>
+            <tr>
+              <td>Día Inicio:</td>
+              <td id="lbl_diainicio"></td>
+            </tr>
+            <tr>
+              <td>Día Fin:</td>
+              <td id="lbl_diafin"></td>
+            </tr>        
+            <tr>
+              <td>Cupo Asignado:</td>
+              <td id="lbl_cupo"></td>
             </tr>
            
             <tr>
