@@ -13,7 +13,7 @@
 			require_once("Controllers/Error.php");
 		}
 	}else{
-		putMessageLogFile("No existe archivo Controlador Revisar BD: ".$controllerFile);
+		//putMessageLogFile("No existe archivo Controlador Revisar BD: ".$controllerFile);
 		require_once("Controllers/Error.php");
 	}
 

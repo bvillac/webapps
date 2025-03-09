@@ -40,7 +40,9 @@ const iv = CryptoJS.enc.Utf8.parse("1234567820123456");
     //Activate bootstrip tooltips
     $("[data-toggle='tooltip']").tooltip();
 
+
 })();
+
 
 /*
  * Valida la Entrada del Enter

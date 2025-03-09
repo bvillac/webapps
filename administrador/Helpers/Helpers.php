@@ -495,63 +495,61 @@ function buscarEnArray($menu, $cadena)
     return false;
 }
 
+
 function getGenerarMenu()
 {
     $menuApp = $_SESSION['menuData'];
     $menu = '<ul class="app-menu">';
-    foreach ($menuApp as $itemN1) {
-        //putMessageLogFile($itemN1['id']);
-        if ($itemN1['id'] == "01") { //dashboard
-            $menu .= '<li>';
-            $menu .= '<a class="app-menu__item" href="' . base_url() . '/' . $itemN1['enlace'] . '">';
-            $menu .= '<i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">' . $itemN1['titulo'] . '</span>';
-            $menu .= '</a>';
-            $menu .= '</li>';
-        }
-        if (!empty($itemN1['hijos'])) {
-            //putMessageLogFile($itemN1['id'] . " hijo");
-            $menu .= '<li class="treeview">';
-            $menu .= menuPadre($itemN1);
-            $menu .= '<ul class="treeview-menu">';
-            foreach ($itemN1['hijos'] as $itemN2) { //Nivel 2
-                //putMessageLogFile($itemN2['id'] . " hijo");
-                $menu .= menuHijoLink($itemN2);
-            }
-            $menu .= '</ul>';
-            $menu .= '</li>';
-        } else {
-            //Link Normal
-            if ($itemN1['id'] <> '01') {
-                $menu .= '<li>';
-                $menu .= '  <a class="app-menu__item" href="' . base_url() . '/' . $itemN1['enlace'] . '">
-                                <i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">' . $itemN1['titulo'] . '</span>
-                            </a>';
-                $menu .= '</li>';
-            }
-        }
+
+    foreach ($menuApp as $item) {
+        $menu .= generarMenuItem($item, 0);
     }
-    $menu .='<li><a class="app-menu__item" href="' . base_url() .'/salida"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label">Salir</span></a></li>';
+
+    // Agregar opción de salida
+    $menu .= '<li><a class="app-menu__item" href="' . base_url() . '/salida">
+                <i class="app-menu__icon fa fa-sign-out"></i>
+                <span class="app-menu__label">Salir</span></a></li>';
+
     $menu .= '</ul>';
     echo $menu;
 }
 
-function menuPadre($val)
+/**
+ * Genera un elemento del menú de forma recursiva con niveles
+ * @param array $item Elemento del menú
+ * @param int $nivel Nivel de profundidad en el menú
+ */
+function generarMenuItem($item, $nivel)
 {
-    $icono=($val['icono']!='')?$val['icono']:'fa fa-laptop';
-    return '<a class="app-menu__item" href="#" data-toggle="treeview">
-                <i class="app-menu__icon '.$icono.' "></i>
-                    <span class="app-menu__label">' . $val['titulo'] . '</span>
-                <i class="treeview-indicator fa fa-angle-right"></i>
-            </a>';
+    $espaciado = str_repeat('&nbsp;&nbsp;&nbsp;', $nivel);
+    $menuItem = '';
+
+    if (!empty($item['hijos'])) { // Si tiene submenús
+        $menuItem .= '<li class="treeview">';
+        $menuItem .= '<a class="app-menu__item toggle-menu" href="#" data-toggle="treeview">
+                        <i class="app-menu__icon ' . (!empty($item['icono']) ? $item['icono'] : 'fa fa-folder') . '"></i>
+                        <span class="app-menu__label">' . $espaciado . $item['titulo'] . '</span>
+                        <i class="treeview-indicator fa fa-angle-right"></i>
+                      </a>';
+        $menuItem .= '<ul class="treeview-menu">';
+
+        foreach ($item['hijos'] as $subItem) {
+            $menuItem .= generarMenuItem($subItem, $nivel + 1);
+        }
+
+        $menuItem .= '</ul></li>';
+    } else { // Si es un enlace normal
+        $menuItem .= '<li><a class="app-menu__item menu-link" href="' . base_url() . '/' . $item['enlace'] . '">
+                        <i class="app-menu__icon ' . (!empty($item['icono']) ? $item['icono'] : 'fa fa-circle-o') . '"></i>
+                        <span class="app-menu__label">' . $espaciado . $item['titulo'] . '</span>
+                      </a></li>';
+    }
+
+    return $menuItem;
 }
 
-function menuHijoLink($val)
-{
-    return  '<li>
-        <a class="treeview-item" href="' . base_url() . '/' . $val['enlace'] . '">
-            <i class="icon fa fa-circle-o"></i> ' . $val['titulo'] . '
-        </a></li>';
-}
+
+
 
 
 

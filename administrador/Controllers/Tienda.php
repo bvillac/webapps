@@ -45,6 +45,10 @@ class Tienda extends Controllers
                 if ($_SESSION['permisosMod']['d']) {
                     $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteTienda(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
                 }
+                if ($_SESSION['permisosMod']['r']) {
+                    $btnOpciones .= ' <a title="Catálogo de Productos" href="' . base_url() . '/tienda/catalogo/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-list"></i> </a> ';
+                }
+                
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
             }
             echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
@@ -145,6 +149,33 @@ class Tienda extends Controllers
                     echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
                 }
             }
+        }
+        die();
+    }
+
+
+    public function catalogo($ids)
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            if (is_numeric($ids)) {
+                $data = $this->model->consultarDatosId($ids);
+                if (empty($data)) {
+                    echo "Datos no encontrados";
+                } else {
+                    $formaPago = new PagoModel();
+                    $data['forma_pago'] = $formaPago->consultarPago();
+                    $data['page_tag'] = "Editar Cliente";
+                    $data['page_name'] = "Editar Cliente";
+                    $data['page_title'] = "Editar Cliente <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
+                    $data['page_back'] = "clientepedido";
+                    $this->views->getView($this, "catalogo", $data);
+                }
+            } else {
+                echo "Dato no válido";
+            }
+        } else {
+            header('Location: ' . base_url() . '/login');
+            die();
         }
         die();
     }

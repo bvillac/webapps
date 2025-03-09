@@ -96,49 +96,52 @@ class LoginModel extends Mysql
 
 	public function permisosModulo(int $Eusu_id, int $Erol_id)
 	{
-		$sql = "SELECT a.perm_id,a.emod_id,c.mod_id,SUBSTRING(c.mod_id, 1, LENGTH(c.mod_id) - 2) idPadre, 	";
-		$sql .= "		c.mod_nombre,c.mod_url,c.mod_icono,a.r,a.w,a.u,a.d   ";
-		$sql .= "	FROM " . $this->db_name . ".permiso a ";
-		$sql .= "		INNER JOIN " . $this->db_name . ".modulo c  ";
-		$sql .= "			ON a.mod_id=c.mod_id ";
-		$sql .= "	WHERE a.estado_logico!=0 AND a.eusu_id={$Eusu_id} AND a.erol_id={$Erol_id} ";
-		$request = $this->select_all($sql);
-		//putMessageLogFile($sql);
-		$menuArray = $this->construirMenu($request,"");
-		//putMessageLogFile($menuArray);
-		return $menuArray;
+		// Consulta SQL optimizada con parámetros preparados
+		$sql = "SELECT 
+                a.perm_id, a.emod_id, c.mod_id, 
+                SUBSTRING(c.mod_id, 1, LENGTH(c.mod_id) - 2) AS idPadre,  
+                c.mod_nombre, c.mod_url, c.mod_icono, 
+                a.r, a.w, a.u, a.d   
+            FROM {$this->db_name}.permiso a 
+            INNER JOIN {$this->db_name}.modulo c ON a.mod_id = c.mod_id 
+            WHERE a.estado_logico != 0 AND a.eusu_id = :Eusu_id AND a.erol_id = :Erol_id";
+
+
+
+		// Ejecutar la consulta con parámetros preparados
+		$request = $this->select_all($sql, [":Eusu_id" => $Eusu_id,":Erol_id" => $Erol_id]);
+
+		// Construir el menú en base a los resultados
+		return $this->construirMenu($request, "");
 	}
 
-	
-	// Función recursiva para construir el array de menú
-	private function construirMenu($datosMenu,$id_padre) {
-		// Array de menú vacío
-		$menu = array();
-		// Recorrer los datos del menú
-		foreach ($datosMenu as $item) {
-			if ($item['idPadre'] == $id_padre) {
-				// Construir el elemento del menú
-				$menuItem = array(
-					'id' => $item['mod_id'],
-					'titulo' => $item['mod_nombre'],
-					'enlace' => $item['mod_url'],
-					'icono' => $item['mod_icono'],
-					'r' => $item['r'],
-					'w' => $item['w'],
-					'u' => $item['u'],
-					'd' => $item['d'],
-					'hijos' => $this->construirMenu($datosMenu,$item['mod_id']) // Llamada recursiva para obtener los hijos
-				);
-				// Agregar el elemento al array de menú
-				$menu[] = $menuItem;
-			}
-		}
-		// Devolver el array de menú
-		return $menu;
+	/**
+	 * Construye el menú de forma recursiva
+	 *
+	 * @param array $datosMenu Datos obtenidos de la base de datos
+	 * @param string $id_padre ID del padre actual (para recursividad)
+	 * @return array Menú estructurado con submenús anidados
+	 */
+	private function construirMenu(array $datosMenu, string $id_padre): array
+	{
+		return array_values(array_map(function ($item) use ($datosMenu) {
+			return [
+				'id' => $item['mod_id'],
+				'titulo' => $item['mod_nombre'],
+				'enlace' => $item['mod_url'],
+				'icono' => $item['mod_icono'],
+				'r' => $item['r'],
+				'w' => $item['w'],
+				'u' => $item['u'],
+				'd' => $item['d'],
+				'hijos' => $this->construirMenu($datosMenu, $item['mod_id'])
+			];
+		}, array_filter($datosMenu, fn($item) => $item['idPadre'] == $id_padre)));
 	}
 
 
-	
+
+
 
 
 }
