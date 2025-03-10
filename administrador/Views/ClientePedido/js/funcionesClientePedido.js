@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', function () {
     tableCliente = $('#tableCliente').dataTable({
         "aProcessing": true,
         "aServerSide": true,
+        "scrollCollapse": true,
+        "scrollY": '50vh',//400px para automatic
+        //"scrollX": true,
         "language": {
             "url": cdnTable
         },
@@ -35,11 +38,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         ],
+        
         "resonsieve": "true",
         "bDestroy": true,
         "iDisplayLength": 10,//Numero Items Retornados
         "order": [[0, "asc"]]  //Orden por defecto 1 columna
     });
+
+
 
 
     //INGRESAR NUEVA PERSONA

@@ -134,5 +134,11 @@ class TiendaModel extends MysqlPedidos
         return $this->update($sql, arrValues: $params);
     }
 
+    public function consultarTiendaCliente(int $idsCliente){
+        $sql = "SELECT tie_id as Ids,tie_nombre as Nombre FROM {$this->db_name}.tienda ";
+	    $sql .= "   where tie_est_log!=0 and cli_id= :ids; ";
+        return $this->select_all($sql, [":ids" => $idsCliente]);
+    }
+
    
 }

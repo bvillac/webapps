@@ -158,16 +158,22 @@ class Tienda extends Controllers
     {
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
+
+                
                 $data = $this->model->consultarDatosId($ids);
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
-                    $formaPago = new PagoModel();
-                    $data['forma_pago'] = $formaPago->consultarPago();
-                    $data['page_tag'] = "Editar Cliente";
-                    $data['page_name'] = "Editar Cliente";
-                    $data['page_title'] = "Editar Cliente <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
-                    $data['page_back'] = "clientepedido";
+                    putMessageLogFile($data);  
+                    //$modelCliente = new ClientePedidoModel();
+                    //$data['cliente'] = $modelCliente->consultarClienteTienda();
+                    $data['tienda'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
+                    $data['nombreCliente'] = $data['RazonSocial'];
+                    
+                    $data['page_tag'] = "Catálogo de Productos";
+                    $data['page_name'] = "Catálogo de Productos";
+                    $data['page_title'] = "Catálogo de Productos <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
+                    $data['page_back'] = "tienda";
                     $this->views->getView($this, "catalogo", $data);
                 }
             } else {

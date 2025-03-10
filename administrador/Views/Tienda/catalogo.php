@@ -28,83 +28,35 @@ adminMenu($data);
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
-                    <h3 class="mb-3 line-head" id="type-blockquotes">Datos Cliente</h3>
-                    <!-- <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="txt_codigo">Código</label>
-                            <input type="text" class="form-control valid validText " id="txt_codigo" name="txt_codigo" value="<?= $data['Codigo'] ?>" onkeyup="TextMayus(this);" required="" disabled>
-                        </div>
-                        <div class="form-group col-md-6">
-                        </div>
-                    </div> -->
+                    <h3 class="mb-3 line-head" id="type-blockquotes">Cliente: <?= $data['nombreCliente'] ?></h3>
                     <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_tipo_dni">Tipo DNI</label>
-                            <select class="form-control" id="txt_cli_tipo_dni" name="txt_cli_tipo_dni" value="<?= $data['Tipo'] ?>" required="" disabled>
-                                <option value="01">Cédula</option>
-                                <option value="02">Ruc</option>
-                                <option value="03">Pasaporte</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_cedula_ruc">Identificación Cédula/Ruc</label>
-                            <input type="text" class="form-control valid validarNumber " id="txt_cli_cedula_ruc" name="txt_cli_cedula_ruc" value="<?= $data['Cedula'] ?>" required="" onkeypress="return controlTagEvent(event);" >
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_razon_social">Razón Social</label>
-                            <input type="text" class="form-control valid validText" id="txt_cli_razon_social" name="txt_cli_razon_social" value="<?= $data['Nombre'] ?>" onkeyup="TextMayus(this);" required="" >
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_direccion">Dirección Comercial</label>
-                            <input type="text" class="form-control valid validText " id="txt_cli_direccion" name="txt_cli_direccion" value="<?= $data['Direccion'] ?>" onkeyup="TextMayus(this);" required="" >
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_telefono">Teléfono/Celular</label>
-                            <input type="text" maxlength="10" class="form-control valid validarNumber" value="<?= $data['Telefono'] ?>" id="txt_cli_telefono" name="txt_cli_telefono" placeholder="0999999999" required="" onkeypress="return controlTagEvent(event);">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_telefono_oficina">Teléfono Oficina</label>
-                            <input type="text" maxlength="10" class="form-control valid validarNumber" value="<?= $data['TelefOficina'] ?>" id="txt_cli_telefono_oficina" name="txt_cli_telefono_oficina" placeholder="0999999999" required="" onkeypress="return controlTagEvent(event);">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_correo">Correo Electrónico</label>
-                            <input type="text" class="form-control valid validarEmail " id="txt_cli_correo" value="<?= $data['Correo'] ?>" name="txt_cli_correo" placeholder="ejemplo@gmail.com" required="">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="txt_cli_cargo">Cargo</label>
-                            <input type="text" maxlength="100" class="form-control valid validText" value="<?= $data['Cargo'] ?>"  id="txt_cli_cargo" name="txt_cli_cargo" onkeyup="TextMayus(this);" placeholder="Cargo" required="">
-                        </div>
-                    </div>
-                    
-    
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="cmb_pago">Forma de Pago</label>
-                            <select class="form-control" data-live-search="true" id="cmb_pago" name="cmb_pago" required="">
+                        <div class="form-group col-md-6">                          
+                            <label for="cmb_tienda">Tiendas</label>
+                            <select class="form-control" data-live-search="true" id="cmb_tienda" name="cmb_tienda" required="">
                                 <?php
                                 // Recorre el array y genera las opciones del select
                                 echo '<option value="0">SELECCIONAR</option>';
-                                foreach ($data['forma_pago'] as $opcion) {
-                                    echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
+                                foreach ($data['tienda'] as $opcion) {
+                                    $seleted=($opcion['Ids']==$data['Ids'])?'selected':'';
+                                    echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['Nombre'] . '</option>';
                                 }
                                 ?>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="cmb_estado">Estado</label>
-                            <select class="form-control" id="cmb_estado" name="cmb_estado" required="">
-                                <option value="1">Activo</option>
-                                <option value="2">Inactivo</option>
-                            </select>
+                        <label for="txt_nombreTienda">Nombre Tienda</label>
+              <input type="text" class="form-control valid validText " maxlength="100" id="txt_nombreTienda" name="txt_nombreTienda" onkeyup="TextMayus(this);" required="">
                         </div>
                     </div>
+                    <div class="form-row">
+                        
+                    </div>
+                    
+                    
+                    
+                    
+    
+                    
                     <div class="text-center">
                         <button id="cmd_guardar" class="btn btn-success" type="button" onclick="guardarCliente('Edit');"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
                         <button id="cmd_retornar" class="btn btn-danger" type="button" data-dismiss="modal"><i class="app-menu__icon fas fa-sign-out-alt" aria-hidden="true"></i> Retornar</button>
