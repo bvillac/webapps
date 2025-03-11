@@ -1,5 +1,6 @@
 <?php
 require_once("Models/ClientePedidoModel.php");
+require_once("Models/ArticuloModel.php");
 class Tienda extends Controllers
 {
     public function __construct()
@@ -47,6 +48,7 @@ class Tienda extends Controllers
                 }
                 if ($_SESSION['permisosMod']['r']) {
                     $btnOpciones .= ' <a title="Catálogo de Productos" href="' . base_url() . '/tienda/catalogo/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-list"></i> </a> ';
+                    $btnOpciones .= ' <a title="Catálogo de Productos" href="' . base_url() . '/tienda/precio/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-coins"></i> </a> ';
                 }
                 
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
@@ -185,5 +187,105 @@ class Tienda extends Controllers
         }
         die();
     }
+
+    public function precio($ids)
+    {
+        if ($_SESSION['permisosMod']['r']) {
+            if (is_numeric($ids)) {
+
+                
+                $data = $this->model->consultarDatosId($ids);
+                if (empty($data)) {
+                    echo "Datos no encontrados";
+                } else {
+                    //$modelCliente = new ClientePedidoModel();
+                    //$data['cliente'] = $modelCliente->consultarClienteTienda();
+                    $data['tienda'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
+                    $data['nombreCliente'] = $data['RazonSocial'];
+                    
+                    $data['page_tag'] = "Tienda Precio de Productos";
+                    $data['page_name'] = "Tienda Precio de Productos";
+                    $data['page_title'] = "Tienda Precio de Productos <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
+                    $data['page_back'] = "tienda";
+                    $this->views->getView($this, "precio", $data);
+                }
+            } else {
+                echo "Dato no válido";
+            }
+        } else {
+            header('Location: ' . base_url() . '/login');
+            die();
+        }
+        die();
+    }
+
+
+    /*public function buscarAutoProducto()
+	{
+		if ($_POST) {   
+			//dep($_POST);
+            putMessageLogFile("llego");
+            $modelArticulo = new ArticuloModel();
+			$parametro	 = isset($_POST['parametro']) ? $_POST['parametro'] : "";
+			$request = $modelArticulo->consultarProductoCodigoNombre($parametro,133,3,10	);
+			if ($request) {
+				$arrResponse = array('status' => true, 'data' => $request, 'msg' => 'Datos Retornados correctamente.');
+			} else {
+				$arrResponse = array('status' => false, 'msg' => 'No Existen Datos');
+			}
+			//putMessageLogFile($arrResponse);	
+			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+		}
+		die();
+	}*/
+    public function buscarAutoProducto()
+{
+    try {
+        // Verifica si la solicitud es POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            throw new Exception("Método no permitido", 405);
+        }
+
+        // Obtener los datos del cuerpo de la solicitud JSON
+        $json = file_get_contents("php://input");
+        $inputData = json_decode($json, true); // Convertir JSON a array asociativo
+
+        // Validar que los datos existen
+        if (!is_array($inputData)) {
+            throw new Exception("Datos inválidos o no enviados", 400);
+        }
+
+        // Sanitizar y obtener los valores con seguridad
+        $parametro = isset($inputData['parametro']) ? filter_var($inputData['parametro'], FILTER_SANITIZE_STRING) : "";
+        //$cli_id = isset($inputData['cli_id']) ? filter_var($inputData['cli_id'], FILTER_VALIDATE_INT) : null;
+        //$tie_id = isset($inputData['tie_id']) ? filter_var($inputData['tie_id'], FILTER_VALIDATE_INT) : null;
+        $limit = isset($inputData['limit']) ? filter_var($inputData['limit'], FILTER_VALIDATE_INT) : 10;
+
+        // Validar parámetros obligatorios
+        //if (!$cli_id || !$tie_id) {
+        //    throw new Exception("Parámetros insuficientes", 400);
+        //}
+
+        // Instancia del modelo y consulta
+        $modelArticulo = new ArticuloModel();
+        $request = $modelArticulo->retornarBusArticulo($parametro,  $limit);
+
+        // Responder con los datos obtenidos o mensaje de error
+        $arrResponse = $request
+            ? ['status' => true, 'data' => $request, 'msg' => 'Datos retornados correctamente.']
+            : ['status' => false, 'msg' => 'No existen datos.'];
+
+    } catch (Exception $e) {
+        // Manejo de errores
+        $arrResponse = ['status' => false, 'msg' => $e->getMessage()];
+        http_response_code($e->getCode() ?: 500);
+    }
+
+    // Responder con JSON
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+    exit();
+}
+
 
 }

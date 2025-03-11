@@ -88,7 +88,6 @@ class TiendaModel extends MysqlPedidos
     // 🔹 Actualizar datos de una tienda
     public function updateData(array $dataObj)
     {
-        putMessageLogFile($dataObj);
         try {
             $sql = "UPDATE {$this->db_name}.tienda 
                     SET cli_id = :cli_id, tie_nombre = :tie_nombre, tie_direccion = :tie_direccion, 
