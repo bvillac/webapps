@@ -82,7 +82,6 @@ class ArticuloModel extends MysqlPedidos
         // Agregar límite de registros
         $sql .= " LIMIT {$limit}";
         //$params[':limit'] = (int) $limit; // Convertir explícitamente a entero por seguridad
-        putMessageLogFile( $sql);
         // Ejecutar consulta y devolver resultados
         return $this->select_all($sql, $params);
     }

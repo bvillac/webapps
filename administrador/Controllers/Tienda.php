@@ -50,7 +50,7 @@ class Tienda extends Controllers
                     $btnOpciones .= ' <a title="Catálogo de Productos" href="' . base_url() . '/tienda/catalogo/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-list"></i> </a> ';
                     $btnOpciones .= ' <a title="Catálogo de Productos" href="' . base_url() . '/tienda/precio/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-coins"></i> </a> ';
                 }
-                
+
                 $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
             }
             echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
@@ -62,7 +62,7 @@ class Tienda extends Controllers
     {
         if ($_POST) {
             //dep($_POST);
-            $data=recibirData($_POST['data']);
+            $data = recibirData($_POST['data']);
             if (empty($data['dataObj']) || empty($data['accion'])) {
                 $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
             } else {
@@ -161,17 +161,17 @@ class Tienda extends Controllers
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
 
-                
+
                 $data = $this->model->consultarDatosId($ids);
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
-                    putMessageLogFile($data);  
+                    putMessageLogFile($data);
                     //$modelCliente = new ClientePedidoModel();
                     //$data['cliente'] = $modelCliente->consultarClienteTienda();
                     $data['tienda'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
                     $data['nombreCliente'] = $data['RazonSocial'];
-                    
+
                     $data['page_tag'] = "Catálogo de Productos";
                     $data['page_name'] = "Catálogo de Productos";
                     $data['page_title'] = "Catálogo de Productos <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
@@ -193,7 +193,7 @@ class Tienda extends Controllers
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
 
-                
+
                 $data = $this->model->consultarDatosId($ids);
                 if (empty($data)) {
                     echo "Datos no encontrados";
@@ -202,7 +202,7 @@ class Tienda extends Controllers
                     //$data['cliente'] = $modelCliente->consultarClienteTienda();
                     $data['tienda'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
                     $data['nombreCliente'] = $data['RazonSocial'];
-                    
+
                     $data['page_tag'] = "Tienda Precio de Productos";
                     $data['page_name'] = "Tienda Precio de Productos";
                     $data['page_title'] = "Tienda Precio de Productos <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
@@ -239,53 +239,39 @@ class Tienda extends Controllers
 		die();
 	}*/
     public function buscarAutoProducto()
-{
-    try {
-        // Verifica si la solicitud es POST
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            throw new Exception("Método no permitido", 405);
+    {
+        try {
+            $inputData=validarMetodoPost();           
+
+            // Sanitizar y obtener los valores con seguridad
+            $parametro = isset($inputData['parametro']) ? filter_var($inputData['parametro'], FILTER_SANITIZE_STRING) : "";
+            //$cli_id = isset($inputData['cli_id']) ? filter_var($inputData['cli_id'], FILTER_VALIDATE_INT) : null;
+            //$tie_id = isset($inputData['tie_id']) ? filter_var($inputData['tie_id'], FILTER_VALIDATE_INT) : null;
+            $limit = isset($inputData['limit']) ? filter_var($inputData['limit'], FILTER_VALIDATE_INT) : 10;
+
+            // Validar parámetros obligatorios
+            //if (!$cli_id || !$tie_id) {
+            //    throw new Exception("Parámetros insuficientes", 400);
+            //}
+
+            // Instancia del modelo y consulta
+            $modelArticulo = new ArticuloModel();
+            $request = $modelArticulo->retornarBusArticulo($parametro,  $limit);
+
+            // Responder con los datos obtenidos o mensaje de error
+            $arrResponse = $request
+                ? ['status' => true, 'data' => $request, 'msg' => 'Datos retornados correctamente.']
+                : ['status' => false, 'msg' => 'No existen datos.'];
+        } catch (Exception $e) {
+            // Manejo de errores
+            $arrResponse = ['status' => false, 'msg' => $e->getMessage()];
+            putMessageLogFile($arrResponse);
+            http_response_code($e->getCode() ?: 500);
         }
 
-        // Obtener los datos del cuerpo de la solicitud JSON
-        $json = file_get_contents("php://input");
-        $inputData = json_decode($json, true); // Convertir JSON a array asociativo
-
-        // Validar que los datos existen
-        if (!is_array($inputData)) {
-            throw new Exception("Datos inválidos o no enviados", 400);
-        }
-
-        // Sanitizar y obtener los valores con seguridad
-        $parametro = isset($inputData['parametro']) ? filter_var($inputData['parametro'], FILTER_SANITIZE_STRING) : "";
-        //$cli_id = isset($inputData['cli_id']) ? filter_var($inputData['cli_id'], FILTER_VALIDATE_INT) : null;
-        //$tie_id = isset($inputData['tie_id']) ? filter_var($inputData['tie_id'], FILTER_VALIDATE_INT) : null;
-        $limit = isset($inputData['limit']) ? filter_var($inputData['limit'], FILTER_VALIDATE_INT) : 10;
-
-        // Validar parámetros obligatorios
-        //if (!$cli_id || !$tie_id) {
-        //    throw new Exception("Parámetros insuficientes", 400);
-        //}
-
-        // Instancia del modelo y consulta
-        $modelArticulo = new ArticuloModel();
-        $request = $modelArticulo->retornarBusArticulo($parametro,  $limit);
-
-        // Responder con los datos obtenidos o mensaje de error
-        $arrResponse = $request
-            ? ['status' => true, 'data' => $request, 'msg' => 'Datos retornados correctamente.']
-            : ['status' => false, 'msg' => 'No existen datos.'];
-
-    } catch (Exception $e) {
-        // Manejo de errores
-        $arrResponse = ['status' => false, 'msg' => $e->getMessage()];
-        http_response_code($e->getCode() ?: 500);
+        // Responder con JSON
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        exit();
     }
-
-    // Responder con JSON
-    header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-    exit();
-}
-
-
 }

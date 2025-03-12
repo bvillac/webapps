@@ -569,3 +569,20 @@ function recibirData($datos)
    // Convertir JSON a un arreglo PHP
    return json_decode($decryptedData, true);
 }
+
+function validarMetodoPost(){
+    // Verifica si la solicitud es POST
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception("Método no permitido", 405);
+    }
+
+    // Obtener los datos del cuerpo de la solicitud JSON
+    $json = file_get_contents("php://input");
+    $inputData = json_decode($json, true); // Convertir JSON a array asociativo
+
+    // Validar que los datos existen
+    if (!is_array($inputData)) {
+        throw new Exception("Datos inválidos o no enviados", 400);
+    }
+    return $inputData;
+}
