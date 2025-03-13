@@ -41,15 +41,18 @@ adminMenu($data);
                             required="" placeholder="Buscar por Nombre o DNI">
                     </div>
                 </div>
+                
                 <div class="form-group col-md-12">
-                    <label for="dtp_fecha">Fecha</label>
-                    <input type="date" class="form-control " id="dtp_fecha" name="mdtp_fecha" placeholder="1988-01-01"
-                        pattern="^\d{4}\/\d{2}\/\d{2}$" required="">
+                    <label class="control-label">Precio US$ <span class="required">*</span></label>
+                    <div class="input-group">
+                        <input class="form-control valid validarDecimal" id="txt_precio" name="txt_precio" type="text" value="0.00"
+                            required="" >
+                    </div>
                 </div>
 
                 <div class="form-group col-md-12">
-                    <button type="button" class="btn btn-dark" id="btn_buscar"><i
-                            class="fa fa-magnifying-glass"></i>Buscar</button>
+                    <button type="button" class="btn btn-dark" id="btn_add"><i
+                            class="fa fa-magnifying-glass"></i>Agregar</button>
                     <button type="button" class="btn btn-success" id="btn_imprimir"><i
                             class="fa fa-print"></i>Imprimir</button>
                 </div>
@@ -61,11 +64,27 @@ adminMenu($data);
         <div class="col-md-9">
             <div class="tile">
                 <div id="list_tables">
-                    <h3 class="tile-title">Horarios</h3>
+                    <h3 class="tile-title">Productos</h3>
                 </div>
+
+                <table class="table table-striped table-bordered table-hover" id="TbG_Tiendas">
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Item</th>
+                        <th>Precio</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
 
 
             </div>
+          
+            
         </div>
     </div>
 </main>
