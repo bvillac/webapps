@@ -38,91 +38,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
+    const precioInput = document.getElementById("txt_PrecioProducto");
+    const btnAgregar = document.getElementById("btnAgregar");
 
-    /*$("#txt_CodigoPersona").autocomplete({
-        source: function (request, response) {
-            let link = base_url + '/Tienda/buscarAutoProducto';
-            $.ajax({
-                type: 'POST',
-                url: link,
-                dataType: "json",
-                data: { parametro: request.term, limit: 10 },
-                success: function (data) {
-                    var arrayList = new Array;
-                    var c = 0;
-                    if (data.status) {
-                        var result = data.data;
-                        //console.log(data.data);
-                        for (var i = 0; i < result.length; i++) {
-                            var objeto = result[i];
-                            var rowResult = new Object();
-                            rowResult.label = objeto.NombreTitular + " - " + objeto.RazonSocial;
-                            rowResult.value = objeto.CedulaRuc;
-                            rowResult.id = objeto.Ids;
-                            rowResult.Per_id = objeto.per_id;
-                            rowResult.fpg_id = objeto.FpagIds;
-                            rowResult.FpagoNombre = objeto.FpagoNombre;
-                            rowResult.OcupaNombre = objeto.OcupaNombre;
-                            rowResult.CedulaRuc = objeto.CedulaRuc;
-                            arrayList[c] = rowResult;
-                            c += 1;
-                        }
-                        //console.log(arrayList);
-                        response(arrayList);
-                    } else {
-                        //response(data.msg);
-                        limpiarAutocompletar();
-                        swal("Atención!", data.msg, "info");
 
-                    }
-                }
-            });
-        },
-        minLength: minLengthGeneral,
-        select: function (event, ui) {
-            $('#txth_ids').val(ui.item.id);
-            $('#txth_per_id').val(ui.item.Per_id);
+    // Evento cuando pierde el foco (blur)
+    precioInput.addEventListener("blur", function () {
+        formatearDecimal(precioInput,N2decimal);
+        btnAgregar.focus(); // Pasar el foco al botón Agregar
+    });
 
-        }
-    });*/
-
-    $("#txt_CodigoPersona").autocomplete({
-        source: async function (request, response) {
-            try {
-                const link = `${base_url}/Tienda/buscarAutoProducto`;
-    
-                const res = await fetch(link, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ parametro: request.term, limit: 10 })
-                });
-    
-                const data = await res.json();
-    
-                if (data.status) {
-                    const arrayList = data.data.map(objeto => ({
-                        label: `${objeto.cod_art} - ${objeto.art_des_com}`,
-                        value: objeto.art_des_com,
-                        id: objeto.Ids,
-                        p_venta: objeto.pcli_p_venta
-                    }));
-                    response(arrayList);
-                } else {
-                    //limpiarAutocompletar();
-                    swal("Atención!", data.msg, "info");
-                }
-            } catch (error) {
-                console.error("Error en la búsqueda:", error);
-                swal("Error!", "No se pudo obtener los datos.", "error");
-            }
-        },
-        minLength: minLengthGeneral,
-        select: function (event, ui) {
-            //$('#txth_ids').val(ui.item.id);
-            //$('#txth_per_id').val(ui.item.Per_id);
+    // Evento cuando se presiona Enter
+    precioInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Evita que el formulario se envíe si está dentro de uno
+            formatearDecimal(precioInput,N2decimal);
+            btnAgregar.focus(); // Pasar el foco al botón Agregar
         }
     });
-    
+
+
+
 
 
 });
@@ -135,6 +71,9 @@ $(document).ready(function () {
 
 
 });
+
+
+
 
 
 function openModal() {

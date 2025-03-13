@@ -220,24 +220,7 @@ class Tienda extends Controllers
     }
 
 
-    /*public function buscarAutoProducto()
-	{
-		if ($_POST) {   
-			//dep($_POST);
-            putMessageLogFile("llego");
-            $modelArticulo = new ArticuloModel();
-			$parametro	 = isset($_POST['parametro']) ? $_POST['parametro'] : "";
-			$request = $modelArticulo->consultarProductoCodigoNombre($parametro,133,3,10	);
-			if ($request) {
-				$arrResponse = array('status' => true, 'data' => $request, 'msg' => 'Datos Retornados correctamente.');
-			} else {
-				$arrResponse = array('status' => false, 'msg' => 'No Existen Datos');
-			}
-			//putMessageLogFile($arrResponse);	
-			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-		}
-		die();
-	}*/
+  
     public function buscarAutoProducto()
     {
         try {
@@ -274,4 +257,32 @@ class Tienda extends Controllers
         echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         exit();
     }
+
+
+    public function guardarListaProductos() {
+        try {
+            $json = file_get_contents("php://input");
+            $data = json_decode($json, true);
+            putMessageLogFile($data);
+    
+            if (!isset($data['productos']) || !is_array($data['productos'])) {
+                throw new Exception("Datos inválidos");
+            }
+    
+            $modelArticulo = new ArticuloModel();
+            $modelArticulo->guardarProducto($data);
+            //foreach ($data['productos'] as $producto) {
+            //    $modelArticulo->guardarProducto($producto);
+            //}
+    
+            echo json_encode(["status" => true, "msg" => "Productos guardados correctamente"]);
+        } catch (Exception $e) {
+            echo json_encode(["status" => false, "msg" => $e->getMessage()]);
+        }
+    }
+    
+
+
+
+
 }

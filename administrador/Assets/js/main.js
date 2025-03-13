@@ -85,18 +85,21 @@ function addCeros(tam, num) {
 }
 
 function redondea(sVal, nDec) {
-    var sepDecimal = ".";
-    var n = parseFloat(sVal);
-    var s = "0.00";
-    if (!isNaN(n)) {
-        n = Math.round(n * Math.pow(10, nDec)) / Math.pow(10, nDec);
-        s = String(n);
-        //s += (s.indexOf(".") == -1? ".": "") + String(Math.pow(10, nDec)).substr(1);
-        s += (s.indexOf(sepDecimal) == -1 ? sepDecimal : "") + String(Math.pow(10, nDec)).substr(1);
-        //s = s.substr(0, s.indexOf(".") + nDec + 1);
-        s = s.substr(0, s.indexOf(sepDecimal) + nDec + 1);
-    }
+    let n = parseFloat(sVal);
+    if (isNaN(n)) return "0.00"; // Manejo de valores inválidos
+
+    // Redondear a 'nDec' decimales
+    let s = n.toFixed(nDec);
+
     return s;
+}
+function formatearDecimal(precioInput,decimal) {
+    let valor = parseFloat(precioInput.value);
+    if (isNaN(valor) || valor < 0) {
+        precioInput.value = "0.00";
+    } else {
+        precioInput.value = valor.toFixed(decimal);
+    }
 }
 
 function number_format(number, decimals, dec_point, thousands_sep) {
@@ -109,6 +112,8 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     str[0] = parts.join(thousands_sep ? thousands_sep : ',');
     return str.join(dec_point ? dec_point : '.');
 }
+
+
 
 function calculoCostos(costo, margen, numDecimal) {
     //Aplica para los decuentos sin tener perdidas
