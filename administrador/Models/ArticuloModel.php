@@ -86,7 +86,7 @@ class ArticuloModel extends MysqlPedidos
         return $this->select_all($sql, $params);
     }
 
-    public function guardarProductos(array $productos, $clienteId)
+    public function guardarProductosCliente(array $productos, $clienteId)
     {
         $con = $this->getConexion(); // Obtiene la conexión a la base de datos
         $arroout = ["status" => false, "message" => "No se realizó ninguna operación."];
@@ -98,6 +98,7 @@ class ArticuloModel extends MysqlPedidos
                 $artId = $producto['ART_ID'];
                 $codArt = $producto['COD_ART'];
                 $precioVenta = $producto['ART_P_VENTA'];
+                putMessageLogFile($producto);
 
                 // Verificar si el producto ya existe para el cliente
                 $sqlCheck = "SELECT pcli_id FROM {$this->db_name}.precio_cliente WHERE art_id = :art_id AND cli_id = :cli_id";
@@ -135,7 +136,7 @@ class ArticuloModel extends MysqlPedidos
             }
 
             $con->commit(); // Confirma la transacción
-            return ["status" => true, "message" => "Productos guardados correctamente."];
+            return ["status" => true, "message" => "Registros guardados correctamente."];
 
         } catch (Exception $e) {
             $con->rollBack(); // Revierte la transacción en caso de error

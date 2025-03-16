@@ -147,17 +147,30 @@ window.addEventListener('load', function () {
 }, false);
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Aquí puedes colocar el código que deseas ejecutar después de que la página se ha cargado completamente
-    // Por ejemplo, puedes llamar a una función o realizar alguna operación
-    //alert('La página se ha cargado completamente');
-    if(document.querySelector('#txth_ids').value!=""){
-        var selectDni = document.getElementById("txt_cli_tipo_dni");
-        selectDni.selectedIndex =parseInt(tipoDNI)-1;
-        document.querySelector('#cmb_pago').value = tipoPago;
-        //$('#cmb_pago').selectpicker('render');
-        document.querySelector('#cmb_estado').value = estado;
+    // Verifica si el campo txth_ids tiene un valor antes de continuar
+    const txthIds = document.querySelector('#txth_ids');
+    if (txthIds && txthIds.value !== "") {
+        
+        // Validar y asignar el tipo de DNI
+        const selectDni = document.getElementById("txt_cli_tipo_dni");
+        if (selectDni && typeof tipoDNI !== "undefined") {
+            selectDni.selectedIndex = parseInt(tipoDNI) - 1;
+        }
+
+        // Validar y asignar el tipo de pago
+        const cmbPago = document.querySelector('#cmb_pago');
+        if (cmbPago && typeof tipoPago !== "undefined") {
+            cmbPago.value = tipoPago;
+        }
+
+        // Validar y asignar el estado (Corrigiendo el error en la variable)
+        const cmbEstado = document.querySelector('#cmb_estado');
+        if (cmbEstado && typeof estado !== "undefined") {
+            cmbEstado.value = estado;
+        }
     }
 });
+
 
 function openModal() {
     document.querySelector('#txth_ids').value = "";//IDS oculto hiden

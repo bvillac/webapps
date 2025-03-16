@@ -263,7 +263,7 @@ class Tienda extends Controllers
         try {
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
-            putMessageLogFile($data);
+            //putMessageLogFile($data);
     
             if (!isset($data['productos']) || !is_array($data['productos'])) {
                 throw new Exception("Datos inválidos");

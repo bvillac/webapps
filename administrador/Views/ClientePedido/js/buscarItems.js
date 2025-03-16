@@ -161,22 +161,43 @@ document.addEventListener("DOMContentLoaded", function () {
         
     }
 
-    function guardarEnServidor() {
+    async function guardarEnServidor() {
         const productos = obtenerProductosGuardados();
-        const idsTienda = $('#cmb_tienda').val();
-        if (idsTienda == '0' ) {
+        const idsCliente = $('#txth_ids').val()?.trim(); // Elimina espacios en blanco
+        const accion = "Create";
+    
+        // Verificar si idsCliente tiene un valor válido antes de continuar
+        if (!idsCliente) {
+            console.warn("ID de cliente no válido o vacío.");
             swal("Atención", "Todos los campos son obligatorios.", "error");
-            return false;
+            return;
         }
-
-        fetch(base_url+"/Tienda/guardarListaProductos", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ productos: productos, idsTienda: idsTienda })//JSON.stringify({ productos })
-        }).then(res => res.json())
-          .then(data => alert(data.msg))
-          .catch(err => console.error("Error al guardar:", err));
+    
+        try {
+            $("#btnGuardar").prop("disabled", true); // Deshabilita el botón mientras se guarda
+    
+            const response = await fetch(base_url + "/ClientePedido/guardarListaProductos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ productos, idsCliente, accion })
+            });
+    
+            const data = await response.json();
+    
+            if (data.status) {
+                swal("Éxito", data.msg, "success");
+                //window.location = base_url + '/clientePedido';
+            } else {
+                swal("Error", data.msg, "error");
+            }
+        } catch (err) {
+            console.error("Error al guardar:", err);
+            swal("Error", "Hubo un problema al guardar los productos.", "error");
+        } finally {
+            $("#btnGuardar").prop("disabled", false); // Habilita el botón nuevamente
+        }
     }
+    
 
     document.getElementById("btnAgregar").addEventListener("click", agregarProducto);
     document.getElementById("btnGuardar").addEventListener("click", guardarEnServidor);
