@@ -140,10 +140,68 @@ class ArticuloModel extends MysqlPedidos
 
         } catch (Exception $e) {
             $con->rollBack(); // Revierte la transacción en caso de error
-            putMessageLogFile("ERROR en guardarProductos: " . $e->getMessage());
+            logFileSystem("Error en guardarProductosCliente: " . $e->getMessage(), "ERROR");
             return ["status" => false, "message" => "Error en la operación: " . $e->getMessage()];
         }
     }
+
+    public function consultarProductosCliente($cli_id)
+    {
+        try {
+            $sql = "SELECT a.pcli_id, a.cli_id, a.art_id as ART_ID, a.cod_art as COD_ART, b.art_des_com as ART_DES_COM, 
+                           a.pcli_p_venta as ART_P_VENTA, a.pcli_i_m_iva, a.pcli_por_des, a.pcli_val_des, a.pcli_est_log
+                    FROM {$this->db_name}.precio_cliente a
+                    INNER JOIN {$this->db_name}.articulo b ON a.cod_art = b.cod_art
+                    WHERE a.pcli_est_log != 0 AND a.cli_id = :cli_id 
+                    ORDER BY b.art_des_com ASC";
+
+            $arrParams = [":cli_id" => $cli_id];
+            $resultado = $this->select_all($sql, $arrParams);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para cli_id: $cli_id", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarProductosCliente: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+
+    public function eliminarItemCliente($ids, $clienteId)
+    {
+        $con = $this->getConexion(); // Obtiene la conexión a la base de datos
+        $arroout = ["status" => false, "message" => "No se realizó ninguna operación."];
+
+        try {
+            $usuario = retornaUser();
+            $con->beginTransaction(); // Inicia una transacción
+
+            $sqlUpdate = "UPDATE {$this->db_name}.precio_cliente 
+                              SET pcli_est_log = :pcli_est_log, 
+                                  pcli_fec_mod = CURRENT_TIMESTAMP 
+                              WHERE pcli_id = :pcli_id";
+            $stmtUpdate = $con->prepare($sqlUpdate);
+            $stmtUpdate->execute([
+                ':pcli_est_log' => 0,
+                ':pcli_id' => $ids
+            ]);
+
+            $con->commit(); // Confirma la transacción
+            return ["status" => true, "message" => "Registro Eliminado correctamente."];
+
+        } catch (Exception $e) {
+            $con->rollBack(); // Revierte la transacción en caso de error
+            logFileSystem("Error en eliminarItemCliente: " . $e->getMessage(), "ERROR");
+            return ["status" => false, "message" => "Error en la Eliminación: " . $e->getMessage()];
+        }
+    }
+
+
+
+
+
 
 
 

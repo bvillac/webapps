@@ -51,8 +51,7 @@ function dep($data)
 //Muestra información formateada texto
 function putMessageLogFile($message)
 {
-    $rutaLog = __DIR__ . '/../Log/Errorlog.log'; //$this->logfile;//PHP 7.0
-    //echo $rutaLog;
+    $rutaLog = __DIR__ . '/../Log/Errorlog.log'; 
     if (is_array($message))
         $message = json_encode($message);
     $message = date("Y-m-d H:i:s") . " " . $message . "\n";
@@ -65,10 +64,37 @@ function putMessageLogFile($message)
     file_put_contents($rutaLog, $message, FILE_APPEND | LOCK_EX);
 }
 
-function logFileSystem($message)
-{
-	$fechaHoraLog = date("Y-m-d H:i:s");
-    error_log("[$fechaHoraLog] Info: $message. \n", 3, FILE_LOGS);
+function logFileSystem($message, $level = "INFO") {
+    //Registra tipo de mensaje (INFO, WARNING, ERROR).
+    //mkdir -p /opt/webapps/
+    //chmod -R 777 /opt/webapps/
+
+    $logDir = "/opt/webapps/log/"; // Ruta absoluta
+    $logFile = $logDir . "errors.log";
+
+    // Validar que el directorio existe, si no, crearlo con permisos seguros
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0755, true);
+    }
+
+    // Formatear el mensaje si es un array u objeto
+    if (is_array($message) || is_object($message)) {
+        $message = json_encode($message, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+    // Estructura del mensaje de log
+    $logEntry = sprintf("[%s] [%s] %s\n", date("Y-m-d H:i:s"), strtoupper($level), $message);
+
+    // Abrir el archivo con bloqueo para evitar corrupción
+    $fileHandle = fopen($logFile, "a");
+    if ($fileHandle) {
+        if (flock($fileHandle, LOCK_EX)) { // Bloqueo exclusivo
+            fwrite($fileHandle, $logEntry);
+            fflush($fileHandle); // Asegurar que se escriba inmediatamente
+            flock($fileHandle, LOCK_UN); // Liberar bloqueo
+        }
+        fclose($fileHandle);
+    }
 }
 
 //Agregar Archivos JS

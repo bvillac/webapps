@@ -1,6 +1,8 @@
 //document.write(`<script src="${base_url}/Assets/js/cedulaRucPass.js"></script>`);//
 var tableCliente;
 document.addEventListener('DOMContentLoaded', function () {
+    
+
     tableCliente = $('#tableCliente').dataTable({
         "aProcessing": true,
         "aServerSide": true,
@@ -132,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
+   
 
 
 
@@ -190,8 +192,11 @@ $(document).ready(function () {
         window.location = base_url + '/clientePedido/nuevo';//Retorna al Portal Principal
     });
 
-    $("#cmd_retornar").click(function () {
-        //eliminarStores();
+    $("#btn_retornar").click(function () {
+        //const tbody = document.querySelector(`#TbG_Tiendas tbody`);
+        //tbody.innerHTML = "";        
+        eliminarClavesSessionStorage("dts_precioTienda");
+        //limpiarSessionStorage();
         window.location = base_url + '/clientePedido';//Retorna al Portal Principal
     });
 

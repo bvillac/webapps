@@ -3,6 +3,10 @@ adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
 ?>
+<script>
+    const productos = <?php echo json_encode($data['ClienteProducto']); ?>;
+    sessionStorage.setItem('dts_precioTienda', JSON.stringify(productos));
+</script>
 <div id="contentAjax"></div>
 <main class="app-content">
     <div class="app-title">
@@ -55,7 +59,7 @@ adminMenu($data);
                 <div id="list_tables">
                     <h3 class="tile-title">Productos</h3>
                     <button id="btnGuardar" class="btn btn-success" type="button" ><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
-                    <button id="btnRetornar" class="btn btn-danger" type="button"><i class="app-menu__icon fas fa-sign-out-alt" aria-hidden="true"></i> Retornar</button>
+                    <button id="btn_retornar" class="btn btn-danger" type="button"> Retornar</button>
                 </div>
                 <br>
 

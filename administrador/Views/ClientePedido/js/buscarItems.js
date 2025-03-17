@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const tGrid = "TbG_Tiendas";
     const storageKey = "dts_precioTienda";
-    const btnAgregar = $("#btnAgregar");
+    const btnAgregar = document.getElementById("btnAgregar");
+    const btnGuardar = document.getElementById("btnGuardar");
+    const dataGrid = document.getElementById("TbG_Tiendas");
     const txtPrecio = $("#txt_PrecioProducto");
 
     $("#txt_CodigoProducto").autocomplete({
@@ -45,11 +47,11 @@ document.addEventListener("DOMContentLoaded", function () {
     
 
     function obtenerProductosGuardados() {
-        return JSON.parse(localStorage.getItem(storageKey)) || [];
+        return JSON.parse(sessionStorage.getItem(storageKey)) || [];
     }
 
     function guardarProductosEnStorage(productos) {
-        localStorage.setItem(storageKey, JSON.stringify(productos));
+        sessionStorage.setItem(storageKey, JSON.stringify(productos));
     }
 
     function limpiarCampos() {
@@ -92,27 +94,53 @@ document.addEventListener("DOMContentLoaded", function () {
         limpiarCampos();
     }
 
-    function eliminarProducto(id) {
-        let productos = obtenerProductosGuardados();
-        productos = productos.filter(p => p.ART_ID !== id);//crea un nuevo array que excluye el producto cuyo ART_ID coincida con el id recibido.
-        guardarProductosEnStorage(productos);
-        actualizarTabla();
+    async function eliminarProducto(id) {
+        const idsCliente = $('#txth_ids').val()?.trim(); // Elimina espacios en blanco
+        if (!idsCliente) {
+            swal("Error", "No se encontró el cliente asociado.", "error");
+            return;
+        }
 
-        // Petición AJAX para eliminar en el servidor
-        /*fetch("/Tienda/eliminarProducto", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ART_ID: id })
-        }).then(res => res.json())
-          .then(data => alert(data.msg))
-          .catch(err => console.error("Error al eliminar:", err));*/
+        try {
+            // Realiza la petición POST para guardar los productos
+            const response = await fetch(base_url + "/ClientePedido/eliminarItemCliente", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids:id, idsCliente, accion: "Delete" }) // Se podría agregar una acción "Delete"
+            });
+    
+            const data = await response.json();
+    
+            if (data.status) {
+                 // Obtiene los productos guardados y elimina el producto con el pcli_id coincidente
+                let productos = obtenerProductosGuardados();
+                productos = productos.filter(p => p.pcli_id !== id); // Crea un nuevo array excluyendo el producto
+            
+                // Guarda el nuevo array de productos en sessionStorage
+                guardarProductosEnStorage(productos);
+            
+                // Actualiza la tabla de productos visualmente
+                actualizarTabla();
+                swal("Éxito", data.msg, "success");
+                // Si deseas redirigir, puedes descomentar la siguiente línea
+                // window.location = base_url + '/clientePedido';
+            } else {
+                swal("Error", data.msg, "error");
+            }
+        } catch (err) {
+            console.error("Error al guardar:", err);
+            swal("Error", "Hubo un problema al guardar los productos.", "error");
+        } finally {
+            $("#btnGuardar").prop("disabled", false); // Habilita el botón nuevamente
+        }
     }
+    
 
     function actualizarTabla() {
         const tbody = document.querySelector(`#${tGrid} tbody`);
         tbody.innerHTML = "";
         const productos = obtenerProductosGuardados();
-
+        //productos.length>0
         productos.forEach((producto, index) => {
             const row = document.createElement("tr");
 
@@ -125,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         onblur="javascript:return formatearDecimal(this,N2decimal)"  />
                 </td>
                 <td>
-                    <button class="btn-delete" data-id="${producto.ART_ID}">
+                    <button class="btn-delete" data-id="${producto.pcli_id}">
                         <img src="delete-icon.png" alt="Eliminar" width="20" />
                     </button>
                 </td>
@@ -142,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        // Evento para actualizar el precio en `localStorage`
+        // Evento para actualizar el precio en `sessionStorage`
         document.querySelectorAll(".precio-input").forEach(input => {
             input.addEventListener("change", function () {
                 const id = parseInt(this.getAttribute("data-id"));
@@ -199,8 +227,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
 
-    document.getElementById("btnAgregar").addEventListener("click", agregarProducto);
-    document.getElementById("btnGuardar").addEventListener("click", guardarEnServidor);
-
-    actualizarTabla();
+    if (btnAgregar) {  // Verifica si el botón existe
+        btnAgregar.addEventListener("click", agregarProducto);
+    }
+    if (btnGuardar) {  // Verifica si el botón existe
+        btnGuardar.addEventListener("click", guardarEnServidor);
+    }
+    
+    if (dataGrid) {  // Verifica si el botón existe
+        actualizarTabla();
+    }
+    
 });

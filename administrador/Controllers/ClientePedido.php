@@ -205,34 +205,86 @@ class ClientePedido extends Controllers
 		}
 	}
 
-    public function catalogo($ids)
+    public function eliminarItemCliente()
     {
-        if ($_SESSION['permisosMod']['r']) {
-            if (is_numeric($ids)) {
-                $data = $this->model->consultarDatosId($ids);
-                if (empty($data)) {
-                    echo "Datos no encontrados";
-                } else {
-                    //$modelCliente = new ClientePedidoModel();
-                    //$data['cliente'] = $modelCliente->consultarClienteTienda();
-                    //$data['tienda'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
-                    $data['nombreCliente'] = $data['Nombre'];
-
-                    $data['page_tag'] = "Catálogo de Productos";
-                    $data['page_name'] = "Catálogo de Productos";
-                    $data['page_title'] = "Catálogo de Productos <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
-                    $data['page_back'] = "tienda";
-                    $this->views->getView($this, "catalogo", $data);
-                }
-            } else {
-                echo "Dato no válido";
+        try {
+            // Validar permisos de Eliminacion
+            if (!isset($_SESSION['permisosMod']['d'])) {
+                header('Location: ' . base_url() . '/login');
+                exit;
             }
-        } else {
-            header('Location: ' . base_url() . '/login');
-            die();
+            $inputData=validarMetodoPost();  
+            putMessageLogFile($inputData);
+            // Sanitizar y obtener los valores con seguridad
+            //$parametro = isset($inputData['ids']) ? filter_var($inputData['parametro'], FILTER_SANITIZE_STRING) : "";
+            $cli_id = isset($inputData['idsCliente']) ? filter_var($inputData['idsCliente'], FILTER_VALIDATE_INT) : 0;
+            $ids = isset($inputData['ids']) ? filter_var($inputData['ids'], FILTER_VALIDATE_INT) : 0;
+    
+            // Validar que `ids` sea un número válido
+            if (!is_numeric($ids) || $ids <= 0) {
+                logFileSystem("Error ids es invalido: " ,"WARNING");
+                exit;
+            }
+
+            $modelArticulo = new ArticuloModel();
+            $request = $modelArticulo->eliminarItemCliente($ids,$cli_id);
+            if ($request) {
+                $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
+            } else {
+                $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+
+    
+        } catch (Exception $e) {
+            // Registrar error en log
+            logFileSystem("Error en consutla Catalogo: " . $e->getMessage(),"ERROR");
+            exit;
         }
-        die();
     }
+
+
+    
+
+    public function catalogo($ids) {
+        try {
+            // Validar permisos de lectura
+            if (!isset($_SESSION['permisosMod']['r'])) {
+                header('Location: ' . base_url() . '/login');
+                exit;
+            }
+    
+            // Validar que `ids` sea un número válido
+            if (!is_numeric($ids) || $ids <= 0) {
+                //throw new Exception("ID inválido.");
+                logFileSystem("Error Id es invalido: " ,"WARNING");
+                exit;
+            }
+    
+            // Consultar datos del cliente
+            $data = $this->model->consultarDatosId($ids);
+    
+            // Consultar productos del cliente
+            $modelArticulo = new ArticuloModel();
+            $data['ClienteProducto'] = $modelArticulo->consultarProductosCliente($data['Ids']);
+            $data['nombreCliente'] = htmlspecialchars($data['Nombre'], ENT_QUOTES, 'UTF-8');
+            putMessageLogFile($data['ClienteProducto'] );
+            // Datos para la vista
+            $data['page_tag'] = "Catálogo de Productos";
+            $data['page_name'] = "Catálogo de Productos";
+            $data['page_title'] = "Catálogo de Productos <small> " . htmlspecialchars($_SESSION['empresaData']['NombreComercial'], ENT_QUOTES, 'UTF-8') . "</small>";
+            $data['page_back'] = "tienda";
+    
+            // Cargar vista
+            $this->views->getView($this, "catalogo", $data);
+    
+        } catch (Exception $e) {
+            // Registrar error en log
+            logFileSystem("Error en consutla Catalogo: " . $e->getMessage(),"ERROR");
+            exit;
+        }
+    }
+    
 
     
     public function buscarAutoProducto()

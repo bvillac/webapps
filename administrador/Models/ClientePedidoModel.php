@@ -215,6 +215,9 @@ class ClientePedidoModel extends Mysql
             //echo "Error en la consulta.";
         }*/
     }
+
+    
+    
     
 
 
