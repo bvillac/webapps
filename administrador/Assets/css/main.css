@@ -16739,3 +16739,10 @@ be a descendant of the grid when it is being dragged.
 .user .user-settings label {
   color: #666;
 }
+
+.is-invalid {
+  border: 1px solid red;
+}
+.is-valid {
+  border: 1px solid green;
+}

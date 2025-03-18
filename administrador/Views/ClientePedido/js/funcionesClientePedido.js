@@ -210,12 +210,7 @@ $(document).ready(function () {
 
     });*/
 
-    $("#txt_dni").blur(function () {
-        /*let valor = document.querySelector('#txt_dni').value;
-        if(!validarDocumento(valor)){
-            swal("Error", "Error de DNI" , "error");
-        }*/
-    });
+    
 
 
 

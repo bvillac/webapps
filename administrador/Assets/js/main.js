@@ -48,22 +48,14 @@ const iv = CryptoJS.enc.Utf8.parse("1234567820123456");
  * Valida la Entrada del Enter
  */
 function isEnter(e) {
-    //retornar verdadereo si presiona Enter
-    var key;
-    if (window.event) // IE
-    {
-        key = e.keyCode;
-        if (key == 13 || key == 9) {
-            return true;
-        }
-    } else if (e.which) { // Netscape/Firefox/Opera
-        key = e.which;
-        // NOTE: Backspace = 8, Enter = 13, '0' = 48, '9' = 57	
-        //var key = nav4 ? evt.which : evt.keyCode;	
-        if (key == 13 || key == 9) {
-            return true;
-        }
+    // Detecta si la tecla presionada es Enter (key: 'Enter') o Tab (key: 'Tab')
+    const key = e.key;
+
+    // Validamos si es Enter o Tab
+    if (key === 'Enter' || key === 'Tab') {
+        return true;
     }
+    
     return false;
 }
 
@@ -78,11 +70,9 @@ function MyPrimera(string) {
 
 //Agrega 0 a la Izq Numeros
 function addCeros(tam, num) {
-    if (num.toString().length <= tam)
-        return addCeros(tam, "0" + num)
-    else
-        return num;
+    return num.toString().padStart(tam, '0');
 }
+
 
 function redondea(sVal, nDec) {
     let n = parseFloat(sVal);
@@ -93,14 +83,17 @@ function redondea(sVal, nDec) {
 
     return s;
 }
-function formatearDecimal(precioInput,decimal) {
-    let valor = parseFloat(precioInput.value);
+function formatearDecimal(valInput, decimal = 2) {
+    let valor = parseFloat(valInput.value.trim()); // Asegura que no haya espacios en blanco.
+    
+    // Verifica si el valor es un número positivo
     if (isNaN(valor) || valor < 0) {
-        precioInput.value = "0.00";
+        valInput.value = (0).toFixed(decimal); // Si no es válido, establece el valor como 0.00.
     } else {
-        precioInput.value = valor.toFixed(decimal);
+        valInput.value = valor.toFixed(decimal); // Redondea el valor a la cantidad de decimales especificados.
     }
 }
+
 
 function number_format(number, decimals, dec_point, thousands_sep) {
     number = number * 1;//makes sure `number` is numeric value

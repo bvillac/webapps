@@ -41,7 +41,7 @@ adminMenu($data);
                     <label class="control-label">Precio US$ <span class="required">*</span></label>
                     <div class="input-group">
                         <input class="form-control valid validarDecimal" id="txt_PrecioProducto" name="txt_PrecioProducto" type="text" value="0.00"
-                            required="" >
+                            required="" placeholder="0.00" >
                     </div>
                 </div>
 

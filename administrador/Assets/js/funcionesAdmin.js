@@ -2,43 +2,34 @@
 
 //Bloque todas las teclas y permite el ingrso de numeros
 function controlTagEvent(e) {
-    tecla = (document.all) ? e.keyCode : e.which;
-    if (tecla==8) return true; 
-    else if (tecla==0||tecla==9)  return true;
-    patron =/[0-9\s]/;
-    n = String.fromCharCode(tecla);
-    return patron.test(n); 
+    let tecla = e.key || String.fromCharCode(e.keyCode || e.which);
+
+    // Permitir teclas especiales (Backspace, Tab)
+    if (["Backspace", "Tab"].includes(tecla)) return true;
+
+    // Expresión regular para solo permitir números y espacios
+    return /^[0-9\s]$/.test(tecla);
 }
+
 
 //Validaacion de Testos sin simbolo (Nombres apellidos)
-function esTexto(txtString){
-    var stringText = new RegExp(/^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/);
-    if(stringText.test(txtString)){
-        return true;
-    }else{
-        return false;
-    }
+function esTexto(texto) {
+    return /^[a-zA-ZÑñÁáÉéÍíÓóÚúÜü\s]+$/.test(texto.trim());
 }
 
+
 //Validar Datos que seran enteros numericos
-function esEntero(intCant){
-    var intCantidad = new RegExp(/^([0-9])*$/);
-    if(intCantidad.test(intCant)){
-        return true;
-    }else{
-        return false;
-    }
+function esEntero(valor) {
+    return /^\d+$/.test(valor.trim());
 }
+
 
 //Validar Datos que seran decimales
 function validarDecimal(input) {
-    var regex = /^\d*\.?\d*$/;
-    if (!regex.test(input.value)) {
-        return false
-    } else {
-        return true;
-    }
+    const regex = /^\d+(\.\d+)?$/;
+    return regex.test(input.value.trim());
 }
+
 
 //Verificar si es Email
 function esEmail(email){
@@ -50,46 +41,49 @@ function esEmail(email){
     }
 }
 
-function validarTexto(){
-	let validText = document.querySelectorAll(".validarTexto");
-    validText.forEach(function(validText) {
-        validText.addEventListener('keyup', function(){
-			let inputValue = this.value;
-			if(!esTexto(inputValue)){
-				this.classList.add('is-invalid');
-			}else{
-				this.classList.remove('is-invalid');
-			}				
-		});
-	});
+function validarTexto() {
+    document.querySelectorAll(".validarTexto").forEach((input) => {
+        input.addEventListener("input", function () {
+            // Elimina caracteres que no sean letras o espacios
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
+
+            // Agrega o quita la clase de error según la validación
+            if (this.value.trim() === "") {
+                this.classList.add("is-invalid");
+            } else {
+                this.classList.remove("is-invalid");
+            }
+        });
+    });
 }
 
-function validarNumber(){
-	let validNumber = document.querySelectorAll(".validarNumber");
-    validNumber.forEach(function(validNumber) {
-        validNumber.addEventListener('keyup', function(){
-			let inputValue = this.value;
-			if(!esEntero(inputValue)){
-				this.classList.add('is-invalid');
-			}else{
-				this.classList.remove('is-invalid');
-			}				
-		});
-	});
+function validarNumber() {
+    document.querySelectorAll(".validarNumber").forEach((input) => {
+        input.addEventListener("input", function () {
+            // Elimina caracteres no numéricos
+            this.value = this.value.replace(/[^0-9]/g, "");
+
+            // Agrega o quita la clase de error según la validación
+            if (this.value.trim() === "" || isNaN(this.value)) {
+                this.classList.add("is-invalid");
+            } else {
+                this.classList.remove("is-invalid");
+            }
+        });
+    });
 }
 
-function validarEmail(){
-	let validEmail = document.querySelectorAll(".validarEmail");
-    validEmail.forEach(function(validEmail) {
-        validEmail.addEventListener('keyup', function(){
-			let inputValue = this.value;
-			if(!esEmail(inputValue)){
-				this.classList.add('is-invalid');
-			}else{
-				this.classList.remove('is-invalid');
-			}				
-		});
-	});
+function validarEmail() {
+    document.querySelectorAll(".validarEmail").forEach((input) => {
+        input.addEventListener("input", function () {
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(this.value.trim())) {
+                this.classList.add("is-invalid");
+            } else {
+                this.classList.remove("is-invalid");
+            }
+        });
+    });
 }
 
 window.addEventListener('load', function() {

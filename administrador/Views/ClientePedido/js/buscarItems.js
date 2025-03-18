@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnAgregar = document.getElementById("btnAgregar");
     const btnGuardar = document.getElementById("btnGuardar");
     const dataGrid = document.getElementById("TbG_Tiendas");
-    const txtPrecio = $("#txt_PrecioProducto");
+    const txtPrecio = document.getElementById("txt_PrecioProducto");
 
     $("#txt_CodigoProducto").autocomplete({
         source: async function (request, response) {
@@ -58,17 +58,22 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("txth_art_id").value = "0";
         document.getElementById("txth_cod_art").value = "";
         document.getElementById("txt_CodigoProducto").value = "";
-        document.getElementById("txt_PrecioProducto").value = "";
+        document.getElementById("txt_PrecioProducto").value = "0.00";
     }
 
     function agregarProducto() {
         const art_Id = parseInt(document.getElementById("txth_art_id").value);//$("#txth_art_id").val();
         const codigo = $("#txth_cod_art").val();
-        const nombre = document.getElementById("txt_CodigoProducto").value;
+        const nombre = document.getElementById("txt_CodigoProducto").value.trim();
         const precio = parseFloat(document.getElementById("txt_PrecioProducto").value) || 0;
+        // Validar si el precio ingresado es un número decimal válido
+        if (isNaN(precio) || precio <= 0) {
+            swal("Error", "Por favor ingrese un precio válido mayor a 0.", "error");
+            return;
+        }
         
         if (!nombre) {
-            alert("Ingrese un nombre de producto");
+            swal("Info", "Ingrese un nombre de producto.", "info");
             return;
         }
 
@@ -76,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Verificar si el producto ya existe
         if (productos.some(p => p.ART_DES_COM === nombre)) {
-            alert("El producto ya está en la lista");
+            swal("Info", "El producto ya está en la lista.", "info");
             return;
         }
 
@@ -225,6 +230,20 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#btnGuardar").prop("disabled", false); // Habilita el botón nuevamente
         }
     }
+
+
+    $("#txt_PrecioProducto").blur(function () {
+        validarCampoBlur($(this), 'decimal',N2decimal);
+    });
+
+    $("#txt_PrecioProducto").keypress(function (e) {
+        validarNumeroYPunto(e,"btnAgregar");
+    });
+
+    /*$("#txt_PrecioProducto").keyup(function (e) {
+        validarNumeroYPunto(e,"btnAgregar");
+    });*/
+ 
     
 
     if (btnAgregar) {  // Verifica si el botón existe
