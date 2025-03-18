@@ -214,7 +214,6 @@ class ClientePedido extends Controllers
                 exit;
             }
             $inputData=validarMetodoPost();  
-            putMessageLogFile($inputData);
             // Sanitizar y obtener los valores con seguridad
             //$parametro = isset($inputData['ids']) ? filter_var($inputData['parametro'], FILTER_SANITIZE_STRING) : "";
             $cli_id = isset($inputData['idsCliente']) ? filter_var($inputData['idsCliente'], FILTER_VALIDATE_INT) : 0;
@@ -268,7 +267,6 @@ class ClientePedido extends Controllers
             $modelArticulo = new ArticuloModel();
             $data['ClienteProducto'] = $modelArticulo->consultarProductosCliente($data['Ids']);
             $data['nombreCliente'] = htmlspecialchars($data['Nombre'], ENT_QUOTES, 'UTF-8');
-            putMessageLogFile($data['ClienteProducto'] );
             // Datos para la vista
             $data['page_tag'] = "Catálogo de Productos";
             $data['page_name'] = "Catálogo de Productos";
@@ -305,7 +303,7 @@ class ClientePedido extends Controllers
 
             // Instancia del modelo y consulta
             $modelArticulo = new ArticuloModel();
-            $request = $modelArticulo->retornarBusArticulo($parametro,  $limit);
+            $request = $modelArticulo->retornarBusArticulo($parametro,  LIMIT_SQL);
 
             // Responder con los datos obtenidos o mensaje de error
             $arrResponse = $request
@@ -328,7 +326,7 @@ class ClientePedido extends Controllers
         try {
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
-            putMessageLogFile($data);
+
             if (empty($data['productos']) || !is_array($data['productos']) || 
                 empty($data['accion']) || !isset($data['idsCliente']) || 
                 !filter_var($data['idsCliente'], FILTER_VALIDATE_INT)) {
@@ -364,6 +362,7 @@ class ClientePedido extends Controllers
 
             echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
+            logFileSystem("Error en guardarListaProductos: " . $e->getMessage(), "ERROR");
             echo json_encode(["status" => false, "msg" => $e->getMessage()]);
         }
     }

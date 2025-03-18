@@ -62,7 +62,7 @@ class ArticuloModel extends MysqlPedidos
     public function retornarBusArticulo(string $parametro, int $limit = 10)
     {
         // Consulta SQL base con placeholders
-        $sql = "select art_id,cod_art,art_des_com"
+        $sql = "select art_id,cod_art,art_des_com as des_com,art_i_m_iva as i_m_iva,art_p_venta as p_venta"
             . " from {$this->db_name}.articulo "
             . "where art_est_log !=0 ";
 
@@ -95,9 +95,12 @@ class ArticuloModel extends MysqlPedidos
             $con->beginTransaction(); // Inicia una transacción
 
             foreach ($productos as $producto) {
-                $artId = $producto['ART_ID'];
-                $codArt = $producto['COD_ART'];
-                $precioVenta = $producto['ART_P_VENTA'];
+                $artId = $producto['art_id'];
+                $codArt = $producto['cod_art'];
+                $precioVenta = $producto['p_venta'];
+                $i_m_iva = $producto['i_m_iva'];
+                $por_des = $producto['por_des'];
+                $val_des = $producto['val_des'];
                 putMessageLogFile($producto);
 
                 // Verificar si el producto ya existe para el cliente
@@ -123,14 +126,17 @@ class ArticuloModel extends MysqlPedidos
                 } else {
                     // Insertar si no existe
                     $sqlInsert = "INSERT INTO {$this->db_name}.precio_cliente 
-                              (cli_id, art_id, cod_art, pcli_p_venta, pcli_est_log, pcli_fec_cre) 
-                              VALUES (:cli_id, :art_id, :cod_art, :pcli_p_venta, 1, CURRENT_TIMESTAMP)";
+                              (cli_id, art_id, cod_art, pcli_p_venta, pcli_est_log, pcli_fec_cre,pcli_i_m_iva,pcli_por_des,pcli_val_des) 
+                              VALUES (:cli_id, :art_id, :cod_art, :pcli_p_venta, 1, CURRENT_TIMESTAMP,:pcli_i_m_iva,:pcli_por_des,:pcli_val_des)";
                     $stmtInsert = $con->prepare($sqlInsert);
                     $stmtInsert->execute([
                         ':cli_id' => $clienteId,
                         ':art_id' => $artId,
                         ':cod_art' => $codArt,
-                        ':pcli_p_venta' => $precioVenta
+                        ':pcli_p_venta' => $precioVenta,
+                        ':pcli_i_m_iva' => $i_m_iva,
+                        ':pcli_por_des' => $por_des,
+                        ':pcli_val_des' => $val_des
                     ]);
                 }
             }
@@ -148,8 +154,9 @@ class ArticuloModel extends MysqlPedidos
     public function consultarProductosCliente($cli_id)
     {
         try {
-            $sql = "SELECT a.pcli_id, a.cli_id, a.art_id as ART_ID, a.cod_art as COD_ART, b.art_des_com as ART_DES_COM, 
-                           a.pcli_p_venta as ART_P_VENTA, a.pcli_i_m_iva, a.pcli_por_des, a.pcli_val_des, a.pcli_est_log
+            $sql = "SELECT a.pcli_id, a.cli_id, a.art_id as art_id, a.cod_art as cod_art, b.art_des_com as des_com, 
+                           a.pcli_p_venta as p_venta, a.pcli_i_m_iva as i_m_iva, a.pcli_por_des as por_des, a.pcli_val_des as val_des,
+                           a.pcli_est_log
                     FROM {$this->db_name}.precio_cliente a
                     INNER JOIN {$this->db_name}.articulo b ON a.cod_art = b.cod_art
                     WHERE a.pcli_est_log != 0 AND a.cli_id = :cli_id 

@@ -25,6 +25,7 @@ adminMenu($data);
         <input type="hidden" id="txth_ids" name="txth_ids" value="<?= $data['Ids'] ?>">
         <input type="hidden" id="txth_art_id" name="txth_art_id" value="">
         <input type="hidden" id="txth_cod_art" name="txth_cod_art" value="0">
+        <input type="hidden" id="txth_i_m_iva" name="txth_i_m_iva" value="0">
         
         <div class="col-md-3">
             <div class="tile"> 

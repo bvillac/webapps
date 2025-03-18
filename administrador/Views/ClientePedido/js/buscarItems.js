@@ -21,11 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
     
                 if (data.status) {
                     const arrayList = data.data.map(objeto => ({
-                        label: `${objeto.cod_art} - ${objeto.art_des_com}`,
-                        value: objeto.art_des_com,
+                        label: `${objeto.cod_art} - ${objeto.des_com}`,
+                        value: objeto.des_com,
                         cod_art: objeto.cod_art, // Guardamos el código del producto
+                        i_m_iva:objeto.i_m_iva,
+                        p_venta: parseFloat(objeto.p_venta).toFixed(2), // Precio con dos decimales
                         id: objeto.art_id,
-                        //p_venta: parseFloat(objeto.pcli_p_venta).toFixed(2) // Precio con dos decimales
                     }));
                     response(arrayList);
                 } else {
@@ -41,6 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
         select: function (event, ui) {
             $('#txth_art_id').val(ui.item.id);
             $("#txth_cod_art").val(ui.item.cod_art);
+            $("#txth_i_m_iva").val(ui.item.i_m_iva);
+            $("#txt_PrecioProducto").val(ui.item.p_venta);
             txtPrecio.focus();
         }
     });
@@ -59,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("txth_cod_art").value = "";
         document.getElementById("txt_CodigoProducto").value = "";
         document.getElementById("txt_PrecioProducto").value = "0.00";
+        document.getElementById("txth_i_m_iva").value = "0";
     }
 
     function agregarProducto() {
@@ -66,6 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const codigo = $("#txth_cod_art").val();
         const nombre = document.getElementById("txt_CodigoProducto").value.trim();
         const precio = parseFloat(document.getElementById("txt_PrecioProducto").value) || 0;
+        const i_m_iva = parseFloat(document.getElementById("txth_i_m_iva").value) || 0;
+        const por_des = (0).toFixed(N2decimal);
+        const val_des = (0).toFixed(N2decimal);
+
         // Validar si el precio ingresado es un número decimal válido
         if (isNaN(precio) || precio <= 0) {
             swal("Error", "Por favor ingrese un precio válido mayor a 0.", "error");
@@ -80,17 +88,20 @@ document.addEventListener("DOMContentLoaded", function () {
         let productos = obtenerProductosGuardados();
 
         // Verificar si el producto ya existe
-        if (productos.some(p => p.ART_DES_COM === nombre)) {
+        if (productos.some(p => p.des_com === nombre)) {
             swal("Info", "El producto ya está en la lista.", "info");
             return;
         }
 
         // Crear el nuevo producto
         const nuevoProducto = {
-            ART_ID: art_Id,//Date.now(), // Usamos timestamp como ID único
-            COD_ART: codigo,//nombre.substring(0, 5).toUpperCase(),
-            ART_DES_COM: nombre,
-            ART_P_VENTA: precio.toFixed(2),
+            art_id: art_Id,//Date.now(), // Usamos timestamp como ID único
+            cod_art: codigo,//nombre.substring(0, 5).toUpperCase(),
+            des_com: nombre,
+            p_venta: precio.toFixed(N2decimal),
+            i_m_iva: i_m_iva,
+            por_des: por_des,
+            val_des: val_des,
         };
 
         productos.push(nuevoProducto);
@@ -150,11 +161,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${producto.COD_ART}</td>
-                <td>${producto.ART_DES_COM}</td>
+                <td>${producto.cod_art}</td>
+                <td>${producto.des_com}</td>
                 <td>
-                    <input type="number" value="${producto.ART_P_VENTA}" min="0" step="0.01"
-                        data-id="${producto.ART_ID}" class="precio-input" 
+                    <input type="number" value="${producto.p_venta}" min="0" step="0.01"
+                        data-id="${producto.art_id}" class="precio-input" 
                         onblur="javascript:return formatearDecimal(this,N2decimal)"  />
                 </td>
                 <td>
@@ -180,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
             input.addEventListener("change", function () {
                 const id = parseInt(this.getAttribute("data-id"));
                 let productos = obtenerProductosGuardados();
-                productos = productos.map(p => p.ART_ID === id ? { ...p, ART_P_VENTA: this.value } : p);
+                productos = productos.map(p => p.art_Id === id ? { ...p, p_venta: this.value } : p);
                 guardarProductosEnStorage(productos);
             });
             //input.addEventListener("blur", formatearPrecio);

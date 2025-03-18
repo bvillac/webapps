@@ -1,6 +1,6 @@
 var N2decimal = 2;
 var N4decimal = 4;
-var PorIva = 12;
+var PorIva = 15;
 var SPD = ".";
 var SPM = ",";
 var npass = "M1ll3r2024";
