@@ -1,20 +1,32 @@
 <?php 
-	$controller = ucwords($controller);
-	$controllerFile = "Controllers/".$controller.".php";
+require_once("Controllers/Error.php");
+try {
+    $controller = ucwords($controller);
+    $controllerFile = "Controllers/" . $controller . ".php";
 	//putMessageLogFile($controller);//puede ver la ruta a la que accede
 	//putMessageLogFile($controllerFile);
-	if(file_exists($controllerFile)){
-		require_once($controllerFile);//Requiere la ruta del archvio
-		$controller = new $controller();//Crea la instancia del controlador
-		if(method_exists($controller, $method))//Verifica si existe el metodo
-		{
-			$controller->{$method}($params);
-		}else{
-			require_once("Controllers/Error.php");
-		}
-	}else{
-		//putMessageLogFile("No existe archivo Controlador Revisar BD: ".$controllerFile);
-		require_once("Controllers/Error.php");
-	}
+    if (file_exists($controllerFile)) {
+        require_once($controllerFile);
 
- ?>
+        if (class_exists($controller)) {
+            $instance = new $controller();
+
+            if (method_exists($instance, $method)) {
+                $instance->{$method}($params);
+                exit();
+            }
+        }
+    } 
+
+    // Si el archivo, clase o método no existen, carga el controlador de error
+	//putMessageLogFile("Archivo, clase o método no existen: ".$controllerFile);
+    //require_once("Controllers/Error.php");
+	(new Errors())->notFound(404);
+
+} catch (Exception $e) {
+	putMessageLogFile("Error en la carga del controlador: " . $e->getMessage());
+	//logFileSystem("Error en la carga del controlador: " . $e->getMessage(),"ERROR");
+    //require_once("Controllers/Error.php");
+	(new Errors())->notFound(500);
+}
+?>
