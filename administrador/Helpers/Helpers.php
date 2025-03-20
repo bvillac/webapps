@@ -624,14 +624,14 @@ function checkPermission($type, $redirect)
 function responseJson($status, $msg, $extra = [])
 {
     echo json_encode(array_merge(["status" => $status, "msg" => $msg], $extra), JSON_UNESCAPED_UNICODE);
-    die();
+    exit();
 }
 function getPageData($title, $back)
 {
     return [
         'page_tag' => $title,
         'page_name' => $title,
-        'page_title' => "$title <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>",
+        'page_title' => "$title <small> " . htmlspecialchars($_SESSION['empresaData']['NombreComercial'], ENT_QUOTES, 'UTF-8') . "</small>",
         'page_back' => $back
     ];
 }

@@ -13,49 +13,42 @@ class Tienda extends Controllers
 
     public function tienda()
     {
-        if (empty($_SESSION['permisosMod']['r'])) {
-            header("Location:" . base_url() . '/dashboard');
-        }
-        $modelCliente = new ClientePedidoModel();
-        $data['cliente'] = $modelCliente->consultarClienteTienda();
-        $data['page_tag'] = "Tienda";
-        $data['page_name'] = "Tienda";
-        $data['page_title'] = "Tienda <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
-        $data['page_back'] = "Tienda";
+        checkPermission('r', 'dashboard');
+        $data = getPageData("Tienda", "Tienda");
+        $data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
         $this->views->getView($this, "tienda", $data);
     }
 
+    
+
     public function consultarTienda()
     {
-        if ($_SESSION['permisosMod']['r']) {
-            $arrData = $this->model->consultarDatos();
-            for ($i = 0; $i < count($arrData); $i++) {
-                $btnOpciones = "";
-                if ($arrData[$i]['Estado'] == 1) {
-                    $arrData[$i]['Estado'] = '<span class="badge badge-success">Activo</span>';
-                } else {
-                    $arrData[$i]['Estado'] = '<span class="badge badge-danger">Inactivo</span>'; //target="_blanck"  
-                }
-
-                if ($_SESSION['permisosMod']['r']) {
-                    $btnOpciones .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $arrData[$i]['Ids'] . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
-                }
-                if ($_SESSION['permisosMod']['u']) {
-                    $btnOpciones .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $arrData[$i]['Ids'] . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-                }
-                if ($_SESSION['permisosMod']['d']) {
-                    $btnOpciones .= '<button class="btn btn-danger btn-sm btnDelLinea" onClick="fntDeleteTienda(' . $arrData[$i]['Ids'] . ')" title="Eliminar Datos"><i class="fa fa-trash"></i></button>';
-                }
-                if ($_SESSION['permisosMod']['r']) {
-                    $btnOpciones .= ' <a title="Catálogo de Productos" href="' . base_url() . '/tienda/catalogo/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-list"></i> </a> ';
-                    $btnOpciones .= ' <a title="Catálogo de Productos" href="' . base_url() . '/tienda/precio/' . $arrData[$i]['Ids'] . '"  class="btn btn-primary btn-sm"> <i class="fa fa-coins"></i> </a> ';
-                }
-
-                $arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
-            }
-            echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+        checkPermission('r', 'dashboard');
+        $arrData = $this->model->consultarDatos([]);
+        foreach ($arrData as &$objData) {
+            $objData['Estado'] = $objData['Estado'] == 1
+                ? '<span class="badge badge-success">Activo</span>'
+                : '<span class="badge badge-danger">Inactivo</span>';
+            $objData['options'] = $this->getArrayOptions($objData['Ids']);
         }
-        die();
+        echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
+    private function getArrayOptions($id)
+    {
+        $options = '<div class="text-center">';
+        if ($_SESSION['permisosMod']['r']) {
+            $options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+        }
+        if ($_SESSION['permisosMod']['u']) {
+            $options .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+        }
+        if ($_SESSION['permisosMod']['d']) {
+            $options .= " <button class='btn btn-danger btn-sm btnDelLinea' onClick='fntDeleteTienda($id)' title='Eliminar'><i class='fa fa-trash'></i></button> ";
+        }
+        $options .= " <a title='Catálogo' href='" . base_url() . "/tienda/catalogo/$id' class='btn btn-primary btn-sm'><i class='fa fa-list'></i></a> ";
+        return $options . '</div>';
     }
 
     public function ingresarTienda()
@@ -134,153 +127,36 @@ class Tienda extends Controllers
         die();
     }
 
-    public function bucarTiendaCentro()
-    {
-        if ($_POST) {
-            if ($_SESSION['permisosMod']['r']) {
-                $modelTienda = new TiendaModel();
-                $ids = intval(strClean($_POST['Ids']));
-                if ($ids > 0) {
-                    $arrData = $modelTienda->consultarTiendaes($ids);
-                    //dep($arrData);
-                    if (empty($arrData)) {
-                        $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-                    } else {
-                        $arrResponse = array('status' => true, 'data' => $arrData);
-                    }
-                    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-                }
-            }
-        }
-        die();
-    }
-
-
-    public function catalogo($ids)
-    {
-        if ($_SESSION['permisosMod']['r']) {
-            if (is_numeric($ids)) {
-
-
-                $data = $this->model->consultarDatosId($ids);
-                if (empty($data)) {
-                    echo "Datos no encontrados";
-                } else {
-                    putMessageLogFile($data);
-                    //$modelCliente = new ClientePedidoModel();
-                    //$data['cliente'] = $modelCliente->consultarClienteTienda();
-                    $data['tienda'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
-                    $data['nombreCliente'] = $data['RazonSocial'];
-
-                    $data['page_tag'] = "Catálogo de Productos";
-                    $data['page_name'] = "Catálogo de Productos";
-                    $data['page_title'] = "Catálogo de Productos <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
-                    $data['page_back'] = "tienda";
-                    $this->views->getView($this, "catalogo", $data);
-                }
-            } else {
-                echo "Dato no válido";
-            }
-        } else {
-            header('Location: ' . base_url() . '/login');
-            die();
-        }
-        die();
-    }
-
-    public function precio($ids)
-    {
-        if ($_SESSION['permisosMod']['r']) {
-            if (is_numeric($ids)) {
-
-
-                $data = $this->model->consultarDatosId($ids);
-                if (empty($data)) {
-                    echo "Datos no encontrados";
-                } else {
-                    //$modelCliente = new ClientePedidoModel();
-                    //$data['cliente'] = $modelCliente->consultarClienteTienda();
-                    $data['tienda'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
-                    $data['nombreCliente'] = $data['RazonSocial'];
-
-                    $data['page_tag'] = "Tienda Precio de Productos";
-                    $data['page_name'] = "Tienda Precio de Productos";
-                    $data['page_title'] = "Tienda Precio de Productos <small> " . $_SESSION['empresaData']['NombreComercial'] . "</small>";
-                    $data['page_back'] = "tienda";
-                    $this->views->getView($this, "precio", $data);
-                }
-            } else {
-                echo "Dato no válido";
-            }
-        } else {
-            header('Location: ' . base_url() . '/login');
-            die();
-        }
-        die();
-    }
-
-
-  
-    public function buscarAutoProducto()
-    {
+    public function catalogo($ids) {
         try {
-            $inputData=validarMetodoPost();           
-
-            // Sanitizar y obtener los valores con seguridad
-            $parametro = isset($inputData['parametro']) ? filter_var($inputData['parametro'], FILTER_SANITIZE_STRING) : "";
-            //$cli_id = isset($inputData['cli_id']) ? filter_var($inputData['cli_id'], FILTER_VALIDATE_INT) : null;
-            //$tie_id = isset($inputData['tie_id']) ? filter_var($inputData['tie_id'], FILTER_VALIDATE_INT) : null;
-            $limit = isset($inputData['limit']) ? filter_var($inputData['limit'], FILTER_VALIDATE_INT) : 10;
-
-            // Validar parámetros obligatorios
-            //if (!$cli_id || !$tie_id) {
-            //    throw new Exception("Parámetros insuficientes", 400);
-            //}
-
-            // Instancia del modelo y consulta
-            $modelArticulo = new ArticuloModel();
-            $request = $modelArticulo->retornarBusArticulo($parametro,  $limit);
-
-            // Responder con los datos obtenidos o mensaje de error
-            $arrResponse = $request
-                ? ['status' => true, 'data' => $request, 'msg' => 'Datos retornados correctamente.']
-                : ['status' => false, 'msg' => 'No existen datos.'];
-        } catch (Exception $e) {
-            // Manejo de errores
-            $arrResponse = ['status' => false, 'msg' => $e->getMessage()];
-            putMessageLogFile($arrResponse);
-            http_response_code($e->getCode() ?: 500);
-        }
-
-        // Responder con JSON
-        header('Content-Type: application/json; charset=UTF-8');
-        echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        exit();
-    }
-
-
-    public function guardarListaProductos() {
-        try {
-            $json = file_get_contents("php://input");
-            $data = json_decode($json, true);
-            //putMessageLogFile($data);
-    
-            if (!isset($data['productos']) || !is_array($data['productos'])) {
-                throw new Exception("Datos inválidos");
+            checkPermission('r', 'dashboard');
+            // Validar que `ids` sea un número válido
+            if (!is_numeric($ids) || $ids <= 0) {
+                logFileSystem("Error Id es invalido: " ,"WARNING");
+                exit;
             }
+            // Datos para la vista
+            $data = getPageData("Catálogo de Productos", "tienda");
     
-            $modelArticulo = new ArticuloModel();
-            $modelArticulo->guardarProducto($data);
-            //foreach ($data['productos'] as $producto) {
-            //    $modelArticulo->guardarProducto($producto);
-            //}
+            // Consultar datos del cliente
+            $data = $this->model->consultarDatosId($ids);
     
-            echo json_encode(["status" => true, "msg" => "Productos guardados correctamente"]);
+            // Consultar productos del cliente
+            //$data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Ids']);
+            $data['nombreCliente'] = htmlspecialchars($data['RazonSocial'], ENT_QUOTES, 'UTF-8');
+          
+            // Cargar vista
+            $this->views->getView($this, "catalogo", $data);
+    
         } catch (Exception $e) {
-            echo json_encode(["status" => false, "msg" => $e->getMessage()]);
+            // Registrar error en log
+            logFileSystem("Error en consutla Catalogo: " . $e->getMessage(),"ERROR");
+            exit;
         }
     }
-    
+
+
+        
 
 
 
