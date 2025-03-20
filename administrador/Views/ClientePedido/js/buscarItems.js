@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         value: objeto.des_com,
                         cod_art: objeto.cod_art, // Guardamos el código del producto
                         i_m_iva:objeto.i_m_iva,
-                        p_venta: parseFloat(objeto.p_venta).toFixed(2), // Precio con dos decimales
+                        p_venta: parseFloat(objeto.p_venta).toFixed(N2decimal), // Precio con dos decimales
                         id: objeto.art_id,
                     }));
                     response(arrayList);
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function eliminarProducto(id) {
         const idsCliente = $('#txth_ids').val()?.trim(); // Elimina espacios en blanco
         if (!idsCliente) {
-            swal("Error", "No se encontró el cliente asociado.", "error");
+            swal("Error", "No se encontró el Registro.", "error");
             return;
         }
 
@@ -164,13 +164,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${producto.cod_art}</td>
                 <td>${producto.des_com}</td>
                 <td>
-                    <input type="number" value="${producto.p_venta}" min="0" step="0.01"
-                        data-id="${producto.art_id}" class="precio-input" 
+                    <input type="number" value="${parseFloat(producto.p_venta).toFixed(N2decimal)}" min="0" step="0.01"
+                        data-id="${producto.art_id}" class="form-control text-end precio-input" style="width: auto; min-width: 30px; text-align: right;" 
                         onblur="javascript:return formatearDecimal(this,N2decimal)"  />
                 </td>
                 <td>
-                    <button class="btn-delete" data-id="${producto.pcli_id}">
-                        <img src="delete-icon.png" alt="Eliminar" width="20" />
+                    <button class="btn btn-danger btn-sm d-flex align-items-center btn-delete" data-id="${producto.pcli_id}">
+                        Eliminar
                     </button>
                 </td>
             `;
@@ -182,7 +182,8 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".btn-delete").forEach(btn => {
             btn.addEventListener("click", function () {
                 const id = parseInt(this.getAttribute("data-id"));
-                eliminarProducto(id);
+                //eliminarProducto(id);
+                eliminarItemGrid(id);
             });
         });
 
@@ -254,6 +255,27 @@ document.addEventListener("DOMContentLoaded", function () {
     /*$("#txt_PrecioProducto").keyup(function (e) {
         validarNumeroYPunto(e,"btnAgregar");
     });*/
+
+    function eliminarItemGrid(ids) {
+        swal({
+            title: "Eliminar Registro",
+            text: "¿Realmente quiere eliminar el Registro?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Si, eliminar!",
+            cancelButtonText: "No, cancelar!",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        }, function (isConfirm) {
+    
+            if (isConfirm) {
+                eliminarProducto(ids);
+            }
+    
+        });
+    
+    }
+    
  
     
 

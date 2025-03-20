@@ -194,8 +194,7 @@ class ClientePedido extends Controllers
             $data = $this->model->consultarDatosId($ids);
     
             // Consultar productos del cliente
-            $modelArticulo = new ArticuloModel();
-            $data['ClienteProducto'] = $modelArticulo->consultarProductosCliente($data['Ids']);
+            $data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Ids']);
             $data['nombreCliente'] = htmlspecialchars($data['Nombre'], ENT_QUOTES, 'UTF-8');
             // Datos para la vista
             $data['page_tag'] = "Catálogo de Productos";
