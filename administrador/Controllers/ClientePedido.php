@@ -240,7 +240,7 @@ class ClientePedido extends Controllers
         } catch (Exception $e) {
             // Manejo de errores
             $arrResponse = ['status' => false, 'msg' => $e->getMessage()];
-            putMessageLogFile($arrResponse);
+            //putMessageLogFile($arrResponse);
             http_response_code($e->getCode() ?: 500);
         }
 

@@ -6,47 +6,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const dataGrid = document.getElementById("TbG_Tiendas");
     const txtPrecio = document.getElementById("txt_PrecioProducto");
 
-    $("#txt_CodigoProducto").autocomplete({
-        source: async function (request, response) {
-            try {
-                const link = `${base_url}/Tienda/buscarAutoProducto`;
     
-                const res = await fetch(link, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ parametro: request.term, limit: 10 })
-                });
-    
-                const data = await res.json();
-    
-                if (data.status) {
-                    const arrayList = data.data.map(objeto => ({
-                        label: `${objeto.cod_art} - ${objeto.des_com}`,
-                        value: objeto.des_com,
-                        cod_art: objeto.cod_art, // Guardamos el código del producto
-                        i_m_iva:objeto.i_m_iva,
-                        p_venta: parseFloat(objeto.p_venta).toFixed(N2decimal), // Precio con dos decimales
-                        id: objeto.art_id,
-                    }));
-                    response(arrayList);
-                } else {
-                    //limpiarAutocompletar();
-                    swal("Atención!", data.msg, "info");
-                }
-            } catch (error) {
-                console.error("Error en la búsqueda:", error);
-                swal("Error!", "No se pudo obtener los datos.", "error");
-            }
-        },
-        minLength: minLengthGeneral,
-        select: function (event, ui) {
-            $('#txth_art_id').val(ui.item.id);
-            $("#txth_cod_art").val(ui.item.cod_art);
-            $("#txth_i_m_iva").val(ui.item.i_m_iva);
-            $("#txt_PrecioProducto").val(ui.item.p_venta);
-            txtPrecio.focus();
-        }
-    });
+
+
     
 
     function obtenerProductosGuardados() {
@@ -161,18 +123,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const row = document.createElement("tr");
 
             row.innerHTML = `
+                <td><input type="checkbox" class="row-check" data-id="${producto.art_id}"></td>
                 <td>${producto.cod_art}</td>
                 <td>${producto.des_com}</td>
                 <td>
-                    <input type="number" value="${parseFloat(producto.p_venta).toFixed(N2decimal)}" min="0" step="0.01"
-                        data-id="${producto.art_id}" class="form-control text-end precio-input" style="width: auto; min-width: 30px; text-align: right;" 
-                        onblur="javascript:return formatearDecimal(this,N2decimal)"  />
+                    <img src="/imagenes/A0002_G-01.jpg" alt="Producto" width="50" 
+                        class="img-thumbnail" onclick="abrirGaleria(['A0002_G-01.jpg', 'A0002_G-02.jpg', 'A0002_G-03.jpg'])">
                 </td>
-                <td>
-                    <button class="btn btn-danger btn-sm d-flex align-items-center btn-delete" data-id="${producto.pcli_id}">
-                        Eliminar
-                    </button>
-                </td>
+                
             `;
 
             tbody.appendChild(row);
@@ -277,11 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
  
-    
 
-    if (btnAgregar) {  // Verifica si el botón existe
-        btnAgregar.addEventListener("click", agregarProducto);
-    }
     if (btnGuardar) {  // Verifica si el botón existe
         btnGuardar.addEventListener("click", guardarEnServidor);
     }
@@ -289,5 +243,93 @@ document.addEventListener("DOMContentLoaded", function () {
     if (dataGrid) {  // Verifica si el botón existe
         actualizarTabla();
     }
+
+
+    
     
 });
+
+
+function toggleSelectAll(checkbox) {
+    let checkboxes = document.querySelectorAll(".row-check");
+    checkboxes.forEach(cb => {
+        cb.checked = checkbox.checked;
+        almacenarSeleccion(cb.dataset.id, checkbox.checked);
+    });
+}
+
+
+
+// Función para almacenar en sessionStorage los checkboxes seleccionados
+function almacenarSeleccion(id, isChecked) {
+    let seleccionados = JSON.parse(sessionStorage.getItem("seleccionados")) || [];
+    
+    if (isChecked) {
+        if (!seleccionados.includes(id)) {
+            seleccionados.push(id);
+        }
+    } else {
+        seleccionados = seleccionados.filter(item => item !== id);
+    }
+    
+    sessionStorage.setItem("seleccionados", JSON.stringify(seleccionados));
+}
+
+// Función para cargar los checkboxes seleccionados al recargar la página
+function cargarSeleccionados() {
+    let seleccionados = JSON.parse(sessionStorage.getItem("seleccionados")) || [];
+    
+    document.querySelectorAll(".row-check").forEach(cb => {
+        if (seleccionados.includes(cb.dataset.id)) {
+            cb.checked = true;
+        }
+        
+        cb.addEventListener("change", function () {
+            almacenarSeleccion(this.dataset.id, this.checked);
+            actualizarSeleccionGlobal();
+        });
+    });
+}
+
+// Función para actualizar el estado del checkbox "Seleccionar todo"
+function actualizarSeleccionGlobal() {
+    let checkboxes = document.querySelectorAll(".row-check");
+    let checkAll = document.getElementById("selectAll");
+
+    let total = checkboxes.length;
+    let seleccionados = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+    checkAll.checked = (seleccionados === total);
+}
+
+// Función para filtrar la tabla dinámicamente sin perder selección
+function filtrarTabla() {
+    let searchValue = document.getElementById("txtCodigoProducto").value.toLowerCase();
+    let filas = document.querySelectorAll("#TbG_Tiendas tbody tr");
+
+    filas.forEach(fila => {
+        let textoFila = fila.innerText.toLowerCase();
+        fila.style.display = textoFila.includes(searchValue) ? "" : "none";
+    });
+}
+
+function abrirGaleria(imagenes) {
+    let carouselInner = document.getElementById("carouselInner");
+    carouselInner.innerHTML = "";
+
+    imagenes.slice(0, 3).forEach((img, index) => {
+        let activeClass = index === 0 ? "active" : "";
+        //let imgPath = `/opt/webapps/productos/${img}`;
+        let imgPath = `/imagenes/${img}`;
+
+        let item = `
+            <div class="carousel-item ${activeClass}">
+                <img src="${imgPath}" class="d-block w-100 img-fluid" alt="Imagen">
+            </div>
+        `;
+        carouselInner.innerHTML += item;
+    });
+
+    new bootstrap.Modal(document.getElementById("modalGaleria")).show();
+}
+

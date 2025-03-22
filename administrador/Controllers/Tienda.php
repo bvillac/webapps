@@ -140,9 +140,12 @@ class Tienda extends Controllers
     
             // Consultar datos del cliente
             $data = $this->model->consultarDatosId($ids);
+            putMessageLogFile($data);
     
             // Consultar productos del cliente
-            //$data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Ids']);
+            $data['TiendaId']=$ids;
+            $data['tiendas'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
+            $data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Cli_Ids']);
             $data['nombreCliente'] = htmlspecialchars($data['RazonSocial'], ENT_QUOTES, 'UTF-8');
           
             // Cargar vista

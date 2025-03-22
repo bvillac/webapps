@@ -23,17 +23,26 @@ class TiendaModel extends MysqlPedidos
         return $this->select_all($sql);
     }
 
-    // 🔹 Consultar datos de un salón por ID
     public function consultarDatosId(int $Ids)
     {
-        $sql = "SELECT a.tie_id AS Ids, a.tie_nombre AS NombreTienda, a.tie_direccion AS Direccion,a.tie_telefono as Telefono,a.tie_lug_entrega as LugarEntrega,
+        try {
+            $sql = "SELECT a.tie_id AS Ids, a.tie_nombre AS NombreTienda, a.tie_direccion AS Direccion,a.tie_telefono as Telefono,a.tie_lug_entrega as LugarEntrega,
                        a.tie_cupo AS Cupo, b.cli_razon_social AS RazonSocial, a.fec_ini_ped as FecIni, a.fec_fin_ped as FecFin,
                        a.tie_contacto AS ContactoTienda, a.tie_est_log AS Estado,date(a.tie_fec_cre) as FechaIngreso,a.cli_id as Cli_Ids
                 FROM {$this->db_name}.tienda a
                 INNER JOIN {$this->db_nameAdmin}.cliente b ON a.cli_id = b.cli_id
                 WHERE a.tie_est_log != 0 and a.tie_id= :ids ";
 
-        return $this->select($sql, [":ids" => $Ids]);
+            $resultado = $this->select($sql, [":ids" => $Ids]);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para Ids: $Ids", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarDatosId: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
     }
 
     public function insertData(array $dataObj)

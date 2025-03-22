@@ -2,6 +2,7 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
+require_once "Views/Tienda/Modals/modalGaleria.php";
 ?>
 <script>
     const productos = <?php echo json_encode($data['ClienteProducto']); ?>;
@@ -26,51 +27,57 @@ adminMenu($data);
         <input type="hidden" id="txth_art_id" name="txth_art_id" value="">
         <input type="hidden" id="txth_cod_art" name="txth_cod_art" value="0">
         <input type="hidden" id="txth_i_m_iva" name="txth_i_m_iva" value="0">
-        
-        <div class="col-md-3">
-            <div class="tile"> 
-                <h3 class="mb-3 line-head" id="type-blockquotes">Cliente: <?= $data['nombreCliente'] ?></h3>         
-                <div class="form-group col-md-12">
-                    <label class="control-label">Buscar Productos <span class="required">*</span></label>
-                    <div class="input-group">
-                        <input class="form-control" id="txt_CodigoProducto" name="txt_CodigoProducto" type="text"
-                            required="" placeholder="Buscar por Nombre o Código">
-                    </div>
-                </div>
-                
-                <div class="form-group col-md-12">
-                    <label class="control-label">Precio US$ <span class="required">*</span></label>
-                    <div class="input-group">
-                        <input class="form-control valid validarDecimal" id="txt_PrecioProducto" name="txt_PrecioProducto" type="text" value="0.00"
-                            required="" placeholder="0.00" >
-                    </div>
-                </div>
-
-                <div class="form-group col-md-12">
-                    <button type="button" class="btn btn-dark" id="btnAgregar"><i
-                            class="fa fa-magnifying-glass"></i>Agregar</button>
-                </div>
-
-            </div>
-        </div>
 
 
-        <div class="col-md-9">
+
+
+        <div class="col-md-12">
             <div class="tile">
                 <div id="list_tables">
-                    <h3 class="tile-title">Productos</h3>
-                    <button id="btnGuardar" class="btn btn-success" type="button" ><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
-                    <button id="btn_retornar" class="btn btn-danger" type="button"> Retornar</button>
+                    <h3 class="mb-3 line-head" id="type-blockquotes">Cliente: <?= $data['nombreCliente'] ?></h3>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                 
+                            <label for="cmb_tiendas">Tiendas/Clientes</label>
+                            <select class="form-control" data-live-search="true" id="cmb_tiendas" name="cmb_tiendas" required="">
+                                <?php
+                                // Recorre el array y genera las opciones del select
+                                echo '<option value="0">SELECCIONAR</option>';
+                                foreach ($data['tiendas'] as $opcion) {
+                                    $seleted=($opcion['Ids']==$data['TiendaId'])?'selected':'';
+                                    echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['Nombre'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        
+                    </div>
+
+
+
+                    <div class="col">
+
+                        <label class="control-label">Buscar Producto</label>
+                        <div class="input-group">
+                            <input class="form-control" id="txtCodigoProducto" name="txtCodigoProducto" type="text"
+                                required="" placeholder="Buscar Producto" oninput="filtrarTabla()">
+                            <button id="cmd_buscarDatos" class="btn btn-primary" onclick="openModalBuscarPersona();"
+                                type="button"><i class=" fa fa-search-plus"></i> Buscar</button>
+                        </div>
+
+                    </div>
+
                 </div>
                 <br>
-
+                <h3 class="tile-title">Productos</h3>
                 <table class="table table-striped table-bordered table-hover" id="TbG_Tiendas">
                     <thead>
                         <tr>
+                            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
                             <th>Codigo</th>
                             <th>Item</th>
-                            <th>Precio</th>
-                            <th></th>
+                            <th>Img</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,8 +87,8 @@ adminMenu($data);
 
 
             </div>
-          
-            
+
+
         </div>
     </div>
 </main>

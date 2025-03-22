@@ -42,20 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnAgregar = document.getElementById("btnAgregar");
 
 
-    // Evento cuando pierde el foco (blur)
-    precioInput.addEventListener("blur", function () {
-        formatearDecimal(precioInput,N2decimal);
-        btnAgregar.focus(); // Pasar el foco al botón Agregar
-    });
 
-    // Evento cuando se presiona Enter
-    precioInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault(); // Evita que el formulario se envíe si está dentro de uno
-            formatearDecimal(precioInput,N2decimal);
-            btnAgregar.focus(); // Pasar el foco al botón Agregar
-        }
-    });
 
 
 
