@@ -21,6 +21,8 @@
 <script type="text/javascript" src="<?= media(); ?>/js/plugins/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<?= media(); ?>/js/plugins/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript" src="<?= media(); ?>/js/plugins/bootstrap-select.min.js"></script>
+<!-- Galeria -->
+<script type="text/javascript" src="<?= media(); ?>/js/bootstrap.bundle.min.js"></script>
 <!-- Data table plugin Exportar-->
 <script type="text/javascript" src="<?= media(); ?>/js/cdn/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="<?= media(); ?>/js/cdn/jszip.min.js"></script>

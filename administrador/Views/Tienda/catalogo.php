@@ -34,10 +34,11 @@ require_once "Views/Tienda/Modals/modalGaleria.php";
         <div class="col-md-12">
             <div class="tile">
                 <div id="list_tables">
-                    <h3 class="mb-3 line-head" id="type-blockquotes">Cliente: <?= $data['nombreCliente'] ?></h3>
+                    <h3 class="mb-3 line-head" id="type-blockquotes">Cliente: <?= $data['nombreCliente'] ?></h3>                    
                 </div>
 
                 <div class="row">
+                    
                     <div class="col">
                  
                             <label for="cmb_tiendas">Tiendas/Clientes</label>
@@ -69,6 +70,8 @@ require_once "Views/Tienda/Modals/modalGaleria.php";
                     </div>
 
                 </div>
+                <br>
+                <button id="btnGuardar" class="btn btn-success" type="button" ><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
                 <br>
                 <h3 class="tile-title">Productos</h3>
                 <table class="table table-striped table-bordered table-hover" id="TbG_Tiendas">

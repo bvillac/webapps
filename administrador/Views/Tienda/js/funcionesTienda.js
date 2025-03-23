@@ -42,12 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnAgregar = document.getElementById("btnAgregar");
 
 
-
-
-
-
-
-
 });
 
 
