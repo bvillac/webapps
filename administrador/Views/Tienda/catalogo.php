@@ -1,7 +1,7 @@
 <?php
 adminHeader($data);
 adminMenu($data);
-//filelang(Setlanguage,"general") 
+//filelang(Setlanguage,"general"); 
 require_once "Views/Tienda/Modals/modalGaleria.php";
 ?>
 <script>
@@ -62,7 +62,7 @@ require_once "Views/Tienda/Modals/modalGaleria.php";
                         <label class="control-label">Buscar Producto</label>
                         <div class="input-group">
                             <input class="form-control" id="txtCodigoProducto" name="txtCodigoProducto" type="text"
-                                required="" placeholder="Buscar Producto" oninput="filtrarTabla()">
+                                required="" placeholder="Buscgitar Producto" oninput="filtrarTabla()">
                             <button id="cmd_buscarDatos" class="btn btn-primary" onclick="openModalBuscarPersona();"
                                 type="button"><i class=" fa fa-search-plus"></i> Buscar</button>
                         </div>
@@ -71,7 +71,7 @@ require_once "Views/Tienda/Modals/modalGaleria.php";
 
                 </div>
                 <br>
-                <button id="btnGuardar" class="btn btn-success" type="button" ><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
+                <button id="btn_GuardarTienda" class="btn btn-success" type="button" ><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
                 <br>
                 <h3 class="tile-title">Productos</h3>
                 <table class="table table-striped table-bordered table-hover" id="TbG_Tiendas">

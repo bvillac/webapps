@@ -195,8 +195,8 @@ $(document).ready(function () {
     $("#btn_retornar").click(function () {
         //const tbody = document.querySelector(`#TbG_Tiendas tbody`);
         //tbody.innerHTML = "";        
-        eliminarClavesSessionStorage("dts_precioTienda");
-        //limpiarSessionStorage();
+        //eliminarClavesSessionStorage("dts_precioTienda");
+        limpiarSessionStorage();
         window.location = base_url + '/clientePedido';//Retorna al Portal Principal
     });
 

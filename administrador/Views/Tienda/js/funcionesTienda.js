@@ -50,6 +50,24 @@ $(document).ready(function () {
         guardarTienda();
     });
 
+    const checkboxes = document.querySelectorAll(".row-check");
+
+    // Asocia el evento "change" a cada checkbox
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            // Obtiene el id del checkbox desde el atributo data-id
+            const id = this.getAttribute("data-id");
+            // Obtiene el estado actual del checkbox (true si está marcado)
+            const isChecked = this.checked;
+
+            // Llama a la función y le pasa los parámetros
+            almacenarSeleccion(id, isChecked);
+
+            // Para fines de depuración, imprime el contenido de sessionStorage
+            console.log("Seleccionados:", sessionStorage.getItem("seleccionados"));
+        });
+    });
+
 
 });
 

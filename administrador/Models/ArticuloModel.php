@@ -206,6 +206,68 @@ class ArticuloModel extends MysqlPedidos
     }
 
 
+    public function guardarProductoTienda(array $productos, $tienda_id)
+    {
+        $con = $this->getConexion(); // Obtiene la conexión a la base de datos
+        $arroout = ["status" => false, "message" => "No se realizó ninguna operación."];
+
+        try {
+            $con->beginTransaction(); // Inicia una transacción
+            foreach ($productos as $producto) {
+                // Verificar si el producto ya existe para el cliente
+                $sqlCheck = "SELECT artie_id FROM {$this->db_name}.articulo_tienda WHERE pcli_id = :pcli_id AND tie_id = :tie_id";
+                $stmtCheck = $con->prepare($sqlCheck);
+                $stmtCheck->execute([
+                    ':pcli_id' => $producto,
+                    ':tie_id' => $tienda_id
+                ]);
+                $result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+                if ($result) {
+                    // Actualizar si ya existe
+                    $sqlUpdate = "UPDATE {$this->db_name}.articulo_tienda 
+                              SET artie_est_log = 1, 
+                                  artie_fec_mod = CURRENT_TIMESTAMP 
+                              WHERE artie_id = :artie_id";
+                    $stmtUpdate = $con->prepare($sqlUpdate);
+                    $stmtUpdate->execute([
+                        ':artie_id' => $result['artie_id']
+                    ]);
+                } else {
+                    // Insertar si no existe
+                    $sqlInsert = "INSERT INTO {$this->db_name}.articulo_tienda 
+                              (tie_id, pcli_id,  artie_est_log, artie_fec_cre) 
+                              VALUES (:tie_id, :pcli_id,  1, CURRENT_TIMESTAMP)";
+                    $stmtInsert = $con->prepare($sqlInsert);
+                    $stmtInsert->execute([
+                        ':tie_id' => $tienda_id,
+                        ':pcli_id' => $producto
+                    ]);
+                }
+            }
+            $this->actualizaItemsTiendas($con,$tienda_id,$productos);
+            $con->commit(); // Confirma la transacción
+            return ["status" => true, "message" => "Registros guardados correctamente."];
+
+        } catch (Exception $e) {
+            $con->rollBack(); // Revierte la transacción en caso de error
+            logFileSystem("Error en guardarProductosCliente: " . $e->getMessage(), "ERROR");
+            return ["status" => false, "message" => "Error en la operación: " . $e->getMessage()];
+        }
+    }
+
+    private function actualizaItemsTiendas($con, $tieId, $array)
+    {
+        $intArray = array_map('intval', $array);//lo lleva a entero 
+        $result = implode(",", $intArray);//los separa por comas
+        $sqlUpdate = "UPDATE {$this->db_name}.articulo_tienda SET artie_est_log=0 WHERE tie_id=:tie_id AND pcli_id NOT IN($result)";
+        $stmtUpdate = $con->prepare($sqlUpdate);
+        $stmtUpdate->execute([
+            ':tie_id' => $tieId
+        ]);
+    }
+
+
+
 
 
 

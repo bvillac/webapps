@@ -76,6 +76,24 @@ class ClientePedido extends Controllers
             return $this->model->$modelMethod($datos);
         });
     }
+    
+    private function processFormRequest($callback)
+    {
+        if ($_POST) {
+            $datos = json_decode($_POST['dataObj'] ?? '{}', true);
+            $accion = $_POST['accion'] ?? "";
+            if (empty($datos) || empty($accion)) {
+                die(json_encode(["status" => false, "msg" => "Datos incorrectos"]));
+            }
+            $request = $callback($datos, $accion);
+            echo json_encode([
+                "status" => $request["status"],
+                "numero" => $request["status"] ? ($accion == "Create" ? $request["numero"] : 0) : "",
+                "msg" => $request["status"] ? "Datos guardados correctamente" : "Error al guardar datos"
+            ]);
+        }
+        exit();
+    }
 
     public function delCliente()
     {
@@ -103,23 +121,6 @@ class ClientePedido extends Controllers
 
     
 
-    private function processFormRequest($callback)
-    {
-        if ($_POST) {
-            $datos = json_decode($_POST['dataObj'] ?? '{}', true);
-            $accion = $_POST['accion'] ?? "";
-            if (empty($datos) || empty($accion)) {
-                die(json_encode(["status" => false, "msg" => "Datos incorrectos"]));
-            }
-            $request = $callback($datos, $accion);
-            echo json_encode([
-                "status" => $request["status"],
-                "numero" => $request["status"] ? ($accion == "Create" ? $request["numero"] : 0) : "",
-                "msg" => $request["status"] ? "Datos guardados correctamente" : "Error al guardar datos"
-            ]);
-        }
-        die();
-    }
 
     public function buscarAutoCliente()
 	{

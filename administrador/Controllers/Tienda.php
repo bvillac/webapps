@@ -8,6 +8,7 @@ class Tienda extends Controllers
         parent::__construct();
         sessionStart();
         getPermisos();
+
     }
 
 
@@ -137,10 +138,10 @@ class Tienda extends Controllers
             }
             // Datos para la vista
             $data = getPageData("Catálogo de Productos", "tienda");
+            putMessageLogFile($this->lang["title"]);
     
             // Consultar datos del cliente
             $data = $this->model->consultarDatosId($ids);
-            putMessageLogFile($data);
     
             // Consultar productos del cliente
             $data['TiendaId']=$ids;
@@ -155,6 +156,57 @@ class Tienda extends Controllers
             // Registrar error en log
             logFileSystem("Error en consutla Catalogo: " . $e->getMessage(),"ERROR");
             exit;
+        }
+    }
+
+
+    public function guardarListaProductosTienda() {
+        try {
+            $json = file_get_contents("php://input");
+            $data = json_decode($json, true);
+
+            checkPermission('r', 'dashboard');
+
+            //body: JSON.stringify({ productosCheck, tienda_id, accion })
+
+            if (empty($data['productosCheck']) || !is_array($data['productosCheck']) || 
+                empty($data['accion']) || !isset($data['tienda_id']) || 
+                !filter_var($data['tienda_id'], FILTER_VALIDATE_INT)) {
+                        $arrResponse = ["status" => false, "msg" => "Datos inválidos."];                        
+            } else {
+                // Procesar la lógica cuando los datos son válidos
+                $tienda_id = isset($data['tienda_id']) ? filter_var( $data['tienda_id'], FILTER_VALIDATE_INT) : 0;
+                $productos = isset($data['productosCheck']) ? $data['productosCheck'] : array();
+                $accion = isset($data['accion']) ? $data['accion'] : "";
+                if ($accion == "Create") {
+                    $option = 1;
+                    if ($_SESSION['permisosMod']['w']) {
+                        //$request = $this->model->insertData($datos);
+                        $modelArticulo = new ArticuloModel();
+                        putMessageLogFile($productos);
+                        $request=$request=$modelArticulo->guardarProductoTienda($productos,$tienda_id );
+                    }
+                } else {
+                    $option = 2;
+                    if ($_SESSION['permisosMod']['u']) {
+                        //$request = $this->model->updateData($datos);
+                    }
+                }
+                if ($request["status"]) {
+                    if ($option == 1) {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
+                    } else {
+                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos Actualizados correctamente.');
+                    }
+                } else {
+                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos: ' . $request["message"]);
+                }
+            }
+
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            logFileSystem("Error en guardarListaProductos: " . $e->getMessage(), "ERROR");
+            echo json_encode(["status" => false, "msg" => $e->getMessage()]);
         }
     }
 

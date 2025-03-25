@@ -34,7 +34,8 @@ function cdnTableLink()
 //Archivo de Idiomas
 function filelang($lang = "es", $file = "general")
 {
-    $langRuta = "messages/{$lang}/{$file}.php";
+    $langRuta =  "messages/{$lang}/{$file}.php";
+    //$langRuta =  __DIR__  ."/../messages/{$lang}/{$file}.php";
     //echo $langRuta;
     require_once($langRuta);
 }
@@ -630,7 +631,7 @@ function getPageData($title, $back)
 {
     return [
         'page_tag' => $title,
-        'page_name' => $title,
+        'page_name' => $varlang['title'],
         'page_title' => "$title <small> " . htmlspecialchars($_SESSION['empresaData']['NombreComercial'], ENT_QUOTES, 'UTF-8') . "</small>",
         'page_back' => $back
     ];

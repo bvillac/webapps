@@ -338,13 +338,13 @@ function estadoLogico(estado) {
 function eliminarClavesSessionStorage(...claves) {
     claves.forEach(clave => sessionStorage.removeItem(clave));// Elimina solo las que se pasan por parametros
     claves.forEach(clave => localStorage.removeItem(clave));// Elimina solo las que se pasan por parametros
-    console.log(`Se eliminaron las claves: ${claves.join(", ")}`);
+    //console.log(`Se eliminaron las claves: ${claves.join(", ")}`);
 }
 
 function limpiarSessionStorage() {
     sessionStorage.clear(); // Elimina todos los datos almacenados en sessionStorage
     localStorage.clear(); // Elimina todos los datos almacenados en sessionStorage
-    console.log("Sesión limpiada correctamente.");
+    //console.log("Sesión limpiada correctamente.");
 }
 
   

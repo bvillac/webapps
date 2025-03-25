@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#txt_CodigoProducto").autocomplete({
         source: async function (request, response) {
             try {
-                const link = `${base_url}/Tienda/buscarAutoProducto`;
+                const link = `${base_url}/clientePedido/buscarAutoProducto`;
     
                 const res = await fetch(link, {
                     method: 'POST',
@@ -231,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
             if (data.status) {
                 swal("Éxito", data.msg, "success");
+                
                 //window.location = base_url + '/clientePedido';
             } else {
                 swal("Error", data.msg, "error");

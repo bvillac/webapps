@@ -1,19 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     const tGrid = "TbG_Tiendas";
     const storageKey = "dts_precioTienda";
-    const btnGuardar = document.getElementById("btnGuardar");
+    const btnGuardar = document.getElementById("btn_GuardarTienda");
     const dataGrid = document.getElementById("TbG_Tiendas");
-    
-
-   
     
 
     function obtenerProductosGuardados() {
         return JSON.parse(sessionStorage.getItem(storageKey)) || [];
-    }
-
-    function guardarProductosEnStorage(productos) {
-        sessionStorage.setItem(storageKey, JSON.stringify(productos));
     }
 
     function actualizarTabla() {
@@ -31,7 +24,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 try {
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <td><input type="checkbox" class="row-check" data-id="${producto.art_id}"></td>
+                        <td>
+                            <input type="checkbox" class="row-check" data-id="${producto.pcli_id}">
+                        </td>
                         <td>${producto.cod_art}</td>
                         <td>${producto.des_com}</td>
                         <td>
@@ -40,32 +35,53 @@ document.addEventListener("DOMContentLoaded", function () {
                         </td>
                     `;
                     tbody.appendChild(row);
+    
+                    // Recuperar el checkbox recién agregado
+                    const checkbox = row.querySelector(".row-check");
+    
+                    // Restaurar la selección según sessionStorage
+                    let seleccionados = JSON.parse(sessionStorage.getItem("seleccionados")) || [];
+                    if (seleccionados.includes(String(producto.art_id))) {
+                        checkbox.checked = true;
+                    }
+    
+                    // Adjuntar el evento change al checkbox
+                    checkbox.addEventListener("change", function () {
+                        almacenarSeleccion(this.getAttribute("data-id"), this.checked);
+                        actualizarSeleccionGlobal();
+                        //console.log("Seleccionados:", sessionStorage.getItem("seleccionados"));
+                    });
                 } catch (error) {
                     console.error("Error al agregar la fila a la tabla:", error);
                 }
             });
         });
     }
+    
+
+
 
     async function guardarEnServidor() {
-        const productos = obtenerProductosGuardados();
-        const idsCliente = $('#txth_ids').val()?.trim(); // Elimina espacios en blanco
+        //const productos = obtenerProductosGuardados();
+        const productosCheck = JSON.parse(sessionStorage.getItem("seleccionados")) || [];
+
+        //const idsCliente = $('#txth_ids').val()?.trim(); // Elimina espacios en blanco
+        const tienda_id = $('#cmb_tiendas').val();
         const accion = "Create";
     
         // Verificar si idsCliente tiene un valor válido antes de continuar
-        if (!idsCliente) {
-            console.warn("ID de cliente no válido o vacío.");
-            swal("Atención", "Todos los campos son obligatorios.", "error");
+        if (tienda_id == '0') {
+            swal("Atención", "Debe seleccinar una tienda.", "error");
             return;
         }
     
         try {
-            $("#btnGuardar").prop("disabled", true); // Deshabilita el botón mientras se guarda
+            $("#btn_GuardarTienda").prop("disabled", true); // Deshabilita el botón mientras se guarda
     
-            const response = await fetch(base_url + "/ClientePedido/guardarListaProductos", {
+            const response = await fetch(base_url + "/tienda/guardarListaProductosTienda", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ productos, idsCliente, accion })
+                body: JSON.stringify({ productosCheck, tienda_id, accion })
             });
     
             const data = await response.json();
@@ -80,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error al guardar:", err);
             swal("Error", "Hubo un problema al guardar los productos.", "error");
         } finally {
-            $("#btnGuardar").prop("disabled", false); // Habilita el botón nuevamente
+            $("#btn_GuardarTienda").prop("disabled", false); // Habilita el botón nuevamente
         }
     }
 
@@ -110,7 +126,7 @@ function toggleSelectAll(checkbox) {
 // Función para almacenar en sessionStorage los checkboxes seleccionados
 function almacenarSeleccion(id, isChecked) {
     let seleccionados = JSON.parse(sessionStorage.getItem("seleccionados")) || [];
-    alert("llego");
+
     if (isChecked) {
         if (!seleccionados.includes(id)) {
             seleccionados.push(id);
