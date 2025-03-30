@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header headerRegister"><!-- Cambiar de color-->
         <h5 class="modal-title" id="titleModal">Nuevo Rol</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -30,7 +30,7 @@
                     <span id="btnText">Guardar</span>
                   </button>
                   &nbsp;&nbsp;&nbsp;
-                  <a class="btn btn-secondary" href="#" data-dismiss="modal" >
+                  <a class="btn btn-secondary" href="#" data-bs-dismiss="modal" >
                     <i class="fa fa-fw fa-lg fa-times-circle"></i>Cancelar
                   </a>
                 </div>

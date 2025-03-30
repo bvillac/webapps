@@ -5,7 +5,7 @@
       <div class="modal-header headerRegister">
         <!-- Cambiar de color-->
         <h5 class="modal-title" id="titleModal">Nuevo Registro</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -99,7 +99,7 @@
 
           <div class="tile-footer">
             <button id="btnActionForm" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
-            <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+            <button class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
           </div>
 
         </form>
@@ -115,7 +115,7 @@
     <div class="modal-content">
       <div class="modal-header header-primary">
         <h5 class="modal-title" id="titleModal">Usuarios</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -167,7 +167,69 @@
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal modalEmpresa -->
+<div class="modal fade" id="modalEmpresa" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header header-primary">
+        <h5 class="modal-title" id="titleModal">Asignar Usuario Empresas</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td>Identificación Dni:</td>
+              <td id="lbl_dni_e"></td>
+            </tr>
+            <tr>
+              <td>Nombres:</td>
+              <td id="lbl_nombres_e"></td>
+            </tr>
+            <tr>
+              <td>Empresa:</td>
+              <td>
+                  <label for="multiple-select" class="form-label">Selecciona categorías:</label>
+            
+                  <select class="form-select" multiple data-live-search="true" id="multiple-select"  required="">
+                            <?php
+                            foreach ($data['empresas'] as $opcion) {
+                                $seleted=0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
+                                echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['Nombre'] . '</option>';
+                            }
+                            ?>
+                  </select>
+                      
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                 
+
+                  <!-- Contenedor donde aparecerán las opciones seleccionadas -->
+                  <div id="selected-tags" class="tag-container"></div>
+
+                  <!-- Campo oculto para enviar los valores al backend -->
+                  <input type="hidden" name="selectedValues" id="selectedValues">
+              </td>
+            </tr>
+            
+            
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

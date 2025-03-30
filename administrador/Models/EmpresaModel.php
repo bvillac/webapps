@@ -233,5 +233,23 @@ class EmpresaModel extends Mysql
         }
 	}
 
+
+	public function consultarEmpresas() {
+		try {
+			$sql = "SELECT emp_id as Ids,emp_nombre_comercial as Nombre
+  						FROM {$this->db_name}.empresa where estado_logico!=0;";
+            $resultado = $this->select_all($sql);
+            if ($resultado === false) {
+                //logFileSystem("Consulta fallida para tie_id: $tie_id", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarEmpresas: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+
+    }
+
 }
 ?>

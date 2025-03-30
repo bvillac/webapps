@@ -173,7 +173,7 @@ require_once "Views/Instructor/Modals/modalPersona.php";
 
           <div class="text-center">
             <button id="cmd_guardar" class="btn btn-success" type="button" onclick="guardarInstructor('Create');"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
-            <button id="cmd_retornar" class="btn btn-danger" type="button" data-dismiss="modal"><i class="app-menu__icon fas fa-sign-out-alt" aria-hidden="true"></i> Retornar</button>
+            <button id="cmd_retornar" class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="app-menu__icon fas fa-sign-out-alt" aria-hidden="true"></i> Retornar</button>
           </div>
 
 

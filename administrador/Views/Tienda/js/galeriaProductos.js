@@ -39,9 +39,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Recuperar el checkbox recién agregado
                     const checkbox = row.querySelector(".row-check");
     
+          
                     // Restaurar la selección según sessionStorage
                     let seleccionados = JSON.parse(sessionStorage.getItem("seleccionados")) || [];
-                    if (seleccionados.includes(String(producto.art_id))) {
+                    if (seleccionados.includes(String(producto.pcli_id))) {
                         checkbox.checked = true;
                     }
     

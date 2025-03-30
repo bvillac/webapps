@@ -5,7 +5,7 @@
 			session_start();//iniciamos el uso de variables de session	
 			if(isset($_SESSION['loginEstado'])){//Veifica si existe la seesion
 				header('Location: '.base_url().'/dashboard');//Lo direciona al  dashboard
-				die();
+				exit();
 			}
 			
 		}
@@ -13,7 +13,7 @@
 		public function login(){
 			$data['page_tag'] = "Login";
 			$data['page_name'] = "Login";
-			$data['page_title'] = "Login <small> ".$_SESSION['empresaData']['NombreComercial'] ."</small>";
+			$data['page_title'] = "Login";
 			//dep($data);
 			$this->views->getView($this,"login",$data);
 		}

@@ -25,7 +25,7 @@ class Tienda extends Controllers
     public function consultarTienda()
     {
         checkPermission('r', 'dashboard');
-        $arrData = $this->model->consultarDatos([]);
+        $arrData = $this->model->consultarDatos();
         foreach ($arrData as &$objData) {
             $objData['Estado'] = $objData['Estado'] == 1
                 ? '<span class="badge badge-success">Activo</span>'
@@ -136,19 +136,23 @@ class Tienda extends Controllers
                 logFileSystem("Error Id es invalido: " ,"WARNING");
                 exit;
             }
+           
             // Datos para la vista
-            $data = getPageData("Catálogo de Productos", "tienda");
-            putMessageLogFile($this->lang["title"]);
+            $data=getPageData("Catálogo de Productos", "tienda");
+
     
             // Consultar datos del cliente
             $data = $this->model->consultarDatosId($ids);
+
     
             // Consultar productos del cliente
             $data['TiendaId']=$ids;
             $data['tiendas'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
             $data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Cli_Ids']);
+            $data['ProductoCheck'] = (new ArticuloModel())->consultarProductosTiendaCheck($ids);
+            
             $data['nombreCliente'] = htmlspecialchars($data['RazonSocial'], ENT_QUOTES, 'UTF-8');
-          
+            $data = array_merge($data, getPageData("Catálogo de Productos", "tienda"));
             // Cargar vista
             $this->views->getView($this, "catalogo", $data);
     
@@ -164,10 +168,7 @@ class Tienda extends Controllers
         try {
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
-
             checkPermission('r', 'dashboard');
-
-            //body: JSON.stringify({ productosCheck, tienda_id, accion })
 
             if (empty($data['productosCheck']) || !is_array($data['productosCheck']) || 
                 empty($data['accion']) || !isset($data['tienda_id']) || 
@@ -183,7 +184,6 @@ class Tienda extends Controllers
                     if ($_SESSION['permisosMod']['w']) {
                         //$request = $this->model->insertData($datos);
                         $modelArticulo = new ArticuloModel();
-                        putMessageLogFile($productos);
                         $request=$request=$modelArticulo->guardarProductoTienda($productos,$tienda_id );
                     }
                 } else {

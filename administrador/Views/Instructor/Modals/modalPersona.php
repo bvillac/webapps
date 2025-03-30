@@ -5,7 +5,7 @@
       <div class="modal-header headerRegister">
         <!-- Cambiar de color-->
         <h5 class="modal-title" id="titleModal">Nueva Persona</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -64,7 +64,7 @@
 
           <div class="tile-footer">
             <button id="cmd_guardarPersona" class="btn btn-success" type="button" onclick="guardarPersona();"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Agregar</button>
-            <button id="cmd_retornarPersona" class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle" aria-hidden="true"></i> Retornar</button>
+            <button id="cmd_retornarPersona" class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle" aria-hidden="true"></i> Retornar</button>
           </div>
 
         </form>

@@ -7,6 +7,8 @@ require_once "Views/Tienda/Modals/modalGaleria.php";
 <script>
     const productos = <?php echo json_encode($data['ClienteProducto']); ?>;
     sessionStorage.setItem('dts_precioTienda', JSON.stringify(productos));
+    const productosCheck = <?php echo json_encode($data['ProductoCheck']); ?>;
+    sessionStorage.setItem('seleccionados', JSON.stringify(productosCheck));
 </script>
 <div id="contentAjax"></div>
 <main class="app-content">

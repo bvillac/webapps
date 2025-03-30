@@ -267,6 +267,7 @@ function tiendaProducto($data = "")
 function getModal(string $nameModal, $data)
 {
     $view_modal = "Views/Template/Modals/{$nameModal}.php";
+    //$view_modal = "{$url}{$nameModal}.php";
     require_once $view_modal;
 }
 
@@ -309,7 +310,7 @@ function datosEmpresaEstablePunto(int $IdEmpresa)
 
 function sessionUsuario(int $idsUsuario)
 {
-    putMessageLogFile("paso sessionUsuario helpers");
+    //putMessageLogFile("paso sessionUsuario helpers");
     /*require_once("Models/LoginModel.php");
     $objLogin = new LoginModel();
     $request = $objLogin->sessionLogin($idsUsuario);
@@ -618,7 +619,7 @@ function checkPermission($type, $redirect)
 {
     if (empty($_SESSION['permisosMod'][$type])) {
         header("Location: " . base_url() . "/$redirect");
-        die();
+        exit();
     }
 }
 
@@ -629,10 +630,9 @@ function responseJson($status, $msg, $extra = [])
 }
 function getPageData($title, $back)
 {
-    return [
-        'page_tag' => $title,
-        'page_name' => $varlang['title'],
-        'page_title' => "$title <small> " . htmlspecialchars($_SESSION['empresaData']['NombreComercial'], ENT_QUOTES, 'UTF-8') . "</small>",
-        'page_back' => $back
-    ];
+    $data['page_tag']=$title;
+    $data['page_name']=$title;
+    $data['page_title']="$title <small> " . htmlspecialchars($_SESSION['empresaData']['NombreComercial'], ENT_QUOTES, 'UTF-8') . "</small>";
+    $data['page_back']=$back;
+    return $data;
 }

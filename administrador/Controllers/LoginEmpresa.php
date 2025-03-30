@@ -46,7 +46,7 @@ class LoginEmpresa extends Controllers
 		$data['empresa'] = $this->dataEmpresa;
 		$data['page_tag'] = "Login Empresa";
 		$data['page_name'] = "Login Empresa";
-		$data['page_title'] = "Login <small> " . $_SESSION['empresaData']['NombreComercial'] .  "</small>";
+		$data['page_title'] = "Login Empresa";
 		$data['page_back'] = "loginempresa";
 		//dep($data);
 		$this->views->getView($this, "loginempresa", $data);

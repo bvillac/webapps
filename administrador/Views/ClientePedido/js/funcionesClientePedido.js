@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
         
         "resonsieve": "true",
         "bDestroy": true,
-        "iDisplayLength": 10,//Numero Items Retornados
-        "order": [[0, "asc"]]  //Orden por defecto 1 columna
+        "iDisplayLength": numPaginado,//Numero Items Retornados
+        "order": [[0, orderBy]]  //Orden por defecto 1 columna
     });
 
 
@@ -199,20 +199,6 @@ $(document).ready(function () {
         limpiarSessionStorage();
         window.location = base_url + '/clientePedido';//Retorna al Portal Principal
     });
-
-    //Buscar Persona
-    /*$("#txtCodigoPersona").keyup(function (e) {
-        e.preventDefault();
-        let codigo = $(this).val();
-        if (codigo.length >= 4 && codigo != "") {
-            buscarPersonaDni(codigo);
-        }
-
-    });*/
-
-    
-
-
 
 
     $("#txt_CodigoPersona").autocomplete({

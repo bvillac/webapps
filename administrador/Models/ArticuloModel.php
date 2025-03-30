@@ -101,7 +101,6 @@ class ArticuloModel extends MysqlPedidos
                 $i_m_iva = $producto['i_m_iva'];
                 $por_des = $producto['por_des'];
                 $val_des = $producto['val_des'];
-                putMessageLogFile($producto);
 
                 // Verificar si el producto ya existe para el cliente
                 $sqlCheck = "SELECT pcli_id FROM {$this->db_name}.precio_cliente WHERE art_id = :art_id AND cli_id = :cli_id";
@@ -246,7 +245,7 @@ class ArticuloModel extends MysqlPedidos
             }
             $this->actualizaItemsTiendas($con,$tienda_id,$productos);
             $con->commit(); // Confirma la transacción
-            return ["status" => true, "message" => "Registros guardados correctamente."];
+            return ["status" => true, "numero" => 0,"message" => "Registros guardados correctamente."];
 
         } catch (Exception $e) {
             $con->rollBack(); // Revierte la transacción en caso de error
@@ -258,7 +257,7 @@ class ArticuloModel extends MysqlPedidos
     private function actualizaItemsTiendas($con, $tieId, $array)
     {
         $intArray = array_map('intval', $array);//lo lleva a entero 
-        $result = implode(",", $intArray);//los separa por comas
+        $result = implode( ",", $intArray);//los separa por comas
         $sqlUpdate = "UPDATE {$this->db_name}.articulo_tienda SET artie_est_log=0 WHERE tie_id=:tie_id AND pcli_id NOT IN($result)";
         $stmtUpdate = $con->prepare($sqlUpdate);
         $stmtUpdate->execute([
@@ -267,12 +266,21 @@ class ArticuloModel extends MysqlPedidos
     }
 
 
-
-
-
-
-
-
+    public function consultarProductosTiendaCheck($tie_id)
+    {
+        try {
+            $sql = "SELECT pcli_id FROM {$this->db_name}.articulo_tienda where artie_est_log !=0 and tie_id=:tie_id;";
+            $resultado = $this->select_all($sql, [":tie_id" => $tie_id]);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para tie_id: $tie_id", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return array_map(fn($item) => strval($item["pcli_id"]), $resultado);
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarProductosTiendaCheck: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
 
 
 

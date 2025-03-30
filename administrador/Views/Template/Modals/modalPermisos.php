@@ -3,7 +3,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title h4" >Permisos Roles </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
         </div>
@@ -81,7 +81,7 @@
                     </div>
                     <div class="text-center">
                         <button class="btn btn-success" type="submit"><i class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
-                        <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="app-menu__icon fas fa-sign-out-alt" aria-hidden="true"></i> Salir</button>
+                        <button class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="app-menu__icon fas fa-sign-out-alt" aria-hidden="true"></i> Salir</button>
                     </div>
                 </form>
               </div>

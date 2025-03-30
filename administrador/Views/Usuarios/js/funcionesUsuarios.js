@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     tableUsuarios = $('#tableUsuarios').dataTable({
         "aProcessing": true,
         "aServerSide": true,
+        "scrollCollapse": true,
+        "scrollY": '60vh',//400px para automatic
         "language": {
             "url": cdnTable
         },
@@ -203,12 +205,19 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+
+    
+
+    
+
+
+
+
+
 }, false);
 
 
-window.addEventListener('load', function () {
-    //fntRolAsig();
-}, false);
+
 
 //Se ejecuta en los eventos de Controles
 $(document).ready(function () {
@@ -391,4 +400,67 @@ function openModal() {
 function openModalPerfil() {
     $('#modalFormPerfil').modal('show');
 }
+
+
+
+
+function fntAsigEmpresaxxx(ids) {
+    var ids = ids;
+    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+    var ajaxUrl = base_url + '/Usuarios/getUsuario/' + ids;
+    request.open("GET", ajaxUrl, true);
+    request.send();
+    request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200) {
+            var objData = JSON.parse(request.responseText);
+            if (objData.status) {
+                var estadoReg = objData.data.Estado == 1 ?
+                    '<span class="badge badge-success">Activo</span>' :
+                    '<span class="badge badge-danger">Inactivo</span>';
+                var genero = objData.data.Genero == "M" ? 'Masculino' : 'Femenino';
+                document.querySelector("#lbl_dni").innerHTML = objData.data.Dni;
+                document.querySelector("#lbl_nombres").innerHTML = objData.data.Nombre + ' ' + objData.data.Apellido;
+                document.querySelector("#lbl_telefono").innerHTML = objData.data.Telefono;
+                document.querySelector("#lbl_direccion").innerHTML = objData.data.Direccion;
+                document.querySelector("#lbl_alias").innerHTML = objData.data.Alias;
+                document.querySelector("#lbl_usuario").innerHTML = objData.data.usu_correo;
+                document.querySelector("#lbl_genero").innerHTML = genero;
+                document.querySelector("#lbl_rol").innerHTML = objData.data.Rol;
+                document.querySelector("#lbl_estado").innerHTML = estadoReg;
+                document.querySelector("#lbl_fecIng").innerHTML = objData.data.FechaIng;
+                $('#modalViewUsu').modal('show');
+            } else {
+                swal("Error", objData.msg, "error");
+            }
+        }
+    }
+}
+
+function fntAsigEmpresa(ids) {
+    if (!ids) {
+        console.warn("ID del usurio no válido o vacío.");
+        swal("Atención", "No existe Referencia de ID usuario.", "error");
+        return;
+    }
+
+    let url = base_url + '/Usuarios/consultarUserID';
+    var metodo = 'POST';
+    var datos = { ids: ids };
+    peticionAjaxSSL(url, metodo, datos, function (data) {
+        // Manejar el éxito de la solicitud aquí
+        if (data.status) {
+            document.querySelector("#lbl_dni_e").innerHTML = data.data.Dni;
+            document.querySelector("#lbl_nombres_e").innerHTML = data.data.Nombre + ' ' + data.data.Apellido;
+            $('#modalEmpresa').modal('show');
+        } else {
+            swal("Atención", data.msg, "error");
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        // Manejar el error de la solicitud aquí
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+}
+
+
+
 

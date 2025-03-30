@@ -7,10 +7,8 @@ try {
 	//putMessageLogFile($controllerFile);
     if (file_exists($controllerFile)) {
         require_once($controllerFile);
-
         if (class_exists($controller)) {
             $instance = new $controller();
-
             if (method_exists($instance, $method)) {
                 $instance->{$method}($params);
                 exit();

@@ -29,7 +29,7 @@ class Controllers
         } else {
             // Manejo de error si el modelo no se encuentra
             // Puedes lanzar una excepción, registrar el error, o manejarlo de otra manera
-			//putMessageLogFile("Modelo '$modelName' no encontrado en '$modelPath'.");
+			putMessageLogFile("Modelo '$modelName' no encontrado en '$modelPath'.");
 			//logFileSystem("Modelo '$modelName' no encontrado en '$modelPath'.","ERROR");
 			//throw new Exception("Modelo no encontrado: " . $modelName);
         }

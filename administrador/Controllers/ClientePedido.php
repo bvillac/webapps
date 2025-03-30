@@ -11,11 +11,12 @@ class ClientePedido extends Controllers
     {
         parent::__construct();
         sessionStart();
-        getPermisos();
+        getPermisos();        
     }
 
     public function clientepedido()
     {
+    
         checkPermission('r', 'dashboard');
         $data = getPageData("Cliente", "clientepedido");
         $this->views->getView($this, "clientepedido", $data);

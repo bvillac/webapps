@@ -2,7 +2,7 @@
     adminHeader($data);
     adminMenu($data);  
      //filelang(Setlanguage,"general") 
-    //getModal('modalUsuarios',$data);
+    //getModal("Views/Usuarios/Modals/",'modalUsuarios',$data);
     require_once "Views/Usuarios/Modals/modalUsuarios.php"; 
 ?>
     <main class="app-content">

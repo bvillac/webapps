@@ -7,6 +7,7 @@ class Mysql extends Conexion
 	private $arrValues;
 	private $db_name;
 	private $db_nameAcad = DB_NAME_ACAD;
+	
 
 	function __construct()
 	{

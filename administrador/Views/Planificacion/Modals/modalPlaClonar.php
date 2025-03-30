@@ -5,7 +5,7 @@
       <div class="modal-header headerRegister">
         <!-- Cambiar de color-->
         <h5 class="modal-title" id="titleModal">Nuevo Salón</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -54,7 +54,7 @@
 
           <div class="tile-footer">
             <button id="cmd_clonar" class="btn btn-primary" type="button"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Clonar</span></button>&nbsp;&nbsp;&nbsp;
-            <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+            <button class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
           </div>
 
         </form>

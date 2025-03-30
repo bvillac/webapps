@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header headerRegister">
         <h5 class="modal-title" id="titleModal">Nuevo Producto</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -183,7 +183,7 @@
               </div>
               <div class="form-group">
                 <button id="btnActionForm" class="btn btn-primary " type="submit"><i class="fa fa-fw fa-lg fa fa-check-circle-o"></i><span id="btnText">Guardar</span></button>
-                <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle-o"></i>Cerrar</button>
+                <button class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle-o"></i>Cerrar</button>
               </div>
  
             </div>
@@ -212,7 +212,7 @@
     <div class="modal-content">
       <div class="modal-header header-primary">
         <h5 class="modal-title" id="titleModal">Datos del Producto</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -256,7 +256,7 @@
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

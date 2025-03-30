@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
         'buttons': [],
         "resonsieve": "true",
         "bDestroy": true,
-        "iDisplayLength": 10,//Numero Items Retornados
-        "order": [[1, "desc"]]  //Orden por defecto 1 columna
+        "iDisplayLength": numPaginado,//Numero Items Retornados
+        "order": [[1, orderBy]]  //Orden por defecto 1 columna
     });
 
 });
