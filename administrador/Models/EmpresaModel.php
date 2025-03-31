@@ -251,5 +251,69 @@ class EmpresaModel extends Mysql
 
     }
 
+
+
+
+	public function insertDataUsuarioEmpresa(array $dataObj)
+	{
+		$con = $this->getConexion(); // Obtiene la conexión a la base de datos
+		$arroout = ["status" => false, "message" => "No se realizó ninguna operación."];
+		try {
+			$con->beginTransaction(); // Inicia una transacción
+			$idsSeleccionado = explode(',', $dataObj['valores']);
+			foreach ($idsSeleccionado as $idsEmp) {
+				// Verificar si el producto ya existe para el cliente
+				$sqlCheck = "SELECT eusu_id FROM {$this->db_name}.empresa_usuario WHERE emp_id = :emp_id AND usu_id = :usu_id";
+				$stmtCheck = $con->prepare($sqlCheck);
+				$stmtCheck->execute([
+					':emp_id' => $idsEmp,
+					':usu_id' => $dataObj['usuIds']
+				]);
+				$result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+				if ($result) {
+					// Actualizar si ya existe
+					$sqlUpdate = "UPDATE {$this->db_name}.empresa_usuario 
+								SET estado_logico = 1, 
+									fecha_modificacion = CURRENT_TIMESTAMP 
+								WHERE eusu_id = :eusu_id";
+					$stmtUpdate = $con->prepare($sqlUpdate);
+					$stmtUpdate->execute([
+						':eusu_id' => $result['eusu_id']
+					]);
+				} else {
+					// Insertar si no existe
+					$sqlInsert = "INSERT INTO {$this->db_name}.empresa_usuario 
+								(emp_id, usu_id,  estado_logico, fecha_creacion) 
+								VALUES (:emp_id, :usu_id,  1, CURRENT_TIMESTAMP)";
+					$stmtInsert = $con->prepare($sqlInsert);
+					$stmtInsert->execute([
+						':usu_id' => $dataObj['usuIds'],
+						':emp_id' => $idsEmp
+					]);
+				}
+			}
+			$this->actualizaEmpresaUsuario($con, $dataObj['usuIds'], $dataObj['valores']);
+			$con->commit(); // Confirma la transacción
+			return ["status" => true, "numero" => 0, "message" => "Registros guardados correctamente."];
+
+		} catch (Exception $e) {
+			$con->rollBack(); // Revierte la transacción en caso de error
+			logFileSystem("Error en guardarProductosCliente: " . $e->getMessage(), "ERROR");
+			return ["status" => false, "message" => "Error en la operación: " . $e->getMessage()];
+		}
+	}
+
+	private function actualizaEmpresaUsuario($con, $UsuId, $valores)
+	{
+
+		$sqlUpdate = "UPDATE {$this->db_name}.empresa_usuario SET estado_logico=0 WHERE usu_id=:usu_id AND emp_id NOT IN($valores)";
+		$stmtUpdate = $con->prepare($sqlUpdate);
+		$stmtUpdate->execute([
+			':usu_id' => $UsuId
+		]);
+	}
+  
+
+
 }
 ?>

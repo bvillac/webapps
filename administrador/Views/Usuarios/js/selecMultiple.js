@@ -1,60 +1,58 @@
-document.addEventListener("DOMContentLoaded", function () {
-    let select = document.getElementById("multiple-select");
-    let selectedTagsContainer = document.getElementById("selected-tags");
-    let hiddenInput = document.getElementById("selectedValues");
+$(document).ready(function() {
+    let select = $('#multiple-select');
+    let selectedTagsContainer = $('#selected-tags');
+    let hiddenInput = $('#selectedValues');
 
-    // Cargar opciones desde el backend
-    /*fetch("get_options.php")
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(option => {
-                let opt = document.createElement("option");
-                opt.value = option.id;
-                opt.textContent = option.name;
-                select.appendChild(opt);
-            });
-        });*/
+    // Inicializar Select2 con AJAX para cargar opciones desde PHP
+    /*select.select2({
+        placeholder: "Selecciona opciones",
+        allowClear: true,
+        tags: true,
+        ajax: {
+            url: 'get_options.php',
+            dataType: 'json',
+            processResults: function (data) {
+                return { results: data };
+            }
+        }
+    });*/
 
-    // Manejar cambios en la selección
-    select.addEventListener("change", function () {
+    // Evento cuando el usuario selecciona un valor
+    select.on('change', function() {
         updateTags();
     });
 
+    // Función para actualizar etiquetas y el campo oculto
     function updateTags() {
-        selectedTagsContainer.innerHTML = "";
+        selectedTagsContainer.empty();
         let selectedValues = [];
-    
-        for (let option of select.selectedOptions) {
-            selectedValues.push(option.value);
-    
-            let tag = document.createElement("span");
-            tag.className = "tag";
-            tag.innerHTML = option.text + ' <span class="remove" onclick="removeTag(\'' + option.value + '\')">×</span><br>';
-            selectedTagsContainer.appendChild(tag);
-        }
-    
-        hiddenInput.value = selectedValues.join(",");
+
+        select.find(':selected').each(function() {
+            let value = $(this).val();
+            let text = $(this).text();
+
+            selectedValues.push(value);
+
+            let tag = $('<span class="tag"></span>').text(text);
+            let removeBtn = $('<span class="remove">×</span>').click(function() {
+                removeTag(value);
+            });
+
+            tag.append(removeBtn);
+            selectedTagsContainer.append(tag);
+        });
+
+        hiddenInput.val(selectedValues.join(","));
     }
 
-
-    
+    // Función para eliminar un tag seleccionado
+    function removeTag(value) {
+        select.find(`option[value="${value}"]`).prop('selected', false);
+        select.trigger('change');
+    }
 });
 
-
-
-function removeTag(value) {
-    let select = document.getElementById("multiple-select");
-    for (let option of select.options) {
-        if (option.value === value) {
-            option.selected = false;
-            break;
-        }
-    }
-    //updateTags();
-}
-
-
 function guardarSeleccion() {
-    let valores = document.getElementById("selectedValues").value;
+    let valores = $('#selectedValues').val();
     alert("Valores seleccionados: " + valores);
 }

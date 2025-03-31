@@ -14,6 +14,7 @@
           <input type="hidden" id="txth_ids" name="txth_ids" value="">
           <input type="hidden" id="txth_perids" name="txth_perids" value="">
           <input type="hidden" id="txth_eusuids" name="txth_eusuids" value="">
+          <input type="hidden" id="txth_usu_id" name="txth_usu_id" value="">
           <p class="text-primary">Todos los campos son obligatorios.</p>
           <div class="form-row">
             <div class="form-group col-md-6">
@@ -199,9 +200,8 @@
             <tr>
               <td>Empresa:</td>
               <td>
-                  <label for="multiple-select" class="form-label">Selecciona categorías:</label>
-            
-                  <select class="form-select" multiple data-live-search="true" id="multiple-select"  required="">
+                  <label for="multiple-select" class="form-label">Presione CTRL y haga clic para seleccionar varias opciones a la vez.:</label>
+                  <select class="form-select valid" multiple data-live-search="true" id="multiple-select"  required="">
                             <?php
                             foreach ($data['empresas'] as $opcion) {
                                 $seleted=0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
@@ -229,6 +229,7 @@
         </table>
       </div>
       <div class="modal-footer">
+        <button type="button" id="btn_GuardarEmpresa" class="btn btn-primary" >Guardar</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>

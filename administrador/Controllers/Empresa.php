@@ -351,4 +351,44 @@ class Empresa extends Controllers {
     }
 
 
+
+    public function ingresarUsuarioEmpresa()
+    {
+       
+        if ($_POST) {
+            //dep($_POST);
+            $data = recibirData($_POST['data']);
+            if (empty($data['dataObj']) || empty($data['accion'])) {
+                $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
+            } else {
+                $request = "";
+                $datos = isset($data['dataObj']) ? $data['dataObj'] : array();
+                $accion = isset($data['accion']) ? $data['accion'] : "";
+                if ($accion == "Create") {
+                    $option = 1;
+                    //if ($_SESSION['permisosMod']['w']) {
+                        $request = $this->model->insertDataUsuarioEmpresa($datos);
+                    //}
+                } else {
+                    //$option = 2;
+                    //if ($_SESSION['permisosMod']['u']) {
+                    //    $request = $this->model->updateData($datos);
+                    //}
+                }
+                if ($request["status"]) {
+                    if ($option == 1) {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
+                    } else {
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
+                    }
+                } else {
+                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
+                }
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+        exit();
+    }
+
+
 }

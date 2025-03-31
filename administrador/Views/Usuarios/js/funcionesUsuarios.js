@@ -228,6 +228,10 @@ $(document).ready(function () {
         }*/
     });
 
+    $("#btn_GuardarEmpresa").click(function () {
+        guardarAsignarUsuarioEmpresa();
+    });
+
 });
 
 $(document).ready(function () {
@@ -404,38 +408,6 @@ function openModalPerfil() {
 
 
 
-function fntAsigEmpresaxxx(ids) {
-    var ids = ids;
-    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    var ajaxUrl = base_url + '/Usuarios/getUsuario/' + ids;
-    request.open("GET", ajaxUrl, true);
-    request.send();
-    request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
-            var objData = JSON.parse(request.responseText);
-            if (objData.status) {
-                var estadoReg = objData.data.Estado == 1 ?
-                    '<span class="badge badge-success">Activo</span>' :
-                    '<span class="badge badge-danger">Inactivo</span>';
-                var genero = objData.data.Genero == "M" ? 'Masculino' : 'Femenino';
-                document.querySelector("#lbl_dni").innerHTML = objData.data.Dni;
-                document.querySelector("#lbl_nombres").innerHTML = objData.data.Nombre + ' ' + objData.data.Apellido;
-                document.querySelector("#lbl_telefono").innerHTML = objData.data.Telefono;
-                document.querySelector("#lbl_direccion").innerHTML = objData.data.Direccion;
-                document.querySelector("#lbl_alias").innerHTML = objData.data.Alias;
-                document.querySelector("#lbl_usuario").innerHTML = objData.data.usu_correo;
-                document.querySelector("#lbl_genero").innerHTML = genero;
-                document.querySelector("#lbl_rol").innerHTML = objData.data.Rol;
-                document.querySelector("#lbl_estado").innerHTML = estadoReg;
-                document.querySelector("#lbl_fecIng").innerHTML = objData.data.FechaIng;
-                $('#modalViewUsu').modal('show');
-            } else {
-                swal("Error", objData.msg, "error");
-            }
-        }
-    }
-}
-
 function fntAsigEmpresa(ids) {
     if (!ids) {
         console.warn("ID del usurio no válido o vacío.");
@@ -448,7 +420,8 @@ function fntAsigEmpresa(ids) {
     var datos = { ids: ids };
     peticionAjaxSSL(url, metodo, datos, function (data) {
         // Manejar el éxito de la solicitud aquí
-        if (data.status) {
+        if (data.status) {            
+            document.querySelector("#txth_usu_id").value = ids;
             document.querySelector("#lbl_dni_e").innerHTML = data.data.Dni;
             document.querySelector("#lbl_nombres_e").innerHTML = data.data.Nombre + ' ' + data.data.Apellido;
             $('#modalEmpresa').modal('show');
@@ -460,6 +433,48 @@ function fntAsigEmpresa(ids) {
         console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
     });
 }
+
+
+function guardarAsignarUsuarioEmpresa() {
+    let accion =  'Create'; //($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
+    let valores = $('#selectedValues').val();
+    alert("Valores seleccionados: " + valores);
+    let usuIds = $('#txth_usu_id').val();
+
+    if (usuIds == '0' || valores == '') {
+        swal("Atención", "Debe Seleccionar almenos una empresa.", "error");
+        return false;
+    }
+    let elementsValid = document.getElementsByClassName("valid");
+    for (let i = 0; i < elementsValid.length; i++) {
+        if (elementsValid[i].classList.contains('is-invalid')) {
+            swal("Atención", "Por favor verifique los campos ingresados (Color Rojo).", "error");
+            return false;
+        }
+    }
+
+    var dataObj = new Object();
+    dataObj.usuIds = usuIds;
+    dataObj.valores = valores;
+
+    let url = base_url + '/Empresa/ingresarUsuarioEmpresa';
+		var metodo = 'POST';
+		var dataPost = { accion: accion, dataObj: dataObj };
+		peticionAjaxSSL(url, metodo, dataPost, function (data) {
+			// Manejar el éxito de la solicitud aquí
+			if (data.status) {
+				swal("Tienda", data.msg, "success");
+                window.location = base_url + '/Tienda/tienda';
+			} else {
+				swal("Atención", data.msg, "error");
+			}
+
+		}, function (jqXHR, textStatus, errorThrown) {
+			// Manejar el error de la solicitud aquí
+			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+		});
+}
+
 
 
 
