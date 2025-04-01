@@ -21,7 +21,7 @@
             </div>
             <div class="form-group col-md-6">
               <label for="txt_mod_nombre">Nombre de Módulo</label>
-              <input type="text" class="form-control valid validText" id="txt_mod_nombre" name="txt_mod_nombre" onkeyup="TextMayus(this);"  required="" >
+              <input type="text" class="form-control valid validText" id="txt_mod_nombre" name="txt_mod_nombre"   required="" >
             </div>
           </div>
           <div class="form-row">

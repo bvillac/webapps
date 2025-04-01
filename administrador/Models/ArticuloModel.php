@@ -141,7 +141,7 @@ class ArticuloModel extends MysqlPedidos
             }
 
             $con->commit(); // Confirma la transacción
-            return ["status" => true, "message" => "Registros guardados correctamente."];
+            return ["status" => true,"numero"=>0, "message" => "Registros guardados correctamente."];
 
         } catch (Exception $e) {
             $con->rollBack(); // Revierte la transacción en caso de error

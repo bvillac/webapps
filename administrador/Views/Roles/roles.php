@@ -2,7 +2,8 @@
     adminHeader($data);
     adminMenu($data); 
     //filelang(Setlanguage,"general") 
-    getModal('modalRoles',$data);
+    //getModal('modalRoles',$data);
+    require_once "Views/Roles/Modals/modalRoles.php"; 
 ?>
     <div id="contentAjax"></div> 
     <main class="app-content">

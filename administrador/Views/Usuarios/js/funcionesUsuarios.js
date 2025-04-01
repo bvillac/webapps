@@ -208,11 +208,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     
 
-    
-
-
-
-
 
 }, false);
 
@@ -248,6 +243,7 @@ $(document).ready(function () {
     });
 
 });
+
 
 
 function fntRolAsig() {
@@ -442,6 +438,8 @@ function fntAsigEmpresa(ids) {
 // Función para seleccionar automáticamente los valores en el select
 function marcarSeleccionados(empresasSeleccionadas) {
     let select = document.getElementById("multiple-select");
+    let selectedTagsContainer = $("#selected-tags");
+    selectedTagsContainer.empty(); // 🔹 Borra todo el contenido
 
     // 🔸 Si el array está vacío, deseleccionamos todas las opciones
     if (empresasSeleccionadas.length === 0) {
@@ -455,6 +453,7 @@ function marcarSeleccionados(empresasSeleccionadas) {
     for (let option of select.options) {
         option.selected = empresasSeleccionadas.includes(option.value);
     }
+    $("#multiple-select").trigger("change");//le crea un evento change a control
 }
 
 

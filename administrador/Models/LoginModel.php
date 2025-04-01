@@ -104,7 +104,7 @@ class LoginModel extends Mysql
                 a.r, a.w, a.u, a.d   
             FROM {$this->db_name}.permiso a 
             INNER JOIN {$this->db_name}.modulo c ON a.mod_id = c.mod_id 
-            WHERE a.estado_logico != 0 AND a.eusu_id = :Eusu_id AND a.erol_id = :Erol_id";
+            WHERE a.estado_logico != 0 AND a.eusu_id = :Eusu_id AND a.erol_id = :Erol_id ORDER BY  c.mod_id";
 
 
 

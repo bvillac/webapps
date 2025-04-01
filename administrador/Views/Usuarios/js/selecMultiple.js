@@ -50,4 +50,7 @@ $(document).ready(function() {
         select.find(`option[value="${value}"]`).prop('selected', false);
         select.trigger('change');
     }
+
 });
+
+

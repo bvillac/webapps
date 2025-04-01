@@ -15,7 +15,7 @@
                 <input type="hidden" id="txth_rol_id" name="txth_rol_id" value="">
                 <div class="form-group">
                   <label class="control-label">Nombre</label>
-                  <input class="form-control" id="txt_rol_nombre" name="txt_rol_nombre" type="text" placeholder="Nombre del rol" onkeyup="TextMayus(this);" required="">
+                  <input class="form-control" id="txt_rol_nombre" name="txt_rol_nombre" type="text" placeholder="Nombre del rol"  required="">
                 </div>
                 <div class="form-group">
                     <label for="exampleSelect1">Estado</label>
