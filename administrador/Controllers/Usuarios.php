@@ -350,11 +350,13 @@ class Usuarios extends Controllers
 				$ids = intval(strClean($data['ids']));
 				$arrData = (new UsuariosModel())->consultarDatosId($ids);
 				
+				
 				if(empty($arrData)){
 					$arrResponse = array('status' => false, 'msg' => 'El usuario no se encontro.' ); 
 				}else{	
+					$arrData['empresas'] = (new EmpresaModel())->consultarEmpresaUsuarioAsingado($ids);
 					$arrResponse = array('status' => true, 'data' => $arrData);
-					putMessageLogFile($arrResponse);
+					//putMessageLogFile($arrResponse);
 				}
 			}
 			echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);

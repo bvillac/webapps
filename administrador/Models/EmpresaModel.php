@@ -312,6 +312,23 @@ class EmpresaModel extends Mysql
 			':usu_id' => $UsuId
 		]);
 	}
+
+
+	public function consultarEmpresaUsuarioAsingado(int $ids)
+    {
+        try {
+            $sql = "SELECT emp_id FROM {$this->db_name}.empresa_usuario where usu_id=:ids;";
+            $resultado = $this->select_all($sql, [":ids" => $ids]);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para usu_id: $ids", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return array_map(fn($item) => strval($item["emp_id"]), $resultado);
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarEmpresaUsuarioAsingado: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
   
 
 

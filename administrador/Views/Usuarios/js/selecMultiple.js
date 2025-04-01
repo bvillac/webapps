@@ -51,8 +51,3 @@ $(document).ready(function() {
         select.trigger('change');
     }
 });
-
-function guardarSeleccion() {
-    let valores = $('#selectedValues').val();
-    alert("Valores seleccionados: " + valores);
-}

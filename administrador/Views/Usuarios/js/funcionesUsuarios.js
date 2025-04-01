@@ -221,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //Se ejecuta en los eventos de Controles
 $(document).ready(function () {
+
     $("#txt_dni").blur(function () {
         let valor = document.querySelector('#txt_dni').value;
         /*if(!validarDocumento(valor)){
@@ -232,9 +233,6 @@ $(document).ready(function () {
         guardarAsignarUsuarioEmpresa();
     });
 
-});
-
-$(document).ready(function () {
     $('#mostrar').click(function () {
         //Comprobamos que la cadena NO esté vacía.
         if ($(this).hasClass('mdi-eye') && ($("#txt_Password").val() != "")) {
@@ -248,7 +246,9 @@ $(document).ready(function () {
             $('.pwdtxt').html("Mostrar contraseña");
         }
     });
+
 });
+
 
 function fntRolAsig() {
     var ajaxUrl = base_url + '/Usuarios/getRolesUsu';
@@ -424,6 +424,9 @@ function fntAsigEmpresa(ids) {
             document.querySelector("#txth_usu_id").value = ids;
             document.querySelector("#lbl_dni_e").innerHTML = data.data.Dni;
             document.querySelector("#lbl_nombres_e").innerHTML = data.data.Nombre + ' ' + data.data.Apellido;
+            //let empresasSeleccionadas = data.data.empresas;
+            marcarSeleccionados(data.data.empresas);
+            //updateTags();
             $('#modalEmpresa').modal('show');
         } else {
             swal("Atención", data.msg, "error");
@@ -435,12 +438,31 @@ function fntAsigEmpresa(ids) {
 }
 
 
+
+// Función para seleccionar automáticamente los valores en el select
+function marcarSeleccionados(empresasSeleccionadas) {
+    let select = document.getElementById("multiple-select");
+
+    // 🔸 Si el array está vacío, deseleccionamos todas las opciones
+    if (empresasSeleccionadas.length === 0) {
+        for (let option of select.options) {
+            option.selected = false;
+        }
+        return;
+    }
+
+    // 🔸 Recorremos y seleccionamos solo los valores del array
+    for (let option of select.options) {
+        option.selected = empresasSeleccionadas.includes(option.value);
+    }
+}
+
+
+
 function guardarAsignarUsuarioEmpresa() {
     let accion =  'Create'; //($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
     let valores = $('#selectedValues').val();
-    alert("Valores seleccionados: " + valores);
     let usuIds = $('#txth_usu_id').val();
-
     if (usuIds == '0' || valores == '') {
         swal("Atención", "Debe Seleccionar almenos una empresa.", "error");
         return false;
@@ -464,7 +486,7 @@ function guardarAsignarUsuarioEmpresa() {
 			// Manejar el éxito de la solicitud aquí
 			if (data.status) {
 				swal("Tienda", data.msg, "success");
-                window.location = base_url + '/Tienda/tienda';
+                //window.location = base_url + '/Tienda/tienda';
 			} else {
 				swal("Atención", data.msg, "error");
 			}
@@ -474,6 +496,7 @@ function guardarAsignarUsuarioEmpresa() {
 			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
 		});
 }
+
 
 
 
