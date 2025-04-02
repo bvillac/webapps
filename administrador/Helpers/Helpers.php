@@ -486,37 +486,33 @@ function viewPage(int $idpagina)
 
 function getPermisos()
 {
-    $uriData = explode("/", $_SERVER["REQUEST_URI"]);
-    //putMessageLogFile($_SERVER["REQUEST_URI"]);
-    $controller = strtolower($uriData[3]); //Obtiene el Controlador
-    $menuApp = $_SESSION['menuData'];
-    $claveEncontrada = buscarEnArray($menuApp, $controller);
-    //putMessageLogFile($claveEncontrada);
-    if ($claveEncontrada !== false) {
-        $_SESSION['permisosMod'] = $claveEncontrada;
-    } else {
+    $uriData = explode("/", trim($_SERVER["REQUEST_URI"], "/")); // Elimina '/' inicial y final
+    $controller = strtolower($uriData[2] ?? ''); // Obtiene el controlador de la URL
+    if (empty($controller)) {
         $_SESSION['permisosMod'] = 0;
+        $_SESSION['permisos'] = 0;
+        return;
     }
-    $_SESSION['permisos'] = 0;
+
+    $menuApp = $_SESSION['menuData'] ?? []; // Evita error si no está definido
+    $claveEncontrada = buscarEnArray($menuApp, $controller);
+ 
+    $_SESSION['permisosMod'] = $claveEncontrada ?: 0;
+    $_SESSION['permisos'] = 0; // Puedes definirlo según lógica adicional
 }
 
-function buscarEnArray($menu, $cadena)
+function buscarEnArray(array $menu, string $cadena)
 {
     foreach ($menu as $item) {
+        if (isset($item['enlace']) && strtolower($item['enlace']) === $cadena) {
+            return $item;
+        }
+
+        // Si hay hijos, buscar recursivamente
         if (!empty($item['hijos'])) {
-            foreach ($item['hijos'] as $itemN2) {
-                if (!empty($itemN2['hijos'])) {
-                    //Revison del 3 NIVEL
-                } else {
-                    if (strtolower($itemN2['enlace']) == $cadena) {
-                        return $itemN2;
-                    }
-                }
-            }
-        } else {
-            if (strtolower($item['enlace']) == $cadena) {
-                //putMessageLogFile($item);  
-                return $item;
+            $resultado = buscarEnArray($item['hijos'], $cadena);
+            if ($resultado) {
+                return $resultado;
             }
         }
     }
@@ -618,6 +614,7 @@ function validarMetodoPost(){
 function checkPermission($type, $redirect)
 {
     if (empty($_SESSION['permisosMod'][$type])) {
+        //putMessageLogFile("Permiso No autorizado");
         header("Location: " . base_url() . "/$redirect");
         exit();
     }
