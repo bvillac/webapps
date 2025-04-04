@@ -1,7 +1,7 @@
 <?php
 require_once("Models/ClientePedidoModel.php");
 require_once("Models/ArticuloModel.php");
-class Tienda extends Controllers
+class PedidoWeb extends Controllers
 {
     public function __construct()
     {
@@ -12,12 +12,12 @@ class Tienda extends Controllers
     }
 
 
-    public function tienda()
+    public function pedidoweb()
     {
         checkPermission('r', 'dashboard');
-        $data = getPageData("Tienda", "Tienda");
+        $data = getPageData("Pedido Web", "Pedidoweb");
         $data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
-        $this->views->getView($this, "tienda", $data);
+        $this->views->getView($this, "pedidoweb", $data);
     }
 
     
@@ -52,6 +52,7 @@ class Tienda extends Controllers
         return $options . '</div>';
     }
 
+    /*
     public function ingresarTienda()
     {
         if ($_POST) {
@@ -235,7 +236,7 @@ class Tienda extends Controllers
 
 
 
-        
+        */
 
 
 

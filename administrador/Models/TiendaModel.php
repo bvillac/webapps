@@ -50,7 +50,7 @@ class TiendaModel extends MysqlPedidos
         $con = $this->getConexion();
         $arroout = ["status" => false];
         try {
-      
+
             // Validar si la tienda ya existe
             $sqlCheck = "SELECT 1 FROM {$this->db_name}.tienda 
                          WHERE tie_nombre = :nombre AND cli_id = :clienteID";
@@ -72,16 +72,16 @@ class TiendaModel extends MysqlPedidos
                                   CURRENT_TIMESTAMP(), NULL)";
 
             $paramsInsert = [
-                ":cli_id"         => $dataObj['cliente_id'],
-                ":tie_nombre"     => $dataObj['nombreTienda'],
-                ":tie_direccion"  => $dataObj['direccion'],
-                ":tie_telefono"   => $dataObj['telefono'],
-                ":tie_cupo"       => $dataObj['cupo'],
-                ":tie_lug_entrega"=> $dataObj['lugar'],
-                ":tie_contacto"   => $dataObj['contacto'],
-                ":fec_ini_ped"    => $dataObj['diainicio'],
-                ":fec_fin_ped"    => $dataObj['diafin'],
-                ":tie_est_log"    => 1 // Estado activo
+                ":cli_id" => $dataObj['cliente_id'],
+                ":tie_nombre" => $dataObj['nombreTienda'],
+                ":tie_direccion" => $dataObj['direccion'],
+                ":tie_telefono" => $dataObj['telefono'],
+                ":tie_cupo" => $dataObj['cupo'],
+                ":tie_lug_entrega" => $dataObj['lugar'],
+                ":tie_contacto" => $dataObj['contacto'],
+                ":fec_ini_ped" => $dataObj['diainicio'],
+                ":fec_fin_ped" => $dataObj['diafin'],
+                ":tie_est_log" => 1 // Estado activo
             ];
 
             $this->insertConTrans($con, $sqlInsert, $paramsInsert);
@@ -107,20 +107,20 @@ class TiendaModel extends MysqlPedidos
                     WHERE tie_id = :tie_id";
 
             $params = [
-                ":tie_id"         => $dataObj['ids'],
-                ":cli_id"         => $dataObj['cliente_id'],
-                ":tie_nombre"     => $dataObj['nombreTienda'],
-                ":tie_direccion"  => $dataObj['direccion'],
-                ":tie_telefono"   => $dataObj['telefono'],
-                ":tie_cupo"       => $dataObj['cupo'],
-                ":tie_lug_entrega"=> $dataObj['lugar'],
-                ":tie_contacto"   => $dataObj['contacto'],
-                ":fec_ini_ped"    => $dataObj['diainicio'],
-                ":fec_fin_ped"    => $dataObj['diafin'],
-                ":tie_est_log"    => 1 // Estado activo
+                ":tie_id" => $dataObj['ids'],
+                ":cli_id" => $dataObj['cliente_id'],
+                ":tie_nombre" => $dataObj['nombreTienda'],
+                ":tie_direccion" => $dataObj['direccion'],
+                ":tie_telefono" => $dataObj['telefono'],
+                ":tie_cupo" => $dataObj['cupo'],
+                ":tie_lug_entrega" => $dataObj['lugar'],
+                ":tie_contacto" => $dataObj['contacto'],
+                ":fec_ini_ped" => $dataObj['diainicio'],
+                ":fec_fin_ped" => $dataObj['diafin'],
+                ":tie_est_log" => 1 // Estado activo
             ];
             $request = $this->update($sql, $params);
-            return ["status" => (bool)$request, "message" => $request ? "Tienda actualizada" : "No se pudo actualizar"];
+            return ["status" => (bool) $request, "message" => $request ? "Tienda actualizada" : "No se pudo actualizar"];
         } catch (Exception $e) {
             putMessageLogFile("ERROR en updateData: " . $e->getMessage());
             return ["status" => false, "message" => "Fallo en la actualización: " . $e->getMessage()];
@@ -143,11 +143,62 @@ class TiendaModel extends MysqlPedidos
         return $this->update($sql, arrValues: $params);
     }
 
-    public function consultarTiendaCliente(int $idsCliente){
+    public function consultarTiendaCliente(int $idsCliente)
+    {
         $sql = "SELECT tie_id as Ids,tie_nombre as Nombre FROM {$this->db_name}.tienda ";
-	    $sql .= "   where tie_est_log!=0 and cli_id= :ids; ";
+        $sql .= "   where tie_est_log!=0 and cli_id= :ids; ";
         return $this->select_all($sql, [":ids" => $idsCliente]);
     }
 
-   
+
+    public function consultarUsuarioTienda(array $criterio, int $limit = 10)
+    {
+        try {
+
+            $sql = "select a.utie_id utieid,b.usu_correo usuario,a.utie_fec_cre fecha,
+                concat(e.per_nombre,' ',e.per_apellido) persona,f.cli_razon_social cliente,
+                c.tie_nombre tiendanombre,d.rol_nombre rol,a.utie_est_log estado,a.utie_asig asig
+                from {$this->db_name}.usuario_tienda a
+                        inner join ({$this->db_nameAdmin}.usuario b
+                                    inner join {$this->db_nameAdmin}.persona e
+                on b.per_id=e.per_id)
+                                on a.usu_id=b.usu_id
+                        inner join ({$this->db_name}.tienda c
+                                    inner join {$this->db_nameAdmin}.cliente f
+                on c.cli_id=f.cli_id)
+                                on a.tie_id=c.tie_id
+                        inner join {$this->db_name}.rol d
+                                on a.rol_id=d.rol_id
+                where a.utie_est_log=1 ";
+
+            if (!empty($criterio)) {//verifica la opcion op para los filtros
+                $sql .= ($criterio['tie_id'] != "0") ? "and c.tie_id='" . $criterio['tie_id'] . "' " : "";
+                $sql .= ($criterio['cli_id'] != "0") ? "and c.cli_id='" . $criterio['cli_id'] . "' " : "";
+                $sql .= ($criterio['rol_id'] != "0") ? "and d.rol_id='" . $criterio['rol_id'] . "' " : "";
+                $sql .= ($criterio['usu_nombre'] != "") ? "and b.usu_nombre='" . $criterio['usu_nombre'] . "' " : "";
+            }
+
+            $sql .= "order by a.utie_id desc ";
+            $sql .= " limit {$limit}";
+            //$params[':limit'] = (int) $limit; // Convertir explícitamente a entero por seguridad
+            // Ejecutar consulta y devolver resultados
+            //return $this->select_all($sql, $params);
+
+
+
+            //$resultado = $this->select($sql, [":ids" => $Ids]);
+            $resultado = $this->select_all($sql);
+            putMessageLogFile($resultado);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para Usuario Tienda", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarUsuarioTienda: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+
 }

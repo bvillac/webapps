@@ -1,7 +1,7 @@
 <?php
-require_once("Models/ClientePedidoModel.php");
+require_once("Models/TiendaModel.php");
 require_once("Models/ArticuloModel.php");
-class Tienda extends Controllers
+class UsuarioTienda extends Controllers
 {
     public function __construct()
     {
@@ -12,20 +12,22 @@ class Tienda extends Controllers
     }
 
 
-    public function tienda()
+    public function usuariotienda()
     {
         checkPermission('r', 'dashboard');
-        $data = getPageData("Tienda", "Tienda");
-        $data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
-        $this->views->getView($this, "tienda", $data);
+        $data = getPageData("Usuario Tienda", "usuariotienda");
+        //$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
+        $this->views->getView($this, "usuariotienda", $data);
     }
 
     
 
-    public function consultarTienda()
+    public function consultarUsuarioTienda()
     {
         checkPermission('r', 'dashboard');
-        $arrData = $this->model->consultarDatos();
+        //$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
+        //$arrData = $this->model->consultarDatos();
+        $arrData = (new TiendaModel())->consultarUsuarioTienda(array());
         foreach ($arrData as &$objData) {
             $objData['Estado'] = $objData['Estado'] == 1
                 ? '<span class="badge badge-success">Activo</span>'
@@ -52,6 +54,7 @@ class Tienda extends Controllers
         return $options . '</div>';
     }
 
+    /*
     public function ingresarTienda()
     {
         if ($_POST) {
@@ -235,7 +238,7 @@ class Tienda extends Controllers
 
 
 
-        
+        */
 
 
 
