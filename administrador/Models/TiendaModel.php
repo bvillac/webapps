@@ -50,6 +50,7 @@ class TiendaModel extends MysqlPedidos
         $con = $this->getConexion();
         $arroout = ["status" => false];
         try {
+      
             // Validar si la tienda ya existe
             $sqlCheck = "SELECT 1 FROM {$this->db_name}.tienda 
                          WHERE tie_nombre = :nombre AND cli_id = :clienteID";

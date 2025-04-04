@@ -62,6 +62,7 @@ class Tienda extends Controllers
             } else {
                 $request = "";
                 $datos = isset($data['dataObj']) ? $data['dataObj'] : array();
+                
                 $accion = isset($data['accion']) ? $data['accion'] : "";
                 if ($accion == "Create") {
                     $option = 1;
@@ -76,12 +77,12 @@ class Tienda extends Controllers
                 }
                 if ($request["status"]) {
                     if ($option == 1) {
-                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
+                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos guardados correctamente.');
                     } else {
-                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
+                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos Actualizados correctamente.');
                     }
                 } else {
-                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
+                    $arrResponse = array("status" => false, "msg" => $request["message"]);
                 }
             }
             echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
@@ -209,6 +210,30 @@ class Tienda extends Controllers
             echo json_encode(["status" => false, "msg" => $e->getMessage()]);
         }
     }
+
+
+    public function retornarTiendaCheck(){
+		//dep($_POST);
+		if($_POST){
+			$data=recibirData($_POST['data']);
+            
+			if(empty($data['ids']) ){
+				$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
+			}else{
+				$ids = intval(strClean($data['ids']));
+                putMessageLogFile($ids);
+                $arrData = (new ArticuloModel())->consultarProductosTiendaCheck($ids);
+				if(empty($arrData)){
+					$arrResponse = array('status' => false, 'msg' => 'La tienda no tiene items asignados.' ); 
+				}else{	
+					$arrResponse = array('status' => true, 'data' => $arrData);
+				}
+			}
+			echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+		}
+		exit();
+	}
+
 
 
         

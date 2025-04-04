@@ -68,6 +68,15 @@ $(document).ready(function () {
         });
     });
 
+    $('#cmb_tiendas').change(function () {
+        if ($('#cmb_tiendas').val() != 0) {
+            obtenerCheckTienda();
+        } else {
+            //$('#txt_numero_horas').val("0");
+            swal("Error", "Selecione una Tienda", "error");
+        }
+    });
+
 
 });
 
@@ -253,6 +262,43 @@ function fntViewTienda(ids){
             }
         }
     }
+}
+
+
+function obtenerCheckTienda() {
+    let idsTienda = $('#cmb_tiendas').val();
+    let url = base_url + '/Tienda/retornarTiendaCheck';
+    var metodo = 'POST';
+    var datos = { ids: idsTienda };
+    peticionAjaxSSL(url, metodo, datos, function (data) {
+        uncheckAll();
+        // Manejar el éxito de la solicitud aquí
+        if (data.status) {
+            //eliminarClavesSessionStorage('seleccionados');
+            sessionStorage.setItem('seleccionados', JSON.stringify(data.data));
+            checkPorId(data.data);
+        } else {
+            swal("Atención", data.msg, "error");
+        }
+
+    }, function (jqXHR, textStatus, errorThrown) {
+        // Manejar el error de la solicitud aquí
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+
+
+}
+
+function uncheckAll() {
+    document.querySelectorAll(".row-check").forEach(cb => {
+        cb.checked = false;
+        almacenarSeleccion(cb.dataset.id, false);
+    });
+}
+function checkPorId(seleccion) {
+    document.querySelectorAll(".row-check").forEach(cb => {
+        cb.checked = seleccion.includes(cb.dataset.id);
+    });
 }
 
 
