@@ -2,7 +2,7 @@
     adminHeader($data);
     adminMenu($data); 
     //filelang(Setlanguage,"general") 
-    require_once "Views/Tienda/Modals/modalTienda.php";
+    require_once "Views/UsuarioTienda/Modals/modalTienda.php";
 ?>
     <div id="contentAjax"></div> 
     <main class="app-content">

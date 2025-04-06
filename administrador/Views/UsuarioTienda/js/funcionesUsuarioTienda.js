@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     tableTienda = $('#tableTienda').dataTable({
         "aProcessing": true,
         "aServerSide": true,
+        "scrollCollapse": true,
+        "scrollY": '50vh',//400px para automatic
         "language": {
             "url": cdnTable
         },
@@ -11,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
             "url": " " + base_url + "/UsuarioTienda/consultarUsuarioTienda",
             "dataSrc": ""
         },
+
         "columns": [
             { "data": "usuario" },
             { "data": "tiendanombre" },
@@ -18,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             { "data": "persona" },
             { "data": "rol" },
             { "data": "fecha" },
-            { "data": "estado" },
+            { "data": "Estado" },
             { "data": "options" }
         ],
         "columnDefs": [
@@ -40,42 +43,41 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    const precioInput = document.getElementById("txt_PrecioProducto");
-    const btnAgregar = document.getElementById("btnAgregar");
-
-
-});
-
-
-$(document).ready(function () {
-    $("#cmd_guardar").click(function () {
-        guardarTienda();
-    });
-
-    const checkboxes = document.querySelectorAll(".row-check");
-
-    // Asocia el evento "change" a cada checkbox
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener("change", function () {
-            // Obtiene el id del checkbox desde el atributo data-id
-            const id = this.getAttribute("data-id");
-            // Obtiene el estado actual del checkbox (true si está marcado)
-            const isChecked = this.checked;
-
-            // Llama a la función y le pasa los parámetros
-            almacenarSeleccion(id, isChecked);
-
-            // Para fines de depuración, imprime el contenido de sessionStorage
-            console.log("Seleccionados:", sessionStorage.getItem("seleccionados"));
-        });
-    });
-
-    $('#cmb_tiendas').change(function () {
-        if ($('#cmb_tiendas').val() != 0) {
-            obtenerCheckTienda();
-        } else {
-            //$('#txt_numero_horas').val("0");
-            swal("Error", "Selecione una Tienda", "error");
+    $("#txt_buscarUser").autocomplete({
+        appendTo: '#modalFormTienda .modal-content',
+        source: async function (request, response) {
+            try {
+                const link = `${base_url}/usuarios/buscarAutoUsuario`;
+                const res = await fetch(link, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ parametro: request.term, limit: 10 })
+                });
+    
+                const data = await res.json();
+    
+                if (data.status) {
+                    const arrayList = data.data.map(objeto => ({
+                        label: `${objeto.Cedula	} - ${objeto.NombreLargo}`,
+                        value: objeto.NombreLargo,
+                        UsuarioId:objeto.UsuarioId,
+                        id: objeto.Ids,
+                    }));
+                    response(arrayList);
+                } else {
+                    //limpiarAutocompletar();
+                    swal("Atención!", data.msg, "info");
+                }
+            } catch (error) {
+                console.log("Error en la búsqueda:", error);
+                swal("Error!", "No se pudo obtener los datos.", "error");
+            }
+        },
+        minLength: minLengthGeneral,
+        select: function (event, ui) {
+            $('#txth_art_id').val(ui.item.id);
+            $("#txth_UsuId").val(ui.item.UsuarioId);
+            //txtPrecio.focus();
         }
     });
 
@@ -83,6 +85,84 @@ $(document).ready(function () {
 });
 
 
+$(document).ready(function () {
+
+    $('#cmb_Cliente').selectpicker();
+    $('#cmb_rol').selectpicker();
+    $('#cmb_tienda').selectpicker();
+
+    $("#cmd_guardar").click(function () {
+        guardarUsuarioTienda();
+    });
+
+
+    $('#cmb_Cliente').change(function () {
+        const $cmbCliente = $('#cmb_Cliente');
+        const clienteId = $cmbCliente.val();
+        if (clienteId && clienteId !== '0') {
+            fetchTiendas(clienteId);
+        } else {
+            swal('Error', 'Debe seleccionar un cliente', 'error');
+            resetTienda();
+        }
+    });
+   
+
+
+});
+
+function resetTienda() {
+    const $cmbTienda  = $('#cmb_tienda');
+    $cmbTienda
+        .prop('disabled', true)     
+        .val([]);
+    $cmbTienda.selectpicker('refresh');
+    sessionStorage.removeItem('dts_TiendaCliente');
+}
+
+function fetchTiendas(idsCliente) {
+    
+    const $cmbTienda  = $('#cmb_tienda');
+    // Mostrar estado “cargando”
+    $cmbTienda
+        .prop('disabled', true)
+        .empty()
+        .append('<option value="0">CARGANDO...</option>');
+
+    let url = base_url + '/Tienda/retornarTiendaporCliente';
+    var metodo = 'POST';
+    var datos = { ids: idsCliente };
+    peticionAjaxSSL(url, metodo, datos, function (data) {
+
+        if (data.status) {
+            // Poblar combo y construir array para sessionStorage
+            const tiendas = data.data;
+            $cmbTienda
+                .prop('disabled', false)
+                .empty()
+                .append('<option value="0">SELECCIONAR TIENDA</option>');
+
+            const storeList = tiendas.map(t => {
+                $cmbTienda.append(
+                    `<option value="${t.Ids}">${t.Nombre}</option>`
+                );
+                return { ids: t.Ids, Nombre: t.Nombre, Color: t.Color };
+            });
+            $cmbTienda.selectpicker('refresh');
+            sessionStorage.setItem('dts_TiendaCliente', JSON.stringify(storeList));
+        } else {
+            swal('Error', 'No se pudieron cargar las tiendas', 'error');
+            resetTienda();
+        }
+
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('AJAX Error:', textStatus, errorThrown);
+        swal('Error', 'No se pudieron cargar las tiendas', 'error');
+        resetTienda();
+    });
+
+
+}
 
 
 
@@ -91,40 +171,23 @@ function openModal() {
     document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");//Cambiar las Clases para los colores
     document.querySelector('#cmd_guardar').classList.replace("btn-info", "btn-primary");
     document.querySelector('#btnText').innerHTML = "Guardar";
-    document.querySelector('#titleModal').innerHTML = "Nuevo Tienda";
+    document.querySelector('#titleModal').innerHTML = "Nuevo Usuario Tienda";
     document.querySelector("#formTienda").reset();
     $('#modalFormTienda').modal('show');
 }
 
-function limpiarText() {
-    $('#txth_ids').val("");
-    $('#cmb_Cliente').val("0");
-    $('#txt_nombreTienda').val("");
-    $('#txt_telefono').val("");
-    $('#txt_direccion').val("");
-    $('#txt_contacto').val("");
-    $('#txt_lugar').val("");
-    $('#txt_diainicio').val("0");
-    $('#txt_diafin').val("0");
-    $('#txt_cupo').val("0");
-    $('#cmb_estado').val("1");
-}
 
-function guardarTienda() {
+
+function guardarUsuarioTienda() {
     let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
     let Ids = document.querySelector('#txth_ids').value;
-    let cliente_id = $('#cmb_Cliente').val();
-    let nombreTienda = $('#txt_nombreTienda').val();
-    let telefono = $('#txt_telefono').val();
-    let direccion = $('#txt_direccion').val();
-    let contacto = $('#txt_contacto').val();
-    let lugar = $('#txt_lugar').val();
-    let diainicio = $('#txt_diainicio').val();
-    let diafin = $('#txt_diafin').val();
-    let cupo = $('#txt_cupo').val();
-    let estado = $('#cmb_estado').val();
-    if (cliente_id == '0' || nombreTienda == '' || telefono == '' || direccion == '' || contacto == '' || contacto == '' || lugar == '' 
-            || diainicio == '0' || diafin == '0' || cupo == '0') {
+    let idCliente = $('#cmb_Cliente').val();
+    let idRol = $('#cmb_rol').val();
+    let idTienda = $('#cmb_tienda').val();
+    let idUsuario = $('#txth_UsuId').val();
+    let txtUsuario = $('#txt_buscarUser').val();
+ 
+    if (idCliente == '0' || idRol == '0' || idTienda == '0' || txtUsuario == '') {
         swal("Atención", "Todos los campos son obligatorios.", "error");
         return false;
     }
@@ -138,25 +201,19 @@ function guardarTienda() {
 
     var dataObj = new Object();
     dataObj.ids = Ids;
-    dataObj.cliente_id = cliente_id;
-    dataObj.nombreTienda = nombreTienda;
-    dataObj.telefono = telefono;
-    dataObj.direccion = direccion;
-    dataObj.contacto = contacto;
-    dataObj.lugar = lugar;
-    dataObj.diainicio = diainicio;
-    dataObj.diafin = diafin;
-    dataObj.cupo = cupo;
-    dataObj.estado = estado;
+    dataObj.idCliente = idCliente;
+    dataObj.idRol = idRol;
+    dataObj.idTienda = idTienda;
+    dataObj.idUsuario = idUsuario;
 
-    let url = base_url + '/Tienda/ingresarTienda';
+    let url = base_url + '/UsuarioTienda/ingresarUsuarioTienda';
 		var metodo = 'POST';
 		var dataPost = { accion: accion, dataObj: dataObj };
 		peticionAjaxSSL(url, metodo, dataPost, function (data) {
 			// Manejar el éxito de la solicitud aquí
 			if (data.status) {
 				swal("Tienda", data.msg, "success");
-                window.location = base_url + '/Tienda/tienda';
+                window.location = base_url + '/UsuarioTienda/usuariotienda';
 			} else {
 				swal("Atención", data.msg, "error");
 			}
@@ -267,40 +324,6 @@ function fntViewTienda(ids){
 }
 
 
-function obtenerCheckTienda() {
-    let idsTienda = $('#cmb_tiendas').val();
-    let url = base_url + '/Tienda/retornarTiendaCheck';
-    var metodo = 'POST';
-    var datos = { ids: idsTienda };
-    peticionAjaxSSL(url, metodo, datos, function (data) {
-        uncheckAll();
-        // Manejar el éxito de la solicitud aquí
-        if (data.status) {
-            //eliminarClavesSessionStorage('seleccionados');
-            sessionStorage.setItem('seleccionados', JSON.stringify(data.data));
-            checkPorId(data.data);
-        } else {
-            swal("Atención", data.msg, "error");
-        }
 
-    }, function (jqXHR, textStatus, errorThrown) {
-        // Manejar el error de la solicitud aquí
-        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
-    });
-
-
-}
-
-function uncheckAll() {
-    document.querySelectorAll(".row-check").forEach(cb => {
-        cb.checked = false;
-        almacenarSeleccion(cb.dataset.id, false);
-    });
-}
-function checkPorId(seleccion) {
-    document.querySelectorAll(".row-check").forEach(cb => {
-        cb.checked = seleccion.includes(cb.dataset.id);
-    });
-}
 
 

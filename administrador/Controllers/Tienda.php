@@ -1,6 +1,7 @@
 <?php
 require_once("Models/ClientePedidoModel.php");
 require_once("Models/ArticuloModel.php");
+require_once("Models/TiendaModel.php");
 class Tienda extends Controllers
 {
     public function __construct()
@@ -232,6 +233,28 @@ class Tienda extends Controllers
 		}
 		exit();
 	}
+
+    public function retornarTiendaporCliente(){
+		//dep($_POST);
+		if($_POST){
+			$data=recibirData($_POST['data']);
+            
+			if(empty($data['ids']) ){
+				$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
+			}else{
+				$ids = intval(strClean($data['ids']));
+                $arrData = (new TiendaModel())->consultarTiendaCliente($ids);
+				if(empty($arrData)){
+					$arrResponse = array('status' => false, 'msg' => 'La tienda no tiene items asignados.' ); 
+				}else{	
+					$arrResponse = array('status' => true, 'data' => $arrData);
+				}
+			}
+			echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+		}
+		exit();
+	}
+
 
 
 

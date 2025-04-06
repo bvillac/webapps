@@ -365,6 +365,38 @@ class Usuarios extends Controllers
 	}
 
 
+	public function buscarAutoUsuario()
+    {
+		putMessageLogFile("ll");
+        try {
+			
+            $inputData=validarMetodoPost();           
+            // Sanitizar y obtener los valores con seguridad
+            $parametro = isset($inputData['parametro']) ? filter_var($inputData['parametro'], FILTER_SANITIZE_STRING) : "";
+            $limit = isset($inputData['limit']) ? filter_var($inputData['limit'], FILTER_VALIDATE_INT) : 10;
+
+            // Validar parámetros obligatorios
+            //if (!$cli_id || !$tie_id) {
+            //    throw new Exception("Parámetros insuficientes", 400);
+            //}
+
+			$request = (new PersonaModel())->consultarDatosCedulaNombres($parametro);
+
+            // Responder con los datos obtenidos o mensaje de error
+            $arrResponse = $request
+                ? ['status' => true, 'data' => $request, 'msg' => 'Datos retornados correctamente.']
+                : ['status' => false, 'msg' => 'No existen datos.'];
+        } catch (Exception $e) {
+            $arrResponse = ['status' => false, 'msg' => $e->getMessage()];
+			logFileSystem("Error en consutla Catalogo: " . $e->getMessage(),"ERROR");
+        }
+
+        // Responder con JSON
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
 
 
 

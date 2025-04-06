@@ -1,14 +1,17 @@
 <?php
 //namespace Models;
 require_once("Models/EmpresaModel.php");
-//require_once("Libraries/Core/Conexion.php");
 class UsuariosModel extends Mysql
 {
 	private $db_name;
+	private $rolName;
+	private $EmpIds;
 	public function __construct()
 	{
 		parent::__construct();
 		$this->db_name = $this->getDbNameMysql();
+		$this->rolName=retornarDataSesion("rolNombre");
+		$this->EmpIds=retornarDataSesion("Emp_Id");
 	}
 
 
@@ -186,10 +189,8 @@ class UsuariosModel extends Mysql
 
 	public function consultarRoles()
 	{
-		$db_name = $this->getDbNameMysql();
 		$sql = "SELECT rol_id Ids, rol_nombre Nombre ";
-		$sql .= " FROM " . $db_name . ".rol WHERE estado_logico!=0 ORDER BY rol_nombre ASC";
-		//putMessageLogFile($sql);
+		$sql .= " FROM {$this->db_name}.rol WHERE estado_logico!=0 ORDER BY rol_nombre ASC";
 		$request = $this->select_all($sql);
 		return $request;
 	}
@@ -254,14 +255,6 @@ class UsuariosModel extends Mysql
 			$arrDataPer = array($Dni, $Nombre, $Apellido, $FecNaci, $Telefono, $Direccion, $Genero, $estado, $idsUsuMod);
 			$update->execute($arrDataPer);
 
-			//Actualizar Empresa Usuario Rol
-			/*$SqlQuery  = "UPDATE " . $db_name . ".empresa_usuario  ";
-			$SqlQuery .= "SET rol_id = ?,estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() ";
-			$SqlQuery .= " WHERE emp_id = '{$idsEmpresa}' AND usu_id = '{$UsuId}' ";
-			$update = $con->prepare($SqlQuery);
-			$arrDataEmp = array($rol_id, $estado, $idsUsuMod);
-			$update->execute($arrDataEmp);*/
-
 			$con->commit();
 			$arroout["status"] = true;
 			return $arroout;
@@ -320,4 +313,59 @@ class UsuariosModel extends Mysql
 		$request = $this->update($sql, $arrData);
 		return $request;
 	}
+
+
+
+	public function consultarRolEmpresa()
+    {
+        try {
+			$sql = "SELECT a.erol_id, a.rol_id Ids, b.rol_nombre Nombre   FROM 
+						{$this->db_name}.empresa_rol a
+							inner join {$this->db_name}.rol b  on a.rol_id=b.rol_id
+						where a.estado_logico!=0 and a.emp_id=:emp_id ";
+
+			//if($this->rolName!="admin"){//Diferente de rol administrador
+			//	$sql .= "	WHERE a.estado_logico!=0 ";
+			//}
+			$arrParams = [":emp_id" => $this->EmpIds];
+            $resultado = $this->select_all($sql,$arrParams);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida consultarRolEmpresa", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarProductosTiendaCheck: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+
+	public function retornarBuscarUsuario(string $parametro, int $limit = 10)
+    {
+        // Consulta SQL base con placeholders
+        $sql = "select art_id,cod_art,art_des_com as des_com,art_i_m_iva as i_m_iva,art_p_venta as p_venta"
+            . " from {$this->db_name}.articulo "
+            . "where art_est_log !=0 ";
+
+        // Verificar si el parámetro es numérico o alfanumérico
+        if (!empty($parametro)) {
+            if (ctype_digit($parametro)) {
+                // Si el parámetro es numérico, buscar solo por código de artículo exacto
+                $sql .= " AND cod_art LIKE :parametro";
+                $params[':parametro'] = "%{$parametro}%";
+            } else {
+                // Si es alfanumérico, buscar en código y descripción
+                $sql .= " AND (cod_art LIKE :parametro OR art_des_com LIKE :parametro)";
+                $params[':parametro'] = "%{$parametro}%";
+            }
+        }
+
+        // Agregar límite de registros
+        $sql .= " LIMIT {$limit}";
+        //$params[':limit'] = (int) $limit; // Convertir explícitamente a entero por seguridad
+        // Ejecutar consulta y devolver resultados
+        return $this->select_all($sql, $params);
+    }
+	
 }

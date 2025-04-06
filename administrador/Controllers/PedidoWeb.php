@@ -1,6 +1,6 @@
 <?php
+require_once("Models/TiendaModel.php");
 require_once("Models/ClientePedidoModel.php");
-require_once("Models/ArticuloModel.php");
 class PedidoWeb extends Controllers
 {
     public function __construct()
@@ -14,15 +14,16 @@ class PedidoWeb extends Controllers
 
     public function pedidoweb()
     {
+
         checkPermission('r', 'dashboard');
         $data = getPageData("Pedido Web", "Pedidoweb");
-        $data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
+        //$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
         $this->views->getView($this, "pedidoweb", $data);
     }
 
     
 
-    public function consultarTienda()
+    public function consultarPedidos()
     {
         checkPermission('r', 'dashboard');
         $arrData = $this->model->consultarDatos();
@@ -52,179 +53,34 @@ class PedidoWeb extends Controllers
         return $options . '</div>';
     }
 
-    /*
-    public function ingresarTienda()
+    public function nuevo()
     {
-        if ($_POST) {
-            //dep($_POST);
-            $data = recibirData($_POST['data']);
-            if (empty($data['dataObj']) || empty($data['accion'])) {
-                $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
-            } else {
-                $request = "";
-                $datos = isset($data['dataObj']) ? $data['dataObj'] : array();
-                
-                $accion = isset($data['accion']) ? $data['accion'] : "";
-                if ($accion == "Create") {
-                    $option = 1;
-                    if ($_SESSION['permisosMod']['w']) {
-                        $request = $this->model->insertData($datos);
-                    }
-                } else {
-                    $option = 2;
-                    if ($_SESSION['permisosMod']['u']) {
-                        $request = $this->model->updateData($datos);
-                    }
-                }
-                if ($request["status"]) {
-                    if ($option == 1) {
-                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos guardados correctamente.');
-                    } else {
-                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos Actualizados correctamente.');
-                    }
-                } else {
-                    $arrResponse = array("status" => false, "msg" => $request["message"]);
-                }
-            }
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        }
-        die();
-    }
+        checkPermission('r', 'dashboard');
+        $data = getPageData("Nuevo Pedido Web", "pedidoweb");
+        $cliIds=retornarDataSesion("Cli_Id");
+        $data['tienda'] = (new TiendaModel())->consultarTiendaCliente($cliIds);
+        $data['Cliente'] = (new ClientePedidoModel())->consultarDatosId($cliIds);
+        $data['nombreCliente'] = htmlspecialchars($data['Cliente']['Nombre'], ENT_QUOTES, 'UTF-8');
+        $this->views->getView($this, "nuevo", $data);
 
-
-    public function consultarTiendaId(int $ids)
-    {
-        if ($_SESSION['permisosMod']['r']) {
-            $ids = intval(strClean($ids));
-            if ($ids > 0) {
-                $arrData = $this->model->consultarDatosId($ids);
-                //dep($arrData);
-                if (empty($arrData)) {
-                    $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-                } else {
-                    $arrResponse = array('status' => true, 'data' => $arrData);
-                }
-
-                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            }
-        }
-        die();
-    }
-
-
-    public function eliminarTienda()
-    {
-        if ($_POST) {
-
-            if ($_SESSION['permisosMod']['d']) {
-                $ids = intval($_POST['ids']);
-                $request = $this->model->deleteRegistro($ids);
-                if ($request) {
-                    $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
-                } else {
-                    $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
-                }
-                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            }
-        }
-        die();
-    }
-
-    public function catalogo($ids) {
-        try {
-            checkPermission('r', 'dashboard');
-            // Validar que `ids` sea un número válido
-            if (!is_numeric($ids) || $ids <= 0) {
-                logFileSystem("Error Id es invalido: " ,"WARNING");
-                exit;
-            }
-           
-            // Datos para la vista
-            $data=getPageData("Catálogo de Productos", "tienda");
-
-    
-            // Consultar datos del cliente
-            $data = $this->model->consultarDatosId($ids);
-
-    
-            // Consultar productos del cliente
-            $data['TiendaId']=$ids;
-            $data['tiendas'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
-            $data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Cli_Ids']);
-            $data['ProductoCheck'] = (new ArticuloModel())->consultarProductosTiendaCheck($ids);
             
-            $data['nombreCliente'] = htmlspecialchars($data['RazonSocial'], ENT_QUOTES, 'UTF-8');
-            $data = array_merge($data, getPageData("Catálogo de Productos", "tienda"));
-            // Cargar vista
-            $this->views->getView($this, "catalogo", $data);
-    
-        } catch (Exception $e) {
-            // Registrar error en log
-            logFileSystem("Error en consutla Catalogo: " . $e->getMessage(),"ERROR");
-            exit;
-        }
     }
 
-
-    public function guardarListaProductosTienda() {
-        try {
-            $json = file_get_contents("php://input");
-            $data = json_decode($json, true);
-            checkPermission('r', 'dashboard');
-
-            if (empty($data['productosCheck']) || !is_array($data['productosCheck']) || 
-                empty($data['accion']) || !isset($data['tienda_id']) || 
-                !filter_var($data['tienda_id'], FILTER_VALIDATE_INT)) {
-                        $arrResponse = ["status" => false, "msg" => "Datos inválidos."];                        
-            } else {
-                // Procesar la lógica cuando los datos son válidos
-                $tienda_id = isset($data['tienda_id']) ? filter_var( $data['tienda_id'], FILTER_VALIDATE_INT) : 0;
-                $productos = isset($data['productosCheck']) ? $data['productosCheck'] : array();
-                $accion = isset($data['accion']) ? $data['accion'] : "";
-                if ($accion == "Create") {
-                    $option = 1;
-                    if ($_SESSION['permisosMod']['w']) {
-                        //$request = $this->model->insertData($datos);
-                        $modelArticulo = new ArticuloModel();
-                        $request=$request=$modelArticulo->guardarProductoTienda($productos,$tienda_id );
-                    }
-                } else {
-                    $option = 2;
-                    if ($_SESSION['permisosMod']['u']) {
-                        //$request = $this->model->updateData($datos);
-                    }
-                }
-                if ($request["status"]) {
-                    if ($option == 1) {
-                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
-                    } else {
-                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos Actualizados correctamente.');
-                    }
-                } else {
-                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos: ' . $request["message"]);
-                }
-            }
-
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        } catch (Exception $e) {
-            logFileSystem("Error en guardarListaProductos: " . $e->getMessage(), "ERROR");
-            echo json_encode(["status" => false, "msg" => $e->getMessage()]);
-        }
-    }
-
-
-    public function retornarTiendaCheck(){
+    public function retornarDatosTienda(){
 		//dep($_POST);
 		if($_POST){
-			$data=recibirData($_POST['data']);
-            
+			$data=recibirData($_POST['data']);         
 			if(empty($data['ids']) ){
 				$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
 			}else{
 				$ids = intval(strClean($data['ids']));
-                $arrData = (new ArticuloModel())->consultarProductosTiendaCheck($ids);
+                $arrData = (new TiendaModel())->consultarDatosId($ids);
+                $cliIds=retornarDataSesion("Cli_Id");
+                $arrData['Items']=$this->model->listarItemsTiendas($ids,$cliIds);
+                //$arrData['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Cli_Ids']);
+                //putMessageLogFile($arrData);
 				if(empty($arrData)){
-					$arrResponse = array('status' => false, 'msg' => 'La tienda no tiene items asignados.' ); 
+					$arrResponse = array('status' => false, 'msg' => 'La tienda no Existe.' ); 
 				}else{	
 					$arrResponse = array('status' => true, 'data' => $arrData);
 				}
@@ -235,10 +91,5 @@ class PedidoWeb extends Controllers
 	}
 
 
-
-        */
-
-
-
-
+    
 }

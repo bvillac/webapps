@@ -317,7 +317,7 @@ function sessionUsuario(int $idsUsuario)
     return $request;*/
 }
 
-function sessionStart(){
+/*function sessionStart(){
     // Iniciar la sesión
     session_start();
     //session_regenerate_id(true);//Cambiar la version
@@ -330,7 +330,7 @@ function sessionStart(){
         /*$session_in = time()-$_SESSION['inicio'];
         if($session_in>$inactive){//paso el tiempo en que usuario permanece logueado
             header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducado
-        }*/
+        }
         //Revisa si la Session esta Activa Caso contrario la envia a login
         if(empty($_SESSION['loginEstado'])){
             header('Location: '.base_url().'/login');
@@ -339,7 +339,53 @@ function sessionStart(){
     }else{
         header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducado
     }
+}*/
+
+function sessionStart()
+{
+    // 1. Parámetros de la cookie de sesión (ajusta según tus necesidades)
+    session_set_cookie_params([
+        'lifetime' => 0,            // Hasta cerrar el navegador
+        'path'     => '/',
+        'domain'   => $_SERVER['HTTP_HOST'],
+        'secure'   => isset($_SERVER['HTTPS']), // Solo HTTPS si aplica
+        'httponly' => true,
+        'samesite' => 'Lax'         // O 'Strict' si tu app lo permite
+    ]);
+
+    // 2. Iniciar sesión si no está iniciada
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // 3. Regenerar ID de sesión cada X segundos (ej: 5 minutos)
+    $regenerateInterval = 300; // segundos
+    if (!isset($_SESSION['created'])) {
+        $_SESSION['created'] = time();
+    } elseif (time() - $_SESSION['created'] > $regenerateInterval) {
+        session_regenerate_id(true);
+        $_SESSION['created'] = time();
+    }
+
+    // 4. Control de inactividad (timeout)
+    $inactiveLimit = TIMESESSION; // define en segundos (p.ej. 1800 = 30 min)
+    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $inactiveLimit) {
+        // Sesión inactiva: destruir y forzar logout
+        session_unset();
+        session_destroy();
+        header('Location: ' . base_url() . '/Logout');
+        exit;
+    }
+    $_SESSION['last_activity'] = time();
+
+    // 5. Verificar estado de login
+    if (empty($_SESSION['loginEstado'])) {
+        // No está logueado: forzar login
+        header('Location: ' . base_url() . '/login');
+        exit;
+    }
 }
+
 
 function uploadImage(array $data, string $name)
 {
@@ -572,12 +618,6 @@ function generarMenuItem($item, $nivel)
     return $menuItem;
 }
 
-
-
-
-
-
-
 function retornaUser()
 {
     $dataSession = $_SESSION['usuarioData'];
@@ -632,4 +672,16 @@ function getPageData($title, $back)
     $data['page_title']="$title <small> " . htmlspecialchars($_SESSION['empresaData']['NombreComercial'], ENT_QUOTES, 'UTF-8') . "</small>";
     $data['page_back']=$back;
     return $data;
+}
+
+function retornarDataSesion(string $param = "rolNombre")
+{
+    $errorMessages = [
+        "rolNombre" => isset($_SESSION['usuarioData']['Rol_nombre']) ? strtolower(str_replace(' ', '', $_SESSION['usuarioData']['Rol_nombre'])) : null,//Retorna Nombre de RoL minusucla
+        "Emp_Id" => isset($_SESSION['Emp_Id']) ?$_SESSION['Emp_Id']:0, // Created     
+        "Utie_Id" => isset($_SESSION['Utie_Id']) ?$_SESSION['Utie_Id']:0, // Created    
+        "Cli_Id" => isset($_SESSION['Cli_id']) ?$_SESSION['Cli_id']:0, // Created            
+        "" => null // Internal Server Error
+    ];
+    return $errorMessages[$param] ?? "Error Session desconocido";
 }

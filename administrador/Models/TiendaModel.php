@@ -28,7 +28,7 @@ class TiendaModel extends MysqlPedidos
         try {
             $sql = "SELECT a.tie_id AS Ids, a.tie_nombre AS NombreTienda, a.tie_direccion AS Direccion,a.tie_telefono as Telefono,a.tie_lug_entrega as LugarEntrega,
                        a.tie_cupo AS Cupo, b.cli_razon_social AS RazonSocial, a.fec_ini_ped as FecIni, a.fec_fin_ped as FecFin,
-                       a.tie_contacto AS ContactoTienda, a.tie_est_log AS Estado,date(a.tie_fec_cre) as FechaIngreso,a.cli_id as Cli_Ids
+                       a.tie_contacto AS ContactoTienda, a.tie_est_log AS Estado,date(a.tie_fec_cre) as FechaIngreso,a.cli_id as Cli_Ids,a.tie_cupo as Cupo
                 FROM {$this->db_name}.tienda a
                 INNER JOIN {$this->db_nameAdmin}.cliente b ON a.cli_id = b.cli_id
                 WHERE a.tie_est_log != 0 and a.tie_id= :ids ";
@@ -155,9 +155,9 @@ class TiendaModel extends MysqlPedidos
     {
         try {
 
-            $sql = "select a.utie_id utieid,b.usu_correo usuario,a.utie_fec_cre fecha,
+            $sql = "select a.utie_id Ids,b.usu_correo usuario,a.utie_fec_cre fecha,
                 concat(e.per_nombre,' ',e.per_apellido) persona,f.cli_razon_social cliente,
-                c.tie_nombre tiendanombre,d.rol_nombre rol,a.utie_est_log estado,a.utie_asig asig
+                c.tie_nombre tiendanombre,d.rol_nombre rol,a.utie_est_log Estado,a.utie_asig asig
                 from {$this->db_name}.usuario_tienda a
                         inner join ({$this->db_nameAdmin}.usuario b
                                     inner join {$this->db_nameAdmin}.persona e
@@ -167,7 +167,7 @@ class TiendaModel extends MysqlPedidos
                                     inner join {$this->db_nameAdmin}.cliente f
                 on c.cli_id=f.cli_id)
                                 on a.tie_id=c.tie_id
-                        inner join {$this->db_name}.rol d
+                        inner join {$this->db_nameAdmin}.rol d
                                 on a.rol_id=d.rol_id
                 where a.utie_est_log=1 ";
 
@@ -188,7 +188,6 @@ class TiendaModel extends MysqlPedidos
 
             //$resultado = $this->select($sql, [":ids" => $Ids]);
             $resultado = $this->select_all($sql);
-            putMessageLogFile($resultado);
             if ($resultado === false) {
                 logFileSystem("Consulta fallida para Usuario Tienda", "WARNING");
                 return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
@@ -199,6 +198,54 @@ class TiendaModel extends MysqlPedidos
             return []; // En caso de error, retornar un array vacío
         }
     }
+
+
+    public function insertUserTienda(array $dataObj)
+    {
+        $con = $this->getConexion();
+        $arroout = ["status" => false];
+        try {
+            // Validar si la usuario_tienda ya existe
+            $sqlCheck = "SELECT 1 FROM {$this->db_name}.usuario_tienda 
+                         WHERE usu_id = :usu_id AND tie_id = :tie_id and rol_id = :rol_id AND cli_id = :cli_id";
+            $paramsCheck = [":usu_id" => $dataObj['idUsuario'], 
+                            ":tie_id" => $dataObj['idTienda'],
+                            ":rol_id" => $dataObj['idRol'],
+                            ":cli_id" => $dataObj['idCliente']];
+            if (!empty($this->select($sqlCheck, $paramsCheck))) {
+                return ["status" => false, "message" => "Ya existe una Registro o Rol asignado para la tienda de este cliente."];
+            }
+
+            // Iniciar transacción
+            $con->beginTransaction();
+
+            // Insertar nuevo registro
+            $sqlInsert = "INSERT INTO {$this->db_name}.usuario_tienda 
+                          (usu_id,tie_id,rol_id,cli_id,utie_est_log) 
+                          VALUES (:usu_id,:tie_id,:rol_id,:cli_id,:utie_est_log)";
+
+            //utie_id,usu_id,tie_id,rol_id,cli_id,utie_asig,utie_est_log,utie_fec_cre,utie_fec_mod,
+
+            $paramsInsert = [
+                ":usu_id" => $dataObj['idUsuario'], 
+                ":tie_id" => $dataObj['idTienda'],
+                ":rol_id" => $dataObj['idRol'],
+                ":cli_id" => $dataObj['idCliente'],
+                ":utie_est_log" => 1
+            ];
+         
+            $this->insertConTrans($con, $sqlInsert, $paramsInsert);
+            $con->commit();
+
+            return ["status" => true, "message" => "Registro ingresado exitosamente"];
+        } catch (Exception $e) {
+            $con->rollBack();
+            putMessageLogFile("ERROR en insertUserTienda: " . $e->getMessage());
+            //logFileSystem("Error en insertUserTienda: " . $e->getMessage(), "ERROR");
+            return ["status" => false, "message" => "Error en la inserción: " . $e->getMessage()];
+        }
+    }
+
 
 
 }

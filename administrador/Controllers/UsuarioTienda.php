@@ -1,6 +1,8 @@
 <?php
 require_once("Models/TiendaModel.php");
-require_once("Models/ArticuloModel.php");
+require_once("Models/UsuariosModel.php");
+require_once("Models/ClientePedidoModel.php");
+
 class UsuarioTienda extends Controllers
 {
     public function __construct()
@@ -16,7 +18,9 @@ class UsuarioTienda extends Controllers
     {
         checkPermission('r', 'dashboard');
         $data = getPageData("Usuario Tienda", "usuariotienda");
-        //$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
+        $data['roles'] = (new UsuariosModel())->consultarRolEmpresa();
+        $data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
+        $data['tienda'] =[];
         $this->views->getView($this, "usuariotienda", $data);
     }
 
@@ -41,21 +45,21 @@ class UsuarioTienda extends Controllers
     private function getArrayOptions($id)
     {
         $options = '<div class="text-center">';
-        if ($_SESSION['permisosMod']['r']) {
-            $options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
-        }
+        // if ($_SESSION['permisosMod']['r']) {
+        //     $options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+        // }
         if ($_SESSION['permisosMod']['u']) {
             $options .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
         }
         if ($_SESSION['permisosMod']['d']) {
             $options .= " <button class='btn btn-danger btn-sm btnDelLinea' onClick='fntDeleteTienda($id)' title='Eliminar'><i class='fa fa-trash'></i></button> ";
         }
-        $options .= " <a title='Catálogo' href='" . base_url() . "/tienda/catalogo/$id' class='btn btn-primary btn-sm'><i class='fa fa-list'></i></a> ";
+        //$options .= " <a title='Catálogo' href='" . base_url() . "/tienda/catalogo/$id' class='btn btn-primary btn-sm'><i class='fa fa-list'></i></a> ";
         return $options . '</div>';
     }
 
-    /*
-    public function ingresarTienda()
+   
+    public function ingresarUsuarioTienda()
     {
         if ($_POST) {
             //dep($_POST);
@@ -64,13 +68,12 @@ class UsuarioTienda extends Controllers
                 $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
             } else {
                 $request = "";
-                $datos = isset($data['dataObj']) ? $data['dataObj'] : array();
-                
+                $datos = isset($data['dataObj']) ? $data['dataObj'] : array();                
                 $accion = isset($data['accion']) ? $data['accion'] : "";
                 if ($accion == "Create") {
                     $option = 1;
                     if ($_SESSION['permisosMod']['w']) {
-                        $request = $this->model->insertData($datos);
+                        $request = (new TiendaModel())->insertUserTienda($datos );
                     }
                 } else {
                     $option = 2;
@@ -90,10 +93,29 @@ class UsuarioTienda extends Controllers
             }
             echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         }
-        die();
+        exit();
     }
 
+    
+    public function eliminarTienda()
+    {
+        if ($_POST) {
 
+            if ($_SESSION['permisosMod']['d']) {
+                $ids = intval($_POST['ids']);
+                $request = $this->model->deleteRegistro($ids);
+                if ($request) {
+                    $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
+                } else {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        exit();
+    }
+
+ /*
     public function consultarTiendaId(int $ids)
     {
         if ($_SESSION['permisosMod']['r']) {
@@ -114,23 +136,6 @@ class UsuarioTienda extends Controllers
     }
 
 
-    public function eliminarTienda()
-    {
-        if ($_POST) {
-
-            if ($_SESSION['permisosMod']['d']) {
-                $ids = intval($_POST['ids']);
-                $request = $this->model->deleteRegistro($ids);
-                if ($request) {
-                    $arrResponse = array('status' => true, 'msg' => 'Se ha eliminado el Registro');
-                } else {
-                    $arrResponse = array('status' => false, 'msg' => 'Error al eliminar el Registro.');
-                }
-                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            }
-        }
-        die();
-    }
 
     public function catalogo($ids) {
         try {

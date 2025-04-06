@@ -76,24 +76,52 @@ class PersonaModel extends Mysql
 		return $request;
 	}
 	
-	public function consultarDatosCedulaNombres(string $parametro){
-		$sql = "SELECT a.per_id Ids,a.per_cedula Cedula,a.per_nombre Nombre, ";
-		$sql .= "   a.per_apellido Apellido,a.per_fecha_nacimiento FechaNacimiento, a.per_telefono Telefono, a.per_direccion Direccion,  a.per_genero Genero, a.estado_logico Estado,date(a.fecha_creacion) FechaIng, ";
-		$sql .= "   FLOOR(DATEDIFF(CURDATE(),a.per_fecha_nacimiento) / 365.25) AS Edad ";
-		$sql .= "   FROM " . $this->db_name . ".persona a  ";
-		$sql .= " WHERE a.estado_logico!=0  ";
-		if($parametro!=''){
-			if (is_numeric($parametro)) {
-				//$sql .= " AND (a.per_id LIKE '%{$parametro}%' OR a.per_cedula LIKE '%{$parametro}%'); ";
-				$sql .= " AND a.per_cedula LIKE '%{$parametro}%' ";
-			}else{
-				$sql .= " AND (a.per_nombre LIKE '%{$parametro}%' OR a.per_apellido LIKE '%{$parametro}%') ";
+	
+	public function consultarDatosCedulaNombres(string $parametro): array
+	{
+		// Base del SELECT
+		$sql = <<<SQL
+				SELECT
+					a.per_id            AS Ids,
+					a.per_cedula        AS Cedula,
+					a.per_nombre        AS Nombre,
+					a.per_apellido      AS Apellido,
+					a.per_fecha_nacimiento AS FechaNacimiento,
+					a.per_telefono      AS Telefono,
+					a.per_direccion     AS Direccion,
+					a.per_genero        AS Genero,
+					a.estado_logico     AS Estado,
+					concat(a.per_nombre,' ',a.per_apellido)    AS NombreLargo,
+					(SELECT usu_id FROM {$this->db_name}.usuario where per_id=a.per_id) UsuarioId,
+					DATE(a.fecha_creacion) AS FechaIng,
+					FLOOR(DATEDIFF(CURDATE(), a.per_fecha_nacimiento) / 365.25) AS Edad
+				FROM {$this->db_name}.persona a
+				WHERE a.estado_logico <> 0
+				SQL;
+
+		$params = [];
+
+		// Si hay un parámetro de búsqueda, agregamos la cláusula WHERE adecuada
+		if (trim($parametro) !== '') {
+			if (ctype_digit($parametro)) {
+				$sql .= " AND a.per_cedula LIKE :busqueda ";
+				$params[':busqueda'] = "%{$parametro}%";
+			} else {
+				$sql .= " AND (a.per_nombre LIKE :busquedaNombre OR a.per_apellido LIKE :busquedaApellido) ";
+				$params[':busquedaNombre'] = "%{$parametro}%";
+				$params[':busquedaApellido'] = "%{$parametro}%";
 			}
 		}
-		//$sql .= LIMIT;
-		$request = $this->select_all($sql);
+
+		// Opcional: agregar un ORDER BY y un LIMIT para paginación
+		$sql .= " ORDER BY a.per_apellido, a.per_nombre " ; // ajusta o parametriza según tu necesidad
+		 // Agregar límite de registros
+		$sql .= " LIMIT ".LIMIT_SQL;
+		//$params[':limit'] = (int) LIMIT_SQL; // Convertir explícitamente a entero por seguridad
+		$request = $this->select_all($sql,$params);
 		return $request;
 	}
+
 
 	public function insertDataPersona($dataObj)
 	{
