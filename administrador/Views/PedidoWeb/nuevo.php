@@ -2,6 +2,7 @@
 adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
+require_once "Views/PedidoWeb/Modals/modalGaleria.php";
 ?>
 <script>
     //const productos = <?php //echo json_encode($data['ClienteProducto']); ?>;
@@ -25,7 +26,6 @@ adminMenu($data);
         <!-- <input type="hidden" id="txth_ids" name="txth_ids" value="<?= $data['Ids'] ?>"> -->
         <input type="hidden" id="txth_art_id" name="txth_art_id" value="">
         <input type="hidden" id="txth_cod_art" name="txth_cod_art" value="0">
-        <input type="hidden" id="txth_i_m_iva" name="txth_i_m_iva" value="0">
 
         <div class="col-md-3">
             <div class="card card-primary">
@@ -79,6 +79,34 @@ adminMenu($data);
                     <button id="btnGuardar" class="btn btn-success" type="button"><i
                             class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
                     <button id="btn_retornar" class="btn btn-danger" type="button"> Retornar</button>
+                </div>
+                <br>
+               
+                <div id="alerta-cupo" class="alert alert-danger alert-dismissible fade show d-none" role="alert" style="position: sticky; top: 0; z-index: 1000;">
+  <strong>¡Atención!</strong> Has sobrepasado el cupo asignado.
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+</div>
+
+                <div class="row">
+                    
+                    <div class="col">
+                    <div id="lblTotalGeneral" class="fw-bold mt-3">Total General: 0.00</div>
+                            
+                        
+                    </div>
+
+
+
+                    <div class="col">
+
+                        <label class="control-label">Buscar Producto</label>
+                        <div class="input-group">
+                            <input class="form-control" id="txtCodigoProducto" name="txtCodigoProducto" type="text"
+                                required="" placeholder="Buscgitar Producto" oninput="filtrarTabla()">
+                        </div>
+
+                    </div>
+
                 </div>
                 <br>
 

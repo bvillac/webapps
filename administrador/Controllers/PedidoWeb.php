@@ -77,6 +77,7 @@ class PedidoWeb extends Controllers
                 $arrData = (new TiendaModel())->consultarDatosId($ids);
                 $cliIds=retornarDataSesion("Cli_Id");
                 $arrData['Items']=$this->model->listarItemsTiendas($ids,$cliIds);
+                putMessageLogFile($arrData['Items']);
                 //$arrData['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Cli_Ids']);
                 //putMessageLogFile($arrData);
 				if(empty($arrData)){
