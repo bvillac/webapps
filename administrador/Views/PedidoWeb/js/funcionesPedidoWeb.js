@@ -74,6 +74,10 @@ $(document).ready(function () {
         }
     });
 
+    $("#btnGuardar").click(function () {
+        guardarPedido();
+    });
+
 
 
 });
@@ -234,23 +238,37 @@ function actualizarTotalGeneral() {
     const lblCupo = document.getElementById("lbl_cupo");
     const cupoOtorgado = parseFloat(lblCupo?.textContent || 0);
 
-    if (totalGeneral < cupoOtorgado) {
-        alert("es menor");
-        mostrarAlertaCupo();
+    if (totalGeneral > cupoOtorgado) {
+        const excedido = (totalGeneral - cupoOtorgado).toFixed(N2decimal);
+        mostrarAlertaCupo(`Has sobrepasado el cupo asignado en <strong>$${excedido}</strong>.`, "danger");
+    
+    } else if (totalGeneral === cupoOtorgado) {
+        mostrarAlertaCupo(`Has alcanzado exactamente tu cupo asignado.`, "warning");
+    
     } else {
-        ocultarAlertaCupo();
+        const restante = (cupoOtorgado - totalGeneral).toFixed(N2decimal);
+        mostrarAlertaCupo(`Tienes un cupo disponible de <strong>$${restante}</strong>.`, "info");
     }
 }
 
-
-function mostrarAlertaCupo() {
+function mostrarAlertaCupo(mensaje = "", tipo = "danger") {
     const alerta = document.getElementById("alerta-cupo");
-    if (!alerta) return;
+    const mensajeElemento = document.getElementById("alerta-cupo-mensaje");
+    if (!alerta || !mensajeElemento) return;
 
-    if (alerta.classList.contains("d-none")) {
-        alerta.classList.remove("d-none");
-    }
+    // Quitar clases anteriores (si las hubiera)
+    alerta.classList.remove("alert-danger", "alert-success", "alert-warning", "alert-info");
 
+    // Agregar clase correspondiente al tipo
+    alerta.classList.add(`alert-${tipo}`);
+
+    // Actualizar contenido
+    mensajeElemento.innerHTML = `<strong>¡Atención!</strong> ${mensaje}`;
+
+    // Mostrar
+    alerta.classList.remove("d-none");
+
+    // Reiniciar temporizador
     clearTimeout(alertaTimeout);
     alertaTimeout = setTimeout(() => {
         ocultarAlertaCupo();
@@ -261,12 +279,8 @@ function ocultarAlertaCupo() {
     const alerta = document.getElementById("alerta-cupo");
     if (!alerta) return;
 
-    if (!alerta.classList.contains("d-none")) {
-        alerta.classList.add("d-none");
-    }
+    alerta.classList.add("d-none");
 }
-
-
 
 
 function abrirGaleria(imagenes) {
@@ -298,6 +312,161 @@ function abrirGaleria(imagenes) {
 
     new bootstrap.Modal(document.getElementById("modalGaleria")).show();
 }
+
+
+function guardarPedidoxxxx() {
+    let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';    
+    let Ids = document.querySelector('#txth_ids').value;
+
+
+    let idTienda = $('#cmb_tienda').val();
+
+    let nombreTienda = $('#txt_nombreTienda').val();
+    let telefono = $('#txt_telefono').val();
+    let direccion = $('#txt_direccion').val();
+    let contacto = $('#txt_contacto').val();
+    let lugar = $('#txt_lugar').val();
+    let diainicio = $('#txt_diainicio').val();
+    let diafin = $('#txt_diafin').val();
+    let cupo = $('#txt_cupo').val();
+    let estado = $('#cmb_estado').val();
+    if (cliente_id == '0' || nombreTienda == '' || telefono == '' || direccion == '' || contacto == '' || contacto == '' || lugar == '' 
+            || diainicio == '0' || diafin == '0' || cupo == '0') {
+        swal("Atención", "Todos los campos son obligatorios.", "error");
+        return false;
+    }
+    let elementsValid = document.getElementsByClassName("valid");
+    for (let i = 0; i < elementsValid.length; i++) {
+        if (elementsValid[i].classList.contains('is-invalid')) {
+            swal("Atención", "Por favor verifique los campos ingresados (Color Rojo).", "error");
+            return false;
+        }
+    }
+
+    var dataObj = new Object();
+    dataObj.ids = Ids;
+    dataObj.cliente_id = cliente_id;
+    dataObj.nombreTienda = nombreTienda;
+    dataObj.telefono = telefono;
+    dataObj.direccion = direccion;
+    dataObj.contacto = contacto;
+    dataObj.lugar = lugar;
+    dataObj.diainicio = diainicio;
+    dataObj.diafin = diafin;
+    dataObj.cupo = cupo;
+    dataObj.estado = estado;
+
+    let url = base_url + '/Tienda/ingresarTienda';
+		var metodo = 'POST';
+		var dataPost = { accion: accion, dataObj: dataObj };
+		peticionAjaxSSL(url, metodo, dataPost, function (data) {
+			// Manejar el éxito de la solicitud aquí
+			if (data.status) {
+				swal("Tienda", data.msg, "success");
+                window.location = base_url + '/Tienda/tienda';
+			} else {
+				swal("Atención", data.msg, "error");
+			}
+
+		}, function (jqXHR, textStatus, errorThrown) {
+			// Manejar el error de la solicitud aquí
+			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+		});
+}
+
+
+function guardarPedido() {
+    let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';    
+    let Ids = document.querySelector('#txth_ids').value;
+    const cmbTienda = document.getElementById("cmb_tienda");
+    const tiendaSeleccionada = cmbTienda ? cmbTienda.value : "";
+
+    if (!tiendaSeleccionada || tiendaSeleccionada === "0") {
+        mostrarAlertaCupo("Debe seleccionar una tienda antes de guardar.", "warning");
+        return;
+    }
+
+    const productos = obtenerProductosGuardados(); // Función que retorna el array original
+    const filas = document.querySelectorAll(`#${tGrid} tbody tr`);
+    const productosModificados = [];
+
+    let totalGeneral = 0;
+
+    filas.forEach((fila, index) => {
+        const inputCantidad = fila.querySelector(".cantidad-input");
+        const cantidad = parseFloat(inputCantidad.value) || 0;
+        const producto = productos[index];
+
+        if (cantidad > 0) {
+            const total = (cantidad * parseFloat(producto.precio)).toFixed(N2decimal);
+            totalGeneral += parseFloat(total);
+
+            productosModificados.push({
+                ...producto,
+                cantidad: cantidad,
+                total: parseFloat(total).toFixed(N2decimal)
+            });
+        }
+    });
+
+    const cupoOtorgado = parseFloat(document.getElementById("lbl_cupo").textContent) || 0;
+
+    if (totalGeneral > cupoOtorgado) {
+        const excedido = (totalGeneral - cupoOtorgado).toFixed(N2decimal);
+        mostrarAlertaCupo(`No se puede guardar. El total supera el cupo en $${excedido}.`, "danger");
+        return;
+    }
+
+    if (productosModificados.length === 0) {
+        mostrarAlertaCupo("Debe ingresar al menos una cantidad válida mayor a cero para guardar.", "warning");
+        return;
+    }
+
+    // ✅ Envío al controlador (AJAX)
+    // fetch("/tu_controlador/guardar", {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //         tienda_id: tiendaSeleccionada,
+    //         productos: productosModificados
+    //     }),
+    // })
+    // .then((response) => response.json())
+    // .then((data) => {
+    //     if (data.success) {
+    //         mostrarAlertaCupo("Datos guardados correctamente.", "success");
+    //         // opcional: limpiar tabla, recargar datos, etc.
+    //     } else {
+    //         mostrarAlertaCupo("Error al guardar los datos. Intente nuevamente.", "danger");
+    //     }
+    // })
+    // .catch((error) => {
+    //     console.error("Error al guardar:", error);
+    //     mostrarAlertaCupo("Error inesperado al guardar. Revise la consola.", "danger");
+    // });
+
+        let url = base_url + '/pedidoWeb/ingresarPedidoTemp';
+		var metodo = 'POST';
+		var dataPost = { accion: accion,tienda_id: tiendaSeleccionada, productos: productosModificados };
+		peticionAjaxSSL(url, metodo, dataPost, function (data) {
+			// Manejar el éxito de la solicitud aquí
+			if (data.status) {
+				swal("Pedidos", data.msg, "success");
+                //window.location = base_url + '/Tienda/tienda';
+			} else {
+				swal("Atención", data.msg, "error");
+			}
+
+		}, function (jqXHR, textStatus, errorThrown) {
+			// Manejar el error de la solicitud aquí
+			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+		});
+
+}
+
+
 
 
 

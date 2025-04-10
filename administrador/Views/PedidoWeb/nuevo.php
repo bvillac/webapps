@@ -60,7 +60,7 @@ require_once "Views/PedidoWeb/Modals/modalGaleria.php";
                             <b>Dirección</b> <a class="float-right"><label id="lbl_direccion"></label></a>
                         </li>
                         <li class="list-group-item">
-                            <b>Teléfono</b> <a class="float-right" ><label id="lbl_telefono"></label></a>
+                            <b>Teléfono</b> <a class="float-right"><label id="lbl_telefono"></label></a>
                         </li>
                     </ul>
 
@@ -75,37 +75,50 @@ require_once "Views/PedidoWeb/Modals/modalGaleria.php";
         <div class="col-md-9">
             <div class="tile">
                 <div id="list_tables">
-                    <h3 class="tile-title">Productos</h3>
-                    <button id="btnGuardar" class="btn btn-success" type="button"><i
-                            class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
-                    <button id="btn_retornar" class="btn btn-danger" type="button"> Retornar</button>
+                    <h3 class="tile-title">Pedido N°:</h3>
+                    
                 </div>
                 <br>
-               
-                <div id="alerta-cupo" class="alert alert-danger alert-dismissible fade show d-none" role="alert" style="position: sticky; top: 0; z-index: 1000;">
-  <strong>¡Atención!</strong> Has sobrepasado el cupo asignado.
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-</div>
+
+                <!-- <div id="alerta-cupo"
+                    class="alert alert-dismissible fade show d-none d-flex justify-content-between align-items-center"
+                    role="alert" style="position: sticky; top: 0; z-index: 1000;">
+
+                    <span id="alerta-cupo-mensaje">
+                        
+                    </span>
+
+                    <button type="button" class="btn-close ms-3" aria-label="Cerrar"
+                        onclick="ocultarAlertaCupo()"></button>
+                </div> -->
+
+                <div id="alerta-cupo" class="alert alert-dismissible fade show d-none" role="alert"
+                    style="position: sticky; top: 0; z-index: 1000;">
+                    <span id="alerta-cupo-mensaje"><strong>¡Atención!</strong> Mensaje dinámico aquí.</span>
+                    <button type="button" class="btn-close ms-auto" aria-label="Cerrar"
+                        onclick="ocultarAlertaCupo()"></button>
+                </div>
 
                 <div class="row">
-                    
                     <div class="col">
-                    <div id="lblTotalGeneral" class="fw-bold mt-3">Total General: 0.00</div>
-                            
-                        
-                    </div>
-
-
-
-                    <div class="col">
-
-                        <label class="control-label">Buscar Producto</label>
+                        <!-- <label class="control-label">Buscar Producto</label> -->
                         <div class="input-group">
                             <input class="form-control" id="txtCodigoProducto" name="txtCodigoProducto" type="text"
                                 required="" placeholder="Buscgitar Producto" oninput="filtrarTabla()">
                         </div>
-
                     </div>
+                    <div class="col">
+                        <div id="lblTotalGeneral" class="fw-bold mt-3">Total General: 0.00</div>
+                    </div>
+                    <div class="col">
+                        <button id="btnGuardar" class="btn btn-success" type="button"><i
+                                class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
+                        <button id="btn_retornar" class="btn btn-danger" type="button"> Retornar</button>
+                    </div>
+
+
+
+                    
 
                 </div>
                 <br>

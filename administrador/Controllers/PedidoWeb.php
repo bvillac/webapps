@@ -91,6 +91,46 @@ class PedidoWeb extends Controllers
 		exit();
 	}
 
+    public function ingresarPedidoTemp()
+    {
+        if ($_POST) {
+            //dep($_POST);
+            //var dataPost = { accion: accion,tienda_id: tiendaSeleccionada, productos: productosModificados };
+            $data = recibirData($_POST['data']);
+            if (empty($data['dataObj']) || empty($data['accion'])) {
+                $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
+            } else {
+                $request = "";
+                $datos = isset($data['productos']) ? $data['productos'] : array();
+                $idTienda = isset($data['tienda_id']) ? $data['tienda_id'] : 0;
+                $accion = isset($data['accion']) ? $data['accion'] : "";
+                if ($accion == "Create") {
+                    $option = 1;
+                    if ($_SESSION['permisosMod']['w']) {
+                        $request = $this->model->insertData($datos);
+                    }
+                } else {
+                    $option = 2;
+                    if ($_SESSION['permisosMod']['u']) {
+                        $request = $this->model->updateData($datos);
+                    }
+                }
+                if ($request["status"]) {
+                    if ($option == 1) {
+                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos guardados correctamente.');
+                    } else {
+                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos Actualizados correctamente.');
+                    }
+                } else {
+                    $arrResponse = array("status" => false, "msg" => $request["message"]);
+                }
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+
+
 
     
 }
