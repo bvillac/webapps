@@ -103,11 +103,12 @@ class PedidoWeb extends Controllers
                 $request = "";
                 $datos = isset($data['productos']) ? $data['productos'] : array();
                 $idTienda = isset($data['tienda_id']) ? $data['tienda_id'] : 0;
+                $total = isset($data['total']) ? $data['total'] : 0;
                 $accion = isset($data['accion']) ? $data['accion'] : "";
                 if ($accion == "Create") {
                     $option = 1;
                     if ($_SESSION['permisosMod']['w']) {
-                        $request = $this->model->insertData($datos);
+                        $request = $this->model->insertData($datos,$idTienda,$total);
                     }
                 } else {
                     $option = 2;

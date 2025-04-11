@@ -106,7 +106,7 @@ class PedidoWebModel extends MysqlPedidos
     }
 
 
-    public function listarItemsTiendas(int $ids,int $cli_id)
+    public function listarItemsTiendas(int $ids, int $cli_id)
     {
         try {
 
@@ -118,9 +118,9 @@ class PedidoWebModel extends MysqlPedidos
                                     on c.art_id=b.art_id)
                             on a.pcli_id=b.pcli_id and b.pcli_est_log=1
                     where a.artie_est_log=1 and a.tie_id= :tie_id and b.cli_id = :cli_id ";
-            $sql.=" order by c.art_des_com desc limit ". LIMIT_SQL;
+            $sql .= " order by c.art_des_com desc limit " . LIMIT_SQL;
 
-            $resultado = $this->select_all($sql, [':tie_id' => $ids,':cli_id' => $cli_id]);
+            $resultado = $this->select_all($sql, [':tie_id' => $ids, ':cli_id' => $cli_id]);
 
             if ($resultado === false) {
                 logFileSystem("Consulta fallida para listarItemsTiendas", "WARNING");
@@ -131,6 +131,160 @@ class PedidoWebModel extends MysqlPedidos
         } catch (Exception $e) {
             logFileSystem("Error en listarItemsTiendas: " . $e->getMessage(), "ERROR");
             return [];
+        }
+    }
+
+
+    public function insertData(array $productos, int $tienda_id, float $total)
+    {
+        $con = $this->getConexion();
+        $arroout = ["status" => false, "message" => "No se realizó ninguna operación."];
+
+        $utieId = retornarDataSesion('Utie_Id');
+        $cliId = retornarDataSesion('Cli_Id');
+        $Usuario = retornaUser();
+
+        try {
+            $con->beginTransaction();
+
+            // Verificar si ya existe una cabecera de pedido activa
+            $sqlCheckCab = "SELECT tcped_id FROM {$this->db_name}.temp_cab_pedido
+                        WHERE tie_id = :tie_id AND cli_id = :cli_id AND tcped_est_log = 1";
+            $stmtCheckCab = $con->prepare($sqlCheckCab);
+            $stmtCheckCab->execute([
+                ":tie_id" => $tienda_id,
+                ":cli_id" => $cliId
+            ]);
+            $cabeceraExistente = $stmtCheckCab->fetch(PDO::FETCH_ASSOC);
+
+            if ($cabeceraExistente) {
+                $idcab = $cabeceraExistente['tcped_id'];
+
+                // Actualizar total en la cabecera
+                $sqlUpdateCab = "UPDATE {$this->db_name}.temp_cab_pedido
+                             SET tcped_total = :total, tcped_fec_mod = CURRENT_TIMESTAMP
+                             WHERE tcped_id = :id";
+                $stmtUpdateCab = $con->prepare($sqlUpdateCab);
+                $stmtUpdateCab->execute([
+                    ":total" => $total,
+                    ":id" => $idcab
+                ]);
+            } else {
+                // Insertar nueva cabecera
+                $request = $this->InsertarCabListPedTemp($con, $tienda_id, $utieId, $cliId, $total, $Usuario);
+                if ($request["status"] == false) {
+                    return ["status" => false, "numero" => 0, "message" => $request["message"]];
+                }
+                $idcab = $request["numero"];
+            }
+
+            // Procesar productos
+            foreach ($productos as $producto) {
+                if ((float) $producto['cantidad'] <= 0)
+                    continue;
+
+                $sqlCheckDet = "SELECT tdped_id FROM {$this->db_name}.temp_det_pedido
+                            WHERE tcped_id = :tcped_id AND art_id = :art_id AND cli_id = :cli_id";
+                $stmtCheckDet = $con->prepare($sqlCheckDet);
+                $stmtCheckDet->execute([
+                    ":tcped_id" => $idcab,
+                    ":art_id" => $producto['art_id'],
+                    ":cli_id" => $cliId
+                ]);
+                $detalleExistente = $stmtCheckDet->fetch(PDO::FETCH_ASSOC);
+
+                if ($detalleExistente) {
+                    // Actualizar detalle existente
+                    $sqlUpdateDet = "UPDATE {$this->db_name}.temp_det_pedido SET
+                                 tdped_can_ped = :cantidad,
+                                 tdped_p_venta = :precio,
+                                 tdped_t_venta = :total,
+                                 tdped_i_m_iva = :iva,
+                                 tdped_est_log = 1,
+                                 tdped_fec_mod = CURRENT_TIMESTAMP
+                                 WHERE tdped_id = :tdped_id";
+                    $stmtUpdateDet = $con->prepare($sqlUpdateDet);
+                    $stmtUpdateDet->execute([
+                        ":cantidad" => $producto['cantidad'],
+                        ":precio" => $producto['precio'],
+                        ":total" => $producto['total'],
+                        ":iva" => $producto['iva'],
+                        ":tdped_id" => $detalleExistente['tdped_id']
+                    ]);
+                } else {
+                    // Insertar nuevo detalle
+                    $sqlInsert = "INSERT INTO {$this->db_name}.temp_det_pedido (
+                                tcped_id, artie_id, art_id, tdped_can_ped, tdped_p_venta,
+                                tdped_t_venta, tdped_i_m_iva, tdped_est_aut, tdped_observa,
+                                tdped_est_log, tdped_fec_cre, cli_id, tie_id
+                              ) VALUES (
+                                :tcped_id, :artie_id, :art_id, :cantidad, :precio,
+                                :total, :iva, 1, '', 1, CURRENT_TIMESTAMP, :cli_id, :tie_id
+                              )";
+                    $stmtInsert = $con->prepare($sqlInsert);
+                    $stmtInsert->execute([
+                        ":tcped_id" => $idcab,
+                        ":artie_id" => $producto['artie_id'],
+                        ":art_id" => $producto['art_id'],
+                        ":cantidad" => $producto['cantidad'],
+                        ":precio" => $producto['precio'],
+                        ":total" => $producto['total'],
+                        ":iva" => $producto['iva'],
+                        ":cli_id" => $cliId,
+                        ":tie_id" => $tienda_id
+                    ]);
+                }
+            }
+
+            $con->commit();
+            return ["status" => true, "numero" => $idcab, "message" => "Registros guardados correctamente."];
+
+        } catch (Exception $e) {
+            $con->rollBack();
+            logFileSystem("Error en insertData: " . $e->getMessage(), "ERROR");
+            return ["status" => false, "message" => "Error en la operación: " . $e->getMessage()];
+        }
+    }
+
+
+
+    public function InsertarCabListPedTemp($con, $tieId, $utieId, $cliId, $total, $Usuario)
+    {
+        // Validar si la tienda ya existe para este cliente (opcional)
+        /*
+        $sqlCheck = "SELECT 1 FROM {$this->db_name}.temp_cab_pedido 
+                     WHERE tie_id = :tie_id AND cli_id = :cli_id";
+        $paramsCheck = [":tie_id" => $tieId, ":cli_id" => $cliId];
+        if (!empty($this->select($sqlCheck, $paramsCheck))) {
+            return ["status" => false, "message" => "Ya existe un registro con esta tienda para este cliente."];
+        }
+        */
+
+        $sqlInsert = "INSERT INTO {$this->db_name}.temp_cab_pedido (
+                            tdoc_id, tie_id, utie_id, tcped_total, tcped_est_log, tcped_fec_cre,
+                            cli_id, tcped_receptor, usuario
+                      ) VALUES (
+                            :tdoc_id, :tie_id, :utie_id, :tcped_total, :tcped_est_log, CURRENT_TIMESTAMP(),
+                            :cli_id, :tcped_receptor, :usuario
+                      );";
+
+        $paramsInsert = [
+            ":tdoc_id" => 4,
+            ":tie_id" => $tieId,
+            ":utie_id" => $utieId,
+            ":tcped_total" => $total,
+            ":tcped_est_log" => 1,
+            ":cli_id" => $cliId,
+            ":tcped_receptor" => '', // Si luego se usará, reemplazar por valor real
+            ":usuario" => $Usuario
+        ];
+
+        $resInsert = $this->insertConTrans($con, $sqlInsert, $paramsInsert);
+
+        if ($resInsert > 0) {
+            return ["status" => true, "numero" => $resInsert];
+        } else {
+            return ["status" => false, "message" => "Error al insertar cabecera temporal"];
         }
     }
 

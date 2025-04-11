@@ -449,7 +449,7 @@ function guardarPedido() {
 
         let url = base_url + '/pedidoWeb/ingresarPedidoTemp';
 		var metodo = 'POST';
-		var dataPost = { accion: accion,tienda_id: tiendaSeleccionada, productos: productosModificados };
+		var dataPost = { accion: accion,tienda_id: tiendaSeleccionada, productos: productosModificados,total:totalGeneral };
 		peticionAjaxSSL(url, metodo, dataPost, function (data) {
 			// Manejar el éxito de la solicitud aquí
 			if (data.status) {
