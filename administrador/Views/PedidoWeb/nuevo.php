@@ -24,6 +24,7 @@ require_once "Views/PedidoWeb/Modals/modalGaleria.php";
     </div>
     <div class="row">
         <!-- <input type="hidden" id="txth_ids" name="txth_ids" value="<?= $data['Ids'] ?>"> -->
+        <input type="hidden" id="txth_ids" name="txth_ids" value="0">
         <input type="hidden" id="txth_art_id" name="txth_art_id" value="">
         <input type="hidden" id="txth_cod_art" name="txth_cod_art" value="0">
 
@@ -54,6 +55,12 @@ require_once "Views/PedidoWeb/Modals/modalGaleria.php";
                             <b>Cupo Otorgado</b> <a class="float-right"><label id="lbl_cupo">0.00</label></a>
                         </li>
                         <li class="list-group-item">
+                            <b>Cupo Usado</b> <a class="float-right"><label id="lbl_cupoUsado">0.00</label></a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Cupo Saldo</b> <a class="float-right"><label id="lbl_cupoSaldo">0.00</label></a>
+                        </li>
+                        <li class="list-group-item">
                             <b>Contacto</b> <a class="float-right"><label id="lbl_contacto"></label></a>
                         </li>
                         <li class="list-group-item">
@@ -80,17 +87,7 @@ require_once "Views/PedidoWeb/Modals/modalGaleria.php";
                 </div>
                 <br>
 
-                <!-- <div id="alerta-cupo"
-                    class="alert alert-dismissible fade show d-none d-flex justify-content-between align-items-center"
-                    role="alert" style="position: sticky; top: 0; z-index: 1000;">
-
-                    <span id="alerta-cupo-mensaje">
-                        
-                    </span>
-
-                    <button type="button" class="btn-close ms-3" aria-label="Cerrar"
-                        onclick="ocultarAlertaCupo()"></button>
-                </div> -->
+            
 
                 <div id="alerta-cupo" class="alert alert-dismissible fade show d-none" role="alert"
                     style="position: sticky; top: 0; z-index: 1000;">

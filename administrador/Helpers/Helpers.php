@@ -679,7 +679,7 @@ function retornarDataSesion(string $param = "rolNombre")
     $errorMessages = [
         "rolNombre" => isset($_SESSION['usuarioData']['Rol_nombre']) ? strtolower(str_replace(' ', '', $_SESSION['usuarioData']['Rol_nombre'])) : null,//Retorna Nombre de RoL minusucla
         "Emp_Id" => isset($_SESSION['Emp_Id']) ?$_SESSION['Emp_Id']:0, // Created     
-        "Utie_Id" => isset($_SESSION['Utie_Id']) ?$_SESSION['Utie_Id']:0, // Created    
+        "Utie_id" => isset($_SESSION['Utie_id']) ?$_SESSION['Utie_id']:0, // Created    
         "Cli_Id" => isset($_SESSION['Cli_id']) ?$_SESSION['Cli_id']:0, // Created            
         "" => null // Internal Server Error
     ];

@@ -15,12 +15,12 @@ document.addEventListener('DOMContentLoaded', function () {
             "dataSrc": ""
         },
         "columns": [
-            { "data": "pedid" },
-            { "data": "fechapedido" },
             { "data": "numero" },
-            { "data": "NombreTienda" },
-            { "data": "NombrePersona" },
-            { "data": "Total" },
+            { "data": "fechapedido" },
+            { "data": "cped_id" },
+            { "data": "nombretienda" },
+            { "data": "nombrepersona" },
+            { "data": "total" },
             { "data": "Estado" },
             { "data": "options" }
         ],
@@ -88,12 +88,15 @@ function obtenerInfoTienda() {
     let url = base_url + '/pedidoWeb/retornarDatosTienda';
     var metodo = 'POST';
     var datos = { ids: idsTienda };
-    peticionAjaxSSL(url, metodo, datos, function (data) {
+    peticionAjaxSSL(url, metodo, datos, function (data) { data.data.SaldoTienda
         if (data.status) {
+            let saldoCupo=parseFloat(data.data.Cupo)-parseFloat(data.data.SaldoTienda);
             $('#lbl_cupo').text(data.data.Cupo);
             $('#lbl_contacto').text(data.data.ContactoTienda);
             $('#lbl_direccion').text(data.data.Direccion);
             $('#lbl_telefono').text(data.data.Telefono);
+            $('#lbl_cupoSaldo').text(saldoCupo.toFixed(N2decimal));
+            $('#lbl_cupoUsado').text((data.data.SaldoTienda).toFixed(N2decimal));
             guardarProductosEnStorage(data.data.Items);
             actualizarTabla();
 
@@ -235,16 +238,17 @@ function actualizarTotalGeneral() {
     }
 
     // Comparar contra el cupo asignado
-    const lblCupo = document.getElementById("lbl_cupo");
+    //const lblCupo = document.getElementById("lbl_cupo");//Otorgado
+    const lblCupo = document.getElementById("lbl_cupoSaldo");//Saldo a la fecha
     const cupoOtorgado = parseFloat(lblCupo?.textContent || 0);
 
     if (totalGeneral > cupoOtorgado) {
         const excedido = (totalGeneral - cupoOtorgado).toFixed(N2decimal);
         mostrarAlertaCupo(`Has sobrepasado el cupo asignado en <strong>$${excedido}</strong>.`, "danger");
-    
+
     } else if (totalGeneral === cupoOtorgado) {
         mostrarAlertaCupo(`Has alcanzado exactamente tu cupo asignado.`, "warning");
-    
+
     } else {
         const restante = (cupoOtorgado - totalGeneral).toFixed(N2decimal);
         mostrarAlertaCupo(`Tienes un cupo disponible de <strong>$${restante}</strong>.`, "info");
@@ -290,7 +294,7 @@ function abrirGaleria(imagenes) {
 
     imagenes.slice(0, 3).forEach((img, index) => {
         let activeClass = index === 0 ? "active" : "";
-        let imgPath = `/imagenes/${img}`; 
+        let imgPath = `/imagenes/${img}`;
 
         verificarImagen(imgPath, (existe) => {
             let finalImgPath = existe ? imgPath : imgDefault;
@@ -314,69 +318,11 @@ function abrirGaleria(imagenes) {
 }
 
 
-function guardarPedidoxxxx() {
-    let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';    
-    let Ids = document.querySelector('#txth_ids').value;
-
-
-    let idTienda = $('#cmb_tienda').val();
-
-    let nombreTienda = $('#txt_nombreTienda').val();
-    let telefono = $('#txt_telefono').val();
-    let direccion = $('#txt_direccion').val();
-    let contacto = $('#txt_contacto').val();
-    let lugar = $('#txt_lugar').val();
-    let diainicio = $('#txt_diainicio').val();
-    let diafin = $('#txt_diafin').val();
-    let cupo = $('#txt_cupo').val();
-    let estado = $('#cmb_estado').val();
-    if (cliente_id == '0' || nombreTienda == '' || telefono == '' || direccion == '' || contacto == '' || contacto == '' || lugar == '' 
-            || diainicio == '0' || diafin == '0' || cupo == '0') {
-        swal("Atención", "Todos los campos son obligatorios.", "error");
-        return false;
-    }
-    let elementsValid = document.getElementsByClassName("valid");
-    for (let i = 0; i < elementsValid.length; i++) {
-        if (elementsValid[i].classList.contains('is-invalid')) {
-            swal("Atención", "Por favor verifique los campos ingresados (Color Rojo).", "error");
-            return false;
-        }
-    }
-
-    var dataObj = new Object();
-    dataObj.ids = Ids;
-    dataObj.cliente_id = cliente_id;
-    dataObj.nombreTienda = nombreTienda;
-    dataObj.telefono = telefono;
-    dataObj.direccion = direccion;
-    dataObj.contacto = contacto;
-    dataObj.lugar = lugar;
-    dataObj.diainicio = diainicio;
-    dataObj.diafin = diafin;
-    dataObj.cupo = cupo;
-    dataObj.estado = estado;
-
-    let url = base_url + '/Tienda/ingresarTienda';
-		var metodo = 'POST';
-		var dataPost = { accion: accion, dataObj: dataObj };
-		peticionAjaxSSL(url, metodo, dataPost, function (data) {
-			// Manejar el éxito de la solicitud aquí
-			if (data.status) {
-				swal("Tienda", data.msg, "success");
-                window.location = base_url + '/Tienda/tienda';
-			} else {
-				swal("Atención", data.msg, "error");
-			}
-
-		}, function (jqXHR, textStatus, errorThrown) {
-			// Manejar el error de la solicitud aquí
-			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
-		});
-}
 
 
 function guardarPedido() {
-    let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';    
+    //let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';    
+    let accion = 'Create';
     let Ids = document.querySelector('#txth_ids').value;
     const cmbTienda = document.getElementById("cmb_tienda");
     const tiendaSeleccionada = cmbTienda ? cmbTienda.value : "";
@@ -422,47 +368,25 @@ function guardarPedido() {
         return;
     }
 
-    // ✅ Envío al controlador (AJAX)
-    // fetch("/tu_controlador/guardar", {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //         tienda_id: tiendaSeleccionada,
-    //         productos: productosModificados
-    //     }),
-    // })
-    // .then((response) => response.json())
-    // .then((data) => {
-    //     if (data.success) {
-    //         mostrarAlertaCupo("Datos guardados correctamente.", "success");
-    //         // opcional: limpiar tabla, recargar datos, etc.
-    //     } else {
-    //         mostrarAlertaCupo("Error al guardar los datos. Intente nuevamente.", "danger");
-    //     }
-    // })
-    // .catch((error) => {
-    //     console.error("Error al guardar:", error);
-    //     mostrarAlertaCupo("Error inesperado al guardar. Revise la consola.", "danger");
-    // });
+    let url = base_url + '/pedidoWeb/ingresarPedidoTemp';
+    var metodo = 'POST';
+    var dataPost = { accion: accion, tienda_id: tiendaSeleccionada, productos: productosModificados, total: totalGeneral };
+    peticionAjaxSSL(url, metodo, dataPost, function (data) {
+        // Manejar el éxito de la solicitud aquí
+        if (data.status) {
+            swal("Pedido N°: " + data.numero, data.msg, "success");
+            //tableTienda.api().ajax.reload();
+            window.location = base_url + '/pedidoWeb';
+            //mostrarAlertaCupo("Datos guardados correctamente.", "success");
+            //         // opcional: limpiar tabla, recargar datos, etc.
+        } else {
+            swal("Atención", data.msg, "error");
+        }
 
-        let url = base_url + '/pedidoWeb/ingresarPedidoTemp';
-		var metodo = 'POST';
-		var dataPost = { accion: accion,tienda_id: tiendaSeleccionada, productos: productosModificados,total:totalGeneral };
-		peticionAjaxSSL(url, metodo, dataPost, function (data) {
-			// Manejar el éxito de la solicitud aquí
-			if (data.status) {
-				swal("Pedidos", data.msg, "success");
-                //window.location = base_url + '/Tienda/tienda';
-			} else {
-				swal("Atención", data.msg, "error");
-			}
-
-		}, function (jqXHR, textStatus, errorThrown) {
-			// Manejar el error de la solicitud aquí
-			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
-		});
+    }, function (jqXHR, textStatus, errorThrown) {
+        // Manejar el error de la solicitud aquí
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
 
 }
 

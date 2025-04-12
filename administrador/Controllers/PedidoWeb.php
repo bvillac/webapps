@@ -9,14 +9,14 @@ class PedidoWeb extends Controllers
         sessionStart();
         getPermisos();
 
+
     }
 
 
     public function pedidoweb()
     {
-
         checkPermission('r', 'dashboard');
-        $data = getPageData("Pedido Web", "Pedidoweb");
+        $data = getPageData("Pedido Web", "pedidoWeb");
         //$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
         $this->views->getView($this, "pedidoweb", $data);
     }
@@ -56,7 +56,7 @@ class PedidoWeb extends Controllers
     public function nuevo()
     {
         checkPermission('r', 'dashboard');
-        $data = getPageData("Nuevo Pedido Web", "pedidoweb");
+        $data = getPageData("Nuevo Pedido Web", "pedidoWeb");
         $cliIds=retornarDataSesion("Cli_Id");
         $data['tienda'] = (new TiendaModel())->consultarTiendaCliente($cliIds);
         $data['Cliente'] = (new ClientePedidoModel())->consultarDatosId($cliIds);
@@ -77,9 +77,8 @@ class PedidoWeb extends Controllers
                 $arrData = (new TiendaModel())->consultarDatosId($ids);
                 $cliIds=retornarDataSesion("Cli_Id");
                 $arrData['Items']=$this->model->listarItemsTiendas($ids,$cliIds);
-                putMessageLogFile($arrData['Items']);
-                //$arrData['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Cli_Ids']);
-                //putMessageLogFile($arrData);
+                $arrData['SaldoTienda']=$this->model->recuperarSaldoTienda($ids,$cliIds);
+                putMessageLogFile($arrData['SaldoTienda']);
 				if(empty($arrData)){
 					$arrResponse = array('status' => false, 'msg' => 'La tienda no Existe.' ); 
 				}else{	
@@ -97,7 +96,7 @@ class PedidoWeb extends Controllers
             //dep($_POST);
             //var dataPost = { accion: accion,tienda_id: tiendaSeleccionada, productos: productosModificados };
             $data = recibirData($_POST['data']);
-            if (empty($data['dataObj']) || empty($data['accion'])) {
+            if (empty($data['productos']) || empty($data['accion']) || empty($data['tienda_id'])) {
                 $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
             } else {
                 $request = "";
@@ -105,22 +104,24 @@ class PedidoWeb extends Controllers
                 $idTienda = isset($data['tienda_id']) ? $data['tienda_id'] : 0;
                 $total = isset($data['total']) ? $data['total'] : 0;
                 $accion = isset($data['accion']) ? $data['accion'] : "";
+
                 if ($accion == "Create") {
                     $option = 1;
                     if ($_SESSION['permisosMod']['w']) {
                         $request = $this->model->insertData($datos,$idTienda,$total);
                     }
                 } else {
-                    $option = 2;
-                    if ($_SESSION['permisosMod']['u']) {
-                        $request = $this->model->updateData($datos);
-                    }
+                    //$option = 2;
+                    //if ($_SESSION['permisosMod']['u']) {
+                    //    $request = $this->model->updateData($datos);
+                    //}
                 }
                 if ($request["status"]) {
                     if ($option == 1) {
-                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos guardados correctamente.');
+                        //Enviar correo
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
                     } else {
-                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos Actualizados correctamente.');
+                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
                     }
                 } else {
                     $arrResponse = array("status" => false, "msg" => $request["message"]);
@@ -129,6 +130,32 @@ class PedidoWeb extends Controllers
             echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         }
         die();
+    }
+
+    private function enviarMail()
+    {
+        $this->model->sendMailPedidosTemp($arroout["data"]);
+        $objUser = $ModUsu->recuperarUserCorreoTiendaSUP($tieId, 8, $cli_Id);//Recupera Usuairos Superviswor
+        //VSValidador::putMessageLogFile($objUser);
+        $CabPed[0]["CorreoUser"] = $objUser["USU_CORREO"];
+        $CabPed[0]["NombreUser"] = $objUser["USU_NOMBRE"];
+        //VSValidador::putMessageLogFile($CabPed);
+
+        $nomEmpresa = "NOBMRE";
+        $valorNeto = $CabPed[0]["ValorNeto"];
+        $Asunto = "$valorNeto ($nomEmpresa) Pedido en línea realizado con éxito!";
+        $Titulo = "";
+        $htmlMail = $this->renderPartial(
+            'mensaje',
+            array(
+                'CabPed' => $CabPed,
+                'TituloData' => "PEDIDO EN LÍNEA REALIZADO CON ÉXITO!!",
+                'Estado' => "R",
+            ),
+            true
+        );
+        //$dataMail->enviarRevisado($htmlMail,$CabPed);
+        $dataMail->enviarNotificacion($htmlMail, $CabPed, $Asunto, $Titulo);
     }
 
 

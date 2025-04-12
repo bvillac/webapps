@@ -81,7 +81,7 @@ class LoginEmpresa extends Controllers
 			//GUARDA SESSION DATOS DE EMPRESA
 			$_SESSION['Emp_Id'] = $Emp_Id; 
 			$_SESSION['Eusu_id'] = $Eusu_id;
-			$_SESSION['Utie_id'] = 1;//Se debe llenar con la sescion al iniciar
+			$_SESSION['Utie_id'] = 8;//Se debe llenar con la sescion al iniciar
 			$_SESSION['Cli_id'] = 133;//Se debe llenar con la sescion al iniciar
 			$_SESSION['empresaData'] = $modelEmpresa->consultarEmpresaEstPunto($Emp_Id);
 			$_SESSION['usuarioData']=$modelLoguin->sessionLogin($_SESSION['Usu_id']);//Datos de usuario

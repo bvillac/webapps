@@ -14,11 +14,13 @@ class PedidoWebModel extends MysqlPedidos
     {
         try {
             $idsTie = $this->recuperarIdsTienda();
+
             $params = [];
             $where = ["a.tcped_est_log <> 4"]; // Excluir anulados
 
             // Tiendas disponibles para el usuario
             if (!empty($idsTie)) {
+                $idsTie = implode(",", $idsTie);
                 $where[] = "a.tie_id IN ($idsTie)";
             }
 
@@ -46,7 +48,7 @@ class PedidoWebModel extends MysqlPedidos
             // Construcción del SQL
             $sql = "
             SELECT 
-                a.tcped_id AS pedid,
+                a.tcped_id AS Ids,
                 a.tie_id AS tieid,
                 a.tcped_total AS total,
                 DATE(a.tcped_fec_cre) AS fechapedido,
@@ -59,7 +61,7 @@ class PedidoWebModel extends MysqlPedidos
                 b.tie_direccion AS direcciontienda,
                 concat(e.per_nombre,' ',e.per_apellido)  AS nombrepersona,
                 LPAD(a.tcped_id, 9, '0') AS numero,
-                a.tcped_est_log AS estado,
+                a.tcped_est_log AS Estado,
                 a.tcped_est_env AS estenv
             FROM {$this->db_name}.temp_cab_pedido a
             INNER JOIN {$this->db_name}.tienda b ON a.tie_id = b.tie_id
@@ -70,13 +72,13 @@ class PedidoWebModel extends MysqlPedidos
             ORDER BY a.tcped_id DESC
             LIMIT " . LIMIT_SQL;
 
+
             $resultado = $this->select_all($sql, $params);
 
             if ($resultado === false) {
                 logFileSystem("Consulta fallida para consultarDatos", "WARNING");
                 return [];
             }
-
             return $resultado;
         } catch (Exception $e) {
             logFileSystem("Error en consultarDatos: " . $e->getMessage(), "ERROR");
@@ -91,7 +93,7 @@ class PedidoWebModel extends MysqlPedidos
      */
     public function recuperarIdsTienda(): array
     {
-        $utieId = retornarDataSesion('Utie_Id');
+        $utieId = retornarDataSesion('Utie_id');
         if (empty($utieId)) {
             return [];
         }
@@ -139,8 +141,7 @@ class PedidoWebModel extends MysqlPedidos
     {
         $con = $this->getConexion();
         $arroout = ["status" => false, "message" => "No se realizó ninguna operación."];
-
-        $utieId = retornarDataSesion('Utie_Id');
+        $utieId = retornarDataSesion('Utie_id');
         $cliId = retornarDataSesion('Cli_Id');
         $Usuario = retornaUser();
 
@@ -287,6 +288,66 @@ class PedidoWebModel extends MysqlPedidos
             return ["status" => false, "message" => "Error al insertar cabecera temporal"];
         }
     }
+
+    public function recuperarSaldoTienda(int $idTienda, int $idCliente): float
+    {
+        $sql = "SELECT SUM(tcped_total) AS Total 
+                FROM {$this->db_name}.temp_cab_pedido 
+                WHERE cli_id = :cli_id 
+                  AND tie_id = :tie_id
+                  AND MONTH(tcped_fec_cre) = MONTH(CURRENT_DATE())
+                  AND YEAR(tcped_fec_cre) = YEAR(CURRENT_DATE())";
+    
+        $rows = $this->select_all($sql, [':cli_id' => $idCliente, ':tie_id' => $idTienda]);
+    
+        if (!empty($rows) && isset($rows[0]['Total'])) {
+            return (float) $rows[0]['Total'];
+        }
+    
+        return 0.00;
+    }
+
+
+
+    public function sendMailPedidosTemp(int $ids)
+    {
+        try {
+
+            $sql = "select a.tcped_id pedid,concat(repeat( '0', 9 - length(a.tcped_id) ),a.tcped_id) numero,
+                        a.tcped_total valorneto,date(a.tcped_fec_cre) fechapedido,b.tie_nombre nombretienda,
+                        concat(e.per_nombre,' ',e.per_apellido) nombrepersona,d.usu_correo correopersona,
+                        concat(h.per_nombre,' ',h.per_apellido) nombreuser,g.usu_correo correouser
+                        from {$this->db_name}.temp_cab_pedido a
+                                inner join {$this->db_name}.tienda b
+                                        on a.tie_id=b.tie_id
+                                inner join ({$this->db_nameAdmin}.usuario_tienda c
+                                                inner join ({$this->db_nameAdmin}.usuario d
+                                                                inner join {$this->db_nameAdmin}.persona e
+                                                                        on d.per_id=e.per_id)
+                                                        on c.usu_id=d.usu_id)
+                                       on c.utie_id=a.utie_id
+                                inner join ({$this->db_nameAdmin}.usuario_tienda f
+                                                inner join ({$this->db_nameAdmin}.usuario g
+                                                                inner join {$this->db_nameAdmin}.persona h
+                                                                        on g.per_id=h.per_id)
+                                                        on f.usu_id=g.usu_id)
+                                        on f.utie_id=a.utie_id
+                where a.tcped_id=$ids ;";
+
+            $resultado = $this->select_all($sql, [':tcped_id' => $ids]);
+
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para listarItemsTiendas", "WARNING");
+                return [];
+            }
+
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en listarItemsTiendas: " . $e->getMessage(), "ERROR");
+            return [];
+        }
+    }
+    
 
 
 

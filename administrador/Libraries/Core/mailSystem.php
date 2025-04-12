@@ -1,93 +1,72 @@
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
-require 'vendor/autoload.php';
-class mailSystem{
-	private $domEmpresa='solucionesvillacreses.com';
-    //private $mailSMTP='mail.utimpor.com';
-    private $mailSMTP='marquis.websitewelcome.com';
-    private $noResponder='no-responder@utimpor.com';
-    private $noResponderPass='tFxBrTzxeEGt60yf';
-    public $Subject='Ha Recibido un(a)  Nuevo(a)!!! ';
-    public $file_to_attachXML='';
-    public $file_to_attachPDF='';
-    public $fileXML='';
-    public $filePDF='';
+use PHPMailer\PHPMailer\Exception;
 
-	public function __construct(){
-		
-	}
+require_once 'vendor/autoload.php';
 
-    //Valida si es un Email Correcto Devuelve True
-    private function valid_email($val) {
-        if (!filter_var($val, FILTER_VALIDATE_EMAIL)) {
-            return false;
-        }
-        return true;
+class MailSystem
+{
+    private $mailer;
+
+    public function __construct()
+    {
+        $this->mailer = new PHPMailer(true);
+
+        // Configuración del servidor SMTP
+        $this->mailer->isSMTP();
+        $this->mailer->Host = 'smtp.tuservidor.com';
+        $this->mailer->SMTPAuth = true;
+        $this->mailer->Username = 'tucorreo@dominio.com';
+        $this->mailer->Password = 'tu_contraseña';
+        $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $this->mailer->Port = 587;
+
+        $this->mailer->setFrom('tucorreo@dominio.com', 'Nombre Remitente');
+        $this->mailer->isHTML(true);
     }
 
+    public function enviarPedido(string $destinatario, string $asunto, array $pedido, string $pdfPath = '', string $bcc = ''): array
+    {
+        try {
+            $this->mailer->addAddress($destinatario);
+            $this->mailer->Subject = $asunto;
 
-     //Envio de correos
-     function enviarMail($data,$template) {
-        /*$asunto = $data['asunto'];
-        $paraDestino = $data['email'];
-        $empresa = REMITENTE;
-        $remitente = NO_RESPONDER;
-        $emailCopia = !empty($data['emailCopia']) ? $data['emailCopia'] : "";
-        //ENVIO DE CORREO
-        $de = "MIME-Version: 1.0\r\n";
-        $de .= "Content-type: text/html; charset=UTF-8\r\n";
-        $de .= "From: {$empresa} <{$remitente}>\r\n";
-        $de .= "Bcc: $emailCopia\r\n";
-        ob_start();
-        require_once("Views/Template/Email/".$template.".php");
-        $mensaje = ob_get_clean();
-        $send = mail($paraDestino, $asunto, $mensaje, $de);
-        return $send;*/
+            // Agregar copia oculta si se indicó
+            if (!empty($bcc)) {
+                $this->mailer->addBCC($bcc);
+            }
 
-        $asunto = $data['asunto'];
-        $paraDestino = $data['email'];
+            // Construir cuerpo del mensaje HTML
+            $body = "<h3>Resumen del pedido</h3><table border='1' cellpadding='5'>";
+            $body .= "<tr><th>Código</th><th>Nombre</th><th>Cantidad</th><th>Precio</th><th>Total</th></tr>";
 
-        $mail = new PHPMailer();        
-        $mail->IsSMTP();
-        $mail->SMTPSecure = "ssl";
-        $mail->Port = 465;
-        // la dirección del servidor, p. ej.: smtp.servidor.com
-        $mail->Host = $this->mailSMTP;
-        $mail->setFrom($this->noResponder, 'Servicio de envío automático '.$this->domEmpresa);
+            $totalGeneral = 0;
+            foreach ($pedido as $item) {
+                $body .= "<tr>
+                            <td>{$item['codigo']}</td>
+                            <td>{$item['nombre']}</td>
+                            <td>{$item['cantidad']}</td>
+                            <td>\${$item['precio']}</td>
+                            <td>\$" . number_format($item['total'], 2) . "</td>
+                          </tr>";
+                $totalGeneral += $item['total'];
+            }
 
-        // asunto y cuerpo alternativo del mensaje
-        $mail->Subject = $this->Subject;
-        $mail->AltBody = "Data alternativao";
+            $body .= "<tr><td colspan='4'><strong>Total General</strong></td><td><strong>\$" . number_format($totalGeneral, 2) . "</strong></td></tr>";
+            $body .= "</table>";
 
-        ob_start();
-        require_once("Views/Template/Email/".$template.".php");
-        $mensaje = ob_get_clean();
+            $this->mailer->Body = $body;
 
-        // si el cuerpo del mensaje es HTML
-        $mail->MsgHTML($mensaje);
-        $mail->AddAddress($paraDestino, $asunto);   
+            // Adjuntar PDF si se especificó
+            if (!empty($pdfPath) && file_exists($pdfPath)) {
+                $this->mailer->addAttachment($pdfPath);
+            }
 
-        // si el SMTP necesita autenticación
-        $mail->SMTPAuth = true;
+            $this->mailer->send();
 
-        // credenciales usuario
-        $mail->Username = $this->noResponder;
-        $mail->Password = $this->noResponderPass;
-        $mail->CharSet = 'UTF-8';
-        //$mail->SMTPDebug = 4;//Muestra el Error
-
-        if (!$mail->Send()) {
-            //echo "Error enviando: " . $mail->ErrorInfo;
-            //return $obj_var->messageSystem('NO_OK', "Error enviando: " . $mail->ErrorInfo, null, null, null);
-            return false;
-        } else {
-            return true;
-            //echo "¡¡Enviado!!";
-            //return $obj_var->messageSystem('OK', "¡¡Enviado!!", null, null, null);
+            return ['status' => true, 'message' => 'Correo enviado correctamente'];
+        } catch (Exception $e) {
+            return ['status' => false, 'message' => 'Error al enviar el correo: ' . $e->getMessage()];
         }
     }
-
-	
 }
-
-?>
