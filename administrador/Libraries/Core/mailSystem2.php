@@ -1,7 +1,7 @@
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
 require 'vendor/autoload.php';
-class mailSystem{
+class mailSystemccc{
 	private $domEmpresa='solucionesvillacreses.com';
     //private $mailSMTP='mail.utimpor.com';
     private $mailSMTP='marquis.websitewelcome.com';

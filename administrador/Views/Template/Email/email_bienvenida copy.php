@@ -84,21 +84,21 @@
 			<tr>
 				<td>
 					<div class="x_sgwrap x_title_blue">
-						<h1><?= TITULO_EMPRESA ?></h1>
+						<h1><?= NOMBRE_EMPESA ?></h1>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="x_sgwrap">
-	
+						<p>Hola <?= $data['nombreUsuario']; ?></p>
 					</div>
 					<p>Bienvenido a nuestra tienda en línea.</p>
 					<p>Ahora puedes ralizar tus compras en línea sin salir de casa.</p>
 					<p>Accede a tu cuenta con tus credenciales:</p>
-		
-			
-					<a href="<?= base_url; ?>" target="_blank" class="x_button_link x_link_blue">Comprar ahora</a>
+					<p>Usuario: <strong><?= $data['email']; ?></strong></p>
+					<p>Contraseña: <strong><?= $data['password']; ?></strong></p>
+					<a href="<?= BASE_URL; ?>" target="_blank" class="x_button_link x_link_blue">Comprar ahora</a>
 					<p class="x_title_gray"><a href="<?= WEB_EMPRESA; ?>" target="_blanck"><?= WEB_EMPRESA; ?></a></p>
 				</td>
 			</tr>

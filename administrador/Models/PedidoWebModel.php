@@ -312,7 +312,6 @@ class PedidoWebModel extends MysqlPedidos
     public function sendMailPedidosTemp(int $ids)
     {
         try {
-
             $sql = "select a.tcped_id pedid,concat(repeat( '0', 9 - length(a.tcped_id) ),a.tcped_id) numero,
                         a.tcped_total valorneto,date(a.tcped_fec_cre) fechapedido,b.tie_nombre nombretienda,
                         concat(e.per_nombre,' ',e.per_apellido) nombrepersona,d.usu_correo correopersona,
@@ -320,31 +319,54 @@ class PedidoWebModel extends MysqlPedidos
                         from {$this->db_name}.temp_cab_pedido a
                                 inner join {$this->db_name}.tienda b
                                         on a.tie_id=b.tie_id
-                                inner join ({$this->db_nameAdmin}.usuario_tienda c
+                                inner join ({$this->db_name}.usuario_tienda c
                                                 inner join ({$this->db_nameAdmin}.usuario d
                                                                 inner join {$this->db_nameAdmin}.persona e
                                                                         on d.per_id=e.per_id)
                                                         on c.usu_id=d.usu_id)
                                        on c.utie_id=a.utie_id
-                                inner join ({$this->db_nameAdmin}.usuario_tienda f
+                                inner join ({$this->db_name}.usuario_tienda f
                                                 inner join ({$this->db_nameAdmin}.usuario g
                                                                 inner join {$this->db_nameAdmin}.persona h
                                                                         on g.per_id=h.per_id)
                                                         on f.usu_id=g.usu_id)
                                         on f.utie_id=a.utie_id
-                where a.tcped_id=$ids ;";
-
+                where a.tcped_id= :tcped_id ;";
             $resultado = $this->select_all($sql, [':tcped_id' => $ids]);
-
             if ($resultado === false) {
-                logFileSystem("Consulta fallida para listarItemsTiendas", "WARNING");
+                logFileSystem("Consulta fallida para sendMailPedidosTemp", "WARNING");
                 return [];
             }
-
             return $resultado;
         } catch (Exception $e) {
-            logFileSystem("Error en listarItemsTiendas: " . $e->getMessage(), "ERROR");
+            logFileSystem("Error en sendMailPedidosTemp: " . $e->getMessage(), "ERROR");
             return [];
+        }
+    }
+
+
+    public function recuperarUserCorreoTiendaSUP($idTie,$idRol,$cli_Id)
+    {
+        try {      
+            $sql = "select concat(e.per_nombre,' ',e.per_apellido) as usu_nombre,b.usu_correo 
+                    from {$this->db_name}.usuario_tienda a
+                        inner join ({$this->db_nameAdmin}.usuario b
+                            inner join {$this->db_nameAdmin}.persona e
+                                on b.per_id=e.per_id)
+                        on b.usu_id=a.usu_id
+                    where a.cli_id=:cli_id and a.tie_id=:tie_id and rol_id=:rol_id and utie_est_log=1;";
+            
+
+			$arrParams = [":cli_id" => $cli_Id,":tie_id" => $idTie,":rol_id" => $idRol];
+            $resultado = $this->select_all($sql,$arrParams);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida recuperarUserCorreoTiendaSUP", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en recuperarUserCorreoTiendaSUP: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
         }
     }
     

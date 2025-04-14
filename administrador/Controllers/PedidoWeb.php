@@ -21,7 +21,7 @@ class PedidoWeb extends Controllers
         $this->views->getView($this, "pedidoweb", $data);
     }
 
-    
+
 
     public function consultarPedidos()
     {
@@ -57,84 +57,44 @@ class PedidoWeb extends Controllers
     {
         checkPermission('r', 'dashboard');
         $data = getPageData("Nuevo Pedido Web", "pedidoWeb");
-        $cliIds=retornarDataSesion("Cli_Id");
+        $cliIds = retornarDataSesion("Cli_Id");
         $data['tienda'] = (new TiendaModel())->consultarTiendaCliente($cliIds);
         $data['Cliente'] = (new ClientePedidoModel())->consultarDatosId($cliIds);
         $data['nombreCliente'] = htmlspecialchars($data['Cliente']['Nombre'], ENT_QUOTES, 'UTF-8');
         $this->views->getView($this, "nuevo", $data);
 
-            
+
     }
 
-    public function retornarDatosTienda(){
-		//dep($_POST);
-		if($_POST){
-			$data=recibirData($_POST['data']);         
-			if(empty($data['ids']) ){
-				$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
-			}else{
-				$ids = intval(strClean($data['ids']));
-                $arrData = (new TiendaModel())->consultarDatosId($ids);
-                $cliIds=retornarDataSesion("Cli_Id");
-                $arrData['Items']=$this->model->listarItemsTiendas($ids,$cliIds);
-                $arrData['SaldoTienda']=$this->model->recuperarSaldoTienda($ids,$cliIds);
-                putMessageLogFile($arrData['SaldoTienda']);
-				if(empty($arrData)){
-					$arrResponse = array('status' => false, 'msg' => 'La tienda no Existe.' ); 
-				}else{	
-					$arrResponse = array('status' => true, 'data' => $arrData);
-				}
-			}
-			echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
-		}
-		exit();
-	}
-
-    public function ingresarPedidoTemp()
+    public function retornarDatosTienda()
     {
+        //dep($_POST);
         if ($_POST) {
-            //dep($_POST);
-            //var dataPost = { accion: accion,tienda_id: tiendaSeleccionada, productos: productosModificados };
             $data = recibirData($_POST['data']);
-            if (empty($data['productos']) || empty($data['accion']) || empty($data['tienda_id'])) {
-                $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
+            if (empty($data['ids'])) {
+                $arrResponse = array('status' => false, 'msg' => 'Error de datos');
             } else {
-                $request = "";
-                $datos = isset($data['productos']) ? $data['productos'] : array();
-                $idTienda = isset($data['tienda_id']) ? $data['tienda_id'] : 0;
-                $total = isset($data['total']) ? $data['total'] : 0;
-                $accion = isset($data['accion']) ? $data['accion'] : "";
-
-                if ($accion == "Create") {
-                    $option = 1;
-                    if ($_SESSION['permisosMod']['w']) {
-                        $request = $this->model->insertData($datos,$idTienda,$total);
-                    }
+                $ids = intval(strClean($data['ids']));
+                $arrData = (new TiendaModel())->consultarDatosId($ids);
+                $cliIds = retornarDataSesion("Cli_Id");
+                $arrData['Items'] = $this->model->listarItemsTiendas($ids, $cliIds);
+                $arrData['SaldoTienda'] = $this->model->recuperarSaldoTienda($ids, $cliIds);
+                if (empty($arrData)) {
+                    $arrResponse = array('status' => false, 'msg' => 'La tienda no Existe.');
                 } else {
-                    //$option = 2;
-                    //if ($_SESSION['permisosMod']['u']) {
-                    //    $request = $this->model->updateData($datos);
-                    //}
-                }
-                if ($request["status"]) {
-                    if ($option == 1) {
-                        //Enviar correo
-                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos guardados correctamente.');
-                    } else {
-                        $arrResponse = array('status' => true, 'numero' => $request["numero"], 'msg' => 'Datos Actualizados correctamente.');
-                    }
-                } else {
-                    $arrResponse = array("status" => false, "msg" => $request["message"]);
+                    $arrResponse = array('status' => true, 'data' => $arrData);
                 }
             }
             echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         }
-        die();
+        exit();
     }
+
+    
 
     private function enviarMail()
     {
-        $this->model->sendMailPedidosTemp($arroout["data"]);
+        /*$this->model->sendMailPedidosTemp($arroout["data"]);
         $objUser = $ModUsu->recuperarUserCorreoTiendaSUP($tieId, 8, $cli_Id);//Recupera Usuairos Superviswor
         //VSValidador::putMessageLogFile($objUser);
         $CabPed[0]["CorreoUser"] = $objUser["USU_CORREO"];
@@ -155,10 +115,106 @@ class PedidoWeb extends Controllers
             true
         );
         //$dataMail->enviarRevisado($htmlMail,$CabPed);
-        $dataMail->enviarNotificacion($htmlMail, $CabPed, $Asunto, $Titulo);
+        $dataMail->enviarNotificacion($htmlMail, $CabPed, $Asunto, $Titulo);*/
+    }
+
+
+    public function ingresarPedidoTemp()
+    {
+        if ($_POST) {
+            $data = recibirData($_POST['data']);
+            if (empty($data['productos']) || empty($data['accion']) || empty($data['tienda_id'])) {
+                $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
+            } else {
+                $datos = $data['productos'];
+                $idTienda = $data['tienda_id'];
+                $total = $data['total'];
+                $accion = $data['accion'];
+                //$request = "";
+
+                if ($accion == "Create") {
+                    $option = 1;
+                    if ($_SESSION['permisosMod']['w']) {
+                        $request = $this->model->insertData($datos, $idTienda, $total);
+                    }
+                } else {
+                    //$option = 2;
+                    //if ($_SESSION['permisosMod']['u']) {
+                    //    $request = $this->model->updateData($datos);
+                    //}
+                }
+                $request["status"]=true;
+                if ($request["status"]) {
+                    $idPedido = 1;//$request["numero"];
+
+                    if ($option == 1) {
+                        // Ejecutar script externo en segundo plano
+                        /*$pedido = [
+                            ['codigo' => 'P001', 'nombre' => 'Lápiz', 'cantidad' => 10, 'precio' => 0.5, 'total' => 5.0],
+                            ['codigo' => 'P002', 'nombre' => 'Cuaderno', 'cantidad' => 5, 'precio' => 2.0, 'total' => 10.0],
+                        ];
+                        $dataExec = [
+                            'destinatario' => 'byron_villacresesf@hotmail.com',
+                            'asunto' => 'Confirmación de Pedido',
+                            'pedido' => $pedido,  // array con los productos
+                            'bcc' => 'admin@correo.com',
+                            'cli_id' =>1
+                        ];
+                        //$rutaScript = __DIR__ . "/EnviarMail.php";
+                        $rutaScript = "EnviarMail.php";
+                        putMessageLogFile($rutaScript);
+                        $comando = "php " . escapeshellarg($rutaScript) . " " . escapeshellarg(json_encode($dataExec)) . " > /dev/null 2>&1 &";
+                        exec($comando); // Sin esperar respuesta*/
+
+                        //Recupera infor de CabTemp  para enviar info al supervisor de tienda
+                        //$CabPed=$this->model->sendMailPedidosTemp($request["numero"]);
+                        $CabPed=$this->model->sendMailPedidosTemp(17);
+                        $cliId = retornarDataSesion('Cli_Id');
+                        //$objUser=$this->model->recuperarUserCorreoTiendaSUP($idTienda,16,$cliId);//Recupera Usuairos Superviswor
+                        $CabPed[0]["correouser"]='byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
+                        $CabPed[0]["nombreuser"]='Byron Villacreses';//$objUser["usu_nombre"];
+                        //putMessageLogFile($CabPed);
+                        putMessageLogFile("ant1");
+                        
+                        //$htmlMail=getFile("Template/Email/email_bienvenida", $CabPed[0]);
+
+                        
+                        putMessageLogFile($htmlMail);
+
+                        // ob_start();
+                        // $data = $CabPed[0]; // pasa variables necesarias
+                        // include 'Views/Template/Email/email_bienvenida.php';
+                        // $htmlMail = ob_get_clean();
+                        $htmlMail='hola';
+           
+                        putMessageLogFile("ant2");
+                        $mailer  = new MailSystem();
+                        putMessageLogFile("paso");
+                        $resultado = $mailer ->enviarNotificacion(
+                            'byron_villacresesf@hotmail.com',
+                            'Confirmación de Pedido',
+                            $htmlMail,
+                            '',                              // Aquí va el PDF generado
+                            'byronvillacreses@gmail.com' ,         // BCC
+                            true
+                        );
+                        putMessageLogFile($resultado);
+
+                        $arrResponse = array('status' => true, 'numero' => $idPedido, 'msg' => 'Datos guardados correctamente.');
+                    } else {
+                        $arrResponse = array('status' => true, 'numero' => $idPedido, 'msg' => 'Datos actualizados correctamente.');
+                    }
+                } else {
+                    $arrResponse = array("status" => false, "msg" => $request["message"]);
+                }
+            }
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+        exit();
     }
 
 
 
-    
+
+
 }

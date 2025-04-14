@@ -271,6 +271,15 @@ function getModal(string $nameModal, $data)
     require_once $view_modal;
 }
 
+function getFile2(string $url, $data)
+{
+    ob_start();
+    //extract($data); // Esto convierte ['nombreuser' => 'Byron'] en $nombreuser = 'Byron'
+    $data = $data;
+    require("Views/{$url}.php");
+    return ob_get_clean();
+}
+
 function getFile(string $url, $data)
 {
     ob_start();
@@ -278,6 +287,7 @@ function getFile(string $url, $data)
     $file = ob_get_clean();
     return $file;
 }
+
 
 //Envio de correos
 function enviarEmail($data, $template)

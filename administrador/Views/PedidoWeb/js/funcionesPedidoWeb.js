@@ -367,7 +367,6 @@ function guardarPedido() {
         mostrarAlertaCupo("Debe ingresar al menos una cantidad válida mayor a cero para guardar.", "warning");
         return;
     }
-
     let url = base_url + '/pedidoWeb/ingresarPedidoTemp';
     var metodo = 'POST';
     var dataPost = { accion: accion, tienda_id: tiendaSeleccionada, productos: productosModificados, total: totalGeneral };
@@ -376,7 +375,7 @@ function guardarPedido() {
         if (data.status) {
             swal("Pedido N°: " + data.numero, data.msg, "success");
             //tableTienda.api().ajax.reload();
-            window.location = base_url + '/pedidoWeb';
+            //window.location = base_url + '/pedidoWeb';
             //mostrarAlertaCupo("Datos guardados correctamente.", "success");
             //         // opcional: limpiar tabla, recargar datos, etc.
         } else {
@@ -385,7 +384,7 @@ function guardarPedido() {
 
     }, function (jqXHR, textStatus, errorThrown) {
         // Manejar el error de la solicitud aquí
-        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+        console.log('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
     });
 
 }

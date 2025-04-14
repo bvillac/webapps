@@ -367,5 +367,7 @@ class UsuariosModel extends Mysql
         // Ejecutar consulta y devolver resultados
         return $this->select_all($sql, $params);
     }
+
+	
 	
 }
