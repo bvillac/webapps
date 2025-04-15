@@ -46,11 +46,16 @@ class Mysql extends Conexion
 		}
 	}
 	//Busca un registro
-	public function select(string $query)
+	public function select(string $query,array $params = [])
 	{
 		try {
 			$this->strquery = $query;
 			$result = $this->con->prepare($this->strquery);
+			if (!empty($params)) {
+				foreach ($params as $key => $value) {
+					$result->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+				}
+			}
 			$result->execute();
 			$data = $result->fetch(PDO::FETCH_ASSOC);
 			return $data;
