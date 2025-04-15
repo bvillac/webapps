@@ -14,20 +14,20 @@ class MailSystem
 
         // Configuración del servidor SMTP
         $this->mailer->isSMTP();
-        $this->mailer->Host = 'smtp.gmail.com';//'smtp.tuservidor.com';
+        $this->mailer->Host = 'smtp.gmail.com';
         $this->mailer->SMTPAuth = true;
-        //$this->mailer->Username = 'no-responder@solucionesvillacreses.com';//'tucorreo@dominio.com';
-        $this->mailer->Username = 'byronvillacreses@gmail.com';//'tucorreo@dominio.com';
+        //$this->mailer->Username = 'no-responder@solucionesvillacreses.com';
+        $this->mailer->Username = 'byronvillacreses@gmail.com';
         $this->mailer->Password = 'vrjw taas gjmj vvno';
         $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $this->mailer->Port = 587;//587;465
 
-        //$this->mailer->setFrom('byron_villacresesf@hotmail.com', 'Byron Prueba');
-        $this->mailer->setFrom('no-responder@solucionesvillacreses.com', 'Byron Prueba');
+        //$this->mailer->setFrom('no-responder@solucionesvillacreses.com', 'Byron Prueba');
+        $this->mailer->setFrom('no-responder@solucionesvillacreses.com', 'SolucionesVillacreses.com');
         $this->mailer->isHTML(true);
 
-        $this->mailer->SMTPDebug = 3; // O 3 para más detalle
-        $this->mailer->Debugoutput = 'html';
+        //$this->mailer->SMTPDebug = 3; // O 3 para más detalle
+        //$this->mailer->Debugoutput = 'html';
     }
 
     public function enviarPedido(string $destinatario, string $asunto, array $pedido, string $pdfPath = '', string $bcc = ''): array
@@ -122,16 +122,14 @@ class MailSystem
         }
     }
 
-    public function enviarNotificacion(
-        string $destinatario,
-        string $asunto,
-        string $htmlMail,
-        string $pdfPath = '',
-        string $bcc = '',
-        bool $borrarPDF = false
-    ): array {
-        putMessageLogFile("meto 2");
+    public function enviarNotificacion(array $params): array {
         try {
+            $destinatario = $params['destinatario'] ?? '';
+            $asunto = $params['asunto'] ?? '';
+            $htmlMail = $params['html'] ?? '';
+            $pdfPath = $params['pdf'] ?? '';
+            $bcc = $params['bcc'] ?? '';
+            $borrarPDF = $params['borrarPDF'] ?? false;
             // Reinicia el estado del mailer para evitar acumulación de direcciones o adjuntos
             $this->mailer->clearAddresses();
             $this->mailer->clearAttachments();
@@ -156,7 +154,6 @@ class MailSystem
                     return ['status' => false, 'message' => "El archivo PDF no fue encontrado en: $pdfPath"];
                 }
             }
-            putMessageLogFile("lleg");
             // Enviar correo
             $this->mailer->send();
     
@@ -164,7 +161,6 @@ class MailSystem
             if ($borrarPDF && file_exists($pdfPath)) {
                 unlink($pdfPath);
             }
-            putMessageLogFile("lleg 2");
             return ['status' => true, 'message' => 'Correo enviado correctamente'];
     
         } catch (Exception $e) {

@@ -143,9 +143,9 @@ class PedidoWeb extends Controllers
                     //    $request = $this->model->updateData($datos);
                     //}
                 }
-                $request["status"]=true;
+                //$request["status"]=true;
                 if ($request["status"]) {
-                    $idPedido = 1;//$request["numero"];
+                    $idPedido = $request["numero"];
 
                     if ($option == 1) {
                         // Ejecutar script externo en segundo plano
@@ -167,37 +167,34 @@ class PedidoWeb extends Controllers
                         exec($comando); // Sin esperar respuesta*/
 
                         //Recupera infor de CabTemp  para enviar info al supervisor de tienda
-                        //$CabPed=$this->model->sendMailPedidosTemp($request["numero"]);
-                        $CabPed=$this->model->sendMailPedidosTemp(17);
+                        $CabPed=$this->model->sendMailPedidosTemp($request["numero"]);
+                        //$CabPed=$this->model->sendMailPedidosTemp(17);
                         $cliId = retornarDataSesion('Cli_Id');
                         //$objUser=$this->model->recuperarUserCorreoTiendaSUP($idTienda,16,$cliId);//Recupera Usuairos Superviswor
                         $CabPed[0]["correouser"]='byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
                         $CabPed[0]["nombreuser"]='Byron Villacreses';//$objUser["usu_nombre"];
-                        //putMessageLogFile($CabPed);
-                        putMessageLogFile("ant1");
-                        
-                        //$htmlMail=getFile("Template/Email/email_bienvenida", $CabPed[0]);
+                        $cliIds = retornarDataSesion("Cli_Id");
+                        $Cliente = (new ClientePedidoModel())->consultarDatosId($cliIds);
+                        $nombreCliente=$Cliente["Nombre"];
+                        $TotalPedido=formatMoney($CabPed[0]["valorneto"],2);
+                     
 
-                        
-                        putMessageLogFile($htmlMail);
-
-                        // ob_start();
-                        // $data = $CabPed[0]; // pasa variables necesarias
-                        // include 'Views/Template/Email/email_bienvenida.php';
-                        // $htmlMail = ob_get_clean();
-                        $htmlMail='hola';
+                        $CabPed[0]["web_empresa"]=WEB_EMPRESA;
+                        $CabPed[0]["empresa"]=$nombreCliente;//TITULO_EMPRESA;
+                        $CabPed[0]["base_url"]=BASE_URL;
            
-                        putMessageLogFile("ant2");
+                        $htmlMail=getFile("Template/Email/email_notificaPedido", $CabPed[0]);
+
+                        $arrParams =[
+                            'destinatario' => 'byron_villacresesf@hotmail.com',
+                            'asunto' => "({$nombreCliente}) {$TotalPedido} Confirmación de pedido",
+                            'html' => $htmlMail,
+                            'pdf' => '',//$pdfPath,
+                            'bcc' => 'byronvillacreses@gmail.com',
+                            'borrarPDF' => true
+                        ];
                         $mailer  = new MailSystem();
-                        putMessageLogFile("paso");
-                        $resultado = $mailer ->enviarNotificacion(
-                            'byron_villacresesf@hotmail.com',
-                            'Confirmación de Pedido',
-                            $htmlMail,
-                            '',                              // Aquí va el PDF generado
-                            'byronvillacreses@gmail.com' ,         // BCC
-                            true
-                        );
+                        $resultado = $mailer ->enviarNotificacion($arrParams);
                         putMessageLogFile($resultado);
 
                         $arrResponse = array('status' => true, 'numero' => $idPedido, 'msg' => 'Datos guardados correctamente.');
