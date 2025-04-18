@@ -1,27 +1,27 @@
 <?php
 class LoginPedido extends Controllers
 {
+
 	public function __construct()
 	{
 		parent::__construct();
-		session_start();//iniciamos el uso de variables de session	
-		if (isset($_SESSION['loginEstado'])) {//Veifica si existe la seesion
-			header('Location: ' . base_url() . '/dashboard');//Lo direciona al  dashboard
-			exit();
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
 		}
 
+		// Si ya está logueado, redirigir al dashboard
+		if (!empty($_SESSION['loginEstado'])) {
+
+			header('Location: ' . base_url() . '/dashboard');
+			exit;
+		}
 	}
 
 	public function loginpedido()
 	{
-		$data['page_tag'] = "Login";
-		$data['page_name'] = "Login";
-		$data['page_title'] = "Login";
-		//dep($data);
+		$data = getPageData("Login Pedido", "loginPedido");
 		$this->views->getView($this, "loginpedido", $data);
 	}
-
-	
 
 	public function loginUsuario()
 	{
@@ -53,22 +53,12 @@ class LoginPedido extends Controllers
 					$arrResponse = ['status' => true, 'msg' => 'ok'];
 				}
 			}
+			putMessageLogFile("ok");
 
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 
 		exit(); // Finaliza para evitar contenido extra
-	}
-
-	public function loginEmpresa()
-	{
-		putMessageLogFile("LLEGO 33");
-		$data['page_tag'] = "Login";
-		$data['page_name'] = "Login";
-		$data['page_title'] = "Login";
-		//$data = getPageData("Login Empresa", "loginPedido");
-		//dep($data);
-		$this->views->getView($this, "loginempresa", $data);
 	}
 
 

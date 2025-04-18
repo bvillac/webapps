@@ -150,17 +150,20 @@ class EmpresaModel extends Mysql
 		return $request;
 	}
 	/*######################################
-		  NUEVAS FUNCIONES  21-04-2024 
-		  ######################################*/
+			 NUEVAS FUNCIONES  21-04-2024 
+			 ######################################*/
 
 	public function consultarEmpresaUsuario(int $Usu_id)
 	{
 		$sql = "SELECT a.eusu_id Ids,b.emp_nombre_comercial NombreComercial ";
-		$sql .= "	FROM " . $this->db_name . ".empresa_usuario a ";
-		$sql .= "		INNER JOIN " . $this->db_name . ".empresa b ";
+		$sql .= "	FROM {$this->db_name}.empresa_usuario a ";
+		$sql .= "		INNER JOIN {$this->db_name}.empresa b ";
 		$sql .= "			ON a.emp_id=b.emp_id ";
-		$sql .= "	WHERE a.estado_logico=1 AND a.usu_id={$Usu_id} ";
-		$request = $this->select_all($sql);
+		$sql .= "	WHERE a.estado_logico=1 AND a.usu_id=:usu_id ";
+		//$sql = "SELECT emp_id FROM {$this->db_name}.empresa_usuario where usu_id=:ids;";
+		$request = $this->select_all($sql, [":usu_id" => $Usu_id]);
+		putMessageLogFile($request);
+		//$request = $this->select_all($sql);
 		return $request;
 	}
 
@@ -174,13 +177,14 @@ class EmpresaModel extends Mysql
 		//return 0;
 	}
 
-	public function insertDataEmpModulo(string $data, string $Emp_id){
-		try{
+	public function insertDataEmpModulo(string $data, string $Emp_id)
+	{
+		try {
 			$con = $this->getConexion();
-        	$con->beginTransaction();
+			$con->beginTransaction();
 			$arrData = array(0);
 			$sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? WHERE emp_id={$Emp_id}";
-			$request = $this->updateConTrasn($con,$sql, $arrData);
+			$request = $this->updateConTrasn($con, $sql, $arrData);
 			if ($request) {//Si todo es correcto retorna True
 				$arrayIds = explode(",", $data);
 				$usuario = retornaUser();
@@ -189,67 +193,67 @@ class EmpresaModel extends Mysql
 				//Actualiza todos los Ids
 				$sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? 
 					WHERE emp_id={$Emp_id} AND mod_id IN({$data})";
-				$request = $this->updateConTrasn($con,$sql, $arrData);
+				$request = $this->updateConTrasn($con, $sql, $arrData);
 				if ($request) {
 					foreach ($arrayIds as $Mod_id) {
 						$sql = "SELECT * FROM " . $this->db_name . ".empresa_modulo WHERE emp_id={$Emp_id} AND mod_id='{$Mod_id}'";
 						$requestSel = $this->select($sql);//usuario_modificacion
 						if (empty($requestSel)) {
 							//Inserta un nuevo modulo
-							$arrData = array($Emp_id,$Mod_id,1,$usuario);
+							$arrData = array($Emp_id, $Mod_id, 1, $usuario);
 							$SqlQuery = "INSERT INTO " . $this->db_name . ".empresa_modulo
 										(`emp_id`,`mod_id`,`estado_logico`,`usuario_creacion`) VALUES (?,?,?,?) ";
 							$request_insert = $this->insertConTrasn($con, $SqlQuery, $arrData);
-							if($request_insert==0){//si es igual 0 no inserto nada
+							if ($request_insert == 0) {//si es igual 0 no inserto nada
 								$con->rollBack();
 								$arroout["status"] = false;
 								$arroout["message"] = "Error al insertar Empresa Modulo!.";
 							}
 							//$return = $request_insert;//Retorna el Ultimo IDS(0) No inserta y si es >0 si inserto
-	
+
 						}
 					}
-				}else{
+				} else {
 					$con->rollBack();
 					$arroout["status"] = false;
 					$arroout["message"] = "Error al Actualizar Empresa Modulo!.";
 				}
 				$con->commit();
 				$arroout["status"] = true;
-			}else{
+			} else {
 				$con->rollBack();
 				$arroout["status"] = false;
 				$arroout["message"] = "Error al Eliminar los modulos!.";
 			}
 			return $arroout;
+		} catch (Exception $e) {
+			$con->rollBack();
+			//putMessageLogFile($e);
+			//throw $e;
+			$arroout["status"] = false;
+			$arroout["message"] = "Fallo: " . $e->getMessage();
+			return $arroout;
 		}
-		catch (Exception $e) {
-            $con->rollBack();
-            //putMessageLogFile($e);
-            //throw $e;
-            $arroout["status"] = false;
-            $arroout["message"] = "Fallo: " . $e->getMessage();
-            return $arroout;
-        }
 	}
 
 
-	public function consultarEmpresas() {
+	public function consultarEmpresas()
+	{
 		try {
 			$sql = "SELECT emp_id as Ids,emp_nombre_comercial as Nombre
   						FROM {$this->db_name}.empresa where estado_logico!=0;";
-            $resultado = $this->select_all($sql);
-            if ($resultado === false) {
-                //logFileSystem("Consulta fallida para tie_id: $tie_id", "WARNING");
-                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
-            }
-            return $resultado;
-        } catch (Exception $e) {
-            logFileSystem("Error en consultarEmpresas: " . $e->getMessage(), "ERROR");
-            return []; // En caso de error, retornar un array vacío
-        }
+			$resultado = $this->select_all($sql);
+			if ($resultado === false) {
+				//logFileSystem("Consulta fallida para tie_id: $tie_id", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en consultarEmpresas: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
 
-    }
+	}
 
 
 
@@ -315,21 +319,21 @@ class EmpresaModel extends Mysql
 
 
 	public function consultarEmpresaUsuarioAsingado(int $ids)
-    {
-        try {
-            $sql = "SELECT emp_id FROM {$this->db_name}.empresa_usuario where usu_id=:ids;";
-            $resultado = $this->select_all($sql, [":ids" => $ids]);
-            if ($resultado === false) {
-                logFileSystem("Consulta fallida para usu_id: $ids", "WARNING");
-                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
-            }
-            return array_map(fn($item) => strval($item["emp_id"]), $resultado);
-        } catch (Exception $e) {
-            logFileSystem("Error en consultarEmpresaUsuarioAsingado: " . $e->getMessage(), "ERROR");
-            return []; // En caso de error, retornar un array vacío
-        }
-    }
-  
+	{
+		try {
+			$sql = "SELECT emp_id FROM {$this->db_name}.empresa_usuario where usu_id=:ids;";
+			$resultado = $this->select_all($sql, [":ids" => $ids]);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida para usu_id: $ids", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return array_map(fn($item) => strval($item["emp_id"]), $resultado);
+		} catch (Exception $e) {
+			logFileSystem("Error en consultarEmpresaUsuarioAsingado: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+	}
+
 
 
 }

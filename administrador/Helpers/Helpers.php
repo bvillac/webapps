@@ -577,7 +577,7 @@ function buscarEnArray(array $menu, string $cadena)
 
 function getGenerarMenu()
 {
-    $menuApp = $_SESSION['menuData'];
+    $menuApp = $_SESSION['menuData'] ?? [];
     $menu = '<ul class="app-menu">';
 
     foreach ($menuApp as $item) {
@@ -678,7 +678,8 @@ function getPageData($title, $back)
 {
     $data['page_tag']=$title;
     $data['page_name']=$title;
-    $data['page_title']="$title <small> " . htmlspecialchars($_SESSION['empresaData']['NombreComercial'], ENT_QUOTES, 'UTF-8') . "</small>";
+    $nombreEmpresa = $_SESSION['empresaData']['NombreComercial'] ?? TITULO_EMPRESA;
+    $data['page_title']="$title <small> " . htmlspecialchars($nombreEmpresa, ENT_QUOTES, 'UTF-8') . "</small>";
     $data['page_back']=$back;
     return $data;
 }
@@ -689,7 +690,8 @@ function retornarDataSesion(string $param = "rolNombre")
         "rolNombre" => isset($_SESSION['usuarioData']['Rol_nombre']) ? strtolower(str_replace(' ', '', $_SESSION['usuarioData']['Rol_nombre'])) : null,//Retorna Nombre de RoL minusucla
         "Emp_Id" => isset($_SESSION['Emp_Id']) ?$_SESSION['Emp_Id']:0, // Created     
         "Utie_id" => isset($_SESSION['Utie_id']) ?$_SESSION['Utie_id']:0, // Created    
-        "Cli_Id" => isset($_SESSION['Cli_id']) ?$_SESSION['Cli_id']:0, // Created            
+        "Usu_id" => isset($_SESSION['Usu_id']) ?$_SESSION['Usu_id']:0, // Created    
+        "Cli_Id" => isset($_SESSION['Cli_id']) ?$_SESSION['Cli_id']:0, // Created     
         "" => null // Internal Server Error
     ];
     return $errorMessages[$param] ?? "Error Session desconocido";

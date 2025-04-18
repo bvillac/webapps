@@ -246,6 +246,18 @@ class TiendaModel extends MysqlPedidos
         }
     }
 
+    public function consultarTiendaUsuario(int $idsCliente,int $usu_id)
+    {
+        $sql = "SELECT a.utie_id as Ids, concat(b.tie_nombre,'-',c.rol_nombre) as Nombre,a.tie_id,a.rol_id,c.rol_nombre
+                    FROM {$this->db_name}.usuario_tienda a
+                        inner join {$this->db_name}.tienda b
+                            on a.tie_id=b.tie_id
+                        inner join {$this->db_nameAdmin}.rol c 
+                            on a.rol_id=c.rol_id
+                    where a.cli_id=:cli_id and a.usu_id=1 ";
+        return $this->select_all($sql, [":cli_id" => $idsCliente,":usu_id" => $usu_id]);
+    }
+
 
 
 }

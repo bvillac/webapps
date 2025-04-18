@@ -9,10 +9,11 @@
 
 		public function dashboard(){
 			//control de Acceso por Roles
-			
+			$nombreEmpresa = $_SESSION['empresaData']['NombreComercial'] ?? TITULO_EMPRESA;
+
 			$data['page_id'] = 2;
 			$data['page_tag'] = "Dashboard";
-			$data['page_title'] = "Dashboard - " .$_SESSION['empresaData']['NombreComercial'];
+			$data['page_title'] = "Dashboard - " .$nombreEmpresa;
 			$data['page_name'] = "dashboard";
 			
 
