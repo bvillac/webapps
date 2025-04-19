@@ -78,20 +78,24 @@ class LoginTienda extends Controllers
 	}
 
 
-	public function loginUsuarioEmpresa()
+	public function loginUsuarioTienda()
 	{
 		//dep($_POST);
 		if ($_POST) {
+			//{ Cliente: ncliente, Tienda: nTienda };
 		   $data=recibirData($_POST['data']);
-			if (empty($data['Empresa']) || empty($data['Establecimiento']) || empty($data['Punto'])) {
+			if (empty($data['Cliente']) || empty($data['Tienda']) ) {
 				$arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
 			} else {
+				$idsCliente = intval(strClean($data['Cliente']));
+				$idsUsuTienda = intval(strClean($data['Tienda']));
+				$_SESSION['Cli_id'] = $idsCliente;//Se debe llenar con la sescion al iniciar
+				$_SESSION['Utie_id'] = $idsUsuTienda;
 				//Obtener datos empresa 
-				$this->datosSession($data['Empresa']);
+				//$this->datosSession($data['Empresa']);
 				//Variables de Session		
 				//$idrol = ($idrol != "") ? $idrol : 4; //Si no tiene asignado Rol se envia un rol=4 Usuario
 				$arrResponse = array('status' => true, 'msg' => 'ok');
-				//putMessageLogFile($arrResponse);
 			}
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
@@ -105,18 +109,10 @@ class LoginTienda extends Controllers
 		if ($_POST) {			
 			$decodedData = base64_decode($_POST['datos']);
 			$data = json_decode($decodedData, true);
-			$ids = intval(strClean($data['Ids']));
-			if ($ids > 0) {
-				$modelCentro = new CentroAtencionModel();
-				$modelEstablecimiento = new EstablecimientoModel();
-				$modelEmpresa = new EmpresaModel();
-				$idEmpresa=$modelEmpresa->getIdEmpresaUsuario($ids);
-
-				$data['Tienda'] = (new TiendaModel())->consultarTiendaUsuario($cliId,$usuId );
-
-				$arrData['Centro'] = $modelCentro->consultarCentroEmpresaIds($ids);
-				$arrData['Establecimiento'] = $modelEstablecimiento->consultarEstablecimientoEmpresa($ids);
-				//dep($arrData);
+			$cliId = intval(strClean($data['Ids']));
+			if ($cliId > 0) {
+				$usuId=retornarDataSesion('Usu_id');
+				$arrData['Tienda'] = (new TiendaModel())->consultarTiendaUsuario($cliId,$usuId );
 				if (empty($arrData)) {
 					$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
 				} else {
@@ -125,30 +121,8 @@ class LoginTienda extends Controllers
 				echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 			}
 		}
-		die();
+		exit();
 	}
-
-	/*public function bucarPunto()
-	{
-		if ($_POST) {
-			$modelPunto = new PuntoModel();	
-			$decodedData = base64_decode($_POST['datos']);
-			$data = json_decode($decodedData, true);
-			$ids = intval(strClean($data['Ids']));
-			if ($ids > 0) {
-				$arrData=$modelPunto->consultarEstablecimientoPunto($ids);
-				//dep($arrData);
-				if (empty($arrData)) {
-					$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-				} else {
-					$arrResponse = array('status' => true, 'data' => $arrData);
-				}
-				echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-			}
-		}
-		die();
-	}*/
-
 
 
 }

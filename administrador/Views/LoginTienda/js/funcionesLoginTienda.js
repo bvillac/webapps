@@ -1,79 +1,27 @@
 $(document).ready(function () {
-	$('#cmb_establecimiento').on('change', function(){
-		fntPunto(this.value);
+	$('#cmb_cliente').on('change', function(){
+		cargarTienda(this.value);
 	});
+
 	$("#btn_login").click(function () {
-		iniciarSessionEmpresa();
+		iniciarSessionTienda();
+
+	});
+	$("#btn_loginPedido").click(function () {
+		window.location = base_url+'/LoginPedido';
 
 	});
 });
 
-function fntCentro(ids) {
-	//$("#cmb_centro").html('<option value="0">SELECCIONAR</option>');
+function cargarTienda(ids) {
 	if (ids != 0) {
-		let url = base_url + '/LoginEmpresa/bucarCentro';
-		var metodo = 'POST';
-		const datos = { Ids: ids };
-		//EncriptAjax(url, metodo, datos, function (data) {
-		peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
-			// Manejar el éxito de la solicitud aquí
-			if (data.status) {
-				fntDataEstablecimiento(data.data);
-				fntDataCentro(data.data);
-				/*clearTimeout(delayTimer);
-				delayTimer = setTimeout(function () {
-					fntInstructor(ids);
-				}, 500); // Retardo de 500 ms (medio segundo)*/
-
-			} else {
-				swal("Atención", data.msg, "error");
-			}
-		}, function (jqXHR, textStatus, errorThrown) {
-			// Manejar el error de la solicitud aquí
-			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
-		});
-	} else {
-		$("#cmb_centro").prop("disabled", true);
-		swal("Información", "Seleccionar un Empresa", "info");
-	}
-}
-
-function fntDataCentro(ObjData) {
-	$("#cmb_centro").html('<option value="0">SELECCIONAR</option>');
-	$("#cmb_centro").prop("disabled", false);
-	var result = ObjData.Centro;
-	for (var i = 0; i < result.length; i++) {
-		$("#cmb_centro").append(
-			'<option value="' + result[i].Ids +	'" >' +
-				result[i].Nombre +
-			"</option>"
-		);
-	}
-}
-
-function fntDataEstablecimiento(ObjData) {
-	$("#cmb_establecimiento").html('<option value="0">SELECCIONAR</option>');
-	$("#cmb_establecimiento").prop("disabled", false);
-	var result = ObjData.Establecimiento;
-	for (var i = 0; i < result.length; i++) {
-		$("#cmb_establecimiento").append(
-			'<option value="' +	result[i].Ids +	'"  >' +
-				result[i].Nombre +
-			"</option>"
-		);
-		
-	}
-}
-
-function fntPunto(ids) {
-	if (ids != 0) {
-		let url = base_url + '/LoginEmpresa/bucarPunto';
+		let url = base_url + '/LoginTienda/bucarTiendas';
 		var metodo = 'POST';
 		var datos = { Ids: ids };
 		peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
 			// Manejar el éxito de la solicitud aquí
 			if (data.status) {
-				fntDataPunto(data.data);
+				fntDataTienda(data.data);
 			} else {
 				swal("Atención", data.msg, "error");
 			}
@@ -82,18 +30,18 @@ function fntPunto(ids) {
 			console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
 		});
 	} else {
-		$("#cmb_centro").prop("disabled", true);
+		$("#cmb_tienda").prop("disabled", true);
 		swal("Información", "Seleccionar un Empresa", "info");
 	}
 
 }
 
-function fntDataPunto(ObjData) {
-	$("#cmb_punto").html('<option value="0">SELECCIONAR</option>');
-	$("#cmb_punto").prop("disabled", false);
-	var result = ObjData;
+function fntDataTienda(ObjData) {
+	$("#cmb_tienda").html('<option value="0">SELECCIONAR</option>');
+	$("#cmb_tienda").prop("disabled", false);
+	var result = ObjData.Tienda;
 	for (var i = 0; i < result.length; i++) {
-		$("#cmb_punto").append(
+		$("#cmb_tienda").append(
 			'<option value="' +	result[i].Ids +	'"  >' +
 				result[i].Nombre +
 			"</option>"
@@ -103,12 +51,11 @@ function fntDataPunto(ObjData) {
 }
 
 
-function iniciarSessionEmpresa() {
-	let nEmpresa = $("#cmb_empresa").val();
-	let nEstablecimiento = $("#cmb_establecimiento").val();
-	let nPunto = $("#cmb_punto").val();
-	let nCentro = $("#cmb_centro").val();
-	if (nEmpresa == 0 || nEstablecimiento == 0 || nPunto == 0) {
+
+function iniciarSessionTienda() {
+	let ncliente = $("#cmb_cliente").val();
+	let nTienda = $("#cmb_tienda").val();
+	if (ncliente == 0 || nTienda == 0 ) {
 		swal(
 			"Atención",
 			"Todos los datos son obligatorios.",
@@ -117,9 +64,9 @@ function iniciarSessionEmpresa() {
 		return false;
 	}
 
-	let url = base_url + '/LoginEmpresa/loginUsuarioEmpresa';
+	let url = base_url + '/LoginTienda/loginUsuarioTienda';
 	var metodo = 'POST';
-	var datos = { Empresa: nEmpresa, Establecimiento: nEstablecimiento, Punto: nPunto, Centro: nCentro };
+	var datos = { Cliente: ncliente, Tienda: nTienda };
 	peticionAjaxSSL(url, metodo, datos, function (data) {
 		// Manejar el éxito de la solicitud aquí
 		if (data.status) {

@@ -26,8 +26,8 @@
 
       <form class="login-form" name="frm_Login" id="frm_Login" action="">
         <div class="form-group">
-              <label for="cmb_empresa">CLIENTE</label>
-              <select class="form-control" id="cmb_empresa" name="cmb_empresa" onchange="fntCentro(this.value)" >
+              <label for="cmb_cliente">CLIENTE</label>
+              <select class="form-control" id="cmb_cliente" name="cmb_cliente"  >
                 <?php
                 echo '<option value="0">SELECCIONAR</option>';
                 foreach ($data['Cliente'] as $opcion) {
@@ -38,21 +38,21 @@
               </select>
         </div>
         <div class="form-group">
-          <label for="cmb_establecimiento">TIENDA</label>
+          <label for="cmb_tienda">TIENDA</label>
           <select class="form-control" id="cmb_tienda" name="cmb_tienda" disabled>
                 <?php
                 //echo '<option value="0">SELECCIONAR</option>';
                 ?>
           </select>
         </div>
-        <div class="form-group">
-          <label for="cmb_punto">ROL</label>
-          <select class="form-control" id="cmb_punto" name="cmb_punto" disabled>
+        <!-- <div class="form-group">
+          <label for="cmb_rol">ROL</label>
+          <select class="form-control" id="cmb_rol" name="cmb_rol" disabled>
                 <?php
                 //echo '<option value="0">SELECCIONAR</option>';
                 ?>
           </select>
-        </div>
+        </div> -->
         
         
     
@@ -60,6 +60,7 @@
         <div class="form-group btn-container">
           <!-- <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> INICIAR SESIÓN</button> -->
           <button type="button" id="btn_login" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> INICIAR SESIÓN</button>
+          <button type="button" id="btn_loginPedido" class="btn btn-danger btn-block"><i class="fa fa-sign-out fa-lg"></i> VOLVER A LOGIN</button>
         </div>
       </form>
     </div>
