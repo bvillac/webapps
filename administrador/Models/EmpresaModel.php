@@ -343,6 +343,26 @@ class EmpresaModel extends Mysql
 		return (!empty($request)) ? $request['eusu_id'] : 0;
 	}
 
+	public function getIdEmpresaRol(int $Emp_id,int $Rol_id)
+	{
+		$sql = "SELECT erol_id FROM {$this->db_name}.empresa_rol WHERE emp_id=:emp_id and rol_id= :rol_id ";
+		$request = $this->select($sql, [":emp_id" => $Emp_id,":rol_id" => $Rol_id]);
+		//empty($request) => una cadena vacía, valor nulo,valor entero 0,array vacío y variable no definida
+		//Si existen datos retonar el valor caso contario retorna 0
+		return (!empty($request)) ? $request['erol_id'] : 0;
+	}
+
+	public function getIdEmpresaUsuarioRol(int $Eusu_id,int $Erol_id)
+	{
+		$sql = "SELECT eurol_id FROM {$this->db_name}.empresa_usuario_rol WHERE eusu_id=:eusu_id and erol_id= :erol_id ";
+		$request = $this->select($sql, [":eusu_id" => $Eusu_id,":erol_id" => $Erol_id]);
+		//empty($request) => una cadena vacía, valor nulo,valor entero 0,array vacío y variable no definida
+		//Si existen datos retonar el valor caso contario retorna 0
+		return (!empty($request)) ? $request['eurol_id'] : 0;
+	}
+
+	
+
 
 
 }

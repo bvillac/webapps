@@ -92,6 +92,7 @@ class LoginModel extends Mysql
 		$sql .= "					ON c.rol_id=b.rol_id) ";
 		$sql .= "			ON a.erol_id=b.erol_id ";
 		$sql .= "	WHERE a.estado_logico!=0 AND a.eurol_id= :eurol_id ";
+		putMessageLogFile($sql);
 		$request = $this->select_all($sql, [":eurol_id" => $Eurol_id]);
 		return $request;
 	}

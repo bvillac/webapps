@@ -58,7 +58,10 @@ class LoginTienda extends Controllers
 		$modelLoguin=new LoginModel();
 		$modelEmpresa=new EmpresaModel();
 		$usuId=retornarDataSesion('Usu_id');
+		putMessageLogFile("usuId=".$usuId);
 		$Eusu_id=$modelEmpresa->getIdEmpresaUsuarioXEmpresa($Emp_Id,$usuId);
+		putMessageLogFile("Utie_id=".$Utie_id);
+		putMessageLogFile("Eusu_id=".$Eusu_id);
 		if ($Eusu_id !=0){
 			//GUARDA SESSION DATOS DE EMPRESA
 			$_SESSION['Emp_Id'] = $Emp_Id; 
@@ -67,13 +70,16 @@ class LoginTienda extends Controllers
 			$_SESSION['Cli_id'] = $Cli_id;//Se debe llenar con la sescion al iniciar
 			$_SESSION['empresaData'] = $modelEmpresa->consultarEmpresaEstPunto($Emp_Id);
 			$_SESSION['usuarioData']=$modelLoguin->sessionLogin($usuId);//Datos de usuario
+			$tienda = (new TiendaModel())->consultarUtieId($Utie_id);
+			$Rol_id=$tienda[0]['rol_id'];
+			$Erol_id=$modelEmpresa->getIdEmpresaRol($Emp_Id,$Rol_id);
+			$Eurol_id=$modelEmpresa->getIdEmpresaUsuarioRol($Eusu_id,$Erol_id);
 			//DATOS ROL DE USUARIO
-			$resulRol = $modelLoguin->consultarUsuarioEmpresaRol($Eusu_id);
+			$resulRol = $modelLoguin->consultarUsuarioEmpresaRol($Eurol_id);//esta mal
 			if(count($resulRol)>0){
 				$_SESSION['usuarioData']['Eurol_id'] = $resulRol[0]['eurol_id'];
 				$_SESSION['usuarioData']['Erol_id'] = $resulRol[0]['erol_id'];
-				$tienda = (new TiendaModel())->consultarUtieId($Utie_id);
-				$_SESSION['usuarioData']['Rol_id'] = $tienda[0]['rol_id'];
+				$_SESSION['usuarioData']['Rol_id'] = $Rol_id;//$tienda[0]['rol_id'];
 				$_SESSION['usuarioData']['Rol_nombre'] = strtolower(str_replace(' ', '', $tienda[0]['rol_nombre']));
 				//$_SESSION['usuarioData']['Rol_id'] = $resulRol[0]['rol_id'];
 				//$_SESSION['usuarioData']['Rol_nombre'] = strtolower(str_replace(' ', '', $resulRol[0]['rol_nombre']));
@@ -85,7 +91,7 @@ class LoginTienda extends Controllers
 				require_once("Controllers/Error.php");
 			} 
 			
-			//putMessageLogFile($_SESSION);
+			putMessageLogFile($_SESSION);
 
 		}else{
 			putMessageLogFile("EmpresaUsuario con Id no existe= ".$Eusu_id);
