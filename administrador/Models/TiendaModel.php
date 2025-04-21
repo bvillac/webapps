@@ -249,7 +249,7 @@ class TiendaModel extends MysqlPedidos
     public function consultarTiendaUsuario(int $idsCliente, int $usu_id)
     {
         try {
-            $sql = "SELECT a.utie_id as Ids, concat(b.tie_nombre,'-',c.rol_nombre) as Nombre,a.tie_id,a.rol_id,c.rol_nombre
+            $sql = "SELECT a.utie_id as Ids, concat(b.tie_nombre,'-',c.rol_nombre) as Nombre,a.tie_id,b.tie_nombre,a.rol_id,c.rol_nombre
                     FROM {$this->db_name}.usuario_tienda a
                         inner join {$this->db_name}.tienda b
                             on a.tie_id=b.tie_id
@@ -258,6 +258,28 @@ class TiendaModel extends MysqlPedidos
                     where a.cli_id=:cli_id and a.usu_id=:usu_id ";
             //return $this->select_all($sql, [":cli_id" => $idsCliente,":usu_id" => $usu_id]);
             $resultado = $this->select_all($sql, [":cli_id" => $idsCliente,":usu_id" => $usu_id]);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para consultarTiendaUsuario", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarTiendaUsuario: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+    public function consultarUtieId( int $utie_id)
+    {
+        try {
+            $sql = "SELECT a.utie_id Ids,a.tie_id,b.tie_nombre,a.rol_id,c.rol_nombre
+                    FROM {$this->db_name}.usuario_tienda a
+                        inner join {$this->db_name}.tienda b
+                            on a.tie_id=b.tie_id
+                        inner join {$this->db_nameAdmin}.rol c 
+                            on a.rol_id=c.rol_id
+                            where a.utie_id= :utie_id ; ";
+            $resultado = $this->select_all($sql, [":utie_id" => $utie_id]);
             if ($resultado === false) {
                 logFileSystem("Consulta fallida para consultarTiendaUsuario", "WARNING");
                 return []; // Retornar un array vacío en lugar de false para evitar errores en la vista

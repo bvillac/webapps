@@ -334,6 +334,15 @@ class EmpresaModel extends Mysql
 		}
 	}
 
+	public function getIdEmpresaUsuarioXEmpresa(int $Emp_id,int $Usu_id)
+	{
+		$sql = "SELECT eusu_id FROM {$this->db_name}.empresa_usuario WHERE emp_id=:emp_id and usu_id= :usu_id ";
+		$request = $this->select($sql, [":emp_id" => $Emp_id,":usu_id" => $Usu_id]);
+		//empty($request) => una cadena vacía, valor nulo,valor entero 0,array vacío y variable no definida
+		//Si existen datos retonar el valor caso contario retorna 0
+		return (!empty($request)) ? $request['eusu_id'] : 0;
+	}
+
 
 
 }

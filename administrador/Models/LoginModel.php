@@ -32,11 +32,12 @@ class LoginModel extends Mysql
 		$sql = "SELECT a.usu_id UsuId,a.usu_correo,a.usu_alias Alias,b.per_cedula Dni,CONCAT(b.per_nombre,' ',b.per_apellido) Nombres,";
 		$sql .= "	b.per_fecha_nacimiento FechaNac,b.per_nombre,b.per_apellido,b.per_genero Genero,a.estado_logico Estado,";
 		$sql .= "	date(a.fecha_creacion) FechaIng,b.per_telefono Telefono,b.per_direccion Direccion";
-		$sql .= "		FROM " . $this->db_name . ".usuario a";
-		$sql .= "			INNER JOIN " . $this->db_name . ".persona b";
+		$sql .= "		FROM {$this->db_name}.usuario a";
+		$sql .= "			INNER JOIN {$this->db_name}.persona b";
 		$sql .= "				ON a.per_id=b.per_id";
-		$sql .= "	WHERE a.estado_logico=1 AND a.usu_id={$IdsUser}";
-		$request = $this->select($sql);
+		$sql .= "	WHERE a.estado_logico=1 AND a.usu_id = :usu_id";
+		//$request = $this->select($sql);
+		$request = $this->select($sql, [":usu_id" => $IdsUser]);
 		return $request;
 	}
 
@@ -85,13 +86,13 @@ class LoginModel extends Mysql
 	public function consultarUsuarioEmpresaRol(int $Eurol_id)
 	{
 		$sql = "SELECT a.eurol_id,a.erol_id,c.rol_id,c.rol_nombre ";
-		$sql .= "	FROM " . $this->db_name . ".empresa_usuario_rol a ";
-		$sql .= "		INNER JOIN (" . $this->db_name . ".empresa_rol b ";
-		$sql .= "				INNER JOIN " . $this->db_name . ".rol c ";
+		$sql .= "	FROM {$this->db_name}.empresa_usuario_rol a ";
+		$sql .= "		INNER JOIN ({$this->db_name}.empresa_rol b ";
+		$sql .= "				INNER JOIN {$this->db_name}.rol c ";
 		$sql .= "					ON c.rol_id=b.rol_id) ";
 		$sql .= "			ON a.erol_id=b.erol_id ";
-		$sql .= "	WHERE a.estado_logico!=0 AND a.eurol_id={$Eurol_id} ";
-		$request = $this->select_all($sql); //Devuelve solo 1
+		$sql .= "	WHERE a.estado_logico!=0 AND a.eurol_id= :eurol_id ";
+		$request = $this->select_all($sql, [":eurol_id" => $Eurol_id]);
 		return $request;
 	}
 
@@ -106,9 +107,6 @@ class LoginModel extends Mysql
             FROM {$this->db_name}.permiso a 
             INNER JOIN {$this->db_name}.modulo c ON a.mod_id = c.mod_id 
             WHERE a.estado_logico != 0 AND a.eusu_id = :Eusu_id AND a.erol_id = :Erol_id ORDER BY  c.mod_id";
-
-
-
 		// Ejecutar la consulta con parámetros preparados
 		$request = $this->select_all($sql, [":Eusu_id" => $Eusu_id,":Erol_id" => $Erol_id]);
 

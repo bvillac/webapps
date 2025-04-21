@@ -160,11 +160,11 @@ class ClienteModel extends Mysql
 		return $request;
 	}
 
-	public function consultarEmpresaCliente()
+	public function consultarEmpresaCliente(int $IdsEmpresa)
 	{
 		try {
 			//$IdsEmpresa = $_SESSION['Emp_Id'];
-			$IdsEmpresa=retornarDataSesion('Emp_Id');
+			//$IdsEmpresa=retornarDataSesion('Emp_Id');
 			$sql = "SELECT cli_id as Ids,cli_razon_social as Nombre 
 						FROM  {$this->db_name}.cliente where estado_logico!=0 and  emp_id=:emp_id ";
 			$resultado = $this->select_all($sql, [":emp_id" => $IdsEmpresa]);
@@ -172,6 +172,7 @@ class ClienteModel extends Mysql
 				logFileSystem("Consulta fallida para consultarEmpresaCliente: $IdsEmpresa", "WARNING");
 				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
 			}
+			putMessageLogFile($resultado);
 			return $resultado;
 		} catch (Exception $e) {
 			logFileSystem("Error en consultarProductosTiendaCheck: " . $e->getMessage(), "ERROR");

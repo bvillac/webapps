@@ -71,7 +71,8 @@ function iniciarSessionTienda() {
 		// Manejar el éxito de la solicitud aquí
 		if (data.status) {
 			//Hace un refress del sitio
-			window.location.reload(false);
+			//window.location.reload(false);
+			window.location.reload(true);
 		} else {
 			swal("Atención", data.msg, "error");
 			
