@@ -141,16 +141,15 @@ class Tienda extends Controllers
            
             // Datos para la vista
             $data=getPageData("Catálogo de Productos", "tienda");
-
-    
             // Consultar datos del cliente
             $data = $this->model->consultarDatosId($ids);
-
+            $cliIds = $data['Cli_Ids'];
+            $Utieid = retornarDataSesion("Utie_id");
     
             // Consultar productos del cliente
             $data['TiendaId']=$ids;
-            $data['tiendas'] = $this->model->consultarTiendaCliente($data['Cli_Ids']);
-            $data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($data['Cli_Ids']);
+            $data['tiendas'] = $this->model->consultarTiendaCliente($Utieid,$cliIds);
+            $data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($cliIds);
             $data['ProductoCheck'] = (new ArticuloModel())->consultarProductosTiendaCheck($ids);
             
             $data['nombreCliente'] = htmlspecialchars($data['RazonSocial'], ENT_QUOTES, 'UTF-8');
@@ -242,8 +241,10 @@ class Tienda extends Controllers
 			if(empty($data['ids']) ){
 				$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
 			}else{
-				$ids = intval(strClean($data['ids']));
-                $arrData = (new TiendaModel())->consultarTiendaCliente($ids);
+				$cliIds = intval(strClean($data['ids']));
+                //$cliIds = retornarDataSesion("Cli_Id");
+                $Utieid = retornarDataSesion("Utie_id");
+                $arrData = (new TiendaModel())->consultarTiendaCliente($Utieid,$cliIds);
 				if(empty($arrData)){
 					$arrResponse = array('status' => false, 'msg' => 'La tienda no tiene items asignados.' ); 
 				}else{	

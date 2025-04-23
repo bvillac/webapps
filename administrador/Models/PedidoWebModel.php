@@ -149,7 +149,7 @@ class PedidoWebModel extends MysqlPedidos
             $con->beginTransaction();
 
             // Verificar si ya existe una cabecera de pedido activa
-            $sqlCheckCab = "SELECT tcped_id FROM {$this->db_name}.temp_cab_pedido
+            /*$sqlCheckCab = "SELECT tcped_id FROM {$this->db_name}.temp_cab_pedido
                         WHERE tie_id = :tie_id AND cli_id = :cli_id AND tcped_est_log = 1";
             $stmtCheckCab = $con->prepare($sqlCheckCab);
             $stmtCheckCab->execute([
@@ -177,14 +177,21 @@ class PedidoWebModel extends MysqlPedidos
                     return ["status" => false, "numero" => 0, "message" => $request["message"]];
                 }
                 $idcab = $request["numero"];
+            }*/
+
+            // Insertar nueva cabecera
+            $request = $this->InsertarCabListPedTemp($con, $tienda_id, $utieId, $cliId, $total, $Usuario);
+            if ($request["status"] == false) {
+                return ["status" => false, "numero" => 0, "message" => $request["message"]];
             }
+            $idcab = $request["numero"];
 
             // Procesar productos
             foreach ($productos as $producto) {
                 if ((float) $producto['cantidad'] <= 0)
                     continue;
 
-                $sqlCheckDet = "SELECT tdped_id FROM {$this->db_name}.temp_det_pedido
+                /*$sqlCheckDet = "SELECT tdped_id FROM {$this->db_name}.temp_det_pedido
                             WHERE tcped_id = :tcped_id AND art_id = :art_id AND cli_id = :cli_id";
                 $stmtCheckDet = $con->prepare($sqlCheckDet);
                 $stmtCheckDet->execute([
@@ -234,7 +241,29 @@ class PedidoWebModel extends MysqlPedidos
                         ":cli_id" => $cliId,
                         ":tie_id" => $tienda_id
                     ]);
-                }
+                }*/
+
+                // Insertar nuevo detalle
+                $sqlInsert = "INSERT INTO {$this->db_name}.temp_det_pedido (
+                    tcped_id, artie_id, art_id, tdped_can_ped, tdped_p_venta,
+                    tdped_t_venta, tdped_i_m_iva, tdped_est_aut, tdped_observa,
+                    tdped_est_log, tdped_fec_cre, cli_id, tie_id
+                  ) VALUES (
+                    :tcped_id, :artie_id, :art_id, :cantidad, :precio,
+                    :total, :iva, 1, '', 1, CURRENT_TIMESTAMP, :cli_id, :tie_id
+                  )";
+                $stmtInsert = $con->prepare($sqlInsert);
+                $stmtInsert->execute([
+                    ":tcped_id" => $idcab,
+                    ":artie_id" => $producto['artie_id'],
+                    ":art_id" => $producto['art_id'],
+                    ":cantidad" => $producto['cantidad'],
+                    ":precio" => $producto['precio'],
+                    ":total" => $producto['total'],
+                    ":iva" => $producto['iva'],
+                    ":cli_id" => $cliId,
+                    ":tie_id" => $tienda_id
+                ]);
             }
 
             $con->commit();
@@ -366,6 +395,52 @@ class PedidoWebModel extends MysqlPedidos
             return $resultado;
         } catch (Exception $e) {
             logFileSystem("Error en recuperarUserCorreoTiendaSUP: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+
+    public function cabeceraPedidoTemp($ids)
+    {
+        try {      
+            $sql = "select a.tcped_id pedid,concat(repeat( '0', 9 - length(a.tcped_id) ),a.tcped_id) numero,b.tie_id tieid,
+                        a.tcped_total total,date(a.tcped_fec_cre) fechapedido,b.tie_nombre nombretienda, a.tcped_receptor receptor
+                        from {$this->db_name}.temp_cab_pedido a
+                                inner join {$this->db_name}.tienda b
+                                        on a.tie_id=b.tie_id
+                    where a.tcped_id=:tcped_id ;";
+			$arrParams = [":tcped_id" => $ids];
+            $resultado = $this->select_all($sql,$arrParams);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida cabeceraPedidoTemp", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en cabeceraPedidoTemp: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+    public function detallePedidoTemp($ids)
+    {
+        try {      
+            $sql = "select a.artie_id detid,a.art_id artid,a.tdped_can_ped cantidad,a.tdped_p_venta precio,
+                        a.tdped_t_venta totvta,a.tdped_est_aut estaut,a.tdped_observa observacion,b.cod_art codigo,
+                        b.art_des_com nombre,b.art_i_m_iva imiva
+                        from {$this->db_name}.temp_det_pedido a
+                                inner join {$this->db_name}.articulo b
+                                        on a.art_id=b.art_id
+                where a.tcped_id=:tcped_id ";
+			$arrParams = [":tcped_id" => $ids];
+            $resultado = $this->select_all($sql,$arrParams);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida detallePedidoTemp", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en detallePedidoTemp: " . $e->getMessage(), "ERROR");
             return []; // En caso de error, retornar un array vacío
         }
     }

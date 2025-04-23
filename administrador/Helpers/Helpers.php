@@ -466,16 +466,17 @@ function calculoCostos(float $costo, float $margen, float $numDecimal)
 
 function add_ceros($numero, $ceros)
 {
-    /* Ejemplos para usar.
-          $numero="123";
-          echo add_ceros($numero,8) */
-    $insertar_ceros = "";
-    $order_diez = explode(".", $numero);
-    $dif_diez = $ceros - strlen($order_diez[0]);
-    for ($m = 0; $m < $dif_diez; $m++) {
-        $insertar_ceros .= 0;
-    }
-    return $insertar_ceros .= $numero;
+    //echo add_ceros("123", 8);        // 00000123
+    // Separamos parte entera y decimal si existe
+    $partes = explode(".", (string)$numero);
+    $parte_entera = $partes[0];
+    $parte_decimal = $partes[1] ?? "";
+
+    // Formateamos la parte entera con ceros a la izquierda
+    $parte_entera = str_pad($parte_entera, $ceros, "0", STR_PAD_LEFT);
+
+    // Si hay decimales, los agregamos
+    return $parte_decimal !== "" ? $parte_entera . "." . $parte_decimal : $parte_entera;
 }
 
 function Meses()
@@ -687,7 +688,7 @@ function getPageData($title, $back)
 function retornarDataSesion(string $param = "rolNombre")
 {
     $errorMessages = [
-        "rolNombre" => isset($_SESSION['usuarioData']['Rol_nombre']) ? strtolower(str_replace(' ', '', $_SESSION['usuarioData']['Rol_nombre'])) : null,//Retorna Nombre de RoL minusucla
+        "RolNombre" => isset($_SESSION['usuarioData']['Rol_nombre']) ? strtolower(str_replace(' ', '', $_SESSION['usuarioData']['Rol_nombre'])) : null,//Retorna Nombre de RoL minusucla
         "Emp_Id" => isset($_SESSION['Emp_Id']) ?$_SESSION['Emp_Id']:0, // Created     
         "Utie_id" => isset($_SESSION['Utie_id']) ?$_SESSION['Utie_id']:0, // Created    
         "Usu_id" => isset($_SESSION['Usu_id']) ?$_SESSION['Usu_id']:0, // Created    

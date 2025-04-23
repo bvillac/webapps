@@ -10,7 +10,7 @@ class UsuariosModel extends Mysql
 	{
 		parent::__construct();
 		$this->db_name = $this->getDbNameMysql();
-		$this->rolName=retornarDataSesion("rolNombre");
+		$this->rolName=retornarDataSesion("RolNombre");
 		$this->EmpIds=retornarDataSesion("Emp_Id");
 	}
 

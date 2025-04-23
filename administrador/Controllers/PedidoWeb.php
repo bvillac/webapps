@@ -41,15 +41,16 @@ class PedidoWeb extends Controllers
     {
         $options = '<div class="text-center">';
         if ($_SESSION['permisosMod']['r']) {
-            $options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+            //$options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
         }
         if ($_SESSION['permisosMod']['u']) {
-            $options .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+            //$options .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+            $options .= " <a title='Catálogo' href='" . base_url() . "/pedidoWeb/editar/$id' class='btn btn-primary btn-sm'><i class='fa fa-pencil'></i></a> ";
         }
         if ($_SESSION['permisosMod']['d']) {
             $options .= " <button class='btn btn-danger btn-sm btnDelLinea' onClick='fntDeleteTienda($id)' title='Eliminar'><i class='fa fa-trash'></i></button> ";
         }
-        $options .= " <a title='Catálogo' href='" . base_url() . "/tienda/catalogo/$id' class='btn btn-primary btn-sm'><i class='fa fa-list'></i></a> ";
+        //$options .= " <a title='Catálogo' href='" . base_url() . "/tienda/catalogo/$id' class='btn btn-primary btn-sm'><i class='fa fa-list'></i></a> ";
         return $options . '</div>';
     }
 
@@ -58,7 +59,8 @@ class PedidoWeb extends Controllers
         checkPermission('r', 'dashboard');
         $data = getPageData("Nuevo Pedido Web", "pedidoWeb");
         $cliIds = retornarDataSesion("Cli_Id");
-        $data['tienda'] = (new TiendaModel())->consultarTiendaCliente($cliIds);
+        $Utieid = retornarDataSesion("Utie_id");
+        $data['tienda'] = (new TiendaModel())->consultarTiendaCliente($Utieid, $cliIds);
         $data['Cliente'] = (new ClientePedidoModel())->consultarDatosId($cliIds);
         $data['nombreCliente'] = htmlspecialchars($data['Cliente']['Nombre'], ENT_QUOTES, 'UTF-8');
         $this->views->getView($this, "nuevo", $data);
@@ -92,31 +94,7 @@ class PedidoWeb extends Controllers
 
     
 
-    private function enviarMail()
-    {
-        /*$this->model->sendMailPedidosTemp($arroout["data"]);
-        $objUser = $ModUsu->recuperarUserCorreoTiendaSUP($tieId, 8, $cli_Id);//Recupera Usuairos Superviswor
-        //VSValidador::putMessageLogFile($objUser);
-        $CabPed[0]["CorreoUser"] = $objUser["USU_CORREO"];
-        $CabPed[0]["NombreUser"] = $objUser["USU_NOMBRE"];
-        //VSValidador::putMessageLogFile($CabPed);
 
-        $nomEmpresa = "NOBMRE";
-        $valorNeto = $CabPed[0]["ValorNeto"];
-        $Asunto = "$valorNeto ($nomEmpresa) Pedido en línea realizado con éxito!";
-        $Titulo = "";
-        $htmlMail = $this->renderPartial(
-            'mensaje',
-            array(
-                'CabPed' => $CabPed,
-                'TituloData' => "PEDIDO EN LÍNEA REALIZADO CON ÉXITO!!",
-                'Estado' => "R",
-            ),
-            true
-        );
-        //$dataMail->enviarRevisado($htmlMail,$CabPed);
-        $dataMail->enviarNotificacion($htmlMail, $CabPed, $Asunto, $Titulo);*/
-    }
 
 
     public function ingresarPedidoTemp()
@@ -197,9 +175,9 @@ class PedidoWeb extends Controllers
                         $resultado = $mailer ->enviarNotificacion($arrParams);
                         putMessageLogFile($resultado);
 
-                        $arrResponse = array('status' => true, 'numero' => $idPedido, 'msg' => 'Datos guardados correctamente.');
+                        $arrResponse = array('status' => true, 'numero' => add_ceros($idPedido,9), 'msg' => 'Datos guardados correctamente.');
                     } else {
-                        $arrResponse = array('status' => true, 'numero' => $idPedido, 'msg' => 'Datos actualizados correctamente.');
+                        $arrResponse = array('status' => true, 'numero' => add_ceros($idPedido,9), 'msg' => 'Datos actualizados correctamente.');
                     }
                 } else {
                     $arrResponse = array("status" => false, "msg" => $request["message"]);
@@ -208,6 +186,23 @@ class PedidoWeb extends Controllers
             echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         }
         exit();
+    }
+
+    public function editar($id)
+    {
+        if (!is_numeric($id)) die("Dato no válido");
+        checkPermission('r', 'pedidoWeb');
+        $cliIds = retornarDataSesion("Cli_Id");
+        $data['CabPed']=$this->model->cabeceraPedidoTemp($id);
+        $data['DetPed']=$this->model->detallePedidoTemp($id);       
+        $data['Cliente'] = (new ClientePedidoModel())->consultarDatosId($cliIds);
+        $tie_id=$data['CabPed'][0]['tieid'];        
+        $data['Tienda'] = (new TiendaModel())->consultarDatosId($tie_id);
+        
+        $data['Items'] = $this->model->listarItemsTiendas($tie_id, $cliIds);
+        $data['SaldoTienda'] = $this->model->recuperarSaldoTienda($tie_id, $cliIds);
+        $data = array_merge($data, getPageData("Editar Pedido", "pedidoWeb"));
+        $this->views->getView($this, "editar", $data);
     }
 
 

@@ -46,6 +46,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const precioInput = document.getElementById("txt_PrecioProducto");
     const btnAgregar = document.getElementById("btnAgregar");
 
+    // Verifica si el campo txth_ids tiene un valor antes de continuar
+    const txthIds = document.querySelector('#txth_ids');
+    if (txthIds && txthIds.value !== "") {
+        actualizarTabla();
+       
+    }
+
 
 });
 
@@ -375,7 +382,7 @@ function guardarPedido() {
         if (data.status) {
             swal("Pedido N°: " + data.numero, data.msg, "success");
             //tableTienda.api().ajax.reload();
-            //window.location = base_url + '/pedidoWeb';
+            window.location = base_url + '/pedidoWeb';
             //mostrarAlertaCupo("Datos guardados correctamente.", "success");
             //         // opcional: limpiar tabla, recargar datos, etc.
         } else {

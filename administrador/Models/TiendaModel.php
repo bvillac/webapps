@@ -3,12 +3,14 @@ class TiendaModel extends MysqlPedidos
 {
     private $db_name;
     private $db_nameAdmin;
+    private $rolName;
 
     public function __construct()
     {
         parent::__construct();
         $this->db_name = $this->getDbNameMysql();
         $this->db_nameAdmin = $this->getDbNameMysqlAdmin();
+        $this->rolName = retornarDataSesion("RolNombre");
     }
 
     // 🔹 Consultar todas las tiendas
@@ -23,7 +25,7 @@ class TiendaModel extends MysqlPedidos
         return $this->select_all($sql);
     }
 
-    public function consultarDatosId(int $Ids)
+    public function consultarDatosId(int $tie_id)
     {
         try {
             $sql = "SELECT a.tie_id AS Ids, a.tie_nombre AS NombreTienda, a.tie_direccion AS Direccion,a.tie_telefono as Telefono,a.tie_lug_entrega as LugarEntrega,
@@ -31,11 +33,11 @@ class TiendaModel extends MysqlPedidos
                        a.tie_contacto AS ContactoTienda, a.tie_est_log AS Estado,date(a.tie_fec_cre) as FechaIngreso,a.cli_id as Cli_Ids,a.tie_cupo as Cupo
                 FROM {$this->db_name}.tienda a
                 INNER JOIN {$this->db_nameAdmin}.cliente b ON a.cli_id = b.cli_id
-                WHERE a.tie_est_log != 0 and a.tie_id= :ids ";
+                WHERE a.tie_est_log != 0 and a.tie_id= :tie_id ";
 
-            $resultado = $this->select($sql, [":ids" => $Ids]);
+            $resultado = $this->select($sql, [":tie_id" => $tie_id]);
             if ($resultado === false) {
-                logFileSystem("Consulta fallida para Ids: $Ids", "WARNING");
+                logFileSystem("Consulta fallida para Ids: $tie_id", "WARNING");
                 return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
             }
             return $resultado;
@@ -143,12 +145,28 @@ class TiendaModel extends MysqlPedidos
         return $this->update($sql, arrValues: $params);
     }
 
-    public function consultarTiendaCliente(int $idsCliente)
+
+
+    public function consultarTiendaCliente(int $utie_id, int $cliIds)
     {
-        $sql = "SELECT tie_id as Ids,tie_nombre as Nombre FROM {$this->db_name}.tienda ";
-        $sql .= "   where tie_est_log!=0 and cli_id= :ids; ";
-        return $this->select_all($sql, [":ids" => $idsCliente]);
+        $sql = "SELECT DISTINCT a.tie_id AS Ids, b.tie_nombre AS Nombre
+                    FROM {$this->db_name}.usuario_tienda a
+                        INNER JOIN {$this->db_name}.tienda b ON a.tie_id = b.tie_id
+                    WHERE a.utie_est_log != 0";
+        $params = [];
+        if ($this->rolName === "admin") {
+            $sql .= " AND a.cli_id = :cli_id";
+            $params[":cli_id"] = $cliIds;
+        } else {
+            $sql .= " AND a.utie_id = :utie_id";
+            $params[":utie_id"] = $utie_id;
+        }
+
+        $sql .= " ORDER BY b.tie_nombre ASC";
+
+        return $this->select_all($sql, $params);
     }
+
 
 
     public function consultarUsuarioTienda(array $criterio, int $limit = 10)
@@ -208,10 +226,12 @@ class TiendaModel extends MysqlPedidos
             // Validar si la usuario_tienda ya existe
             $sqlCheck = "SELECT 1 FROM {$this->db_name}.usuario_tienda 
                          WHERE usu_id = :usu_id AND tie_id = :tie_id and rol_id = :rol_id AND cli_id = :cli_id";
-            $paramsCheck = [":usu_id" => $dataObj['idUsuario'], 
-                            ":tie_id" => $dataObj['idTienda'],
-                            ":rol_id" => $dataObj['idRol'],
-                            ":cli_id" => $dataObj['idCliente']];
+            $paramsCheck = [
+                ":usu_id" => $dataObj['idUsuario'],
+                ":tie_id" => $dataObj['idTienda'],
+                ":rol_id" => $dataObj['idRol'],
+                ":cli_id" => $dataObj['idCliente']
+            ];
             if (!empty($this->select($sqlCheck, $paramsCheck))) {
                 return ["status" => false, "message" => "Ya existe una Registro o Rol asignado para la tienda de este cliente."];
             }
@@ -227,13 +247,13 @@ class TiendaModel extends MysqlPedidos
             //utie_id,usu_id,tie_id,rol_id,cli_id,utie_asig,utie_est_log,utie_fec_cre,utie_fec_mod,
 
             $paramsInsert = [
-                ":usu_id" => $dataObj['idUsuario'], 
+                ":usu_id" => $dataObj['idUsuario'],
                 ":tie_id" => $dataObj['idTienda'],
                 ":rol_id" => $dataObj['idRol'],
                 ":cli_id" => $dataObj['idCliente'],
                 ":utie_est_log" => 1
             ];
-         
+
             $this->insertConTrans($con, $sqlInsert, $paramsInsert);
             $con->commit();
 
@@ -257,7 +277,7 @@ class TiendaModel extends MysqlPedidos
                             on a.rol_id=c.rol_id
                     where a.cli_id=:cli_id and a.usu_id=:usu_id ";
             //return $this->select_all($sql, [":cli_id" => $idsCliente,":usu_id" => $usu_id]);
-            $resultado = $this->select_all($sql, [":cli_id" => $idsCliente,":usu_id" => $usu_id]);
+            $resultado = $this->select_all($sql, [":cli_id" => $idsCliente, ":usu_id" => $usu_id]);
             if ($resultado === false) {
                 logFileSystem("Consulta fallida para consultarTiendaUsuario", "WARNING");
                 return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
@@ -269,7 +289,7 @@ class TiendaModel extends MysqlPedidos
         }
     }
 
-    public function consultarUtieId( int $utie_id)
+    public function consultarUtieId(int $utie_id)
     {
         try {
             $sql = "SELECT a.utie_id Ids,a.tie_id,b.tie_nombre,a.rol_id,c.rol_nombre
