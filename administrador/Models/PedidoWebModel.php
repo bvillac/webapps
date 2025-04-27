@@ -552,55 +552,86 @@ class PedidoWebModel extends MysqlPedidos
 
     public function autorizarPedidoTemp(int $ids)
     {
-        $con = $this->getConexion(); // Obtiene la conexión a la base de datos
+        $con = $this->getConexion();
         $arroout = ["status" => false, "message" => "No se realizó ninguna operación."];
 
         try {
             $usuario = retornaUser();
-            $con->beginTransaction(); // Inicia una transacción
+            $cliId = retornarDataSesion('Cli_Id');
+
+            $con->beginTransaction();
 
             $cabFact = $this->buscarCabPedidosTemp($con, $ids);
-            $cliId = retornarDataSesion('Cli_Id');
-            $Usuario = retornaUser();
-
-            for ($i = 0; $i < sizeof($cabFact); $i++) {
-
-                $this->InsertarCabFactura($con, $cabFact[$i], $EstAut, $cliId);
-                // $idCab = $con->getLastInsertID($con->dbname . '.CAB_PEDIDO');
-                // $detFact = $this->buscarDetPedidosTemp($con, $cabFact[$i]['TCPED_ID']);
-                // $this->InsertarDetFactura($con, $detFact, $idCab, $cabFact[$i]['TIE_ID'],$cliID);
-                // $this->actTemCabPed($con, $cabFact[$i]['TCPED_ID'],$EstAut);
-                // $idsReturn[] = array(
-                //     "ids" => $idCab,
-                // );
+            if (empty($cabFact)) {
+                throw new Exception("No se encontró la cabecera del pedido temporal.");
             }
 
+            $request = $this->InsertarCabFactura($con, $cabFact, $cliId, $usuario);
+            if (!$request["status"]) {
+                throw new Exception("Error al insertar la cabecera de la factura.");
+            }
 
+            $idCab = $request["numero"];
 
+            $detFact = $this->buscarDetPedidosTemp($con, $ids);
+            if (empty($detFact)) {
+                throw new Exception("No se encontraron detalles del pedido temporal.");
+            }
 
-
-
-            $con->commit(); // Confirma la transacción
-            return ["status" => true, "message" => "Registro Anulado correctamente."];
+            $resDetalle = $this->InsertarDetFactura($con, $detFact, $idCab, $cliId);
+            if (!$resDetalle["status"]) {
+                throw new Exception("Error al insertar los detalles de la factura.");
+            }
+            $this->actTemCabPed($con, $ids);
+            $con->commit();
+            return [
+                "status" => true,
+                "numero" => $idCab,
+                "message" => "Registro Autorizado correctamente."
+            ];
 
         } catch (Exception $e) {
-            $con->rollBack(); // Revierte la transacción en caso de error
-            logFileSystem("Error en anularPedidoTemp: " . $e->getMessage(), "ERROR");
-            return ["status" => false, "message" => "Error en la Anulado: " . $e->getMessage()];
+            if ($con->inTransaction()) {
+                $con->rollBack();
+            }
+            logFileSystem("Error en autorizarPedidoTemp: " . $e->getMessage(), "ERROR");
+            return [
+                "status" => false,
+                "message" => "Error al autorizar: " . $e->getMessage()
+            ];
         }
     }
 
 
 
-    public function buscarCabPedidosTemp($con, $ids)
+
+    private function buscarCabPedidosTemp($con, $ids)
     {
         try {
             $sql = "select * from {$this->db_name}.temp_cab_pedido 
                         where tcped_id=:tcped_id and tcped_est_log in(1,5)";
             $arrParams = [":tcped_id" => $ids];
-            $resultado = $this->select_all($sql, $arrParams);
+            $resultado = $this->select($sql, $arrParams);
             if ($resultado === false) {
                 logFileSystem("Consulta fallida cabeceraPedidoTemp", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en buscarCabPedidosTemp: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+    private function buscarDetPedidosTemp($con, $ids)
+    {
+        try {
+            $sql = "select * from {$this->db_name}.temp_det_pedido 
+                        where tcped_id=:tcped_id and tdped_est_aut=1";
+            $arrParams = [":tcped_id" => $ids];
+            $resultado = $this->select_all($sql, $arrParams);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida buscarDetPedidosTemp", "WARNING");
                 return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
             }
             return $resultado;
@@ -610,74 +641,30 @@ class PedidoWebModel extends MysqlPedidos
         }
     }
 
-    private function InsertarCabFactura2($con, $objEnt, $i, $EstAut, $cliID)
-    {
-        //Nota: UTIE_ID= User que revisa  y UTIE_ID_PED= User que hace el pedido
-        $utieId = Yii::app()->getSession()->get('UtieId', FALSE);
-        $UserName = Yii::app()->getSession()->get('user_name', FALSE);
-        //$idsAre=($objEnt[$i]['IDS_ARE']<>'')?$objEnt[$i]['IDS_ARE']:1;//Valor 1 por defecto en area
-        $sql = "INSERT INTO " . $con->dbname . ".CAB_PEDIDO
-                (TDOC_ID,TIE_ID,TCPED_ID,CPED_FEC_PED,CPED_VAL_BRU,CPED_POR_DES,CPED_VAL_DES,CPED_POR_IVA,CPED_VAL_IVA,
-                 CPED_BAS_IVA,CPED_BAS_IV0,CPED_VAL_FLE,CPED_VAL_NET,CPED_EST_PED,CPED_EST_LOG,UTIE_ID_PED,UTIE_ID,CLI_ID,USUARIO)VALUES
-                (2,'" . $objEnt[$i]['TIE_ID'] . "','" . $objEnt[$i]['TCPED_ID'] . "',CURRENT_TIMESTAMP(),
-                   '" . $objEnt[$i]['TCPED_TOTAL'] . "',0,0,0,0,0,0,0,'" . $objEnt[$i]['TCPED_TOTAL'] . "','$EstAut','1',
-                    '" . $objEnt[$i]['UTIE_ID'] . "','$utieId','$cliID','$UserName') ";
 
-        $command = $con->createCommand($sql);
-        $command->execute();
-    }
-
-    private function InsertarCabFactura($con, $total, $cabData)
+    private function InsertarCabFactura($con, $cabData, $cliId, $Usuario)
     {
         // cabData es un array que debe tener las columnas necesarias
         $sqlInsert = "INSERT INTO {$this->db_name}.cab_pedido (
-                tdoc_id,tie_id,
-                tcped_id,
-                cped_fec_ped,
-                cped_val_bru,
-                cped_por_des,
-                cped_val_des,
+                tdoc_id,tie_id,tcped_id,cped_fec_ped,cped_val_bru,cped_por_des,cped_val_des,
                 cped_por_iva,cped_val_iva,cped_bas_iva, cped_bas_iv0,
-                cped_val_fle,
-                cped_val_net,
-                cped_est_ped,
-                cped_est_log,
-                utie_id_ped,
-                utie_id,
-                cli_id,usuario
+                cped_val_fle,cped_val_net,cped_est_ped,cped_est_log,utie_id_ped,utie_id,cli_id,usuario
             ) VALUES (
-                :tdoc_id,
-                :tie_id,
-                :tcped_id,
-                CURRENT_TIMESTAMP(),
-                :cped_val_bru,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                :cped_val_net,
-                :cped_est_ped,
-                1,
-                :utie_id_ped,
-                :utie_id,
-                :cli_id,
-                :usuario
+                :tdoc_id,:tie_id,:tcped_id,CURRENT_TIMESTAMP(),:cped_val_bru,0,0,0,0,0,0,0,
+                :cped_val_net,:cped_est_ped,1,:utie_id_ped,:utie_id,:cli_id,:usuario
             )";
 
         $paramsInsert = [
-            ':tdoc_id' => 2, // documento fijo
+            ':tdoc_id' => 5, // documento fijo
             ':tie_id' => $cabData['tie_id'],
             ':tcped_id' => $cabData['tcped_id'], // este es el número o ID de pedido
-            ':cped_val_bru' => $total,
-            ':cped_val_net' => $total,
-            ':cped_est_ped' => $cabData['cped_est_ped'], //  ejemplo: 1 o lo que corresponda
+            ':cped_val_bru' => $cabData['tcped_total'],
+            ':cped_val_net' => $cabData['tcped_total'],
+            ':cped_est_ped' => 2, // AUTORIZADO
             ':utie_id_ped' => $cabData['utie_id'],
             ':utie_id' => $cabData['utie_id'],
-            ':cli_id' => $cabData['cli_id'],
-            ':usuario' => $cabData['usuario']
+            ':cli_id' => $cliId,
+            ':usuario' => $Usuario
         ];
 
         $resInsert = $this->insertConTrans($con, $sqlInsert, $paramsInsert);
@@ -688,6 +675,77 @@ class PedidoWebModel extends MysqlPedidos
             return ["status" => false, "message" => "Error al insertar cabecera temporal"];
         }
     }
+
+
+    private function actTemCabPed($con, $ids)
+    {
+        $sqlUpdate = "UPDATE {$this->db_name}.temp_cab_pedido SET tcped_est_log=:tcped_est_log WHERE tcped_id=:tcped_id";
+        $stmtUpdate = $con->prepare($sqlUpdate);
+        $stmtUpdate->execute([
+            ':tcped_id' => $ids,
+            ':tcped_est_log' => 2//AUTORIZADO
+        ]);
+    }
+
+
+    private function InsertarDetFactura($con, $detFact, $idCab, $cliId)
+    {
+        try {
+
+            $sql = "INSERT INTO {$this->db_name}.det_pedido (
+                    cped_id, art_id, tie_id, dped_can_ped, dped_p_venta, dped_i_m_iva, 
+                    dped_val_des, dped_por_des, dped_t_venta, dped_observa, 
+                    dped_fec_cre, dped_est_log, cli_id
+                ) VALUES (
+                    :cped_id, :art_id, :tie_id, :dped_can_ped, :dped_p_venta, :dped_i_m_iva, 
+                    :dped_val_des, :dped_por_des, :dped_t_venta, :dped_observa, 
+                    CURRENT_TIMESTAMP(), 2, :cli_id
+                )";
+            $stmt = $con->prepare($sql);
+
+            foreach ($detFact as $detalle) {
+                //  if (empty($detalle['art_id']) || empty($detalle['tdped_can_ped']) || empty($detalle['tdped_p_venta'])) {
+                //      throw new Exception("Faltan datos obligatorios para insertar el detalle.");
+                //  }
+
+                // $sql = "INSERT INTO {$this->db_name}.det_pedido (
+                //         cped_id, art_id, tie_id, dped_can_ped, dped_p_venta, dped_i_m_iva, 
+                //         dped_val_des, dped_por_des, dped_t_venta, dped_observa, 
+                //         dped_fec_cre, dped_est_log, cli_id
+                //         ($idCab,
+                //      '" . $detalle['art_id'] . "','" . $detalle['tie_id'] . "','" . $detalle['tdped_can_ped'] . "',
+                //      '" . $detalle['tdped_p_venta'] . "','0','0','0',
+                //      '" . $detalle['tdped_t_venta'] . "','" . $detalle['tdped_observa'] . "',CURRENT_TIMESTAMP(),'1','$cliId');";
+
+                $stmt->execute([
+                    ':cped_id' => $idCab,
+                    ':art_id' => $detalle['art_id'],
+                    ':tie_id' => $detalle['tie_id'],
+                    ':dped_can_ped' => $detalle['tdped_can_ped'],
+                    ':dped_p_venta' => $detalle['tdped_p_venta'],
+                    ':dped_i_m_iva' => 0,
+                    ':dped_val_des' => 0,
+                    ':dped_por_des' => 0,
+                    ':dped_t_venta' => $detalle['tdped_t_venta'],
+                    ':dped_observa' => $detalle['tdped_observa'] ?? '',
+                    ':cli_id' => $cliId
+                ]);
+            }
+
+            return [
+                "status" => true,
+                "message" => "Detalle insertado correctamente."
+            ];
+        } catch (Exception $e) {
+            logFileSystem("Error en InsertarDetFactura: " . $e->getMessage(), "ERROR");
+            return [
+                "status" => false,
+                "message" => "Error al insertar detalle: " . $e->getMessage()
+            ];
+        }
+    }
+
+
 
 
 

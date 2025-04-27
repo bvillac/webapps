@@ -29,32 +29,34 @@ class PedidoWeb extends Controllers
     {
         checkPermission('r', 'dashboard');
         $arrData = $this->model->consultarDatos();
+        $RolNombre=retornarDataSesion('RolNombre');
         foreach ($arrData as &$objData) {
             $estadoTexto = estadoPedidos($objData['Estado']);
+            $EstadoDoc=$objData['Estado'];
             $claseBadge = ($objData['Estado'] != 4) ? 'badge-success' : 'badge-danger';
 
             $objData['Estado'] = "<span class='badge {$claseBadge}'>{$estadoTexto}</span>";
-            $objData['options'] = $this->getArrayOptions($objData['Ids']);
+            $objData['options'] = $this->getArrayOptions($objData['Ids'],$RolNombre,$EstadoDoc);
         }
         echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
         exit();
     }
 
-    private function getArrayOptions($id)
+    private function getArrayOptions($id,$RolNombre,$EstadoDoc)
     {
-        $RolNombre=retornarDataSesion('RolNombre');
+        
         $options = '<div class="text-center">';
         if ($_SESSION['permisosMod']['r']) {
             //$options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
         }
-        if ($_SESSION['permisosMod']['u']) {
+        if ($_SESSION['permisosMod']['u'] && $EstadoDoc==1) {
             //$options .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
             $options .= " <a title='Catálogo' href='" . base_url() . "/pedidoWeb/editar/$id' class='btn btn-primary btn-sm'><i class='fa fa-pencil'></i></a> ";
         }
-        if ($_SESSION['permisosMod']['r'] && $RolNombre=='supervisortienda') {
+        if ($_SESSION['permisosMod']['r'] && $EstadoDoc==1 && $RolNombre=='supervisortienda') {
             $options .= " <button class='btn btn-success btn-sm btnDelLinea' onClick='fntAutorizarPedido($id)' title='Autorizar'><i class='fa fa-check-circle-o'></i></button> ";
         }
-        if ($_SESSION['permisosMod']['d']) {
+        if ($_SESSION['permisosMod']['d'] && $EstadoDoc==1) {
             $options .= " <button class='btn btn-danger btn-sm btnDelLinea' onClick='fntAnularPedido($id)' title='Anular'><i class='fa fa-trash'></i></button> ";
         }
         if ($_SESSION['permisosMod']['r']) {
@@ -290,15 +292,15 @@ class PedidoWeb extends Controllers
                 $data = recibirData($_POST['data']);
                 $ids = isset($data['ids']) ? filter_var($data['ids'], FILTER_VALIDATE_INT) : 0;
                 $request = $this->model->autorizarPedidoTemp($ids);
-                if ($request) {
-                    $arrResponse = array('status' => true, 'msg' => 'Se ha Anulado el Registro');
+                if ($request["status"]) {
+                    $arrResponse = array('status' => true, 'msg' => 'Registro Autorizado correctamente');
                 } else {
-                    $arrResponse = array('status' => false, 'msg' => 'Error al Anuladar el Registro.');
+                    $arrResponse = array('status' => false, 'msg' => 'Error al Autorizar el Registro.');
                 }
                 echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
             } catch (Exception $e) {
                 // Registrar error en log
-                logFileSystem("Error en consutla anularPedidoTemp: " . $e->getMessage(), "ERROR");
+                logFileSystem("Error en consutla autorizarPedidoTemp: " . $e->getMessage(), "ERROR");
                 exit;
             }
 
