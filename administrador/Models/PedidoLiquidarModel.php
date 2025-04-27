@@ -129,6 +129,56 @@ class PedidoLiquidarModel extends MysqlPedidos
         }
     }
 
+
+    public function cabeceraPedido($ids)
+    {
+        try {
+            $sql = "select a.cped_id pedid,concat(repeat( '0', 9 - length(a.cped_id) ),a.cped_id) numero,b.tie_id tieid,
+                        a.cped_val_net total,date(a.cped_fec_ped) fechapedido,b.tie_nombre nombretienda, '' receptor
+                        from {$this->db_name}.cab_pedido a
+                                inner join {$this->db_name}.tienda b
+                                        on a.tie_id=b.tie_id
+                    where a.cped_id=:cped_id ;";
+            $arrParams = [":cped_id" => $ids];
+            $resultado = $this->select_all($sql, $arrParams);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida cabeceraPedido", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en cabeceraPedido: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+    public function detallePedido($ids)
+    {
+        try {
+            $sql = "select a.dped_id detid,a.art_id artid,a.dped_can_ped cantidad,a.dped_p_venta precio,
+                        a.dped_t_venta totvta,a.dped_est_log estaut,a.dped_observa observacion,b.cod_art codigo,
+                        b.art_des_com nombre,b.art_i_m_iva imiva
+                        from {$this->db_name}.det_pedido a
+                                inner join {$this->db_name}.articulo b
+                                        on a.art_id=b.art_id
+                where a.cped_id=:cped_id ";
+            $arrParams = [":cped_id" => $ids];
+            $resultado = $this->select_all($sql, $arrParams);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida detallePedido", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en detallePedido: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
+
+
+
+
+
     
 
 }

@@ -160,8 +160,7 @@ class PedidoWeb extends Controllers
                     exec($comando); // Sin esperar respuesta*/
 
                     //Recupera infor de CabTemp  para enviar info al supervisor de tienda
-                    $CabPed = $this->model->sendMailPedidosTemp($request["numero"]);
-                    //$CabPed=$this->model->sendMailPedidosTemp(17);
+                    $CabPed = $this->model->sendMailPedidosTemp($idPedido);
                     $cliId = retornarDataSesion('Cli_Id');
                     //$objUser=$this->model->recuperarUserCorreoTiendaSUP($idTienda,16,$cliId);//Recupera Usuairos Superviswor
                     $CabPed[0]["correouser"] = 'byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
@@ -188,7 +187,6 @@ class PedidoWeb extends Controllers
                     ];
                     $mailer = new MailSystem();
                     $resultado = $mailer->enviarNotificacion($arrParams);
-                    putMessageLogFile($resultado);
 
                     if ($option == 1) {
                         $arrResponse = array('status' => true, 'numero' => add_ceros($idPedido, 9), 'msg' => 'Datos guardados correctamente.');
@@ -204,6 +202,7 @@ class PedidoWeb extends Controllers
         exit();
     }
 
+    
     public function editar($id)
     {
         if (!is_numeric($id))
@@ -293,6 +292,9 @@ class PedidoWeb extends Controllers
                 $ids = isset($data['ids']) ? filter_var($data['ids'], FILTER_VALIDATE_INT) : 0;
                 $request = $this->model->autorizarPedidoTemp($ids);
                 if ($request["status"]) {
+                    $numero=$request["numero"];
+                    $this->enviarCorreo($numero,"Autorización de pedido");
+
                     $arrResponse = array('status' => true, 'msg' => 'Registro Autorizado correctamente');
                 } else {
                     $arrResponse = array('status' => false, 'msg' => 'Error al Autorizar el Registro.');
@@ -307,6 +309,39 @@ class PedidoWeb extends Controllers
         }
         exit();
     }
+
+    private function enviarCorreo(int $idPedido,string $asunto){
+        //Recupera infor de CabTemp  para enviar info al supervisor de tienda
+        $CabPed = $this->model->sendMailPedidosTemp($idPedido);
+        $cliId = retornarDataSesion('Cli_Id');
+        //$objUser=$this->model->recuperarUserCorreoTiendaSUP($idTienda,16,$cliId);//Recupera Usuairos Superviswor
+        $CabPed[0]["correouser"] = 'byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
+        $CabPed[0]["nombreuser"] = 'Byron Villacreses';//$objUser["usu_nombre"];
+        $cliIds = retornarDataSesion("Cli_Id");
+        $Cliente = (new ClientePedidoModel())->consultarDatosId($cliIds);
+        $nombreCliente = $Cliente["Nombre"];
+        $TotalPedido = formatMoney($CabPed[0]["valorneto"], 2);
+
+
+        $CabPed[0]["web_empresa"] = WEB_EMPRESA;
+        $CabPed[0]["empresa"] = $nombreCliente;//TITULO_EMPRESA;
+        $CabPed[0]["base_url"] = BASE_URL;
+
+        $htmlMail = getFile("Template/Email/email_notificaPedido", $CabPed[0]);
+
+        $arrParams = [
+            'destinatario' => 'byron_villacresesf@hotmail.com',
+            'asunto' => "({$nombreCliente}) {$TotalPedido} {$asunto}",
+            'html' => $htmlMail,
+            'pdf' => '',//$pdfPath,
+            'bcc' => 'byronvillacreses@gmail.com',
+            'borrarPDF' => true
+        ];
+        $mailer = new MailSystem();
+        $resultado = $mailer->enviarNotificacion($arrParams);
+
+   }
+
 
 
 

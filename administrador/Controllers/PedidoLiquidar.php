@@ -43,25 +43,14 @@ class PedidoLiquidar extends Controllers
 
     private function getArrayOptions($id,$RolNombre,$EstadoDoc)
     {
-        
         $options = '<div class="text-center">';
-        if ($_SESSION['permisosMod']['r']) {
-            //$options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
-        }
-        if ($_SESSION['permisosMod']['u'] && $EstadoDoc==1) {
-            //$options .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-            $options .= " <a title='Catálogo' href='" . base_url() . "/pedidoWeb/editar/$id' class='btn btn-primary btn-sm'><i class='fa fa-pencil'></i></a> ";
-        }
-        if ($_SESSION['permisosMod']['r']  ) {
+        if ($_SESSION['permisosMod']['r'] && $EstadoDoc==2 ) {
             $options .= " <button class='btn btn-success btn-sm btnDelLinea' onClick='fntFacturarPedido($id)' title='Facturado'><i class='fa fa-usd'></i></button> ";
         }
-        if ($_SESSION['permisosMod']['d'] && $EstadoDoc==1) {
-            $options .= " <button class='btn btn-danger btn-sm btnDelLinea' onClick='fntAnularPedido($id)' title='Anular'><i class='fa fa-trash'></i></button> ";
-        }
+     
         if ($_SESSION['permisosMod']['r']) {
-            $options .= ' <a title="Generar PDF" href="' . base_url() . '/pedidoWeb/generarPedidoPDF/' . $id . '" target="_blanck" class="btn btn-primary btn-sm"> <i class="fa fa-file-pdf-o"></i> </a> ';
+            $options .= ' <a title="Generar PDF" href="' . base_url() . '/pedidoLiquidar/generarPedidoPDF/' . $id . '" target="_blanck" class="btn btn-primary btn-sm"> <i class="fa fa-file-pdf-o"></i> </a> ';
         }
-        //$options .= " <a title='Catálogo' href='" . base_url() . "/tienda/catalogo/$id' class='btn btn-primary btn-sm'><i class='fa fa-list'></i></a> ";
         return $options . '</div>';
     }
 
@@ -72,15 +61,15 @@ class PedidoLiquidar extends Controllers
             exit("Dato no válido");
         checkPermission('r', 'pedidoWeb');
         $cliIds = retornarDataSesion("Cli_Id");
-        $data['cabData'] = $this->model->cabeceraPedidoTemp($id);
-        $data['detData'] = $this->model->detallePedidoTemp($id);
+        $data['cabData'] = $this->model->cabeceraPedido($id);
+        $data['detData'] = $this->model->detallePedido($id);
         $data['Cliente'] = (new ClientePedidoModel())->consultarDatosId($cliIds);
         $numeroSecuencia = $data['cabData'][0]['numero'];
         $tie_id = $data['cabData'][0]['tieid'];
         $data['Tienda'] = (new TiendaModel())->consultarDatosId($tie_id);
         ob_end_clean();
         //$html =getFile("Template/Modals/ordenCompraPDF",$data);
-        $html = getFile("PedidoWeb/pedidoPDF", $data);
+        $html = getFile("PedidoLiquidar/pedidoPDF", $data);
         $html2pdf = new Html2Pdf('p', 'A4', 'es', 'true', 'UTF-8');
         $html2pdf->writeHTML($html);
         $html2pdf->output('PEDIDO_' . $numeroSecuencia . '.pdf');
