@@ -13,11 +13,9 @@ $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTiend
 
 ?>
 
-function guardarProductosEnStorage(productos) {
-    sessionStorage.setItem(storageKey, JSON.stringify(productos));
-}
 
 <script>
+    //limpiarSessionStorage();
     const productos = <?php echo json_encode($data['Items']); ?>;
     sessionStorage.setItem('dts_PrecioListaItems', JSON.stringify(productos));
     //guardarProductosEnStorage(productos);
@@ -113,7 +111,7 @@ function guardarProductosEnStorage(productos) {
                     </div>
                     <div class="col">
                         <button id="btnGuardar" class="btn btn-success" type="button"><i
-                                class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
+                                class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i><span id="btnText">Actualizar</span></button>
                         <button id="btn_retornar" class="btn btn-danger" type="button"> Retornar</button>
                     </div>
 

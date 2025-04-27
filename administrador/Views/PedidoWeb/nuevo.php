@@ -109,7 +109,7 @@ require_once "Views/PedidoWeb/Modals/modalGaleria.php";
                     </div>
                     <div class="col">
                         <button id="btnGuardar" class="btn btn-success" type="button"><i
-                                class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i> Guardar</button>
+                                class="fa fa-fw fa-lg fa-check-circle" aria-hidden="true"></i><span id="btnText">Guardar</span></button>
                         <button id="btn_retornar" class="btn btn-danger" type="button"> Retornar</button>
                     </div>
 

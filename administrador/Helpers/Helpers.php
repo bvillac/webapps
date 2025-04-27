@@ -271,14 +271,6 @@ function getModal(string $nameModal, $data)
     require_once $view_modal;
 }
 
-function getFile2(string $url, $data)
-{
-    ob_start();
-    //extract($data); // Esto convierte ['nombreuser' => 'Byron'] en $nombreuser = 'Byron'
-    require("Views/{$url}.php");
-    return ob_get_clean();
-}
-
 function getFile(string $url, $data)
 {
     ob_start();
@@ -696,4 +688,16 @@ function retornarDataSesion(string $param = "rolNombre")
         "" => null // Internal Server Error
     ];
     return $errorMessages[$param] ?? "Error Session desconocido";
+}
+
+function estadoPedidos(string $valor = "0")
+{
+    $errorMessages = [
+        "1" => "REALIZADO",
+        "2" => "AUTORIZADO",
+        "3" => "FACTURADO",        
+        "4" => "ANULADO",    
+        "" => null // Internal Server Error
+    ];
+    return $errorMessages[$valor] ?? "No Estado";
 }

@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const txthIds = document.querySelector('#txth_ids');
     if (txthIds && txthIds.value !== "") {
         actualizarTabla();
-       
+
     }
 
 
@@ -85,9 +85,8 @@ $(document).ready(function () {
         guardarPedido();
     });
 
-
-
 });
+//}, false);
 
 
 function obtenerInfoTienda() {
@@ -95,9 +94,10 @@ function obtenerInfoTienda() {
     let url = base_url + '/pedidoWeb/retornarDatosTienda';
     var metodo = 'POST';
     var datos = { ids: idsTienda };
-    peticionAjaxSSL(url, metodo, datos, function (data) { data.data.SaldoTienda
+    peticionAjaxSSL(url, metodo, datos, function (data) {
+        data.data.SaldoTienda
         if (data.status) {
-            let saldoCupo=parseFloat(data.data.Cupo)-parseFloat(data.data.SaldoTienda);
+            let saldoCupo = parseFloat(data.data.Cupo) - parseFloat(data.data.SaldoTienda);
             $('#lbl_cupo').text(data.data.Cupo);
             $('#lbl_contacto').text(data.data.ContactoTienda);
             $('#lbl_direccion').text(data.data.Direccion);
@@ -328,16 +328,18 @@ function abrirGaleria(imagenes) {
 
 
 function guardarPedido() {
-    //let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';    
-    let accion = 'Create';
-    let Ids = document.querySelector('#txth_ids').value;
+    let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
+    let CabIds = document.querySelector('#txth_ids').value;
     const cmbTienda = document.getElementById("cmb_tienda");
-    const tiendaSeleccionada = cmbTienda ? cmbTienda.value : "";
+    const tiendaSeleccionada = cmbTienda ? cmbTienda.value : "0";
 
-    if (!tiendaSeleccionada || tiendaSeleccionada === "0") {
-        mostrarAlertaCupo("Debe seleccionar una tienda antes de guardar.", "warning");
-        return;
+    if (accion === "Create") {
+        if (!tiendaSeleccionada || tiendaSeleccionada === "0") {
+            mostrarAlertaCupo("Debe seleccionar una tienda antes de guardar.", "warning");
+            return;
+        }
     }
+
 
     const productos = obtenerProductosGuardados(); // Función que retorna el array original
     const filas = document.querySelectorAll(`#${tGrid} tbody tr`);
@@ -376,13 +378,19 @@ function guardarPedido() {
     }
     let url = base_url + '/pedidoWeb/ingresarPedidoTemp';
     var metodo = 'POST';
-    var dataPost = { accion: accion, tienda_id: tiendaSeleccionada, productos: productosModificados, total: totalGeneral };
+    var dataPost = {
+        accion: accion,
+        cabIds: CabIds,
+        tienda_id: tiendaSeleccionada,
+        productos: productosModificados,
+        total: totalGeneral
+    };
     peticionAjaxSSL(url, metodo, dataPost, function (data) {
         // Manejar el éxito de la solicitud aquí
         if (data.status) {
             swal("Pedido N°: " + data.numero, data.msg, "success");
             //tableTienda.api().ajax.reload();
-            window.location = base_url + '/pedidoWeb';
+            //window.location = base_url + '/pedidoWeb';
             //mostrarAlertaCupo("Datos guardados correctamente.", "success");
             //         // opcional: limpiar tabla, recargar datos, etc.
         } else {
@@ -392,6 +400,84 @@ function guardarPedido() {
     }, function (jqXHR, textStatus, errorThrown) {
         // Manejar el error de la solicitud aquí
         console.log('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+
+}
+
+
+
+function fntAnularPedido(ids) {
+    swal({
+        title: "Anular Registro",
+        text: "¿Realmente quiere anular el Registro?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, Anular!",
+        cancelButtonText: "No, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: true
+    }, function (isConfirm) {
+        if (isConfirm) {
+            let url = base_url + '/pedidoWeb/anularPedidoTemp';
+            var metodo = 'POST';
+            var dataPost = {
+                ids: ids
+            };
+            peticionAjaxSSL(url, metodo, dataPost, function (data) {
+                // Manejar el éxito de la solicitud aquí
+                if (data.status) {
+                    swal("Anular!", data.msg, "success");
+                        tableTienda.api().ajax.reload(function () {
+
+                                                });
+                } else {
+                    swal("Atención", data.msg, "error");
+                }
+
+            }, function (jqXHR, textStatus, errorThrown) {
+                // Manejar el error de la solicitud aquí
+                console.log('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+            });
+        }
+
+    });
+
+}
+
+function fntAutorizarPedido(ids) {
+    swal({
+        title: "Autorizar Registro",
+        text: "¿Realmente quiere Autorizar el Registro?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, Autorizar!",
+        cancelButtonText: "No, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: true
+    }, function (isConfirm) {
+        if (isConfirm) {
+            let url = base_url + '/pedidoWeb/autorizarPedidoTemp';
+            var metodo = 'POST';
+            var dataPost = {
+                ids: ids
+            };
+            peticionAjaxSSL(url, metodo, dataPost, function (data) {
+                // Manejar el éxito de la solicitud aquí
+                if (data.status) {
+                    swal("Anular!", data.msg, "success");
+                        tableTienda.api().ajax.reload(function () {
+
+                                                });
+                } else {
+                    swal("Atención", data.msg, "error");
+                }
+
+            }, function (jqXHR, textStatus, errorThrown) {
+                // Manejar el error de la solicitud aquí
+                console.log('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+            });
+        }
+
     });
 
 }

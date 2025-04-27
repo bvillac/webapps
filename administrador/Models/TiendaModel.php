@@ -276,7 +276,6 @@ class TiendaModel extends MysqlPedidos
                         inner join {$this->db_nameAdmin}.rol c 
                             on a.rol_id=c.rol_id
                     where a.cli_id=:cli_id and a.usu_id=:usu_id ";
-            //return $this->select_all($sql, [":cli_id" => $idsCliente,":usu_id" => $usu_id]);
             $resultado = $this->select_all($sql, [":cli_id" => $idsCliente, ":usu_id" => $usu_id]);
             if ($resultado === false) {
                 logFileSystem("Consulta fallida para consultarTiendaUsuario", "WARNING");
