@@ -110,7 +110,7 @@ class ModuloModel extends Mysql
 			$sql .= "	FROM {$this->db_name}.empresa_modulo a ";
 			$sql .= "			INNER JOIN {$this->db_name}.modulo b ";
 			$sql .= "		ON a.mod_id=b.mod_id ";
-			$sql .= "	WHERE a.estado_logico!=0 AND a.emp_id= :emp_id ";
+			$sql .= "	WHERE a.estado_logico!=0 AND a.emp_id= :emp_id order by Nombre asc";
 
 			$arrParams = [":emp_id" => $Emp_id];
 			$resultado = $this->select_all($sql, $arrParams);

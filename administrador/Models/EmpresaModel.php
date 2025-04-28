@@ -150,8 +150,8 @@ class EmpresaModel extends Mysql
 		return $request;
 	}
 	/*######################################
-			 NUEVAS FUNCIONES  21-04-2024 
-			 ######################################*/
+				NUEVAS FUNCIONES  21-04-2024 
+				######################################*/
 
 	public function consultarEmpresaUsuario(int $Usu_id)
 	{
@@ -173,63 +173,120 @@ class EmpresaModel extends Mysql
 		//return 0;
 	}
 
-	public function insertDataEmpModulo(string $data, string $Emp_id)
+	/*public function insertDataEmpModulo(string $data, string $Emp_id)
+	   {
+		   try {
+			   $con = $this->getConexion();
+			   $con->beginTransaction();
+			   $arrData = array(0);
+			   $sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? WHERE emp_id={$Emp_id}";
+			   $request = $this->updateConTrasn($con, $sql, $arrData);
+			   if ($request) {//Si todo es correcto retorna True
+				   $arrayIds = explode(",", $data);
+				   $usuario = retornaUser();
+				   //01,02,0203,0204,0205,0206,0207,03,0301
+				   $arrData = array(1);
+				   //Actualiza todos los Ids
+				   $sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? 
+					   WHERE emp_id={$Emp_id} AND mod_id IN({$data})";
+				   $request = $this->updateConTrasn($con, $sql, $arrData);
+				   if ($request) {
+					   foreach ($arrayIds as $Mod_id) {
+						   $sql = "SELECT * FROM " . $this->db_name . ".empresa_modulo WHERE emp_id={$Emp_id} AND mod_id='{$Mod_id}'";
+						   $requestSel = $this->select($sql);//usuario_modificacion
+						   if (empty($requestSel)) {
+							   //Inserta un nuevo modulo
+							   $arrData = array($Emp_id, $Mod_id, 1, $usuario);
+							   $SqlQuery = "INSERT INTO " . $this->db_name . ".empresa_modulo
+										   (`emp_id`,`mod_id`,`estado_logico`,`usuario_creacion`) VALUES (?,?,?,?) ";
+							   $request_insert = $this->insertConTrasn($con, $SqlQuery, $arrData);
+							   if ($request_insert == 0) {//si es igual 0 no inserto nada
+								   $con->rollBack();
+								   $arroout["status"] = false;
+								   $arroout["message"] = "Error al insertar Empresa Modulo!.";
+							   }
+							   //$return = $request_insert;//Retorna el Ultimo IDS(0) No inserta y si es >0 si inserto
+
+						   }
+					   }
+				   } else {
+					   $con->rollBack();
+					   $arroout["status"] = false;
+					   $arroout["message"] = "Error al Actualizar Empresa Modulo!.";
+				   }
+				   $con->commit();
+				   $arroout["status"] = true;
+			   } else {
+				   $con->rollBack();
+				   $arroout["status"] = false;
+				   $arroout["message"] = "Error al Eliminar los modulos!.";
+			   }
+			   return $arroout;
+		   } catch (Exception $e) {
+			   $con->rollBack();
+			   //throw $e;
+			   $arroout["status"] = false;
+			   $arroout["message"] = "Fallo: " . $e->getMessage();
+			   return $arroout;
+		   }
+	   }*/
+
+	public function insertDataEmpModulo(string $data, string $Emp_id): array
 	{
+		$arroout = ["status" => false, "message" => "Operación fallida."];
+
 		try {
 			$con = $this->getConexion();
 			$con->beginTransaction();
-			$arrData = array(0);
-			$sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? WHERE emp_id={$Emp_id}";
-			$request = $this->updateConTrasn($con, $sql, $arrData);
-			if ($request) {//Si todo es correcto retorna True
-				$arrayIds = explode(",", $data);
-				$usuario = retornaUser();
-				//01,02,0203,0204,0205,0206,0207,03,0301
-				$arrData = array(1);
-				//Actualiza todos los Ids
-				$sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? 
-					WHERE emp_id={$Emp_id} AND mod_id IN({$data})";
-				$request = $this->updateConTrasn($con, $sql, $arrData);
-				if ($request) {
-					foreach ($arrayIds as $Mod_id) {
-						$sql = "SELECT * FROM " . $this->db_name . ".empresa_modulo WHERE emp_id={$Emp_id} AND mod_id='{$Mod_id}'";
-						$requestSel = $this->select($sql);//usuario_modificacion
-						if (empty($requestSel)) {
-							//Inserta un nuevo modulo
-							$arrData = array($Emp_id, $Mod_id, 1, $usuario);
-							$SqlQuery = "INSERT INTO " . $this->db_name . ".empresa_modulo
-										(`emp_id`,`mod_id`,`estado_logico`,`usuario_creacion`) VALUES (?,?,?,?) ";
-							$request_insert = $this->insertConTrasn($con, $SqlQuery, $arrData);
-							if ($request_insert == 0) {//si es igual 0 no inserto nada
-								$con->rollBack();
-								$arroout["status"] = false;
-								$arroout["message"] = "Error al insertar Empresa Modulo!.";
-							}
-							//$return = $request_insert;//Retorna el Ultimo IDS(0) No inserta y si es >0 si inserto
 
+			$usuario = retornaUser();
+			$arrayIds = array_filter(explode(",", $data)); // Limpia valores vacíos
+
+			// Desactiva todos los módulos actuales
+			$sql = "UPDATE {$this->db_name}.empresa_modulo SET estado_logico = 0 WHERE emp_id = ?";
+			if (!$this->updateConTrasn($con, $sql, [$Emp_id])) {
+				throw new Exception("Error al desactivar los módulos actuales.");
+			}
+
+			if (!empty($arrayIds)) {
+				// Activa los módulos seleccionados
+				$placeholders = implode(',', array_fill(0, count($arrayIds), '?'));
+				$sql = "UPDATE {$this->db_name}.empresa_modulo SET estado_logico = 1 
+                    WHERE emp_id = ? AND mod_id IN ($placeholders)";
+				$params = array_merge([$Emp_id], $arrayIds);
+				if (!$this->updateConTrasn($con, $sql, $params)) {
+					throw new Exception("Error al activar los módulos seleccionados.");
+				}
+
+				// Inserta módulos nuevos que no existan aún
+				foreach ($arrayIds as $mod_id) {
+					$sqlCheck = "SELECT 1 FROM {$this->db_name}.empresa_modulo 
+                             WHERE emp_id = :emp_id AND mod_id = :mod_id ";
+					$exists = $this->select($sqlCheck, [ ":emp_id" => $Emp_id,":mod_id" => $mod_id]);
+
+					if (empty($exists)) {
+						$sqlInsert = "INSERT INTO {$this->db_name}.empresa_modulo
+                                  (emp_id, mod_id, estado_logico, usuario_creacion) 
+                                  VALUES (?, ?, ?, ?)";
+						$insertSuccess = $this->insertConTrasn($con, $sqlInsert, [$Emp_id, $mod_id, 1, $usuario]);
+						if ($insertSuccess === 0) {
+							throw new Exception("Error al insertar el módulo $mod_id.");
 						}
 					}
-				} else {
-					$con->rollBack();
-					$arroout["status"] = false;
-					$arroout["message"] = "Error al Actualizar Empresa Modulo!.";
 				}
-				$con->commit();
-				$arroout["status"] = true;
-			} else {
-				$con->rollBack();
-				$arroout["status"] = false;
-				$arroout["message"] = "Error al Eliminar los modulos!.";
 			}
-			return $arroout;
+
+			$con->commit();
+			$arroout["status"] = true;
+			$arroout["message"] = "Módulos actualizados correctamente.";
 		} catch (Exception $e) {
 			$con->rollBack();
-			//throw $e;
-			$arroout["status"] = false;
 			$arroout["message"] = "Fallo: " . $e->getMessage();
-			return $arroout;
 		}
+
+		return $arroout;
 	}
+
 
 
 	public function consultarEmpresas()
@@ -329,34 +386,34 @@ class EmpresaModel extends Mysql
 		}
 	}
 
-	public function getIdEmpresaUsuarioXEmpresa(int $Emp_id,int $Usu_id)
+	public function getIdEmpresaUsuarioXEmpresa(int $Emp_id, int $Usu_id)
 	{
 		$sql = "SELECT eusu_id FROM {$this->db_name}.empresa_usuario WHERE emp_id=:emp_id and usu_id= :usu_id ";
-		$request = $this->select($sql, [":emp_id" => $Emp_id,":usu_id" => $Usu_id]);
+		$request = $this->select($sql, [":emp_id" => $Emp_id, ":usu_id" => $Usu_id]);
 		//empty($request) => una cadena vacía, valor nulo,valor entero 0,array vacío y variable no definida
 		//Si existen datos retonar el valor caso contario retorna 0
 		return (!empty($request)) ? $request['eusu_id'] : 0;
 	}
 
-	public function getIdEmpresaRol(int $Emp_id,int $Rol_id)
+	public function getIdEmpresaRol(int $Emp_id, int $Rol_id)
 	{
 		$sql = "SELECT erol_id FROM {$this->db_name}.empresa_rol WHERE emp_id=:emp_id and rol_id= :rol_id ";
-		$request = $this->select($sql, [":emp_id" => $Emp_id,":rol_id" => $Rol_id]);
+		$request = $this->select($sql, [":emp_id" => $Emp_id, ":rol_id" => $Rol_id]);
 		//empty($request) => una cadena vacía, valor nulo,valor entero 0,array vacío y variable no definida
 		//Si existen datos retonar el valor caso contario retorna 0
 		return (!empty($request)) ? $request['erol_id'] : 0;
 	}
 
-	public function getIdEmpresaUsuarioRol(int $Eusu_id,int $Erol_id)
+	public function getIdEmpresaUsuarioRol(int $Eusu_id, int $Erol_id)
 	{
 		$sql = "SELECT eurol_id FROM {$this->db_name}.empresa_usuario_rol WHERE eusu_id=:eusu_id and erol_id= :erol_id ";
-		$request = $this->select($sql, [":eusu_id" => $Eusu_id,":erol_id" => $Erol_id]);
+		$request = $this->select($sql, [":eusu_id" => $Eusu_id, ":erol_id" => $Erol_id]);
 		//empty($request) => una cadena vacía, valor nulo,valor entero 0,array vacío y variable no definida
 		//Si existen datos retonar el valor caso contario retorna 0
 		return (!empty($request)) ? $request['eurol_id'] : 0;
 	}
 
-	
+
 
 
 

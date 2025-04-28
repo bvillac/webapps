@@ -305,6 +305,8 @@ function fntDeleteEmpresa(ids) {
 
 }
 
+//EMPRESA MODULO//
+
 function fntEmpresaModulos(ids) {
     if (ids != 0) {
         sessionStorage.removeItem("dts_EmpresaModulo");
@@ -318,16 +320,16 @@ function fntEmpresaModulos(ids) {
                 var c = 0;
                 $("#cmb_Emp_modulos").html('');
                 var result = data.data.Modulo;
-                let arrayList = result.map(function(objeto) {
+                let arrayList = result.map(function(objeto) {//Obtiene y lo retorna a un array identado
                         return { ids: objeto.mod_id, Nombre: objeto.Nombre };
                     });
                 // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
                 let arrayIds = result.map(function(objeto) {
                     return objeto.mod_id;
                 });
-                sessionStorage.OrdenadoIds = arrayIds;
-                sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
-                ActualizarEmpModulo();
+                sessionStorage.OrdenadoIds = arrayIds;//Solos los IDS
+                sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);//Todos modsulos asignados a la empresa
+                actualizarEmpModulo();
             } else {
                 swal("Atención", data.msg, "error");
             }
@@ -336,67 +338,32 @@ function fntEmpresaModulos(ids) {
             console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
         });
     } else {
-        //$("#cmb_centro").prop("disabled", true);
         swal("Información", "Seleccionar un Empresa", "info");
     }
 
 }
 
+function actualizarEmpModulo() {
+    const empresaModuloData = sessionStorage.getItem('dts_EmpresaModulo');
+    const $cmbEmpModulos = $("#cmb_Emp_modulos");
 
+    $cmbEmpModulos.empty(); // Limpia el combo primero
 
-function ActualizarEmpModulo(){
-    var arrayList = new Array();
-    if (sessionStorage.dts_EmpresaModulo) {
-        result = JSON.parse(sessionStorage.dts_EmpresaModulo);
-        $("#cmb_Emp_modulos").html('');
-        if (result.length > 0) {
-            //var array = findAndRemove(Grid, "dia", nDia);
-            //sessionStorage.dts_PlaTemporal = JSON.stringify(array);
-            for (var i = 0; i < result.length; i++) {
-                $("#cmb_Emp_modulos").append(
-                    '<option value="' + result[i].ids + '"  >' +
-                    result[i].Nombre +
-                    "</option>"
-                );
-                
-            }
+    if (!empresaModuloData) {
+        return; // No hay datos, salimos
+    }
+
+    try {
+        const result = JSON.parse(empresaModuloData);
+        if (Array.isArray(result) && result.length > 0) {
+            const options = result.map(item => 
+                `<option value="${item.ids}">${item.Nombre}</option>`
+            ).join('');
+            $cmbEmpModulos.html(options);
         }
+    } catch (error) {
+        console.error("Error al parsear dts_EmpresaModulo:", error);
     }
-}
-
-
-
-
-
-function ActualizarModulos(){
-    var arrayList = new Array();
-    let result=sessionStorage.OrdenadoIds.split(',')
-    //console.log(result);
-    arrayModulo = JSON.parse(sessionStorage.dts_Modulos);
-    for (var i = 0; i < result.length; i++) {
-        let indice = retornarIndexArray(arrayModulo,"ids",result[i]);
-        if(indice!==-1){
-            console.log(arrayModulo[indice]['ids'])
-            let rowInst = new Object();
-            rowInst.ids = result[i];
-            rowInst.Nombre =arrayModulo[indice]['Nombre'];
-            arrayList[i] = rowInst;
-        }
-    }
-    sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayList);
-}
-
-function ordenarSecuencias(arrayString, nuevaSecuencia) {
-    array = arrayString.split(',');//Convierte la cadena a un string
-    let indiceExistente = array.indexOf(nuevaSecuencia);
-    // Si la nuevaSecuencia no existe, agregarla al array
-    if (indiceExistente === -1) {
-        array.push(nuevaSecuencia);
-    }
-    // Ordenar el array alfabéticamente
-    array.sort();
-    // Retornar el array ordenado
-    return array;
 }
 
 function fnt_next_one(){
@@ -411,33 +378,72 @@ function fnt_next_one(){
         var arrayOrdenado = ordenarSecuencias(sessionStorage.OrdenadoIds, selectEmpMod[i].Ids);
         sessionStorage.OrdenadoIds = arrayOrdenado;
     }
-    ActualizarModulos();
-    ActualizarEmpModulo();
+    actualizarModulos();
+    actualizarEmpModulo();
 }
 
-function fnt_back_one(){
-    var arrayResult = new Array();
-    console.log("fnt_back_one");
-    let element = document.getElementById('cmb_Emp_modulos');//obtienes los itmes seleccionados
-    const selectEmpMod = Array.from(element.selectedOptions).map(option => {
-        //console.log(option);
-        return {
-            Ids: option.value,
-        };
-    });
-    //Recupera los asignados de la lista para actualizar con los eliminados.
-    result = JSON.parse(sessionStorage.dts_EmpresaModulo);
-    for (var i = 0; i < selectEmpMod.length; i++) {
-        arrayResult = findAndRemove(result, "ids", selectEmpMod[i].Ids);
-    }
-    sessionStorage.dts_EmpresaModulo = JSON.stringify(arrayResult);
-    //Actializa la matriz de orden para guardar
-    let arrayIds = arrayResult.map(function(objeto) {
-        return objeto.ids;
-    });
-    sessionStorage.OrdenadoIds = arrayIds;
-    ActualizarEmpModulo();
+
+
+function fnt_back_one() {
+    const element = document.getElementById('cmb_Emp_modulos');
+    const selectedIds = Array.from(element.selectedOptions).map(option => option.value);
+
+    let result = JSON.parse(sessionStorage.getItem('dts_EmpresaModulo')) || [];
+
+    // Filtrar eliminando los seleccionados
+    const arrayResult = result.filter(item => !selectedIds.includes(item.ids));
+
+    sessionStorage.setItem('dts_EmpresaModulo', JSON.stringify(arrayResult));
+
+    // Actualiza la matriz de IDs ordenados
+    const arrayIds = arrayResult.map(item => item.ids);
+    sessionStorage.setItem('OrdenadoIds', arrayIds.join(','));
+
+    actualizarEmpModulo();
 }
+
+
+
+function ordenarSecuencias(arrayString, nuevaSecuencia) {
+    array = arrayString.split(',');//Convierte la cadena a un string
+    let indiceExistente = array.indexOf(nuevaSecuencia);
+    // Si la nuevaSecuencia no existe, agregarla al array
+    if (indiceExistente === -1) {
+        array.push(nuevaSecuencia);
+    }
+    // Ordenar el array alfabéticamente
+    array.sort();
+    // Retornar el array ordenado
+    return array;
+}
+
+function actualizarModulos() {
+    const ordenadoIds = sessionStorage.getItem("OrdenadoIds");
+    const dtsModulos = sessionStorage.getItem("dts_Modulos");
+
+    if (!ordenadoIds || !dtsModulos) return;
+
+    const idsOrdenados = ordenadoIds.split(",");
+    const modulos = JSON.parse(dtsModulos);
+    const arrayList = [];
+
+    idsOrdenados.forEach((id, index) => {//Recorre los Orndenasos
+        const modulo = modulos.find(m => m.ids === id);//Busca el ID en modulos
+        if (modulo) {
+            arrayList.push({//agrega y retonrna en nuevo array
+                ids: id,
+                Nombre: modulo.Nombre
+            });
+        }
+    });
+
+    sessionStorage.setItem("dts_EmpresaModulo", JSON.stringify(arrayList));
+}
+
+
+
+
+
 
 function fnt_inicio(resultEmp) {
     var arrayList = new Array();
@@ -513,7 +519,7 @@ function fntEmpresaRoles(ids) {
                 });
                 sessionStorage.OrdenadoIdsRol = arrayIds;
                 sessionStorage.dts_EmpresaRol = JSON.stringify(arrayList);
-                ActualizarListRoles();
+                actualizarListRoles();
             } else {
                 swal("Atención", data.msg, "error");
             }
@@ -528,61 +534,64 @@ function fntEmpresaRoles(ids) {
 
 }
 
-function fnt_next_one_rol(){
-    let element = document.getElementById('cmb_roles');//obtienes los itmes seleccionados
-    const selectEmpRol = Array.from(element.selectedOptions).map(option => {
-        return {
-            Ids: option.value,
-            Nombre: option.textContent // Dividir el contenido para obtener el nombre
-        };
-    });
-    let arrayModulo = JSON.parse(sessionStorage.dts_EmpresaRol);
-    for (var i = 0; i < selectEmpRol.length; i++) {
-        let indice = retornarIndexArray(arrayModulo,"ids",selectEmpRol[i].Ids);
-        if(indice==-1){
-            let rowInst = new Object();
-            rowInst.ids = selectEmpRol[i].Ids;
-            rowInst.Nombre =selectEmpRol[i].Nombre;
-            arrayModulo[arrayModulo.length] = rowInst;
+function fnt_next_one_rol() {
+    const element = document.getElementById('cmb_roles');
+    const selectedRoles = Array.from(element.selectedOptions).map(option => ({
+        ids: option.value,
+        Nombre: option.textContent.trim()
+    }));
+
+    let arrayRoles = JSON.parse(sessionStorage.getItem('dts_EmpresaRol')) || [];
+
+    selectedRoles.forEach(role => {
+        const exists = arrayRoles.some(r => r.ids === role.ids);
+        if (!exists) {
+            arrayRoles.push({ ids: role.ids, Nombre: role.Nombre });
         }
-    }
-    sessionStorage.dts_EmpresaRol = JSON.stringify(arrayModulo);
-    ActualizarListRoles();
+    });
+
+    sessionStorage.setItem('dts_EmpresaRol', JSON.stringify(arrayRoles));
+    actualizarListRoles();
 }
 
-function fnt_back_one_rol(){
-    var arrayResult = new Array();
-    let element = document.getElementById('cmb_Emp_roles');//obtienes los itmes seleccionados
-    const selectEmpMod = Array.from(element.selectedOptions).map(option => {
-        return {
-            Ids: option.value,
-        };
-    });
-    //Recupera los asignados de la lista para actualizar con los eliminados.
-    result = JSON.parse(sessionStorage.dts_EmpresaRol);
-    for (var i = 0; i < selectEmpMod.length; i++) {
-        arrayResult = findAndRemove(result, "ids", selectEmpMod[i].Ids);
-    }
-    sessionStorage.dts_EmpresaRol = JSON.stringify(arrayResult);
-    ActualizarListRoles();
+function fnt_back_one_rol() {
+    const element = document.getElementById('cmb_Emp_roles');
+    const selectedIds = Array.from(element.selectedOptions).map(option => option.value);
+    alert(JSON.stringify(selectedIds))
+
+    let roles = JSON.parse(sessionStorage.getItem('dts_EmpresaRol')) || [];
+
+    // Filtra roles que no estén seleccionados (mantiene los no seleccionados)
+    const updatedRoles = roles.filter(role => !selectedIds.includes(role.ids));
+
+    sessionStorage.setItem('dts_EmpresaRol', JSON.stringify(updatedRoles));
+    actualizarListRoles();
 }
 
-function ActualizarListRoles(){
-    if (sessionStorage.dts_EmpresaRol) {
-        result = JSON.parse(sessionStorage.dts_EmpresaRol);
-        $("#cmb_Emp_roles").html('');
-        if (result.length > 0) {
-            for (var i = 0; i < result.length; i++) {
-                $("#cmb_Emp_roles").append(
-                    '<option value="' + result[i].ids + '"  >' +
-                    result[i].Nombre +
-                    "</option>"
-                );
-                
-            }
+
+function actualizarListRoles() {
+    const nData = sessionStorage.getItem('dts_EmpresaRol');
+    const $combo = $("#cmb_Emp_roles");
+
+    $combo.empty(); // Limpia el combo primero
+
+    if (!nData) {
+        return; // No hay datos, salimos
+    }
+
+    try {
+        const result = JSON.parse(nData);
+        if (Array.isArray(result) && result.length > 0) {
+            const options = result.map(item => 
+                `<option value="${item.ids}">${item.Nombre}</option>`
+            ).join('');
+            $combo.html(options);
         }
+    } catch (error) {
+        console.error("Error al parsear dts_EmpresaModulo:", error);
     }
 }
+
 
 function fnt_saveEmpRoles(){
     let accion ="Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
