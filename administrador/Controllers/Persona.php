@@ -146,8 +146,7 @@ class Persona extends Controllers
 				$arrResponse = array('status' => true, 'data' => $request, 'msg' => 'Datos Retornados correctamente.');
 			} else {
 				$arrResponse = array("status" => false, "msg" => 'No Existen Datos');
-			}
-			//putMessageLogFile($arrResponse);	
+			}	
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();
@@ -164,7 +163,6 @@ class Persona extends Controllers
 			} else {
 				$arrResponse = array('status' => false, 'msg' => 'No Existen Datos');
 			}
-			//putMessageLogFile($arrResponse);	
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();
@@ -180,9 +178,7 @@ class Persona extends Controllers
 				$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
 			} else {
 				$arrResponse = array('status' => true, 'data' => $arrData);
-			}
-			
-			//putMessageLogFile($arrResponse);	
+			}	
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();

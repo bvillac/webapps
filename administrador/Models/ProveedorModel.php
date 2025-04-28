@@ -107,7 +107,6 @@
 			$sql .= "WHERE a.estado_logico!=0  ";
 			
 			$request = $this->select_all($sql);
-			putMessageLogFile($request);
 			return $request;
 		}
 

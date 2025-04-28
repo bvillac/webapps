@@ -3,7 +3,6 @@ adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/Academico/Modals/modalAcademico.php";
-//putMessageLogFile($data);
 $controlAcad = $data['control'];
 ?>
 <div id="contentAjax"></div>

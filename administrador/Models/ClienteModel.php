@@ -172,7 +172,6 @@ class ClienteModel extends Mysql
 				logFileSystem("Consulta fallida para consultarEmpresaCliente: $IdsEmpresa", "WARNING");
 				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
 			}
-			putMessageLogFile($resultado);
 			return $resultado;
 		} catch (Exception $e) {
 			logFileSystem("Error en consultarProductosTiendaCheck: " . $e->getMessage(), "ERROR");

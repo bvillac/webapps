@@ -41,7 +41,6 @@ class Planificacion extends Controllers
     {
         if ($_SESSION['permisosMod']['r']) {
             $arrData = $this->model->consultarDatos();
-            //putMessageLogFile($arrData);
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($arrData[$i]['Estado'] == 1) {
@@ -72,7 +71,6 @@ class Planificacion extends Controllers
     {
         if ($_SESSION['permisosMod']['r']) {
             $arrData = $this->model->consultarDatosAut();
-            //putMessageLogFile($arrData);
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($arrData[$i]['Estado'] == 1) {

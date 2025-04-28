@@ -77,7 +77,6 @@ class ReservacionModel extends MysqlAcademico
         $fechaReserv=$dataObj['fechaReserv'];
         $sql = "SELECT * FROM " . $this->db_name . ".reservacion 
                     where pla_id={$pla_id} and ben_id={$ben_id} and act_id={$act_id} and date(res_fecha_reservacion)='{$fechaReserv}' ";
-            //putMessageLogFile($sql); 
         $request = $this->select($sql);
         if (empty($request)) {
         
@@ -97,9 +96,7 @@ class ReservacionModel extends MysqlAcademico
                     $dataObj['diaLetra'],
                     $dataObj['hora'],                    
                     retornaUser(), 1
-                );
-                //putMessageLogFile($arrData); 
-                //["1","1","1","1","3","2023-11-13","1","LU","9","byron_villacresesf",1]           
+                );         
                 $SqlQuery  = "INSERT INTO " . $this->db_name . ".reservacion 
 				    (`cat_id`,
                     `pla_id`,

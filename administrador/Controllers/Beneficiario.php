@@ -40,7 +40,6 @@ class Beneficiario extends Controllers
             $arrData = $this->model->consultarDatos($parametro);
             //$arrData['pagina'] = $pagina;
 			//$arrData['total_paginas'] = $TotPaginas;
-            //putMessageLogFile($arrData);
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($arrData[$i]['Estado'] == 1) {

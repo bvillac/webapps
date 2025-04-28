@@ -53,8 +53,6 @@ class LoginPedido extends Controllers
 					$arrResponse = ['status' => true, 'msg' => 'ok'];
 				}
 			}
-			putMessageLogFile("ok");
-
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 

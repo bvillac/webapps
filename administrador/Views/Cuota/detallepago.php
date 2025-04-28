@@ -3,7 +3,6 @@
     adminMenu($data); 
     //filelang(Setlanguage,"general") 
     //require_once "Views/Salon/Modals/modalSalon.php";
-    //putMessageLogFile($data);
     $contrato = $data['contrato'];
     $movimientos = $data['movimiento'];
 ?>

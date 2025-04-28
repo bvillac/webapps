@@ -54,7 +54,6 @@ class ActividadModel extends MysqlAcademico
                     $dataObj['color'],
                     retornaUser(), 1
                 );
-                //putMessageLogFile($arrData);
                 $SqlQuery  = "INSERT INTO " . $this->db_name . ".salon 
 				    (`cat_id`,
                     `sal_nombre`,

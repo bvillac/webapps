@@ -110,7 +110,6 @@
 				}else{
 					$arrResponse = array("status" => false, "msg" => 'No Existen Datos');
 				}
-				//putMessageLogFile($arrResponse);	
 				echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 			}
 			die();

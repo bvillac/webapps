@@ -3,23 +3,16 @@ adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/PedidoWeb/Modals/modalGaleria.php";
-//putMessageLogFile($data);
 $nombretienda=htmlspecialchars($data['CabPed'][0]['nombretienda'], ENT_QUOTES, 'UTF-8');
 $nombreCliente=$data['Cliente']['Nombre'];
 $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTienda'] ?? 0);
-
-   //guardarProductosEnStorage(data.data.Items);
-   //         actualizarTabla();
 
 ?>
 
 
 <script>
-    //limpiarSessionStorage();
     const productos = <?php echo json_encode($data['Items']); ?>;
     sessionStorage.setItem('dts_PrecioListaItems', JSON.stringify(productos));
-    //guardarProductosEnStorage(productos);
-    //actualizarTabla();
 </script>
 <div id="contentAjax"></div>
 <main class="app-content">

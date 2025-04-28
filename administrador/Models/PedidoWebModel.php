@@ -94,18 +94,36 @@ class PedidoWebModel extends MysqlPedidos
     public function recuperarIdsTienda(): array
     {
         $utieId = retornarDataSesion('Utie_id');
-        if (empty($utieId)) {
-            return [];
+        $usuId = retornarDataSesion('Usu_id');
+        $rolNombre = retornarDataSesion('RolNombre');
+
+        //if (empty($utieId) && $rolNombre !== "supervisortienda") {
+        //    return []; // No hay utieId y no es supervisor -> no tiene sentido buscar
+        //}
+
+        $params = [];
+        if ($rolNombre === "supervisortienda") {
+            $sql = "
+            SELECT a.tie_id
+            FROM {$this->db_name}.usuario_tienda AS a
+            WHERE a.utie_est_log = 1
+              AND a.usu_id = :usu_id
+        ";
+            $params = [':usu_id' => $usuId];
+        } else {
+            $sql = "
+            SELECT a.tie_id
+            FROM {$this->db_name}.usuario_tienda AS a
+            WHERE a.utie_est_log = 1
+              AND a.utie_id = :utie_id
+        ";
+            $params = [':utie_id' => $utieId];
         }
-        $sql = "
-                SELECT a.tie_id
-                FROM {$this->db_name}.usuario_tienda AS a
-                WHERE a.utie_est_log = 1
-                AND a.utie_id     = :utie_id
-            ";
-        $rows = $this->select_all($sql, [':utie_id' => $utieId]);
+
+        $rows = $this->select_all($sql, $params);
         return array_column($rows, 'tie_id');
     }
+
 
 
     public function listarItemsTiendas(int $ids, int $cli_id)

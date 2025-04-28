@@ -27,7 +27,6 @@ class ClienteMiller extends Controllers
 
     public function getClientes()
     {
-        //putMessageLogFile($_SESSION['permisosMod']['r']);
         if ($_SESSION['permisosMod']['r']) {
             $parametro = array();
             //$parametro = array('estado' => $requestCab);
@@ -174,7 +173,6 @@ class ClienteMiller extends Controllers
 			} else {
 				$arrResponse = array('status' => false, 'msg' => 'No Existen Datos');
 			}
-			//putMessageLogFile($arrResponse);	
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();

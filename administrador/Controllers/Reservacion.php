@@ -32,7 +32,6 @@ class Reservacion extends Controllers
     {
         if ($_SESSION['permisosMod']['r']) {
             $arrData = $this->model->consultarDatos();
-            //putMessageLogFile($arrData);
             for ($i = 0; $i < count($arrData); $i++) {
                 $btnOpciones = "";
                 if ($arrData[$i]['Estado'] == 1) {
@@ -64,7 +63,6 @@ class Reservacion extends Controllers
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
                 $data = $this->model->consultarDatosId($ids);
-                //putMessageLogFile($data);
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
@@ -100,7 +98,6 @@ class Reservacion extends Controllers
 
     public function moverAgenda()
     {
-        //putMessageLogFile($_GET);
         if ($_GET) {
             //dep($_GET);
             if (empty($_GET['cat_id']) || empty($_GET['pla_id']) || empty($_GET['accion']) || empty($_GET['fechaDia']) ) {

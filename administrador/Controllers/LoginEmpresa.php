@@ -71,7 +71,7 @@ class LoginEmpresa extends Controllers
 				//Variables de Session		
 				//$idrol = ($idrol != "") ? $idrol : 4; //Si no tiene asignado Rol se envia un rol=4 Usuario
 				$arrResponse = array('status' => true, 'msg' => 'ok');
-				//putMessageLogFile($arrResponse);
+		
 			}
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
@@ -104,8 +104,6 @@ class LoginEmpresa extends Controllers
 				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa ");
 				require_once("Controllers/Error.php");
 			} 
-			
-			//putMessageLogFile($_SESSION);
 
 		}else{
 			putMessageLogFile("EmpresaUsuario con Id no existe= ".$Eusu_id);

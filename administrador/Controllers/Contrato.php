@@ -69,7 +69,6 @@ class Contrato extends Controllers
 		$modelPaquete = new PaqueteModel();
 		$modelModalidad = new ModalidadModel();
 		$modelIdioma = new IdiomaModel();
-		//putMessageLogFile($_SESSION['empresaData']);
 		$data['fechaActual'] = date('Y-m-d');
 		$data['secuencia'] = $modelSecuencia->newSecuence("CON", $_SESSION['empresaData']['PuntoEmisId']);
 		$data['centroAtencion'] = $modelCentro->consultarCentroEmpresa();

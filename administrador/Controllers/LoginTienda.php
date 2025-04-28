@@ -58,10 +58,7 @@ class LoginTienda extends Controllers
 		$modelLoguin=new LoginModel();
 		$modelEmpresa=new EmpresaModel();
 		$usuId=retornarDataSesion('Usu_id');
-		putMessageLogFile("usuId=".$usuId);
 		$Eusu_id=$modelEmpresa->getIdEmpresaUsuarioXEmpresa($Emp_Id,$usuId);
-		putMessageLogFile("Utie_id=".$Utie_id);
-		putMessageLogFile("Eusu_id=".$Eusu_id);
 		if ($Eusu_id !=0){
 			//GUARDA SESSION DATOS DE EMPRESA
 			$_SESSION['Emp_Id'] = $Emp_Id; 
@@ -90,8 +87,6 @@ class LoginTienda extends Controllers
 				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa ");
 				require_once("Controllers/Error.php");
 			} 
-			
-			putMessageLogFile($_SESSION);
 
 		}else{
 			putMessageLogFile("EmpresaUsuario con Id no existe= ".$Eusu_id);

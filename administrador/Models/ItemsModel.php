@@ -18,7 +18,6 @@
 			$sql .= "		INNER JOIN ". $db_name .".linea_item b ON a.lin_id=b.lin_id ";
 			$sql .= "	WHERE a.estado_logico!=0 ";
 			$request = $this->select_all($sql);
-			putMessageLogFile($request);
 			return $request;
 		}
 
@@ -301,7 +300,6 @@
 			$sql .= "			ON a.egr_id=b.egr_id ";
 			$sql .= "		WHERE a.estado_logico=1 AND b.bod_id={$codBodega} AND a.item_id='{$codItem}'  AND b.fecha_egreso  BETWEEN '{$fecDesde}' AND '{$fecHasta}' ";
 			$sql .= "			ORDER BY FECHA ";
-			//putMessageLogFile($sql);
 			$result = $this->select_all($sql);
 
 			$movimiento=[];

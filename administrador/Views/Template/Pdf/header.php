@@ -3,7 +3,6 @@ setlocale(LC_ALL, "es_ES@euro", "es_ES", "esp");
 $fechaActual= strftime("%d de %B de %Y", strtotime(date("Y-m-d H:i:s")));
 $FechaFormato= date("Y-m-d");
 $HoraFormato= date("H:i:s");
-//putMessageLogFile($_SESSION['empresaData']);
 ?>
 <!DOCTYPE html>
 <html lang="es">

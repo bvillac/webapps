@@ -134,7 +134,6 @@ class ClientePedido extends Controllers
 			} else {
 				$arrResponse = array('status' => false, 'msg' => 'No Existen Datos');
 			}
-			//putMessageLogFile($arrResponse);	
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();
@@ -242,7 +241,6 @@ class ClientePedido extends Controllers
         } catch (Exception $e) {
             // Manejo de errores
             $arrResponse = ['status' => false, 'msg' => $e->getMessage()];
-            //putMessageLogFile($arrResponse);
             http_response_code($e->getCode() ?: 500);
         }
 

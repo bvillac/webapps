@@ -116,7 +116,6 @@
 						FROM ". $db_name .".compras a
 							INNER JOIN ". $db_name .".proveedor b ON a.pro_codigo=b.pro_codigo
 						WHERE a.estado_logico=1 AND a.sec_tipo='CO' ORDER BY a.com_id DESC LIMIT 10;";
-						//putMessageLogFile($sql);
 			$request = $this->select_all($sql);
 			return $request;
 		}	

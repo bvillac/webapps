@@ -52,7 +52,6 @@ class Permisos extends Controllers
 			$modulos = $_POST['modulos']; //Recibe Moudloes			
 			$this->model->deletePermisos($rol_id);
 			foreach ($modulos as $modulo) {
-				//putMessageLogFile($modulo);
 				$mod_id = $modulo['mod_id'];
 				$r = empty($modulo['r']) ? 0 : 1;
 				$w = empty($modulo['w']) ? 0 : 1;

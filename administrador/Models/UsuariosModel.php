@@ -40,8 +40,7 @@ class UsuariosModel extends Mysql
 			$con->beginTransaction();
 			try {
 				$arrDataPer = array($Dni, $Nombre, $Apellido, $FecNaci, $Telefono, $Direccion, $Genero, $idsUsuCre);
-				$PerIds = $this->insertarPersona($con, $db_name, $arrDataPer);
-				//putMessageLogFile($PerIds);			
+				$PerIds = $this->insertarPersona($con, $db_name, $arrDataPer);		
 				$arrDataUsu = array($PerIds, $Correo, $Clave, $Alias, $idsUsuCre);
 				$UsuIds = $this->insertarUsuario($con, $db_name, $arrDataUsu);
 				$arrDataEmp = array($idsEmpresa, $UsuIds, $rol_id, $idsUsuCre);
@@ -131,22 +130,17 @@ class UsuariosModel extends Mysql
 		$sql .= "	FROM " . $this->db_name . ".usuario a ";
 		$sql .= "		INNER JOIN " . $this->db_name . ".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
 		$sql .= "	WHERE a.estado_logico!=0  ";
-
-		//putMessageLogFile($sql);
 		$request = $this->select($sql);
 		return $request;
 	}
 	public function consultarDetalleDoc(string $IdsEmpresa)
 	{
-		//$db_name=$this->getDbNameMysql();
-		//$IdsEmpresa="1";
 		$IdsEmpresa = $_SESSION['Emp_Id'];
 		$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,b.per_cedula,b.per_nombre,b.per_apellido, ";
 		$sql .= "	a.estado_logico Estado  ";
 		$sql .= "	FROM " . $this->db_name . ".usuario a ";
 		$sql .= "		INNER JOIN " . $this->db_name . ".persona b ON a.per_id=b.per_id AND b.estado_logico!=0  ";
 		$sql .= "	WHERE a.estado_logico!=0  ";
-		//putMessageLogFile($sql);
 		$request = $this->select_all($sql);
 		return $request;
 	}

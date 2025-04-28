@@ -186,7 +186,6 @@ class Usuarios extends Controllers
 				//}
 				$model = new UsuariosModel;
 				$data = $model->consultarReporteUsuarioPDF($idUsuario, $idpersona);
-				//putMessageLogFile($data);
 				if (empty($data)) {
 					echo "Datos no encontrados";
 				} else {
@@ -217,7 +216,6 @@ class Usuarios extends Controllers
 			//	$idpersona = $_SESSION['userData']['idpersona'];
 			//}
 			$data['Result'] = $this->model->consultarDatosUsuarios();
-			//putMessageLogFile($data);
 			if (empty($data)) {
 				echo "Datos no encontrados";
 			} else {
@@ -356,7 +354,7 @@ class Usuarios extends Controllers
 				}else{	
 					$arrData['empresas'] = (new EmpresaModel())->consultarEmpresaUsuarioAsingado($ids);
 					$arrResponse = array('status' => true, 'data' => $arrData);
-					//putMessageLogFile($arrResponse);
+
 				}
 			}
 			echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
@@ -367,7 +365,6 @@ class Usuarios extends Controllers
 
 	public function buscarAutoUsuario()
     {
-		putMessageLogFile("ll");
         try {
 			
             $inputData=validarMetodoPost();           

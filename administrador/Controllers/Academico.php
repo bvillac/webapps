@@ -126,7 +126,6 @@ class Academico extends Controllers
 					echo "Datos no encontrados";
 				}else{
                     $data['control'] = $this->model->consultarBenefId($idBen);
-                    //putMessageLogFile($data);
                     
 					$numeroContrato = $data['Contrato'];
 					ob_end_clean();

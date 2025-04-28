@@ -160,18 +160,14 @@ class EmpresaModel extends Mysql
 		$sql .= "		INNER JOIN {$this->db_name}.empresa b ";
 		$sql .= "			ON a.emp_id=b.emp_id ";
 		$sql .= "	WHERE a.estado_logico=1 AND a.usu_id=:usu_id ";
-		//$sql = "SELECT emp_id FROM {$this->db_name}.empresa_usuario where usu_id=:ids;";
 		$request = $this->select_all($sql, [":usu_id" => $Usu_id]);
-		putMessageLogFile($request);
-		//$request = $this->select_all($sql);
 		return $request;
 	}
 
 	public function getIdEmpresaUsuario(int $Eusu_id)
 	{
-		$sql = "SELECT emp_id FROM " . $this->db_name . ".empresa_usuario WHERE eusu_id={$Eusu_id} ";
-		$request = $this->select($sql);
-		//empty($request) => una cadena vacía, valor nulo,valor entero 0,array vacío y variable no definida
+		$sql = "SELECT emp_id FROM {$this->db_name}.empresa_usuario WHERE eusu_id= :eusu_id ";
+		$request = $this->select($sql, [":eusu_id" => $Eusu_id]);
 		//Si existen datos retonar el valor caso contario retorna 0
 		return (!empty($request)) ? $request['emp_id'] : 0;
 		//return 0;
@@ -228,7 +224,6 @@ class EmpresaModel extends Mysql
 			return $arroout;
 		} catch (Exception $e) {
 			$con->rollBack();
-			//putMessageLogFile($e);
 			//throw $e;
 			$arroout["status"] = false;
 			$arroout["message"] = "Fallo: " . $e->getMessage();

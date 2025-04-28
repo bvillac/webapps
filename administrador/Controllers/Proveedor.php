@@ -137,7 +137,6 @@
 				//}
 				$model=new ProveedorModel;
 				$data = $model->consultarReporteProveedorPDF($idProveedor);
-				putMessageLogFile($data);
 				if(empty($data)){
 					echo "Datos no encontrados";
 				}else{

@@ -32,7 +32,6 @@ class AsistenciaModel extends MysqlAcademico
         $sql .=($hora!="0")?" and a.res_hora={$hora} ":"";
         $sql .= "   order by a.ins_id,CONVERT(a.res_hora , SIGNED) " ;
         $result = $this->select_all($sql);
-        //putMessageLogFile($result);
         $c=-1;
         $aux="";
         $h=0;
@@ -56,7 +55,7 @@ class AsistenciaModel extends MysqlAcademico
             }
             $rowData[$c]['Reservado']=$horas;
         }
-        //putMessageLogFile($rowData);
+    
         return $rowData;
     }
 

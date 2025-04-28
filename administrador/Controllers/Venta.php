@@ -70,7 +70,6 @@
 					//}
 					$model=new VentaModel;
 					$data = $model->consultarFacturaPDF($idpedido,$idpersona,$ped_fecha,$ped_numero);
-					putMessageLogFile($data);
 					if(empty($data)){
 						echo "Datos no encontrados";
 					}else{

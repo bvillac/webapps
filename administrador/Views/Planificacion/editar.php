@@ -3,7 +3,6 @@ adminHeader($data);
 adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/Planificacion/Modals/modalSalon.php";
-//putMessageLogFile($data);
 ?>
 <script>
   const resultInst = <?= json_encode($data['dataInstructor']) ?>;

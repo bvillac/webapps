@@ -170,10 +170,7 @@ class Empresa extends Controllers {
             if ( $ids > 0 ) {
                 $modelEmpresa = new EmpresaModel();
                 $Emp_Id=$modelEmpresa->getIdEmpresaUsuario($ids);
-                $modelModel = new ModuloModel();
-                $arrData['Modulo'] = $modelModel->getEmpresaModulo($Emp_Id);
-                
-                //dep( $arrData );
+                $arrData['Modulo'] = (new ModuloModel())->getEmpresaModulo($Emp_Id );
                 if ( empty( $arrData ) ) {
                     $arrResponse = array( 'status' => false, 'msg' => 'Datos no encontrados.' );
                 } else {

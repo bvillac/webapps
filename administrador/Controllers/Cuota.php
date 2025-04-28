@@ -49,7 +49,6 @@ class Cuota extends Controllers
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($ids)) {
                 $data = $this->model->consultarPagoContratoId($ids);
-                //putMessageLogFile($data);
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
@@ -94,7 +93,6 @@ class Cuota extends Controllers
         if ($_SESSION['permisosMod']['r']) {
             if (is_numeric($idContrato)) {
                 $data = $this->model->consultarPagoContratoId($idContrato);
-                //putMessageLogFile($data);
                 if (empty($data)) {
                     echo "Datos no encontrados";
                 } else {
@@ -118,10 +116,8 @@ class Cuota extends Controllers
     {
         if ($_POST) {
             $idsContrato = intval($_POST['IdsCont']);
-            //putMessageLogFile($data);
             if (is_numeric($idsContrato)) {
                 $data = $this->model->consultarPagoContratoId($idsContrato);
-                //putMessageLogFile($data);
                 if (empty($data)) {
                     //echo "Datos no encontrados";
                     $arrResponse = array('status' => false, 'msg' => 'Error contrato no existe');

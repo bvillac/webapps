@@ -19,7 +19,6 @@ class ModuloModel extends Mysql
 		$sql .= "WHERE a.estado_logico!=0  ";
 		$sql .= "ORDER BY  a.mod_id ";
 		$request = $this->select_all($sql);
-		//putMessageLogFile($request);
 		return $request;
 	}
 
@@ -67,7 +66,7 @@ class ModuloModel extends Mysql
 	private function insertarModulo($con, $db_name, $arrData)
 	{
 		$usuario = retornaUser();
-		$SqlQuery  = "INSERT INTO " . $db_name . ".modulo (mod_id,mod_nombre, mod_url, estado_logico,usuario_creacion) VALUES(?,?,?,?,'{$usuario}') ";
+		$SqlQuery = "INSERT INTO " . $db_name . ".modulo (mod_id,mod_nombre, mod_url, estado_logico,usuario_creacion) VALUES(?,?,?,?,'{$usuario}') ";
 		$insert = $con->prepare($SqlQuery);
 		$resInsert = $insert->execute($arrData);
 		if ($resInsert) {
@@ -83,7 +82,7 @@ class ModuloModel extends Mysql
 		$usuario = retornaUser();
 		$sql = "UPDATE " . $this->db_name . ".modulo 
 						SET mod_nombre = ?, mod_url = ?, estado_logico = ?, usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE mod_id = '{$Ids}' ";
-		$arrData = array($mod_nombre,  $mod_url, $estado);
+		$arrData = array($mod_nombre, $mod_url, $estado);
 		$request = $this->update($sql, $arrData);
 		return $request;
 	}
@@ -97,29 +96,50 @@ class ModuloModel extends Mysql
 		return $request;
 	}
 
-	public function getEmpresaModulo(int $Emp_id){
-		$sql = "SELECT a.emod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),b.mod_nombre) Nombre,a.mod_id ";
-		$sql .= "	FROM ". $this->db_name .".empresa_modulo a ";
-		$sql .= "			INNER JOIN ". $this->db_name .".modulo b ";
-		$sql .= "		ON a.mod_id=b.mod_id ";
-		$sql .= "	WHERE a.estado_logico!=0 AND a.emp_id={$Emp_id} ";
+	public function getEmpresaModulo2(int $Emp_id)
+	{
+
 		$request = $this->select_all($sql);
 		return $request;
 	}
 
-	public function getModuloAll(){
+	public function getEmpresaModulo(int $Emp_id)
+	{
+		try {
+			$sql = "SELECT a.emod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),b.mod_nombre) Nombre,a.mod_id ";
+			$sql .= "	FROM {$this->db_name}.empresa_modulo a ";
+			$sql .= "			INNER JOIN {$this->db_name}.modulo b ";
+			$sql .= "		ON a.mod_id=b.mod_id ";
+			$sql .= "	WHERE a.estado_logico!=0 AND a.emp_id= :emp_id ";
+
+			$arrParams = [":emp_id" => $Emp_id];
+			$resultado = $this->select_all($sql, $arrParams);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida getEmpresaModulo", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en getEmpresaModulo: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+	}
+
+	public function getModuloAll()
+	{
 		$sql = "SELECT a.mod_id Ids,CONCAT(RPAD(a.mod_id, 20-LENGTH(a.mod_id), ' '),a.mod_nombre) Nombre,a.mod_id,SUBSTRING(a.mod_id, 1, LENGTH(a.mod_id) - 2) idPadre ";
-		$sql .= "      FROM ". $this->db_name .".modulo a ";
-        $sql .= "   WHERE a.estado_logico!=0 ";
+		$sql .= "      FROM " . $this->db_name . ".modulo a ";
+		$sql .= "   WHERE a.estado_logico!=0 ";
 		$request = $this->select_all($sql);
 		return $request;
 	}
 
-	public function getModuloRolEmpresa(int $Emod_id,int $Erol_id){
+	public function getModuloRolEmpresa(int $Emod_id, int $Erol_id)
+	{
 		$sql = "SELECT a.emod_id,CONCAT(RPAD(c.mod_id, 20-LENGTH(c.mod_id), ' '),c.mod_nombre) Nombre  ";
-		$sql .= "	FROM (". $this->db_name .".empresa_modulo_rol a ";
+		$sql .= "	FROM (" . $this->db_name . ".empresa_modulo_rol a ";
 		$sql .= "		INNER JOIN (db_administrador.empresa_modulo b ";
-		$sql .= "				INNER JOIN ". $this->db_name .".modulo c  ";
+		$sql .= "				INNER JOIN " . $this->db_name . ".modulo c  ";
 		$sql .= "					ON  c.mod_id=b.mod_id)  ";
 		$sql .= "			ON a.emod_id=b.emod_id) ";
 		$sql .= "	WHERE a.estado_logico!=0 AND a.erol_id={$Erol_id} AND b.emod_id={$Emod_id} ";
@@ -127,5 +147,5 @@ class ModuloModel extends Mysql
 		return $request;
 	}
 
-	
+
 }

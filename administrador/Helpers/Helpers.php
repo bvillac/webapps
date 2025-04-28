@@ -309,38 +309,7 @@ function datosEmpresaEstablePunto(int $IdEmpresa)
 }
 
 
-function sessionUsuario(int $idsUsuario)
-{
-    //putMessageLogFile("paso sessionUsuario helpers");
-    /*require_once("Models/LoginModel.php");
-    $objLogin = new LoginModel();
-    $request = $objLogin->sessionLogin($idsUsuario);
-    return $request;*/
-}
 
-/*function sessionStart(){
-    // Iniciar la sesión
-    session_start();
-    //session_regenerate_id(true);//Cambiar la version
-    session_regenerate_id();//Regenerar el ID de la sesión
-    // Ahora puedes acceder al nuevo ID de sesión
-    //$newSessionId = session_id();
-    //putMessageLogFile("tiempo ".$_SESSION['timeout']);
-    $inactive=TIMESESSION;//usuario va a permanercer logueado en segundos 60segundos 60=>30s 360>3minustos 120x1minut
-    if(isset($_SESSION['timeout'])){//Ingresa solo si existe alguna sesion
-        /*$session_in = time()-$_SESSION['inicio'];
-        if($session_in>$inactive){//paso el tiempo en que usuario permanece logueado
-            header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducado
-        }
-        //Revisa si la Session esta Activa Caso contrario la envia a login
-        if(empty($_SESSION['loginEstado'])){
-            header('Location: '.base_url().'/login');
-            die();
-        }
-    }else{
-        header('Location: '.base_url().'/Logout');//solo ingrsa cuando la session a caducado
-    }
-}*/
 
 function sessionStart()
 {

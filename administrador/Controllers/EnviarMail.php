@@ -5,7 +5,6 @@ require_once 'MailSystem.php'; // Tu clase para envío
 
 // Recibir datos desde exec
 $data = json_decode($argv[1], true);
-putMessageLogFile("llego datos");
 $correo = new MailSystem();
 $resultado = $correo->enviarNotificacion(
     $data['destinatario'],
@@ -15,7 +14,6 @@ $resultado = $correo->enviarNotificacion(
     $data['cli_id']
 );
 
-putMessageLogFile($resultado);
 
 //echo json_encode($resultado);
 

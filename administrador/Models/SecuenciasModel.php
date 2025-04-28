@@ -84,7 +84,6 @@
 			$numero = 0;
 			$strPad = 10;
 			if(!$con){//Si la conexion no existe crea una nueva
-				//putMessageLogFile("crea una conexion SecuenciasModel");
 				$con=$this->getConexion();
 			}
 			

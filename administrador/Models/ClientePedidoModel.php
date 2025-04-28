@@ -11,7 +11,6 @@ class ClientePedidoModel extends Mysql
 
     public function consultarDatos($parametro)
     {
-        //putMessageLogFile(empty($parametro ));
         $sql = "SELECT a.cli_id Ids,a.per_id PerIds,b.fpag_nombre Pago,a.cli_tipo_dni Tipo, ";
         $sql .= "   a.cli_cedula_ruc Cedula,a.cli_razon_social Nombre,a.cli_direccion Direccion,a.cli_correo Correo,a.cli_telefono Telefono, a.cli_distribuidor Distribuidor,a.cli_tipo_precio Precio,a.cli_ruta_certificado_ruc Certificado,a.estado_logico Estado ";
         $sql .= "   FROM " . $this->db_name . ".cliente a  ";
@@ -69,7 +68,6 @@ class ClientePedidoModel extends Mysql
                     $dataObj['cli_ingreso_mensual'],
                     1, $idsUsuario
                 );
-                //putMessageLogFile($arrData);
                 $SqlQuery  = "INSERT INTO " . $this->db_name . ".cliente 
 				    (`emp_id`,
                     `per_id`,

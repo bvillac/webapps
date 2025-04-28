@@ -315,8 +315,6 @@ function fntEmpresaModulos(ids) {
         peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
             // Manejar el éxito de la solicitud aquí
             if (data.status) {
-                //$("#cmb_punto").html('<option value="0">SELECCIONAR</option>');
-                //$("#cmb_punto").prop("disabled", false);
                 var c = 0;
                 $("#cmb_Emp_modulos").html('');
                 var result = data.data.Modulo;
@@ -373,7 +371,7 @@ function ActualizarEmpModulo(){
 function ActualizarModulos(){
     var arrayList = new Array();
     let result=sessionStorage.OrdenadoIds.split(',')
-    console.log(result);
+    //console.log(result);
     arrayModulo = JSON.parse(sessionStorage.dts_Modulos);
     for (var i = 0; i < result.length; i++) {
         let indice = retornarIndexArray(arrayModulo,"ids",result[i]);
@@ -403,10 +401,6 @@ function ordenarSecuencias(arrayString, nuevaSecuencia) {
 
 function fnt_next_one(){
     let element = document.getElementById('cmb_modulos');//obtienes los itmes seleccionados
-    //let selectedSalon = Array.from(element.selectedOptions)
-    //    .map(option => option.value)
-    //let opcionesSeleccionadas = Array.from(element.selectedOptions)
-    //    .map(option => ({ id: option.IdMod, nombre: option.value }));
     const selectEmpMod = Array.from(element.selectedOptions).map(option => {
         return {
             Ids: option.value,
