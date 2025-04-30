@@ -517,7 +517,6 @@ function fntEmpresaRoles(ids) {
                 let arrayIds = result.map(function(objeto) {
                     return objeto.rol_id;
                 });
-                sessionStorage.OrdenadoIdsRol = arrayIds;
                 sessionStorage.dts_EmpresaRol = JSON.stringify(arrayList);
                 actualizarListRoles();
             } else {
@@ -536,37 +535,40 @@ function fntEmpresaRoles(ids) {
 
 function fnt_next_one_rol() {
     const element = document.getElementById('cmb_roles');
-    const selectedRoles = Array.from(element.selectedOptions).map(option => ({
-        ids: option.value,
+    const selectedIds = Array.from(element.selectedOptions).map(option => ({
+        ids: Number(option.value),
         Nombre: option.textContent.trim()
     }));
 
-    let arrayRoles = JSON.parse(sessionStorage.getItem('dts_EmpresaRol')) || [];
+    let result = JSON.parse(sessionStorage.getItem('dts_EmpresaRol')) || [];
 
-    selectedRoles.forEach(role => {
-        const exists = arrayRoles.some(r => r.ids === role.ids);
+    selectedIds.forEach(role => {
+        const exists = result.some(r => r.ids === role.ids);
         if (!exists) {
-            arrayRoles.push({ ids: role.ids, Nombre: role.Nombre });
+            result.push({ ids: role.ids, Nombre: role.Nombre });
+        }else{
+            swal("Atención", "Item ya existe en la lista", "info");
         }
     });
 
-    sessionStorage.setItem('dts_EmpresaRol', JSON.stringify(arrayRoles));
+    sessionStorage.setItem('dts_EmpresaRol', JSON.stringify(result));
     actualizarListRoles();
 }
 
 function fnt_back_one_rol() {
     const element = document.getElementById('cmb_Emp_roles');
-    const selectedIds = Array.from(element.selectedOptions).map(option => option.value);
-    alert(JSON.stringify(selectedIds))
+    const selectedIds = Array.from(element.selectedOptions).map(option => Number(option.value));
 
-    let roles = JSON.parse(sessionStorage.getItem('dts_EmpresaRol')) || [];
+    let result = JSON.parse(sessionStorage.getItem('dts_EmpresaRol')) || [];
 
-    // Filtra roles que no estén seleccionados (mantiene los no seleccionados)
-    const updatedRoles = roles.filter(role => !selectedIds.includes(role.ids));
+    // Filtrar eliminando los seleccionados
+    let arrayResult = result.filter(item => !selectedIds.includes(item.ids));
 
-    sessionStorage.setItem('dts_EmpresaRol', JSON.stringify(updatedRoles));
+    sessionStorage.setItem('dts_EmpresaRol', JSON.stringify(arrayResult));
+
     actualizarListRoles();
 }
+
 
 
 function actualizarListRoles() {
@@ -588,7 +590,7 @@ function actualizarListRoles() {
             $combo.html(options);
         }
     } catch (error) {
-        console.error("Error al parsear dts_EmpresaModulo:", error);
+        console.error("Error al parsear dts_EmpresaRol:", error);
     }
 }
 
@@ -601,6 +603,7 @@ function fnt_saveEmpRoles(){
         let arrayIds = result.map(function(objeto) {
             return objeto.ids;
         });
+        JSON.stringify(arrayIds);
         let url = base_url + '/Empresa/actualizarEmpresaRoles';
         var metodo = 'POST';
         var datos= {
@@ -611,8 +614,7 @@ function fnt_saveEmpRoles(){
         peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
             // Manejar el éxito de la solicitud aquí
             if (data.status) {
-                swal("Atención", data.msg, "success");
-                //var result = data.data.Modulo;         
+                swal("Atención", data.msg, "success");    
             } else {
                 swal("Error", data.msg, "error");
             }

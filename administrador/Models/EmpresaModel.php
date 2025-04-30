@@ -414,6 +414,64 @@ class EmpresaModel extends Mysql
 	}
 
 
+	public function insertDataEmpRol(string $data, string $Emp_id): array
+	{
+		$arroout = ["status" => false, "message" => "Operación fallida."];
+
+		try {
+			$con = $this->getConexion();
+			$con->beginTransaction();
+
+			$usuario = retornaUser();
+			$arrayIds = array_filter(explode(",", $data)); // Limpia valores vacíos
+
+			// Desactiva todos los módulos actuales
+			$sql = "UPDATE {$this->db_name}.empresa_rol  SET estado_logico = 0 WHERE emp_id = ?";
+			if (!$this->updateConTrasn($con, $sql, [$Emp_id])) {
+				throw new Exception("Error al desactivar los módulos actuales.");
+			}
+
+			if (!empty($arrayIds)) {
+				// Activa los módulos seleccionados
+				$placeholders = implode(',', array_fill(0, count($arrayIds), '?'));
+				$sql = "UPDATE {$this->db_name}.empresa_rol  SET estado_logico = 1 
+                    WHERE emp_id = ? AND rol_id IN ($placeholders)";
+				$params = array_merge([$Emp_id], $arrayIds);
+				if (!$this->updateConTrasn($con, $sql, $params)) {
+					throw new Exception("Error al activar los Roles seleccionados.");
+				}
+
+				// Inserta módulos nuevos que no existan aún
+				foreach ($arrayIds as $rol_id) {
+					$sqlCheck = "SELECT 1 FROM {$this->db_name}.empresa_rol  
+                             WHERE emp_id = :emp_id AND rol_id = :rol_id ";
+					$exists = $this->select($sqlCheck, [ ":emp_id" => $Emp_id,":rol_id" => $rol_id]);
+
+					if (empty($exists)) {
+						$sqlInsert = "INSERT INTO {$this->db_name}.empresa_rol 
+                                  (emp_id, rol_id, estado_logico, usuario_creacion) 
+                                  VALUES (?, ?, ?, ?)";
+						$insertSuccess = $this->insertConTrasn($con, $sqlInsert, [$Emp_id, $rol_id, 1, $usuario]);
+						if ($insertSuccess === 0) {
+							throw new Exception("Error al insertar el Roles $rol_id.");
+						}
+					}
+				}
+			}
+
+			$con->commit();
+			$arroout["status"] = true;
+			$arroout["message"] = "Módulos actualizados correctamente.";
+		} catch (Exception $e) {
+			$con->rollBack();
+			$arroout["message"] = "Fallo: " . $e->getMessage();
+		}
+
+		return $arroout;
+	}
+
+
+
 
 
 
