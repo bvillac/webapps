@@ -34,8 +34,8 @@ adminMenu($data);
               <?php
               echo '<option value="0">SELECCIONAR</option>';
               foreach ($data['Empresas'] as $opcion) {
-                $seleted=0;//($opcion['Ids']==$data['Eusu_id'])?'selected':'';
-                echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['NombreComercial'] . '</option>';
+                $seleted = 0;//($opcion['Ids']==$data['Eusu_id'])?'selected':'';
+                echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['NombreComercial'] . '</option>';
               }
               ?>
             </select>
@@ -51,7 +51,7 @@ adminMenu($data);
                   aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
               </button>
             </div>
-            
+
           </div>
           <div class="row">
             <div class="form-group col-md-5">
@@ -64,7 +64,7 @@ adminMenu($data);
                 ?>
               </select>
             </div>
-            <div class="form-group col-md-2 align-items-center" >
+            <div class="form-group col-md-2 align-items-center">
               <br><br><br>
               <!-- <button type="button" class="btn btn-dark" id="btn_next_all"><i class="fa fa-fast-forward"
                   aria-hidden="true">&nbsp;&nbsp;TODO</i>
@@ -105,8 +105,8 @@ adminMenu($data);
               <?php
               echo '<option value="0">SELECCIONAR</option>';
               foreach ($data['Empresas'] as $opcion) {
-                $seleted=0;//($opcion['Ids']==$data['Eusu_id'])?'selected':'';
-                echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['NombreComercial'] . '</option>';
+                $seleted = 0;//($opcion['Ids']==$data['Eusu_id'])?'selected':'';
+                echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['NombreComercial'] . '</option>';
               }
               ?>
             </select>
@@ -122,7 +122,7 @@ adminMenu($data);
                   aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
               </button>
             </div>
-            
+
           </div>
           <div class="row">
             <div class="form-group col-md-5">
@@ -135,9 +135,9 @@ adminMenu($data);
                 ?>
               </select>
             </div>
-            <div class="form-group col-md-2 align-items-center" >
+            <div class="form-group col-md-2 align-items-center">
               <br><br><br>
-  
+
               <button type="button" class="btn btn-dark" id="btn_next_one_rol"><i class="fa fa-step-forward"
                   aria-hidden="true">&nbsp;&nbsp;AGREGAR</i>
               </button>
@@ -150,7 +150,7 @@ adminMenu($data);
             <div class="form-group col-md-5">
               <label for="cmb_Emp_roles">Empresa Roles</label>
               <select class="form-control" multiple id="cmb_Emp_roles" name="cmb_Emp_roles" style="height: 300px;">
-      
+
               </select>
             </div>
           </div>
@@ -158,52 +158,61 @@ adminMenu($data);
       </div>
     </div>
     <div class="col-md-6">
+
       <div class="tile">
+        <label for="cmb_empresa">
+          <h3 class="title">Empresa Módulo Roles</h3>
+        </label>
         <div class="tile-title-w-btn">
+
           <div class="form-group col-md-4">
+
             <label for="cmb_empresa3">
               Empresa Modulo Rol
             </label>
-            <select class="form-control" id="cmb_empresa3" name="cmb_empresa3" onchange="fntEmpresaModuloRoles(this.value)">
+            <select class="form-control" id="cmb_empresa3" name="cmb_empresa3"
+              onchange="fntEmpresaModuloRoles(this.value)">
               <?php
               echo '<option value="0">SELECCIONAR</option>';
               foreach ($data['Empresas'] as $opcion) {
-                $seleted=0;//($opcion['Ids']==$data['Eusu_id'])?'selected':'';
-                echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['NombreComercial'] . '</option>';
+                $seleted = 0;//($opcion['Ids']==$data['Eusu_id'])?'selected':'';
+                echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['NombreComercial'] . '</option>';
               }
               ?>
             </select>
           </div>
           <div class="form-group col-md-4">
             <label for="cmb_empresa_modulo_roles">Empresa Rol </label>
-            <select class="form-control" id="cmb_empresa_modulo_roles" name="cmb_empresa_modulo_roles" onchange="fntListarModuloporRol(this.value)" >             
+            <select class="form-control" id="cmb_empresa_modulo_roles" name="cmb_empresa_modulo_roles"
+              onchange="fntListarModuloporRol(this.value)">
             </select>
           </div>
           <div class="form-group col-md-4">
-              <label ></label>
-              <button type="button" class="btn btn-dark" id="btn_guardarRoles"><i class="fa fa-fast-forward"
-                  aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
-              </button>
-            </div>
+            <label></label>
+            <button type="button" class="btn btn-dark" id="btn_guardarRoles"><i class="fa fa-fast-forward"
+                aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
+            </button>
+          </div>
         </div>
         <div class="tile-body">
           <div class="row">
             <div class="form-group col-md-12">
               Presione CTRL y haga clic para seleccionar varias opciones a la vez.
             </div>
-            
-            
+
+
           </div>
           <div class="row">
             <div class="form-group col-md-5">
               <label for="list_EmpresaModuloroles">Roles</label>
-              <select class="form-control" multiple id="list_EmpresaModuloroles" name="list_EmpresaModuloroles" style="height: 300px;">
-                
+              <select class="form-control" multiple id="list_EmpresaModuloroles" name="list_EmpresaModuloroles"
+                style="height: 300px;">
+
               </select>
             </div>
-            <div class="form-group col-md-2 align-items-center" >
+            <div class="form-group col-md-2 align-items-center">
               <br><br><br>
-  
+
               <button type="button" class="btn btn-dark" id="btn_next_one_rol"><i class="fa fa-step-forward"
                   aria-hidden="true">&nbsp;&nbsp;AGREGAR</i>
               </button>
@@ -215,8 +224,9 @@ adminMenu($data);
             </div>
             <div class="form-group col-md-5">
               <label for="list_EmpresaModulorolesSelect">Empresa Roles</label>
-              <select class="form-control" multiple id="list_EmpresaModulorolesSelect" name="list_EmpresaModulorolesSelect" style="height: 300px;">
-      
+              <select class="form-control" multiple id="list_EmpresaModulorolesSelect"
+                name="list_EmpresaModulorolesSelect" style="height: 300px;">
+
               </select>
             </div>
           </div>

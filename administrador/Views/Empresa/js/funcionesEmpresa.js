@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (typeof nEmpresa !== "undefined") {
         fnt_inicio(nEmpresa);
-    } 
+    }
 
     //NUEVO 
     var formEmpresa = document.querySelector("#formEmpresa");//Nombre del formulario 
@@ -158,27 +158,27 @@ $(document).ready(function () {
     });
 
     $("#btn_next_one").click(function () {
-		fnt_next_one();
-	});
-    
+        fnt_next_one();
+    });
+
     $("#btn_back_one").click(function () {
-		fnt_back_one();
-	});
+        fnt_back_one();
+    });
 
     $("#btn_guardarModulo").click(function () {
-		fnt_saveEmpModulo();
-	});
+        fnt_saveEmpModulo();
+    });
 
     $("#btn_next_one_rol").click(function () {
-		fnt_next_one_rol();
-	});
-    
+        fnt_next_one_rol();
+    });
+
     $("#btn_back_one_rol").click(function () {
-		fnt_back_one_rol();
-	});
+        fnt_back_one_rol();
+    });
     $("#btn_guardarRoles").click(function () {
-		fnt_saveEmpRoles();
-	});
+        fnt_saveEmpRoles();
+    });
 
 });
 
@@ -320,11 +320,11 @@ function fntEmpresaModulos(ids) {
                 var c = 0;
                 $("#cmb_Emp_modulos").html('');
                 var result = data.data.Modulo;
-                let arrayList = result.map(function(objeto) {//Obtiene y lo retorna a un array identado
-                        return { ids: objeto.mod_id, Nombre: objeto.Nombre };
-                    });
+                let arrayList = result.map(function (objeto) {//Obtiene y lo retorna a un array identado
+                    return { ids: objeto.mod_id, Nombre: objeto.Nombre };
+                });
                 // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
-                let arrayIds = result.map(function(objeto) {
+                let arrayIds = result.map(function (objeto) {
                     return objeto.mod_id;
                 });
                 sessionStorage.OrdenadoIds = arrayIds;//Solos los IDS
@@ -356,7 +356,7 @@ function actualizarEmpModulo() {
     try {
         const result = JSON.parse(empresaModuloData);
         if (Array.isArray(result) && result.length > 0) {
-            const options = result.map(item => 
+            const options = result.map(item =>
                 `<option value="${item.ids}">${item.Nombre}</option>`
             ).join('');
             $cmbEmpModulos.html(options);
@@ -366,7 +366,7 @@ function actualizarEmpModulo() {
     }
 }
 
-function fnt_next_one(){
+function fnt_next_one() {
     let element = document.getElementById('cmb_modulos');//obtienes los itmes seleccionados
     const selectEmpMod = Array.from(element.selectedOptions).map(option => {
         return {
@@ -463,14 +463,14 @@ function fnt_inicio(resultEmp) {
 
 }
 
-function fnt_saveEmpModulo(){
-    let accion ="Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
-    let EmpId=($('#cmb_empresa').val()!=0)?$('#cmb_empresa').val():0;
+function fnt_saveEmpModulo() {
+    let accion = "Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
+    let EmpId = ($('#cmb_empresa').val() != 0) ? $('#cmb_empresa').val() : 0;
     if (EmpId != 0) {
         //arrayModulo = JSON.parse(sessionStorage.dts_Modulos);
         let url = base_url + '/Empresa/actualizarEmpresaModulo';
         var metodo = 'POST';
-        var datos= {
+        var datos = {
             eusu_id: EmpId,
             ids: sessionStorage.OrdenadoIds,
             accion: accion
@@ -496,7 +496,7 @@ function fnt_saveEmpModulo(){
 }
 /**
  * Configuracion de ROLES
- */ 
+ */
 function fntEmpresaRoles(ids) {
     if (ids != 0) {
         sessionStorage.removeItem("dts_EmpresaRol");
@@ -510,11 +510,11 @@ function fntEmpresaRoles(ids) {
                 var c = 0;
                 $("#cmb_Emp_roles").html('');
                 var result = data.data.Modulo;
-                let arrayList = result.map(function(objeto) {
-                        return { ids: objeto.rol_id, Nombre: objeto.Nombre };
-                    });
+                let arrayList = result.map(function (objeto) {
+                    return { ids: objeto.rol_id, Nombre: objeto.Nombre };
+                });
                 // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
-                let arrayIds = result.map(function(objeto) {
+                let arrayIds = result.map(function (objeto) {
                     return objeto.rol_id;
                 });
                 sessionStorage.dts_EmpresaRol = JSON.stringify(arrayList);
@@ -546,7 +546,7 @@ function fnt_next_one_rol() {
         const exists = result.some(r => r.ids === role.ids);
         if (!exists) {
             result.push({ ids: role.ids, Nombre: role.Nombre });
-        }else{
+        } else {
             swal("Atención", "Item ya existe en la lista", "info");
         }
     });
@@ -584,7 +584,7 @@ function actualizarListRoles() {
     try {
         const result = JSON.parse(nData);
         if (Array.isArray(result) && result.length > 0) {
-            const options = result.map(item => 
+            const options = result.map(item =>
                 `<option value="${item.ids}">${item.Nombre}</option>`
             ).join('');
             $combo.html(options);
@@ -595,18 +595,18 @@ function actualizarListRoles() {
 }
 
 
-function fnt_saveEmpRoles(){
-    let accion ="Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
-    let EmpId=($('#cmb_empresa2').val()!=0)?$('#cmb_empresa2').val():0;
+function fnt_saveEmpRoles() {
+    let accion = "Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
+    let EmpId = ($('#cmb_empresa2').val() != 0) ? $('#cmb_empresa2').val() : 0;
     if (EmpId != 0) {
         result = JSON.parse(sessionStorage.dts_EmpresaRol);
-        let arrayIds = result.map(function(objeto) {
+        let arrayIds = result.map(function (objeto) {
             return objeto.ids;
         });
         JSON.stringify(arrayIds);
         let url = base_url + '/Empresa/actualizarEmpresaRoles';
         var metodo = 'POST';
-        var datos= {
+        var datos = {
             eusu_id: EmpId,
             ids: arrayIds.join(","),//Conviete un array a cadena
             accion: accion
@@ -614,7 +614,7 @@ function fnt_saveEmpRoles(){
         peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
             // Manejar el éxito de la solicitud aquí
             if (data.status) {
-                swal("Atención", data.msg, "success");    
+                swal("Atención", data.msg, "success");
             } else {
                 swal("Error", data.msg, "error");
             }
@@ -633,7 +633,7 @@ function fnt_saveEmpRoles(){
 /*
 EMPRESA MODULO ROLES
 */
-function fntEmpresaModuloRoles(ids) {
+/*function fntEmpresaModuloRoles(ids) {
     if (ids != 0) {
         sessionStorage.removeItem("dts_EmpresaModuloRol");
         sessionStorage.removeItem("dts_RolModuloEmpresa");
@@ -708,50 +708,98 @@ function ActualizarListRolModuloEmpresa(){
             }
         }
     }
+}*/
+
+function fntEmpresaModuloRoles(ids) {
+    if (!ids || ids === 0) {
+        swal("Información", "Seleccionar una Empresa Módulo", "info");
+        return;
+    }
+
+    sessionStorage.removeItem("dts_EmpresaModuloRol");
+    sessionStorage.removeItem("dts_RolModuloEmpresa");
+
+    const url = `${base_url}/Empresa/getModuloRolesPorEmpresa`;
+    const datos = { Ids: ids };
+
+    peticionAjax(url, 'POST', { datos: btoa(JSON.stringify(datos)) }, function (data) {
+        if (!data.status) {
+            swal("Atención", data.msg, "error");
+            return;
+        }
+
+        const roles = (data.data.Modulo || []).map(obj => ({ ids: obj.erol_id, Nombre: obj.Nombre }));
+        const modulos = (data.data.EmpresaModulo || []).map(obj => ({ ids: obj.emod_id, Nombre: obj.Nombre }));
+
+        sessionStorage.setItem('dts_EmpresaModuloRol', JSON.stringify(roles));
+        sessionStorage.setItem('dts_RolModuloEmpresa', JSON.stringify(modulos));
+
+        ActualizarListModuloRoles();
+        ActualizarListRolModuloEmpresa();
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+}
+
+function ActualizarListModuloRoles() {//llena el combo de Empresa Rol
+    const data = sessionStorage.getItem('dts_EmpresaModuloRol');
+    const result = data ? JSON.parse(data) : [];
+
+    const options = result.map(item =>
+        `<option value="${item.ids}">${item.Nombre}</option>`
+    ).join('');
+
+    document.getElementById("cmb_empresa_modulo_roles").innerHTML = options;
+}
+
+function ActualizarListRolModuloEmpresa() {//llenar el list de Roles
+    const data = sessionStorage.getItem('dts_RolModuloEmpresa');
+    const result = data ? JSON.parse(data) : [];
+
+    const options = result.map(item =>
+        `<option value="${item.ids}">${item.Nombre}</option>`
+    ).join('');
+
+    document.getElementById("list_EmpresaModuloroles").innerHTML = options;
 }
 
 
-function fntListarModuloporRol(ids) {
-    if (ids != 0) {
-        //sessionStorage.removeItem("dts_EmpresaModuloRol");
-        //sessionStorage.removeItem("dts_RolModuloEmpresa");
-        let url = base_url + '/Empresa/getModuloRolesPorEmpresa';
-        var metodo = 'POST';
-        var datos = { Ids: ids };
-        peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
-            // Manejar el éxito de la solicitud aquí
-            if (data.status) {
-                /*var c = 0;
-                //$("#cmb_empresa_modulo_roles").html('');
-                var result = data.data.Modulo;
-                let arrayList = result.map(function(objeto) {
-                        return { ids: objeto.rol_id, Nombre: objeto.Nombre };
-                    });
-                result = data.data.EmpresaModulo;
-                let arrayList2 = result.map(function(objeto) {
-                        return { ids: objeto.mod_id, Nombre: objeto.Nombre };
-                    });
-                // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
-                //let arrayIds = result.map(function(objeto) {
-                //    return objeto.rol_id;
-                //});
-                //sessionStorage.OrdenadoIdsRol = arrayIds;
-                sessionStorage.dts_EmpresaModuloRol = JSON.stringify(arrayList);
-                sessionStorage.dts_RolModuloEmpresa = JSON.stringify(arrayList2);
-                ActualizarListModuloRoles();
-                ActualizarListRolModuloEmpresa();*/
-            } else {
-                swal("Atención", data.msg, "error");
-            }
-        }, function (jqXHR, textStatus, errorThrown) {
-            // Manejar el error de la solicitud aquí
-            console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
-        });
-    } else {
-        //$("#cmb_centro").prop("disabled", true);
-        swal("Información", "Seleccionar un Empresa Modulo", "info");
-    }
 
+function fntListarModuloporRol(ids) {
+    if (!ids || ids === 0) {
+        swal("Información", "Seleccionar una Empresa Rol", "info");
+        return;
+    }
+    sessionStorage.removeItem("dts_Modulo_EmpRol");
+    let url = base_url + '/Empresa/getEmpresaModuloRol';
+    var metodo = 'POST';
+    var datos = { Ids: ids };
+    peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
+        // Manejar el éxito de la solicitud aquí
+        if (!data.status) {
+            swal("Atención", data.msg, "error");
+            return;
+        }
+        const modulos = (data.data.EmpModRol || []).map(obj => ({ ids: obj.Ids, Nombre: obj.Nombre }));
+
+        sessionStorage.setItem('dts_Modulo_EmpRol', JSON.stringify(modulos));
+
+        ActualizarListModuloEmpresa();
+    }, function (jqXHR, textStatus, errorThrown) {
+        // Manejar el error de la solicitud aquí
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+}
+
+function ActualizarListModuloEmpresa() {//llenar el list de Roles
+    const data = sessionStorage.getItem('dts_Modulo_EmpRol');
+    const result = data ? JSON.parse(data) : [];
+
+    const options = result.map(item =>
+        `<option value="${item.ids}">${item.Nombre}</option>`
+    ).join('');
+
+    document.getElementById("list_EmpresaModuloroles").innerHTML = options;
 }
 
 

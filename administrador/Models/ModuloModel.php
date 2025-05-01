@@ -147,5 +147,26 @@ class ModuloModel extends Mysql
 		return $request;
 	}
 
+	public function getEmpresaModuloRol(int $Erol_id)
+	{
+		try {
+			$sql = "SELECT  a.emrol_id as Ids,CONCAT(RPAD(b.mod_id, 20-LENGTH(b.mod_id), ' '),c.mod_nombre) Nombre
+						FROM {$this->db_name}.empresa_modulo_rol a
+							inner join ({$this->db_name}.empresa_modulo b 
+								inner join {$this->db_name}.modulo c on c.mod_id=b.mod_id)
+							on b.emod_id=a.emod_id
+						WHERE a.estado_logico!=0 and a.erol_id=:erol_id order by Nombre asc";
+			$resultado = $this->select_all($sql, [":erol_id" => $Erol_id]);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida getEmpresaModuloRol", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en getEmpresaModuloRol: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+	}
+
 
 }

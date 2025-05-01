@@ -72,18 +72,18 @@ class RolesModel extends Mysql
 
 	public function getRolAll()
 	{
-		$sql = "SELECT rol_id Ids,rol_nombre Nombre FROM " . $this->db_name . ".rol WHERE estado_logico != 0";
+		$sql = "SELECT rol_id Ids,rol_nombre Nombre FROM {$this->db_name}.rol WHERE estado_logico != 0";
 		$request = $this->select_all($sql);
 		return $request;
 	}
 
 	public function getEmpresaRol(int $Emp_id){
 		$sql = "SELECT a.erol_id,b.rol_nombre Nombre,a.rol_id ";
-		$sql .= "	FROM ". $this->db_name .".empresa_rol a ";
-		$sql .= "			INNER JOIN ". $this->db_name .".rol b ";
+		$sql .= "	FROM {$this->db_name}.empresa_rol a ";
+		$sql .= "			INNER JOIN {$this->db_name}.rol b ";
 		$sql .= "		ON a.rol_id=b.rol_id ";
-		$sql .= "	WHERE a.estado_logico!=0 AND a.emp_id={$Emp_id} ";
-		$request = $this->select_all($sql);
+		$sql .= "	WHERE a.estado_logico!=0 AND a.emp_id=:emp_id ";
+		$request = $this->select_all($sql, [":emp_id" => $Emp_id]);
 		return $request;
 	}
 

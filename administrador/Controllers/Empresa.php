@@ -385,18 +385,13 @@ class Empresa extends Controllers
     public function getModuloRolesPorEmpresa()
     {
         if ($_POST) {
-
             $decodedData = base64_decode($_POST['datos']);
             $data = json_decode($decodedData, true);
             $ids = intval(strClean($data['Ids']));
             if ($ids > 0) {
-                $modelEmpresa = new EmpresaModel();
-                $Emp_Id = $modelEmpresa->getIdEmpresaUsuario($ids);
-                $modelRol = new RolesModel();
-                $arrData['Modulo'] = $modelRol->getEmpresaRol($Emp_Id);
-                $modelModel = new ModuloModel();
-                $arrData['EmpresaModulo'] = $modelModel->getEmpresaModulo($Emp_Id);
-
+                $Emp_Id = (new EmpresaModel())->getIdEmpresaUsuario($ids);
+                $arrData['Modulo'] = (new RolesModel())->getEmpresaRol($Emp_Id);
+                $arrData['EmpresaModulo'] = (new ModuloModel())->getEmpresaModulo($Emp_Id);
                 //dep( $arrData );
                 if (empty($arrData)) {
                     $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
@@ -406,7 +401,7 @@ class Empresa extends Controllers
                 echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
             }
         }
-        die();
+        exit();
     }
 
 
@@ -448,6 +443,28 @@ class Empresa extends Controllers
         }
         exit();
     }
+
+    public function getEmpresaModuloRol()
+    {
+        if ($_POST) {
+            $decodedData = base64_decode($_POST['datos']);
+            $data = json_decode($decodedData, true);
+            $erol_id = intval(strClean($data['Ids']));
+            if ($ids > 0) {
+                //$Emp_Id = (new EmpresaModel())->getIdEmpresaUsuario($ids);
+                $arrData['EmpModRol'] = (new ModuloModel())->getEmpresaModuloRol($erol_id);
+                //dep( $arrData );
+                if (empty($arrData)) {
+                    $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+                } else {
+                    $arrResponse = array('status' => true, 'data' => $arrData);
+                }
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        exit();
+    }
+
 
 
 }
