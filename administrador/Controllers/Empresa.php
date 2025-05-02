@@ -292,47 +292,7 @@ class Empresa extends Controllers
         die();
     }
 
-    /*public function actualizarEmpresaRoles()
-    {
-        if ($_POST) {
-            //dep($_POST);
-            $decodedData = base64_decode($_POST['datos']);
-            $data = json_decode($decodedData, true);
-            if (empty($data['eusu_id']) || empty($data['ids']) || empty($data['accion'])) {
-                $arrResponse = array("status" => false, "msg" => 'Datos incorrectos.');
-            } else {
-                $request = "";
-                $datos = isset($data['ids']) ? $data['ids'] : "";
-                $Eusu_id = isset($data['eusu_id']) ? $data['eusu_id'] : "0";
-                $accion = isset($data['accion']) ? $data['accion'] : "";
-                if ($accion == "Create") {
-                    $option = 1;
-                    $modelEmpresa = new EmpresaModel();
-                    $Emp_Id = $modelEmpresa->getIdEmpresaUsuario($Eusu_id);
-                    if ($_SESSION['permisosMod']['w']) {
-                        $modelRol = new RolesModel();
-                        $request = $modelRol->insertDataEmpRol($datos, $Emp_Id);
-                    }
-                } else {
-                    //$option = 2;
-                    //if ($_SESSION['permisosMod']['u']) {
-                    //    $request = $this->model->updateData($datos);
-                    //}
-                }
-                if ($request["status"]) {
-                    if ($option == 1) {
-                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos guardados correctamente.');
-                    } else {
-                        $arrResponse = array('status' => true, 'numero' => 0, 'msg' => 'Datos Actualizados correctamente.');
-                    }
-                } else {
-                    $arrResponse = array("status" => false, "msg" => 'No es posible almacenar los datos.');
-                }
-            }
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        }
-        die();
-    }*/
+
 
     public function actualizarEmpresaRoles()
     {
@@ -450,7 +410,7 @@ class Empresa extends Controllers
             $decodedData = base64_decode($_POST['datos']);
             $data = json_decode($decodedData, true);
             $erol_id = intval(strClean($data['Ids']));
-            if ($ids > 0) {
+            if ($erol_id > 0) {
                 //$Emp_Id = (new EmpresaModel())->getIdEmpresaUsuario($ids);
                 $arrData['EmpModRol'] = (new ModuloModel())->getEmpresaModuloRol($erol_id);
                 //dep( $arrData );
@@ -464,6 +424,53 @@ class Empresa extends Controllers
         }
         exit();
     }
+
+
+    public function actualizarEmpresaRolesSelect()
+    {
+        if ($_POST) {
+            $arrResponse = ["status" => false, "msg" => "Datos incorrectos."];
+
+            // Decodificar datos
+            $decodedData = base64_decode($_POST['datos'] ?? '');
+            $data = json_decode($decodedData, true);
+
+            // Validar datos obligatorios
+            $erol_id = $data['erol_id'] ?? 0;
+            $ids = $data['ids'] ?? null;
+            $accion = $data['accion'] ?? null;
+
+            if (!$erol_id || !$ids || !$accion) {
+                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+                exit();
+            }
+
+            // Obtener ID de empresa desde modelo
+            //$Emp_Id = (new EmpresaModel())->getIdEmpresaUsuario($eusu_id);
+
+            // Ejecutar acción según tipo
+            $request = null;
+            if ($accion === "Create" && $_SESSION['permisosMod']['w']) {
+                $request = $this->model->insertDataEmpRolSelect($ids, $erol_id);
+            }
+
+            // Generar respuesta
+            if (!empty($request) && $request["status"]) {
+                $arrResponse = [
+                    'status' => true,
+                    'msg' => 'Datos guardados correctamente.',
+                    'numero' => $request["numero"] ?? null
+                ];
+            } else {
+                $arrResponse['msg'] = 'No es posible almacenar los datos.';
+            }
+
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        }
+
+        exit();
+    }
+
 
 
 

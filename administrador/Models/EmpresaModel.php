@@ -471,6 +471,65 @@ class EmpresaModel extends Mysql
 	}
 
 
+	public function insertDataEmpRolSelect(string $data, string $erol_id): array
+	{
+		$arroout = ["status" => false, "message" => "Operación fallida."];
+putMessageLogFile("llego3");
+		try {
+			$con = $this->getConexion();
+			$con->beginTransaction();
+
+			$usuario = retornaUser();
+			$arrayIds = array_filter(explode(",", $data)); // Limpia valores vacíos
+
+			// Desactiva todos los módulos actuales
+			$sql = "UPDATE {$this->db_name}.empresa_modulo_rol  SET estado_logico = 0 WHERE erol_id = :erol_id ";
+			if (!$this->updateConTrasn($con, $sql, [":erol_id" => $erol_id])) {
+				throw new Exception("Error al desactivar los módulos y Roles actuales.");
+			}
+
+			if (!empty($arrayIds)) {
+				// Activa los módulos seleccionados
+				$placeholders = implode(',', array_fill(0, count($arrayIds), '?'));
+				$sql = "UPDATE {$this->db_name}.empresa_modulo_rol  SET estado_logico = 1 
+                    WHERE erol_id = ? AND emod_id IN ($placeholders)";
+				$params = array_merge([$erol_id], $arrayIds);
+				if (!$this->updateConTrasn($con, $sql, $params)) {
+					throw new Exception("Error al activar los Roles y Modulos seleccionados.");
+				}
+
+				// Inserta módulos nuevos que no existan aún
+				foreach ($arrayIds as $emod_id) {
+					$sqlCheck = "SELECT 1 FROM {$this->db_name}.empresa_modulo_rol  
+                             WHERE erol_id = :erol_id AND emod_id = :emod_id ";
+					$exists = $this->select($sqlCheck, [ ":erol_id" => $erol_id,":emod_id" => $emod_id]);
+
+					if (empty($exists)) {
+						$sqlInsert = "INSERT INTO {$this->db_name}.empresa_modulo_rol 
+                                  (emod_id, erol_id, estado_logico, usuario_creacion) 
+                                  VALUES (?, ?, ?, ?)";
+						$insertSuccess = $this->insertConTrasn($con, $sqlInsert, [$emod_id, $erol_id, 1, $usuario]);
+						if ($insertSuccess === 0) {
+							throw new Exception("Error al insertar el Roles $emod_id.");
+						}
+					}
+				}
+			}
+
+			$con->commit();
+			$arroout["status"] = true;
+			$arroout["message"] = "Módulos actualizados correctamente.";
+		} catch (Exception $e) {
+			putMessageLogFile($e);
+			$con->rollBack();
+			$arroout["message"] = "Fallo: " . $e->getMessage();
+		}
+
+		return $arroout;
+	}
+
+
+
 
 
 

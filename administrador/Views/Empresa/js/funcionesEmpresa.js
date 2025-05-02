@@ -171,13 +171,23 @@ $(document).ready(function () {
 
     $("#btn_next_one_rol").click(function () {
         fnt_next_one_rol();
-    });
+    });fnt_next_one_Emr
 
     $("#btn_back_one_rol").click(function () {
         fnt_back_one_rol();
     });
     $("#btn_guardarRoles").click(function () {
         fnt_saveEmpRoles();
+    });
+
+    $("#btn_next_one_Emr").click(function () {
+        fnt_next_one_Emr();
+    });
+    $("#btn_back_one_Emr").click(function () {
+        fnt_back_one_Emr();
+    });
+    $("#btn_guardarRolesSelect").click(function () {
+        fnt_saveEmpRolesSelect();
     });
 
 });
@@ -633,82 +643,6 @@ function fnt_saveEmpRoles() {
 /*
 EMPRESA MODULO ROLES
 */
-/*function fntEmpresaModuloRoles(ids) {
-    if (ids != 0) {
-        sessionStorage.removeItem("dts_EmpresaModuloRol");
-        sessionStorage.removeItem("dts_RolModuloEmpresa");
-        let url = base_url + '/Empresa/getModuloRolesPorEmpresa';
-        var metodo = 'POST';
-        var datos = { Ids: ids };
-        peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
-            // Manejar el éxito de la solicitud aquí
-            if (data.status) {
-                var c = 0;
-                //$("#cmb_empresa_modulo_roles").html('');
-                var result = data.data.Modulo;
-                let arrayList = result.map(function(objeto) {
-                        return { ids: objeto.rol_id, Nombre: objeto.Nombre };
-                    });
-                result = data.data.EmpresaModulo;
-                let arrayList2 = result.map(function(objeto) {
-                        return { ids: objeto.mod_id, Nombre: objeto.Nombre };
-                    });
-                // Utilizar map para crear un nuevo array solo con la propiedad 'ids'
-                //let arrayIds = result.map(function(objeto) {
-                //    return objeto.rol_id;
-                //});
-                //sessionStorage.OrdenadoIdsRol = arrayIds;
-                sessionStorage.dts_EmpresaModuloRol = JSON.stringify(arrayList);
-                sessionStorage.dts_RolModuloEmpresa = JSON.stringify(arrayList2);
-                ActualizarListModuloRoles();
-                ActualizarListRolModuloEmpresa();
-            } else {
-                swal("Atención", data.msg, "error");
-            }
-        }, function (jqXHR, textStatus, errorThrown) {
-            // Manejar el error de la solicitud aquí
-            console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
-        });
-    } else {
-        //$("#cmb_centro").prop("disabled", true);
-        swal("Información", "Seleccionar un Empresa Modulo", "info");
-    }
-
-}
-
-function ActualizarListModuloRoles(){
-    if (sessionStorage.dts_EmpresaModuloRol) {
-        result = JSON.parse(sessionStorage.dts_EmpresaModuloRol);
-        $("#cmb_empresa_modulo_roles").html('');
-        if (result.length > 0) {
-            for (var i = 0; i < result.length; i++) {
-                $("#cmb_empresa_modulo_roles").append(
-                    '<option value="' + result[i].ids + '"  >' +
-                    result[i].Nombre +
-                    "</option>"
-                );
-                
-            }
-        }
-    }
-}
-
-function ActualizarListRolModuloEmpresa(){
-    if (sessionStorage.dts_RolModuloEmpresa) {
-        result = JSON.parse(sessionStorage.dts_RolModuloEmpresa);
-        $("#list_EmpresaModuloroles").html('');
-        if (result.length > 0) {
-            for (var i = 0; i < result.length; i++) {
-                $("#list_EmpresaModuloroles").append(
-                    '<option value="' + result[i].ids + '"  >' +
-                    result[i].Nombre +
-                    "</option>"
-                );
-                
-            }
-        }
-    }
-}*/
 
 function fntEmpresaModuloRoles(ids) {
     if (!ids || ids === 0) {
@@ -728,8 +662,8 @@ function fntEmpresaModuloRoles(ids) {
             return;
         }
 
-        const roles = (data.data.Modulo || []).map(obj => ({ ids: obj.erol_id, Nombre: obj.Nombre }));
-        const modulos = (data.data.EmpresaModulo || []).map(obj => ({ ids: obj.emod_id, Nombre: obj.Nombre }));
+        const roles = (data.data.Modulo || []).map(obj => ({ ids: obj.Ids, Nombre: obj.Nombre }));
+        const modulos = (data.data.EmpresaModulo || []).map(obj => ({ ids: obj.Ids, Nombre: obj.Nombre }));
 
         sessionStorage.setItem('dts_EmpresaModuloRol', JSON.stringify(roles));
         sessionStorage.setItem('dts_RolModuloEmpresa', JSON.stringify(modulos));
@@ -799,7 +733,77 @@ function ActualizarListModuloEmpresa() {//llenar el list de Roles
         `<option value="${item.ids}">${item.Nombre}</option>`
     ).join('');
 
-    document.getElementById("list_EmpresaModuloroles").innerHTML = options;
+    document.getElementById("list_EmpresaModulorolesSelect").innerHTML = options;
+}
+
+
+function fnt_next_one_Emr() {
+    const element = document.getElementById('list_EmpresaModuloroles');//Obitne de lista Combo
+    const selectedIds = Array.from(element.selectedOptions).map(option => ({
+        ids: Number(option.value),
+        Nombre: option.textContent.trim()
+    }));
+  
+    let result = JSON.parse(sessionStorage.getItem('dts_Modulo_EmpRol')) || [];
+
+    selectedIds.forEach(role => {//recorres los leccinado 
+        const exists = result.some(r => r.ids === role.ids);//pregutna si el selecionado es igual a al que esta en la session sino lo agrega
+        if (!exists) {
+            result.push({ ids: role.ids, Nombre: role.Nombre });
+        } else {
+            swal("Atención", "Item ya existe en la lista", "info");
+        }
+    });
+
+    sessionStorage.setItem('dts_Modulo_EmpRol', JSON.stringify(result));
+    ActualizarListModuloEmpresa();
+}
+
+function fnt_back_one_Emr() {
+    const element = document.getElementById('list_EmpresaModulorolesSelect');
+    const selectedIds = Array.from(element.selectedOptions).map(option => Number(option.value));
+    
+    let result = JSON.parse(sessionStorage.getItem('dts_Modulo_EmpRol')) || [];
+
+    // Filtrar eliminando los seleccionados
+    let arrayResult = result.filter(item => !selectedIds.includes(item.ids));
+
+    sessionStorage.setItem('dts_Modulo_EmpRol', JSON.stringify(arrayResult));
+    ActualizarListModuloEmpresa();
+}
+
+function fnt_saveEmpRolesSelect() {
+    let accion = "Create";// ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
+    let ErolId = ($('#cmb_empresa_modulo_roles').val() != 0) ? $('#cmb_empresa_modulo_roles').val() : 0;
+    if (ErolId != 0) {
+        result = JSON.parse(sessionStorage.dts_Modulo_EmpRol);
+        let arrayIds = result.map(function (objeto) {
+            return objeto.ids;
+        });
+        JSON.stringify(arrayIds);
+        let url = base_url + '/Empresa/actualizarEmpresaRolesSelect';
+        var metodo = 'POST';
+        var datos = {
+            erol_id: ErolId,
+            ids: arrayIds.join(","),//Conviete un array a cadena
+            accion: accion
+        };
+        peticionAjax(url, metodo, { datos: btoa(JSON.stringify(datos)) }, function (data) {
+            // Manejar el éxito de la solicitud aquí
+            if (data.status) {
+                swal("Atención", data.msg, "success");
+            } else {
+                swal("Error", data.msg, "error");
+            }
+        }, function (jqXHR, textStatus, errorThrown) {
+            // Manejar el error de la solicitud aquí
+            console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+        });
+    } else {
+        //$("#cmb_centro").prop("disabled", true);
+        swal("Información", "Seleccionar un Empresa", "info");
+    }
+
 }
 
 

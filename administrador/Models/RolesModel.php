@@ -78,7 +78,7 @@ class RolesModel extends Mysql
 	}
 
 	public function getEmpresaRol(int $Emp_id){
-		$sql = "SELECT a.erol_id,b.rol_nombre Nombre,a.rol_id ";
+		$sql = "SELECT a.erol_id Ids,b.rol_nombre Nombre,a.rol_id ";
 		$sql .= "	FROM {$this->db_name}.empresa_rol a ";
 		$sql .= "			INNER JOIN {$this->db_name}.rol b ";
 		$sql .= "		ON a.rol_id=b.rol_id ";

@@ -189,7 +189,7 @@ adminMenu($data);
           </div>
           <div class="form-group col-md-4">
             <label></label>
-            <button type="button" class="btn btn-dark" id="btn_guardarRoles"><i class="fa fa-fast-forward"
+            <button type="button" class="btn btn-dark" id="btn_guardarRolesSelect"><i class="fa fa-fast-forward"
                 aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
             </button>
           </div>
@@ -213,12 +213,12 @@ adminMenu($data);
             <div class="form-group col-md-2 align-items-center">
               <br><br><br>
 
-              <button type="button" class="btn btn-dark" id="btn_next_one_rol"><i class="fa fa-step-forward"
+              <button type="button" class="btn btn-dark" id="btn_next_one_Emr"><i class="fa fa-step-forward"
                   aria-hidden="true">&nbsp;&nbsp;AGREGAR</i>
               </button>
               <br><br>
 
-              <button type="button" class="btn btn-dark" id="btn_back_one_rol"><i class="fa fa-step-backward"
+              <button type="button" class="btn btn-dark" id="btn_back_one_Emr"><i class="fa fa-step-backward"
                   aria-hidden="true">&nbsp;&nbsp;QUITAR</i>
               </button>
             </div>
