@@ -631,9 +631,10 @@ function checkPermission($type, $redirect)
     }
 }
 
-function responseJson($status, $msg, $extra = [])
+function responseJson($arrResponse  = [])
 {
-    echo json_encode(array_merge(["status" => $status, "msg" => $msg], $extra), JSON_UNESCAPED_UNICODE);
+    //echo json_encode(array_merge(["status" => $status, "msg" => $msg], $extra), JSON_UNESCAPED_UNICODE);
+    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
     exit();
 }
 function getPageData($title, $back)

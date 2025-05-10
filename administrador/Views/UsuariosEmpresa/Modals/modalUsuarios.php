@@ -81,7 +81,7 @@
                 <?php
                 // Recorre el array y genera las opciones del select
                 echo '<option value="0">SELECCIONAR</option>';
-                foreach ($data['usuario_rol'] as $opcion) {
+                foreach ($data['empresa_rol'] as $opcion) {
                   echo '<option value="' . $opcion['Ids'] . '">' . $opcion['Nombre'] . '</option>';
                 }
                 ?>
@@ -99,7 +99,7 @@
 
 
           <div class="tile-footer">
-            <button id="btnActionForm" class="btn btn-primary" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+            <button id="btn_guardar" class="btn btn-primary" type="button"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
             <button class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
           </div>
 

@@ -474,7 +474,6 @@ class EmpresaModel extends Mysql
 	public function insertDataEmpRolSelect(string $data, string $erol_id): array
 	{
 		$arroout = ["status" => false, "message" => "Operación fallida."];
-putMessageLogFile("llego3");
 		try {
 			$con = $this->getConexion();
 			$con->beginTransaction();

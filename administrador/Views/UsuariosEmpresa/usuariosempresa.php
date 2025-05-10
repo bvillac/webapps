@@ -3,7 +3,7 @@
     adminMenu($data);  
      //filelang(Setlanguage,"general") 
     //getModal("Views/Usuarios/Modals/",'modalUsuarios',$data);
-    require_once "Views/Usuarios/Modals/modalUsuarios.php"; 
+    require_once "Views/UsuariosEmpresa/Modals/modalUsuarios.php"; 
 ?>
     <main class="app-content">
       <div class="app-title">
@@ -32,7 +32,6 @@
                         <tr>
                           <th>Identificación Dni</th>
                           <th>Nombres</th>
-                          <th>Apellidos</th>
                           <th>Correo Electrónico</th>
                           <!--<th>Nombre Rol</th>-->
                           <th>Estado</th>
