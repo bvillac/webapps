@@ -40,9 +40,9 @@ class UsuariosModel extends Mysql
 			$con->beginTransaction();
 			try {
 				$arrDataPer = array($Dni, $Nombre, $Apellido, $FecNaci, $Telefono, $Direccion, $Genero, $idsUsuCre);
-				$PerIds = $this->insertarPersona($con, $db_name, $arrDataPer);		
+				$PerIds = $this->insertarPersona($con,  $arrDataPer);		
 				$arrDataUsu = array($PerIds, $Correo, $Clave, $Alias, $idsUsuCre);
-				$UsuIds = $this->insertarUsuario($con, $db_name, $arrDataUsu);
+				$UsuIds = $this->insertarUsuario($con,  $arrDataUsu);
 				$arrDataEmp = array($idsEmpresa, $UsuIds, $rol_id, $idsUsuCre);
 				//$UsuIds=$this->insertarEmpresaUsuario($con,$db_name,$arrDataEmp);
 				$con->commit();
@@ -64,9 +64,9 @@ class UsuariosModel extends Mysql
 		}
 	}
 
-	private function insertarPersona($con, $db_name, $arrData)
+	public function insertarPersona($con, $arrData)
 	{
-		$SqlQuery  = "INSERT INTO " . $db_name . ".persona ";
+		$SqlQuery  = "INSERT INTO {$this->db_name}.persona ";
 		$SqlQuery .= "(per_cedula,per_nombre,per_apellido,per_fecha_nacimiento,per_telefono,per_direccion,per_genero,usuario_creacion,estado_logico) ";
 		$SqlQuery .= " VALUES(?,?,?,?,?,?,?,?,1) ";
 		$insert = $con->prepare($SqlQuery);
@@ -81,9 +81,9 @@ class UsuariosModel extends Mysql
 
 
 
-	private function insertarUsuario($con, $db_name, $arrData)
+	public function insertarUsuario($con, $arrData)
 	{
-		$SqlQuery  = "INSERT INTO " . $db_name . ".usuario ";
+		$SqlQuery  = "INSERT INTO {$this->db_name}.usuario ";
 		$SqlQuery .= "(per_id,usu_correo,usu_clave,usu_alias,usuario_creacion,estado_logico) ";
 		$SqlQuery .= " VALUES(?,?,?,?,?,1) ";
 		$insert = $con->prepare($SqlQuery);

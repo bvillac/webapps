@@ -111,11 +111,10 @@ class UsuariosEmpresa extends Controllers
 			$accion = $data['accion'];
 			$option = 0;
 			$request = [];
-
 			try {
 				if ($accion === "Create") {
 					checkPermission('w', 'usuariosempresa');
-					$request = $this->model->insertDataUsuarioEmpresa($datos);
+					$request = $this->model->insertData($datos);
 					$option = 1;
 				} elseif ($accion === "Edit") {
 					checkPermission('u', 'usuariosempresa');

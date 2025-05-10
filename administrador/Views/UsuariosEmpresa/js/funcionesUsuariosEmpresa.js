@@ -416,7 +416,7 @@ function guardarUsuarioEmpresa() {
         password: strPassword
     };
 
-    const url = base_url + '/UsuarioEmpresa/guardarUsuarioEmpresa';
+    const url = base_url + '/UsuariosEmpresa/guardarUsuarioEmpresa';
     const metodo = 'POST';
     const dataPost = { accion: accion, dataObj: dataObj };
 
