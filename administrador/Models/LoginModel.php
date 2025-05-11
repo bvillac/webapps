@@ -14,7 +14,7 @@ class LoginModel extends Mysql
 		$this->db_name = $this->getDbNameMysql();
 	}
 
-	public function loginData(string $usuario, string $clave): ?array
+	public function loginDataxxx(string $usuario, string $clave): ?array
 	{
 		$sql = "SELECT usu_id, per_id, usu_alias, estado_logico AS Estado
             FROM {$this->db_name}.usuario
@@ -24,6 +24,25 @@ class LoginModel extends Mysql
 			":usu_correo" => $usuario,
 			":usu_clave" => $clave
 		]);
+	}
+
+	public function loginData(string $usuario, string $clave): ?array
+	{
+		try {
+			$sql = "SELECT usu_id, per_id, usu_alias, estado_logico AS Estado
+				FROM {$this->db_name}.usuario
+				WHERE usu_correo = :usu_correo AND usu_clave = :usu_clave AND estado_logico != 0";
+
+			$resultado = $this->select($sql, [ ":usu_correo" => $usuario,":usu_clave" => $clave]);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida en loginData", "WARNING");
+				return [];
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en loginData: " . $e->getMessage(), "ERROR");
+			return [];
+		}
 	}
 
 

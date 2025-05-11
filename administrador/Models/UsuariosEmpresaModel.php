@@ -1,5 +1,5 @@
 <?php
-require_once("Models/UsuarioModel.php");
+require_once("Models/UsuariosModel.php");
 class UsuariosEmpresaModel extends Mysql
 {
 	private $db_name;
@@ -111,15 +111,16 @@ class UsuariosEmpresaModel extends Mysql
 			if ($result) {
 				// Actualizar si ya existe
 				/*$sqlUpdate = "UPDATE {$this->db_name}.empresa_usuario 
-										SET estado_logico = 1, 
-											fecha_modificacion = CURRENT_TIMESTAMP 
-										WHERE eusu_id = :eusu_id";
-							$stmtUpdate = $con->prepare($sqlUpdate);
-							$stmtUpdate->execute([
-								':eusu_id' => $result['eusu_id']
-							]);*/
+																SET estado_logico = 1, 
+																	fecha_modificacion = CURRENT_TIMESTAMP 
+																WHERE eusu_id = :eusu_id";
+													$stmtUpdate = $con->prepare($sqlUpdate);
+													$stmtUpdate->execute([
+														':eusu_id' => $result['eusu_id']
+													]);*/
 			} else {
 				// Insertar si no existe
+				$Erol_id=$dataObj['rol'];
 				$arrDataPer = array(
 					$dataObj['dni'],
 					$dataObj['nombre'],
@@ -140,34 +141,9 @@ class UsuariosEmpresaModel extends Mysql
 				);
 				$UsuIds = $usuarioModel->insertarUsuario($con, $arrDataUsu);
 				$arrDataEmp = array($idsEmpresa, $UsuIds, 1, $idsUsuCre);
-				$UsuIds = $this->insertarEmpresaUsuario($con, $arrDataEmp);
-				$modulos=$this->retornarModuloRolEmpresa($idsEmpresa,$dataObj['rol']);
-
-				$sql = "INSERT INTO {$this->db_name}.det_pedido (
-                    cped_id, art_id, tie_id, dped_can_ped, dped_p_venta, dped_i_m_iva, 
-                    dped_val_des, dped_por_des, dped_t_venta, dped_observa, 
-                    dped_fec_cre, dped_est_log, cli_id
-                ) VALUES (
-                    :cped_id, :art_id, :tie_id, :dped_can_ped, :dped_p_venta, :dped_i_m_iva, 
-                    :dped_val_des, :dped_por_des, :dped_t_venta, :dped_observa, 
-                    CURRENT_TIMESTAMP(), 2, :cli_id
-                )";
-            $stmt = $con->prepare($sql);
-				foreach ($modulos as $modulo) {
-					$stmt->execute([
-						':cped_id' => $idCab,
-						':art_id' => $detalle['art_id'],
-						':tie_id' => $detalle['tie_id'],
-						':dped_can_ped' => $detalle['tdped_can_ped'],
-						':dped_p_venta' => $detalle['tdped_p_venta'],
-						':dped_i_m_iva' => 0,
-						':dped_val_des' => 0,
-						':dped_por_des' => 0,
-						':dped_t_venta' => $detalle['tdped_t_venta'],
-						':dped_observa' => $detalle['tdped_observa'] ?? '',
-						':cli_id' => $cliId
-					]);
-				}
+				$Eusu_id = $this->insertarEmpresaUsuario($con, $arrDataEmp);
+				$modulos = $this->retornarModuloRolEmpresa($idsEmpresa, $Erol_id);
+				$this->insertarPermisoEmpresaUsuario($con, $modulos,$Eusu_id,$Erol_id,$idsUsuCre);
 
 			}
 
@@ -212,6 +188,60 @@ class UsuariosEmpresaModel extends Mysql
 			return [];
 		}
 	}
+
+
+	public function insertarPermisoEmpresaUsuario($con, $modulos,int $Eusu_id,int $Erol_id,$UsuCre)
+	{
+		$privilegio=$this->retornarPrivilegioRol($Erol_id);
+		putMessageLogFile($privilegio);
+		$sql = "INSERT INTO {$this->db_name}.permiso
+			(`eusu_id`,`emod_id`,`erol_id`,`mod_id`,`r`,`w`,`u`,`d`,`estado_logico`,`usuario_creacion`)
+			VALUES 
+			(:eusu_id,:emod_id,:erol_id,:mod_id,:r,:w,:u,:d,:estado_logico,:usuario_creacion);";
+		$stmt = $con->prepare($sql);
+		foreach ($modulos as $modulo) {
+			$stmt->execute([
+				':eusu_id' => $Eusu_id,
+				':emod_id' => $modulo['emod_id'],
+				':erol_id' => $Erol_id,
+				':mod_id' => $modulo['mod_id'],
+				':r' => $privilegio['r'],
+				':w' => $privilegio['w'],
+				':u' => $privilegio['u'],
+				':d' => $privilegio['d'],
+				':estado_logico' => 1,
+				':usuario_creacion' => $UsuCre,
+			]);
+		}
+
+	}
+
+	public function retornarPrivilegioRol(int $Erol_id)
+	{
+		try {
+			$sql = " SELECT b.* FROM 
+						{$this->db_name}.empresa_rol a
+							inner join {$this->db_name}.rol b
+							on a.rol_id=b.rol_id
+						where a.estado_logico!=0 and  a.erol_id=:erol_id;";
+
+			$resultado = $this->select($sql, [ ":erol_id" => $Erol_id]);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida en retornarPrivilegioRol", "WARNING");
+				return [];
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en retornarPrivilegioRol: " . $e->getMessage(), "ERROR");
+			return [];
+		}
+	}
+
+
+
+
+
+
 
 
 
