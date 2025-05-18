@@ -213,50 +213,49 @@ function fntViewUsu(ids) {
 
 
 function fntEditUsu(ids) {
-    //rowTable = element.parentNode.parentNode.parentNode; //Captura toda la fila seleccionada
-    //console.log(rowTable);
     document.querySelector('#titleModal').innerHTML = "Actualizar Datos";
     document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
-    document.querySelector('#btnActionForm').classList.replace("btn-primary", "btn-info");
+    document.querySelector('#btn_guardar').classList.replace("btn-primary", "btn-info");
     document.querySelector('#btnText').innerHTML = "Actualizar";
-    var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-    var ajaxUrl = base_url + '/Usuarios/getUsuario/' + ids;
-    request.open("GET", ajaxUrl, true);
-    request.send();
-    request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
-            var objData = JSON.parse(request.responseText);
-            if (objData.status) {
-                //txt_Password
-                document.querySelector("#txth_ids").value = objData.data.Ids;
-                document.querySelector("#txth_perids").value = objData.data.per_id;
-                document.querySelector("#txth_eusuids").value = objData.data.eusu_id;
-                document.querySelector("#txt_dni").value = objData.data.Dni;
-                $("#txt_dni").prop("readonly", true);
-                document.querySelector("#dtp_fecha_nacimiento").value = objData.data.FechaNac;
-                document.querySelector("#txt_nombre").value = objData.data.Nombre;
-                document.querySelector("#txt_apellido").value = objData.data.Apellido;
-                document.querySelector("#txt_telefono").value = objData.data.Telefono;
-                document.querySelector("#txt_direccion").value = objData.data.Direccion;
-                document.querySelector("#txt_alias").value = objData.data.Alias;
-                document.querySelector("#txt_correo").value = objData.data.usu_correo;
-                document.querySelector("#cmb_rol").value = objData.data.RolID;
-                document.querySelector("#txt_Password").value = objData.data.strPassword;
-                $('#cmb_rol').selectpicker('render');
-                document.querySelector("#cmb_genero").value = objData.data.Genero;
-                $('#cmb_genero').selectpicker('render');
 
-                if (objData.data.Estado == 1) {
-                    document.querySelector("#cmb_estado").value = 1;
-                } else {
-                    document.querySelector("#cmb_estado").value = 2;
-                }
-                $('#cmb_estado').selectpicker('render');
+    const url = base_url + '/UsuariosEmpresa/getUsuarioEmpresa';
+    const metodo = 'POST';
+    const dataPost = { ids: ids };
+
+    peticionAjaxSSL(url, metodo, dataPost, function (data) {
+        if (data.status) {
+            //swal("Éxito", data.msg, "success");
+            document.querySelector("#txth_ids").value = data.data.Ids;
+            document.querySelector("#txth_perids").value = data.data.per_id;
+            document.querySelector("#txth_eusuids").value = data.data.eusu_id;
+            document.querySelector("#txt_dni").value = data.data.Dni;
+            $("#txt_dni").prop("readonly", true);
+            document.querySelector("#dtp_fecha_nacimiento").value = data.data.FechaNac;
+            document.querySelector("#txt_nombre").value = data.data.Nombre;
+            document.querySelector("#txt_apellido").value = data.data.Apellido;
+            document.querySelector("#txt_telefono").value = data.data.Telefono;
+            document.querySelector("#txt_direccion").value = data.data.Direccion;
+            document.querySelector("#txt_alias").value = data.data.Alias;
+            document.querySelector("#txt_correo").value = data.data.usu_correo;
+            document.querySelector("#cmb_rol").value = data.data.RolID;
+            document.querySelector("#txt_Password").value = data.data.strPassword;
+            $('#cmb_rol').selectpicker('render');
+            document.querySelector("#cmb_genero").value = data.data.Genero;
+            $('#cmb_genero').selectpicker('render');
+
+            if (data.data.Estado == 1) {
+                document.querySelector("#cmb_estado").value = 1;
+            } else {
+                document.querySelector("#cmb_estado").value = 2;
             }
+            $('#cmb_estado').selectpicker('render');
+            $('#modalFormUsu').modal('show');
+        } else {
+            swal("Atención", data.msg, "error");
         }
-
-        $('#modalFormUsu').modal('show');
-    }
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
 }
 
 function fntDelUsu(ids) {
@@ -312,14 +311,6 @@ function openModal() {
 function openModalPerfil() {
     $('#modalFormPerfil').modal('show');
 }
-
-
-
-
-
-
-
-
 
 
 function guardarAsignarUsuarioEmpresa() {
@@ -378,17 +369,20 @@ function guardarUsuarioEmpresa() {
     const intTipoRol = document.querySelector('#cmb_rol').value.trim();
     const strPassword = document.querySelector('#txt_Password').value;
 
-    // Validar campos obligatorios
-    if ([strDni, strFecNac, strNombre, strApellido, strTelefono, strDireccion, strAlias, strGenero, strEmail, intTipoRol].includes('')) {
-        swal("Atención", "Todos los campos son obligatorios.", "error");
-        return;
+    if (accion == "Create") {
+        // Validar campos obligatorios
+        if ([strDni, strFecNac, strNombre, strApellido, strTelefono, strDireccion, strAlias, strGenero, strEmail, intTipoRol].includes('')) {
+            swal("Atención", "Todos los campos son obligatorios.", "error");
+            return;
+        }
+
+        // Validar longitud de la contraseña
+        if (strPassword.length < 8 || strPassword.length > 16) {
+            swal("Atención", "La clave debe tener entre 8 y 16 caracteres.", "error");
+            return;
+        }
     }
 
-    // Validar longitud de la contraseña
-    if (strPassword.length < 8 || strPassword.length > 16) {
-        swal("Atención", "La clave debe tener entre 8 y 16 caracteres.", "error");
-        return;
-    }
 
     // Validar campos con clase .valid
     const elementsValid = document.getElementsByClassName("valid");

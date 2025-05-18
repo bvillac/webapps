@@ -14,18 +14,6 @@ class LoginModel extends Mysql
 		$this->db_name = $this->getDbNameMysql();
 	}
 
-	public function loginDataxxx(string $usuario, string $clave): ?array
-	{
-		$sql = "SELECT usu_id, per_id, usu_alias, estado_logico AS Estado
-            FROM {$this->db_name}.usuario
-            WHERE usu_correo = :usu_correo AND usu_clave = :usu_clave AND estado_logico != 0";
-
-		return $this->select($sql, [
-			":usu_correo" => $usuario,
-			":usu_clave" => $clave
-		]);
-	}
-
 	public function loginData(string $usuario, string $clave): ?array
 	{
 		try {

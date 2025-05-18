@@ -666,7 +666,6 @@ function openModal(){
 }
 
 function inicioText(){
-    //alert('llego');
     $('#txtMin').val(0);
     $('#txtMax').val(0);
     document.querySelector("#txtLista").value =parseFloat(0).toFixed(N4decimal);

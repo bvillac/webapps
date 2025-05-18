@@ -46,9 +46,6 @@ class UsuariosEmpresa extends Controllers
 		if ($_SESSION['permisosMod']['d']) {
 			$options .= " <button class='btn btn-danger btn-sm btnDelUsu' onClick='fntDelUsu($id)' title='Eliminar'><i class='fa fa-trash'></i></button> ";
 		}
-
-		//$options .= " <a title='Evaluar Beneficiario' href='" . base_url() . "/Usuarios/rol/$id' class='btn btn-primary btn-sm'><i class='fa fa-list-alt'></i></a> ";
-		//$options .= '<button class="btn btn-primary  btn-sm btnEmpresa" onClick="fntAsigEmpresa(\'' . $id . '\')" title="Asignar Empresa"><i class="fa fa-pencil"></i></button>';
 		return $options . '</div>';
 	}
 
@@ -141,6 +138,45 @@ class UsuariosEmpresa extends Controllers
 
 		exit();
 	}
+
+	public function getUsuarioEmpresaXXX(int $ids)
+	{
+		$ids = intval(strClean($ids));
+		$model = new UsuariosModel();
+		if ($ids > 0) {
+			$arrData = $model->consultarDatosId($ids);
+			//dep($arrData);
+			if (empty($arrData)) {
+
+				$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+			} else {
+				$arrData['RolID'] = 4;//$_SESSION['usuarioData']['RolID'];//Usuario por Defecto
+				$arrResponse = array('status' => true, 'data' => $arrData);
+			}
+			responseJson($arrResponse);
+		}
+		exit();
+	}
+
+	public function getUsuarioEmpresa()
+    {
+        if ($_POST) {
+            $data = recibirData($_POST['data']);
+            if (empty($data['ids'])) {
+                $arrResponse = array('status' => false, 'msg' => 'Error de datos Recibidos');
+            } else {
+                $ids = intval(strClean($data['ids']));
+				$arrData = (new UsuariosModel())->consultarDatosId($ids);
+                if (empty($arrData)) {
+                    $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
+                } else {
+                    $arrResponse = array('status' => true, 'data' => $arrData);
+                }
+            }
+            responseJson($arrResponse);
+        }
+        exit();
+    }
 
 
 

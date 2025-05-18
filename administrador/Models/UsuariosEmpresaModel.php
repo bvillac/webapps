@@ -111,16 +111,16 @@ class UsuariosEmpresaModel extends Mysql
 			if ($result) {
 				// Actualizar si ya existe
 				/*$sqlUpdate = "UPDATE {$this->db_name}.empresa_usuario 
-																SET estado_logico = 1, 
-																	fecha_modificacion = CURRENT_TIMESTAMP 
-																WHERE eusu_id = :eusu_id";
-													$stmtUpdate = $con->prepare($sqlUpdate);
-													$stmtUpdate->execute([
-														':eusu_id' => $result['eusu_id']
-													]);*/
+																									SET estado_logico = 1, 
+																										fecha_modificacion = CURRENT_TIMESTAMP 
+																									WHERE eusu_id = :eusu_id";
+																						$stmtUpdate = $con->prepare($sqlUpdate);
+																						$stmtUpdate->execute([
+																							':eusu_id' => $result['eusu_id']
+																						]);*/
 			} else {
 				// Insertar si no existe
-				$Erol_id=$dataObj['rol'];
+				$Erol_id = $dataObj['rol'];
 				$arrDataPer = array(
 					$dataObj['dni'],
 					$dataObj['nombre'],
@@ -132,18 +132,21 @@ class UsuariosEmpresaModel extends Mysql
 					$idsUsuCre
 				);
 				$PerIds = $usuarioModel->insertarPersona($con, $arrDataPer);
+				$Clave = empty($dataObj['password']) ? hash("SHA256", passGenerator()) : hash("SHA256", $dataObj['password']);
 				$arrDataUsu = array(
 					$PerIds,
 					$dataObj['email'],
-					$dataObj['password'],
+					$Clave,
 					$dataObj['alias'],
 					$idsUsuCre
 				);
 				$UsuIds = $usuarioModel->insertarUsuario($con, $arrDataUsu);
 				$arrDataEmp = array($idsEmpresa, $UsuIds, 1, $idsUsuCre);
 				$Eusu_id = $this->insertarEmpresaUsuario($con, $arrDataEmp);
+				$arrDataUsuRol = array($Eusu_id, $Erol_id, 1, $idsUsuCre);
+				$Eusu_id = $this->insertarEmpresaUsuarioRol($con, $arrDataUsuRol);
 				$modulos = $this->retornarModuloRolEmpresa($idsEmpresa, $Erol_id);
-				$this->insertarPermisoEmpresaUsuario($con, $modulos,$Eusu_id,$Erol_id,$idsUsuCre);
+				$this->insertarPermisoEmpresaUsuario($con, $modulos, $Eusu_id, $Erol_id, $idsUsuCre);
 
 			}
 
@@ -163,6 +166,15 @@ class UsuariosEmpresaModel extends Mysql
 	{
 		$sqlInsert = "INSERT INTO {$this->db_name}.empresa_usuario 
 								(emp_id, usu_id,estado_logico,usuario_creacion, fecha_creacion) 
+								VALUES (?,?,?,?, CURRENT_TIMESTAMP)";
+		return $this->insertConTrasn($con, $sqlInsert, $arrData);
+
+	}
+
+	public function insertarEmpresaUsuarioRol($con, $arrData)
+	{
+		$sqlInsert = "INSERT INTO {$this->db_name}.empresa_usuario_rol 
+								(eusu_id, erol_id,estado_logico,usuario_creacion, fecha_creacion) 
 								VALUES (?,?,?,?, CURRENT_TIMESTAMP)";
 		return $this->insertConTrasn($con, $sqlInsert, $arrData);
 
@@ -190,10 +202,9 @@ class UsuariosEmpresaModel extends Mysql
 	}
 
 
-	public function insertarPermisoEmpresaUsuario($con, $modulos,int $Eusu_id,int $Erol_id,$UsuCre)
+	public function insertarPermisoEmpresaUsuario($con, $modulos, int $Eusu_id, int $Erol_id, $UsuCre)
 	{
-		$privilegio=$this->retornarPrivilegioRol($Erol_id);
-		putMessageLogFile($privilegio);
+		$privilegio = $this->retornarPrivilegioRol($Erol_id);
 		$sql = "INSERT INTO {$this->db_name}.permiso
 			(`eusu_id`,`emod_id`,`erol_id`,`mod_id`,`r`,`w`,`u`,`d`,`estado_logico`,`usuario_creacion`)
 			VALUES 
@@ -225,7 +236,7 @@ class UsuariosEmpresaModel extends Mysql
 							on a.rol_id=b.rol_id
 						where a.estado_logico!=0 and  a.erol_id=:erol_id;";
 
-			$resultado = $this->select($sql, [ ":erol_id" => $Erol_id]);
+			$resultado = $this->select($sql, [":erol_id" => $Erol_id]);
 			if ($resultado === false) {
 				logFileSystem("Consulta fallida en retornarPrivilegioRol", "WARNING");
 				return [];
@@ -238,14 +249,121 @@ class UsuariosEmpresaModel extends Mysql
 	}
 
 
+	public function updateData(array $dataObj)
+	{
+		$con = $this->getConexion(); // Obtiene la conexión a la base de datos
+		$usuarioModel = new UsuariosModel();
+		$idsUsuUpd = retornaUser(); // Usuario que actualiza
+		$idsUsu = $dataObj['usuIds'];
 
+		try {
+			$con->beginTransaction(); // Inicia la transacción
 
+			// Verifica que el usuario exista
+			$objUsuario = $this->consultaUsuario($idsUsu);
+			if (!$objUsuario || empty($objUsuario['per_id'])) {
+				throw new Exception("Usuario no encontrado.");
+			}
 
+			$perId = $objUsuario['per_id'];
 
+			// Actualizar datos del usuario
+			$arrDataUsu = [
+				$dataObj['alias'],
+				$dataObj['email'],
+				$dataObj['estado'],
+				$idsUsuUpd
+			];
+			$this->actualizarUsuario($con, $idsUsu, $arrDataUsu);
 
+			// Actualizar datos de la persona
+			$arrDataPer = [
+				$dataObj['nombre'],
+				$dataObj['apellido'],
+				$dataObj['telefono'],
+				$dataObj['direccion'],
+				$dataObj['genero'],
+				$idsUsuUpd
+			];
+			$this->actualizarPersona($con, $perId, $arrDataPer);
 
+			$con->commit(); // Confirma los cambios
 
+			return [
+				"status" => true,
+				"numero" => 0,
+				"message" => "Registros actualizados correctamente."
+			];
 
+		} catch (Exception $e) {
+			$con->rollBack(); // Revierte los cambios en caso de error
+			logFileSystem("Error en updateData: " . $e->getMessage(), "ERROR");
+			return [
+				"status" => false,
+				"message" => "Error en la operación: " . $e->getMessage()
+			];
+		}
+	}
+
+	public function actualizarUsuario($con, $UsuId, $arrData)
+	{
+		if (empty($UsuId)) {
+			return false; // ID inválido
+		}
+
+		$sql = "UPDATE {$this->db_name}.usuario 
+               SET usu_alias = ?, 
+                   usu_correo = ?, 
+                   estado_logico = ?, 
+                   usuario_modificacion = ?, 
+                   fecha_modificacion = CURRENT_TIMESTAMP()
+             WHERE usu_id = ?";
+
+		// Agregamos el ID como último parámetro
+		$arrData[] = $UsuId;
+
+		return $this->updateConTrasn($con, $sql, $arrData);
+	}
+
+	public function actualizarPersona($con, $PerId, $arrData)
+	{
+		if (empty($PerId)) {
+			return false; // ID inválido
+		}
+
+		$sql = "UPDATE {$this->db_name}.persona 
+               SET per_nombre = ?, 
+                   per_apellido = ?, 
+                   per_telefono = ?, 
+                   per_direccion = ?, 
+				   per_genero = ?, 
+                   usuario_modificacion = ?, 
+                   fecha_modificacion = CURRENT_TIMESTAMP()
+             WHERE per_id = ?";
+
+		// Añadir el ID como último parámetro
+		$arrData[] = $PerId;
+
+		return $this->updateConTrasn($con, $sql, $arrData);
+	}
+
+	private function consultaUsuario(int $ids)
+	{
+		try {
+			$sql = "select * from {$this->db_name}.usuario 
+                        where usu_id=:usu_id";
+			$arrParams = [":usu_id" => $ids];
+			$resultado = $this->select($sql, $arrParams);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida consultaUsuario", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en consultaUsuario: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+	}
 
 
 }
