@@ -1,6 +1,7 @@
 <?php
 use Spipu\Html2Pdf\Html2Pdf;
 require 'vendor/autoload.php';
+require_once("Models/TiendaModel.php");
 
 class UsuariosEmpresa extends Controllers
 {
@@ -17,12 +18,13 @@ class UsuariosEmpresa extends Controllers
 		checkPermission('r', 'dashboard');
 		$data = getPageData("Usuarios Empresa", "usuariosempresa");
 		$data['empresa_rol'] = $this->model->consultarRolEmpresa();
+		$Cli_Id = retornarDataSesion("Cli_Id");
+		$data['tiendas']  = (new TiendaModel())->getClienteTiendas($Cli_Id);
 		$this->views->getView($this, "usuariosempresa", $data);
 	}
 
 	public function getUsuariosEmpresa()
 	{
-		//$arrData = (new UsuariosModel())->consultarDatos();
 		$arrData = $this->model->consultarDatos();
 		foreach ($arrData as &$objData) {
 			$objData['Estado'] = $objData['Estado'] == 1
@@ -43,6 +45,8 @@ class UsuariosEmpresa extends Controllers
 		if ($_SESSION['permisosMod']['u']) {
 			$options .= '<button class="btn btn-primary  btn-sm btnEditUsu" onClick="fntEditUsu(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button> ';
 			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Cambiar Clave"><i class="fa fa-key"></i></button> ';
+			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Roles"><i class="fa fa-address-book"></i></button> ';
+			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntVerTienda(\'' . $id . '\')" title="Tiendas"><i class="fa fa-shopping-bag"></i></button> ';
 		}
 		if ($_SESSION['permisosMod']['d']) {
 			$options .= " <button class='btn btn-danger btn-sm btnDelUsu' onClick='fntDelUsu($id)' title='Eliminar'><i class='fa fa-trash'></i></button> ";
@@ -255,6 +259,43 @@ class UsuariosEmpresa extends Controllers
 		} catch (Exception $e) {
 			logFileSystem("Error en cambiarClave: " . $e->getMessage(), "ERROR");
 			responseJson(['status' => false, 'msg' => 'Ocurrió un error al cambiarClave el usuario.']);
+		}
+		exit();
+	}
+
+
+	public function getTiendasEmpresa()
+	{
+		try {
+			if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+				responseJson(['status' => false, 'msg' => 'Método no permitido.']);
+			}
+
+			$data = recibirData($_POST['data']);
+
+			if (empty($data['ids']) || !is_numeric($data['ids'])) {
+				responseJson(['status' => false, 'msg' => 'ID inválido o faltante.']);
+			}
+
+			$ids = intval(strClean($data['ids']));
+
+			$resultado = (new UsuariosModel())->consultarDatosId($ids);
+			if (empty($resultado)) {
+				$arrResponse = [
+					'status' => false,
+					'msg' => 'No se pudo encontrar el usuario. Verifica si el ID es correcto.'
+				];
+			} else {
+				$arrResponse = [
+					'status' => true,
+					'data' => $resultado
+				];
+			}
+
+			responseJson($arrResponse);
+		} catch (Exception $e) {
+			logFileSystem("Error en getUsuarioEmpresa: " . $e->getMessage(), "ERROR");
+			responseJson(['status' => false, 'msg' => 'Ocurrió un error al encontrar el usuario.']);
 		}
 		exit();
 	}

@@ -77,14 +77,25 @@ class RolesModel extends Mysql
 		return $request;
 	}
 
-	public function getEmpresaRol(int $Emp_id){
-		$sql = "SELECT a.erol_id Ids,b.rol_nombre Nombre,a.rol_id ";
-		$sql .= "	FROM {$this->db_name}.empresa_rol a ";
-		$sql .= "			INNER JOIN {$this->db_name}.rol b ";
-		$sql .= "		ON a.rol_id=b.rol_id ";
-		$sql .= "	WHERE a.estado_logico!=0 AND a.emp_id=:emp_id ";
-		$request = $this->select_all($sql, [":emp_id" => $Emp_id]);
-		return $request;
+
+	public function getEmpresaRol(int $Emp_id)
+	{
+		try {
+			$sql = "SELECT a.erol_id Ids,b.rol_nombre Nombre,a.rol_id ";
+			$sql .= "	FROM {$this->db_name}.empresa_rol a ";
+			$sql .= "			INNER JOIN {$this->db_name}.rol b ";
+			$sql .= "		ON a.rol_id=b.rol_id ";
+			$sql .= "	WHERE a.estado_logico!=0 AND a.emp_id=:emp_id ";
+			$resultado = $this->select_all($sql, [":emp_id" => $Emp_id]);
+			if ($resultado === false) {
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en getEmpresaRol: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+
 	}
 
 	

@@ -17,11 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
             "url": " " + base_url + "/UsuariosEmpresa/getUsuariosEmpresa",
             "dataSrc": ""
         },
-
+        
         "columns": [
             { "data": "per_cedula" },
             { "data": "Nombres" },
             { "data": "usu_correo" },
+            { "data": "Tiendas" },
             //{ "data": "rol_nombre" },
             { "data": "Estado" },
             { "data": "options" }
@@ -495,6 +496,32 @@ function cambiarClave() {
 
     }, function (jqXHR, textStatus, errorThrown) {
         // Manejar el error de la solicitud aquí
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+}
+
+
+function fntVerTienda(ids) {
+    document.querySelector('#titleModal2').innerHTML = "Tiendas";
+    document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
+    document.querySelector('#btn_CanbiarClave').classList.replace("btn-primary", "btn-info");
+    document.querySelector('#btnText').innerHTML = "Guardar";
+
+    const url = base_url + '/UsuariosEmpresa/getTiendasEmpresa';
+    const metodo = 'POST';
+    const dataPost = { ids: ids };
+
+    peticionAjaxSSL(url, metodo, dataPost, function (data) {
+        if (data.status) {
+            document.querySelector("#txth_ids").value = data.data.Ids;
+            document.querySelector("#lbl_correo2").innerHTML = data.data.usu_correo;
+
+            
+            $('#modalTiendas').modal('show');
+        } else {
+            swal("Atención", data.msg, "error");
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
         console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
     });
 }

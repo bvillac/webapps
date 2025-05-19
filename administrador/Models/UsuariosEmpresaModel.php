@@ -27,7 +27,9 @@ class UsuariosEmpresaModel extends Mysql
 					a.usu_alias,
 					p.per_cedula,
 					CONCAT(p.per_nombre, ' ', p.per_apellido) AS Nombres,
-					a.estado_logico AS Estado
+					a.estado_logico AS Estado,
+					(select  GROUP_CONCAT(b1.tie_nombre SEPARATOR ', ') from  db_pedidos.usuario_tienda a1 
+						inner join db_pedidos.tienda b1 on a1.tie_id=b1.tie_id where a1.usu_id=a.usu_id) as Tiendas
 				FROM {$this->db_name}.empresa_usuario x
 				INNER JOIN {$this->db_name}.usuario a ON a.usu_id = x.usu_id
 				INNER JOIN {$this->db_name}.persona p ON a.per_id = p.per_id
@@ -88,77 +90,84 @@ class UsuariosEmpresaModel extends Mysql
 
 	public function insertData(array $dataObj)
 	{
-		$con = $this->getConexion(); // Obtiene la conexión a la base de datos
-		$arroout = ["status" => false, "message" => "No se realizó ninguna operación."];
+		$con = $this->getConexion();
 		$usuarioModel = new UsuariosModel();
 		$idsUsuCre = retornaUser();
 		$idsEmpresa = retornarDataSesion('Emp_Id');
+
 		try {
-			$con->beginTransaction(); // Inicia una transacción
-			// Verificar si el producto ya existe la persona
-			$sqlCheck = "SELECT * FROM {$this->db_name}.persona WHERE per_cedula = :per_cedula AND per_nombre = :per_nombre AND per_apellido = :per_apellido  ";
+			$con->beginTransaction();
+
+			// Validación: verificar si la persona ya existe
+			$sqlCheck = " SELECT 1 
+						FROM {$this->db_name}.persona 
+						WHERE per_cedula = :cedula 
+						AND per_nombre = :nombre 
+						AND per_apellido = :apellido ";
 			$stmtCheck = $con->prepare($sqlCheck);
 			$stmtCheck->execute([
-				':per_cedula' => $dataObj['dni'],
-				':per_nombre' => $dataObj['nombre'],
-				':per_apellido' => $dataObj['apellido']
+				':cedula' => $dataObj['dni'],
+				':nombre' => $dataObj['nombre'],
+				':apellido' => $dataObj['apellido']
 			]);
-			//{"usuIds":"","dni":"121231231231","fecha_nacimiento":"2025-05-10","nombre":"JOSE","apellido":"PEDRO",
-			//	"telefono":"0999999999","direccion":"COLON","alias":"JPE","genero":"M","email":"JOSE@miller.com","estado":"1",
-			//	"rol":"12","password":"1234523232323"}
 
-			$result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-			if ($result) {
-				// Actualizar si ya existe
-				/*$sqlUpdate = "UPDATE {$this->db_name}.empresa_usuario 
-																									SET estado_logico = 1, 
-																										fecha_modificacion = CURRENT_TIMESTAMP 
-																									WHERE eusu_id = :eusu_id";
-																						$stmtUpdate = $con->prepare($sqlUpdate);
-																						$stmtUpdate->execute([
-																							':eusu_id' => $result['eusu_id']
-																						]);*/
-			} else {
-				// Insertar si no existe
-				$Erol_id = $dataObj['rol'];
-				$arrDataPer = array(
-					$dataObj['dni'],
-					$dataObj['nombre'],
-					$dataObj['apellido'],
-					$dataObj['fecha_nacimiento'],
-					$dataObj['telefono'],
-					$dataObj['direccion'],
-					$dataObj['genero'],
-					$idsUsuCre
-				);
-				$PerIds = $usuarioModel->insertarPersona($con, $arrDataPer);
-				//$Clave = empty($dataObj['password']) ? hash("SHA256", passGenerator()) : hash("SHA256", $dataObj['password']);
-				$Clave=generaClave($dataObj['password']);
-				$arrDataUsu = array(
-					$PerIds,
-					$dataObj['email'],
-					$Clave,
-					$dataObj['alias'],
-					$idsUsuCre
-				);
-				$UsuIds = $usuarioModel->insertarUsuario($con, $arrDataUsu);
-				$arrDataEmp = array($idsEmpresa, $UsuIds, 1, $idsUsuCre);
-				$Eusu_id = $this->insertarEmpresaUsuario($con, $arrDataEmp);
-				$arrDataUsuRol = array($Eusu_id, $Erol_id, 1, $idsUsuCre);
-				$Eusu_id = $this->insertarEmpresaUsuarioRol($con, $arrDataUsuRol);
-				$modulos = $this->retornarModuloRolEmpresa($idsEmpresa, $Erol_id);
-				$this->insertarPermisoEmpresaUsuario($con, $modulos, $Eusu_id, $Erol_id, $idsUsuCre);
-
+			if ($stmtCheck->fetch()) {
+				$con->rollBack();
+				return ["status" => false, "message" => "El usuario ya existe con esa cédula, nombre y apellido."];
 			}
 
-			//$this->actualizaEmpresaUsuario($con, $dataObj['usuIds'], $dataObj['valores']);
-			$con->commit(); // Confirma la transacción
-			return ["status" => true, "numero" => 0, "message" => "Registros guardados correctamente."];
+			// Insertar en persona
+			$arrDataPer = [
+				$dataObj['dni'],
+				$dataObj['nombre'],
+				$dataObj['apellido'],
+				$dataObj['fecha_nacimiento'],
+				$dataObj['telefono'],
+				$dataObj['direccion'],
+				$dataObj['genero'],
+				$idsUsuCre
+			];
+			$perId = $usuarioModel->insertarPersona($con, $arrDataPer);
 
+			// Insertar en usuario
+			$claveHash = generaClave($dataObj['password']);
+			$arrDataUsu = [
+				$perId,
+				$dataObj['email'],
+				$claveHash,
+				$dataObj['alias'],
+				$idsUsuCre
+			];
+			$usuId = $usuarioModel->insertarUsuario($con, $arrDataUsu);
+
+			// Relación con empresa
+			$arrDataEmp = [$idsEmpresa, $usuId, 1, $idsUsuCre];
+			$eusuId = $this->insertarEmpresaUsuario($con, $arrDataEmp);
+
+			// Rol
+			$rolId = $dataObj['rol'];
+			$arrDataUsuRol = [$eusuId, $rolId, 1, $idsUsuCre];
+			$this->insertarEmpresaUsuarioRol($con, $arrDataUsuRol);
+
+			// Permisos
+			$modulos = $this->retornarModuloRolEmpresa($idsEmpresa, $rolId);
+			$this->insertarPermisoEmpresaUsuario($con, $modulos, $eusuId, $rolId, $idsUsuCre);
+
+			$con->commit();
+
+			return [
+				"status" => true,
+				"numero" => $usuId,
+				"message" => "Usuario registrado correctamente."
+			];
 		} catch (Exception $e) {
-			$con->rollBack(); // Revierte la transacción en caso de error
+			$con->rollBack();
 			logFileSystem("Error en insertData: " . $e->getMessage(), "ERROR");
-			return ["status" => false, "message" => "Error en la operación: " . $e->getMessage()];
+
+			return [
+				"status" => false,
+				"message" => "Error al guardar el usuario: " . $e->getMessage()
+			];
 		}
 	}
 

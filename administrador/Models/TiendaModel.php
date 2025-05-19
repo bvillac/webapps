@@ -310,6 +310,22 @@ class TiendaModel extends MysqlPedidos
         }
     }
 
+    public function getClienteTiendas(int $Cli_id)
+	{
+		try {
+			$sql = "SELECT tie_id as Ids,tie_nombre as Nombre FROM {$this->db_name}.tienda where tie_est_log!=0 and cli_id= :cli_id";
+			$resultado = $this->select_all($sql, [":cli_id" => $Cli_id]);
+			if ($resultado === false) {
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en getEmpresaRol: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+
+	}
+
 
 
 }

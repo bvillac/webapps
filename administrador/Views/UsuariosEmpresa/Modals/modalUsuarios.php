@@ -21,38 +21,44 @@
               <label for="txt_dni">Identificación Dni</label>
               <input type="text" class="form-control valid validarNumber " id="txt_dni" name="txt_dni" required="">
             </div>
-            
+
 
             <div class="form-group col-md-6">
               <label for="dtp_fecha_nacimiento">Fecha Nacimiento</label>
-              <input type="date" class="form-control valid validText" id="dtp_fecha_nacimiento" name="dtp_fecha_nacimiento" placeholder="yyyy-mm-dd"  pattern="^\d{4}\/\d{2}\/\d{2}$" >
+              <input type="date" class="form-control valid validText" id="dtp_fecha_nacimiento"
+                name="dtp_fecha_nacimiento" placeholder="yyyy-mm-dd" pattern="^\d{4}\/\d{2}\/\d{2}$">
             </div>
 
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_nombre">Nombre</label>
-              <input type="text" class="form-control valid validarTexto" id="txt_nombre" name="txt_nombre" onkeyup="TextMayus(this);" required="">
+              <input type="text" class="form-control valid validarTexto" id="txt_nombre" name="txt_nombre"
+                onkeyup="TextMayus(this);" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="txt_apellido">Apellido</label>
-              <input type="text" class="form-control valid validarTexto " id="txt_apellido" name="txt_apellido" onkeyup="TextMayus(this);" required="">
+              <input type="text" class="form-control valid validarTexto " id="txt_apellido" name="txt_apellido"
+                onkeyup="TextMayus(this);" required="">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_telefono">Teléfono/Celular</label>
-              <input type="text" maxlength="10" class="form-control valid validarNumber" id="txt_telefono" name="txt_telefono" placeholder="0999999999" required="">
+              <input type="text" maxlength="10" class="form-control valid validarNumber" id="txt_telefono"
+                name="txt_telefono" placeholder="0999999999" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="txt_direccion">Dirección Domiciliaria</label>
-              <input type="text" class="form-control " id="txt_direccion" name="txt_direccion" onkeyup="TextMayus(this);" required="">
+              <input type="text" class="form-control " id="txt_direccion" name="txt_direccion"
+                onkeyup="TextMayus(this);" required="">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_alias">Alias</label>
-              <input type="text" class="form-control valid validarTexto" id="txt_alias" name="txt_alias" onkeyup="TextMayus(this);" required="">
+              <input type="text" class="form-control valid validarTexto" id="txt_alias" name="txt_alias"
+                onkeyup="TextMayus(this);" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="cmb_genero">Género</label>
@@ -65,12 +71,17 @@
           <div class="form-row" id="div_usaurio">
             <div class="form-group col-md-6">
               <label for="txt_correo">Usuario/Correo Electrónico</label>
-              <input type="email" class="form-control valid validarEmail" id="txt_correo" name="txt_correo" placeholder="ejemplo@gmail.com" required="">
+              <input type="email" class="form-control valid validarEmail" id="txt_correo" name="txt_correo"
+                placeholder="ejemplo@gmail.com" required="">
             </div>
             <div class="form-group col-md-6">
               <label for="txt_Password">Clave</label>
-              <input type="password" class="form-control" id="txt_Password" name="txt_Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="La contraseña debe contener 8 o más caracteres que son de por lo menos un número, una mayúscula y minúscula" placeholder="Abcdef123">
-              <span class="mdi mdi-eye" id="mostrar"> <span class="pwdtxt" style="cursor:pointer;">Mostrar contraseña</span></span>
+              <input type="password" class="form-control" id="txt_Password" name="txt_Password"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                title="La contraseña debe contener 8 o más caracteres que son de por lo menos un número, una mayúscula y minúscula"
+                placeholder="Abcdef123">
+              <span class="mdi mdi-eye" id="mostrar"> <span class="pwdtxt" style="cursor:pointer;">Mostrar
+                  contraseña</span></span>
             </div>
           </div>
 
@@ -99,8 +110,10 @@
 
 
           <div class="tile-footer">
-            <button id="btn_guardar" class="btn btn-primary" type="button"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
-            <button id="btn_cerrar"class="btn btn-danger" type="button" data-bs-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
+            <button id="btn_guardar" class="btn btn-primary" type="button"><i
+                class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>&nbsp;&nbsp;&nbsp;
+            <button id="btn_cerrar" class="btn btn-danger" type="button" data-bs-dismiss="modal"><i
+                class="fa fa-fw fa-lg fa-times-circle"></i>Cerrar</button>
           </div>
 
         </form>
@@ -200,36 +213,37 @@
             <tr>
               <td>Empresa:</td>
               <td>
-                  <label for="multiple-select" class="form-label">Presione CTRL y haga clic para seleccionar varias opciones a la vez.:</label>
-                  <select class="form-select valid" multiple data-live-search="true" id="multiple-select"  required="">
-                            <?php
-                            foreach ($data['empresas'] as $opcion) {
-                                $seleted=0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
-                                echo '<option value="' . $opcion['Ids'] . '" '.$seleted.' >' . $opcion['Nombre'] . '</option>';
-                            }
-                            ?>
-                  </select>
-                      
+                <label for="multiple-select" class="form-label">Presione CTRL y haga clic para seleccionar varias
+                  opciones a la vez.:</label>
+                <select class="form-select valid" multiple data-live-search="true" id="multiple-select2" required="">
+                  <?php
+                  foreach ($data['empresas'] as $opcion) {
+                    $seleted = 0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
+                    echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
+                  }
+                  ?>
+                </select>
+
               </td>
             </tr>
             <tr>
               <td colspan="2">
-                 
 
-                  <!-- Contenedor donde aparecerán las opciones seleccionadas -->
-                  <div id="selected-tags" class="tag-container"></div>
 
-                  <!-- Campo oculto para enviar los valores al backend -->
-                  <input type="hidden" name="selectedValues" id="selectedValues">
+                <!-- Contenedor donde aparecerán las opciones seleccionadas -->
+                <div id="selected-tags" class="tag-container"></div>
+
+                <!-- Campo oculto para enviar los valores al backend -->
+                <input type="hidden" name="selectedValues" id="selectedValues">
               </td>
             </tr>
-            
-            
+
+
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" id="btn_GuardarEmpresa" class="btn btn-primary" >Guardar</button>
+        <button type="button" id="btn_GuardarEmpresa" class="btn btn-primary">Guardar</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -257,16 +271,66 @@
             <tr>
               <td>Nueva Clave:</td>
               <td>
-              <input type="password" class="form-control" id="txt_Password2" name="txt_Password2" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="La contraseña debe contener 8 o más caracteres que son de por lo menos un número, una mayúscula y minúscula" placeholder="Abcdef123">
-              <span class="mdi mdi-eye" id="mostrar2"> <span class="pwdtxt" style="cursor:pointer;">Mostrar contraseña</span></span>
+                <input type="password" class="form-control" id="txt_Password2" name="txt_Password2"
+                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                  title="La contraseña debe contener 8 o más caracteres que son de por lo menos un número, una mayúscula y minúscula"
+                  placeholder="Abcdef123">
+                <span class="mdi mdi-eye" id="mostrar2"> <span class="pwdtxt" style="cursor:pointer;">Mostrar
+                    contraseña</span></span>
               </td>
-              
+
             </tr>
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" id="btn_CanbiarClave" class="btn btn-primary" >Guardar</button>
+        <button type="button" id="btn_CanbiarClave" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Aplicar Tiendas -->
+<div class="modal fade" id="modalTiendas" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header header-primary">
+        <h5 class="modal-title" id="titleModal2">Asignar Usuario Empresas</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td>Usuario:</td>
+              <td id="lbl_correo2"></td>
+            </tr>
+            <tr>
+              <td>Tiendas:</td>
+              <td>
+                <span> Presione CTRL y haga clic para seleccionar varias<br>
+                  opciones a la vez.:</span>
+             
+                <select class="form-select " multiple id="list_tiendas" style="height: 300px;width: 300px;" >
+                  <?php
+                  foreach ($data['tiendas'] as $opcion) {
+                    $seleted = 0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
+                    echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
+                  }
+                  ?>
+                </select>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn_guardarTienda" class="btn btn-primary">Guardar</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>

@@ -33,6 +33,7 @@
                           <th>Identificación Dni</th>
                           <th>Nombres</th>
                           <th>Correo Electrónico</th>
+                          <th>Tiendas</th>
                           <!--<th>Nombre Rol</th>-->
                           <th>Estado</th>
                           <th>Acciones</th>
