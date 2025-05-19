@@ -38,10 +38,11 @@ class UsuariosEmpresa extends Controllers
 	{
 		$options = '<div class="text-center">';
 		if ($_SESSION['permisosMod']['r']) {
-			$options .= '<button class="btn btn-info btn-sm btnViewUsu" onClick="fntViewUsu(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
+			$options .= '<button class="btn btn-info btn-sm btnViewUsu" onClick="fntViewUsu(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button> ';
 		}
 		if ($_SESSION['permisosMod']['u']) {
-			$options .= '<button class="btn btn-primary  btn-sm btnEditUsu" onClick="fntEditUsu(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
+			$options .= '<button class="btn btn-primary  btn-sm btnEditUsu" onClick="fntEditUsu(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button> ';
+			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Cambiar Clave"><i class="fa fa-key"></i></button> ';
 		}
 		if ($_SESSION['permisosMod']['d']) {
 			$options .= " <button class='btn btn-danger btn-sm btnDelUsu' onClick='fntDelUsu($id)' title='Eliminar'><i class='fa fa-trash'></i></button> ";
@@ -139,46 +140,124 @@ class UsuariosEmpresa extends Controllers
 		exit();
 	}
 
-	public function getUsuarioEmpresaXXX(int $ids)
-	{
-		$ids = intval(strClean($ids));
-		$model = new UsuariosModel();
-		if ($ids > 0) {
-			$arrData = $model->consultarDatosId($ids);
-			//dep($arrData);
-			if (empty($arrData)) {
 
-				$arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-			} else {
-				$arrData['RolID'] = 4;//$_SESSION['usuarioData']['RolID'];//Usuario por Defecto
-				$arrResponse = array('status' => true, 'data' => $arrData);
+
+	public function getUsuarioEmpresa()
+	{
+		try {
+			if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+				responseJson(['status' => false, 'msg' => 'Método no permitido.']);
 			}
+
+			$data = recibirData($_POST['data']);
+
+			if (empty($data['ids']) || !is_numeric($data['ids'])) {
+				responseJson(['status' => false, 'msg' => 'ID inválido o faltante.']);
+			}
+
+			$ids = intval(strClean($data['ids']));
+
+			$resultado = (new UsuariosModel())->consultarDatosId($ids);
+			if (empty($resultado)) {
+				$arrResponse = [
+					'status' => false,
+					'msg' => 'No se pudo encontrar el usuario. Verifica si el ID es correcto.'
+				];
+			} else {
+				$arrResponse = [
+					'status' => true,
+					'data' => $resultado
+				];
+			}
+
 			responseJson($arrResponse);
+		} catch (Exception $e) {
+			logFileSystem("Error en getUsuarioEmpresa: " . $e->getMessage(), "ERROR");
+			responseJson(['status' => false, 'msg' => 'Ocurrió un error al encontrar el usuario.']);
 		}
 		exit();
 	}
 
-	public function getUsuarioEmpresa()
-    {
-        if ($_POST) {
-            $data = recibirData($_POST['data']);
-            if (empty($data['ids'])) {
-                $arrResponse = array('status' => false, 'msg' => 'Error de datos Recibidos');
-            } else {
-                $ids = intval(strClean($data['ids']));
-				$arrData = (new UsuariosModel())->consultarDatosId($ids);
-                if (empty($arrData)) {
-                    $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados.');
-                } else {
-                    $arrResponse = array('status' => true, 'data' => $arrData);
-                }
-            }
-            responseJson($arrResponse);
-        }
-        exit();
-    }
 
 
+	/**
+	 * Controlador para eliminar (desactivar lógicamente) un usuario.
+	 */
+	public function eliminarUsuario()
+	{
+		try {
+			if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+				responseJson(['status' => false, 'msg' => 'Método no permitido.']);
+			}
+
+			$data = recibirData($_POST['data']);
+
+			if (empty($data['ids']) || !is_numeric($data['ids'])) {
+				responseJson(['status' => false, 'msg' => 'ID inválido o faltante.']);
+			}
+
+			$ids = intval(strClean($data['ids']));
+
+			$resultado = (new UsuariosModel())->deleteUsuario($ids);
+
+			if (!$resultado) {
+				$arrResponse = [
+					'status' => false,
+					'msg' => 'No se pudo eliminar el usuario. Verifica si el ID es correcto.'
+				];
+			} else {
+				$arrResponse = [
+					'status' => true,
+					'msg' => 'Usuario eliminado correctamente.',
+					'data' => $resultado
+				];
+			}
+
+			responseJson($arrResponse);
+		} catch (Exception $e) {
+			logFileSystem("Error en eliminarUsuario: " . $e->getMessage(), "ERROR");
+			responseJson(['status' => false, 'msg' => 'Ocurrió un error al eliminar el usuario.']);
+		}
+		exit();
+	}
+
+	public function cambiarClave()
+	{
+		try {
+			if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+				responseJson(['status' => false, 'msg' => 'Método no permitido.']);
+			}
+
+			$data = recibirData($_POST['data']);
+
+			if (empty($data['ids']) || !is_numeric($data['ids']) || empty($data['clave'])) {
+				responseJson(['status' => false, 'msg' => 'ID inválido o clave faltante.']);
+			}
+
+			$ids = intval(strClean($data['ids']));
+			$clave = $data['clave'];
+
+			$resultado = (new UsuariosModel())->cambiarClave($ids,$clave);
+
+			if (!$resultado) {
+				$arrResponse = [
+					'status' => false,
+					'msg' => 'No se pudo Cambiar la clave. Verifica si el ID es correcto.'
+				];
+			} else {
+				$arrResponse = [
+					'status' => true,
+					'msg' => 'Registro actualizado correctamente.'
+				];
+			}
+
+			responseJson($arrResponse);
+		} catch (Exception $e) {
+			logFileSystem("Error en cambiarClave: " . $e->getMessage(), "ERROR");
+			responseJson(['status' => false, 'msg' => 'Ocurrió un error al cambiarClave el usuario.']);
+		}
+		exit();
+	}
 
 
 

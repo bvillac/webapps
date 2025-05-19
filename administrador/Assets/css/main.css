@@ -16746,3 +16746,7 @@ be a descendant of the grid when it is being dragged.
 .is-valid {
   border: 1px solid green;
 }
+
+.ocultaElemento {
+  display: none;
+}

@@ -132,7 +132,8 @@ class UsuariosEmpresaModel extends Mysql
 					$idsUsuCre
 				);
 				$PerIds = $usuarioModel->insertarPersona($con, $arrDataPer);
-				$Clave = empty($dataObj['password']) ? hash("SHA256", passGenerator()) : hash("SHA256", $dataObj['password']);
+				//$Clave = empty($dataObj['password']) ? hash("SHA256", passGenerator()) : hash("SHA256", $dataObj['password']);
+				$Clave=generaClave($dataObj['password']);
 				$arrDataUsu = array(
 					$PerIds,
 					$dataObj['email'],

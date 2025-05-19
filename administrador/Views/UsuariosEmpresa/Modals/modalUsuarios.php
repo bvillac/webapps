@@ -62,7 +62,7 @@
               </select>
             </div>
           </div>
-          <div class="form-row">
+          <div class="form-row" id="div_usaurio">
             <div class="form-group col-md-6">
               <label for="txt_correo">Usuario/Correo Electrónico</label>
               <input type="email" class="form-control valid validarEmail" id="txt_correo" name="txt_correo" placeholder="ejemplo@gmail.com" required="">
@@ -75,7 +75,7 @@
           </div>
 
           <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-6" id="div_rol">
               <label for="cmb_rol">Rol Asignado</label>
               <select class="form-control" data-live-search="true" id="cmb_rol" name="cmb_rol" required="">
                 <?php
@@ -230,6 +230,43 @@
       </div>
       <div class="modal-footer">
         <button type="button" id="btn_GuardarEmpresa" class="btn btn-primary" >Guardar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal CambiarClave -->
+<div class="modal fade" id="modalClave" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header header-primary">
+        <h5 class="modal-title" id="titleModal">Asignar Usuario Empresas</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td>Usuario:</td>
+              <td id="lbl_correo"></td>
+            </tr>
+            <tr>
+              <td>Nueva Clave:</td>
+              <td>
+              <input type="password" class="form-control" id="txt_Password2" name="txt_Password2" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="La contraseña debe contener 8 o más caracteres que son de por lo menos un número, una mayúscula y minúscula" placeholder="Abcdef123">
+              <span class="mdi mdi-eye" id="mostrar2"> <span class="pwdtxt" style="cursor:pointer;">Mostrar contraseña</span></span>
+              </td>
+              
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn_CanbiarClave" class="btn btn-primary" >Guardar</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>

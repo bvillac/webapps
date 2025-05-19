@@ -673,3 +673,23 @@ function estadoPedidos(string $valor = "0")
 }
 
 
+
+/**
+ * Genera un hash seguro de la clave utilizando SHA-256.
+ * Si no se proporciona una clave, genera una clave aleatoria segura.
+ *
+ * @param string|null $clave La clave a hashear.
+ * @return string Hash SHA-256 de la clave.
+ */
+function generaClave(?string $clave): string
+{
+    // Si la clave es vacía, generamos una aleatoria con mínimo 12 caracteres seguros
+    $clave = trim($clave);
+    if (empty($clave)) {
+        $clave = passGenerator(12); // Asegúrate de que passGenerator genere contraseñas seguras
+    }
+
+    return hash('sha256', $clave);
+}
+
+

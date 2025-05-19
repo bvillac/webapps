@@ -10,8 +10,8 @@ class UsuariosModel extends Mysql
 	{
 		parent::__construct();
 		$this->db_name = $this->getDbNameMysql();
-		$this->rolName=retornarDataSesion("RolNombre");
-		$this->EmpIds=retornarDataSesion("Emp_Id");
+		$this->rolName = retornarDataSesion("RolNombre");
+		$this->EmpIds = retornarDataSesion("Emp_Id");
 	}
 
 
@@ -40,9 +40,9 @@ class UsuariosModel extends Mysql
 			$con->beginTransaction();
 			try {
 				$arrDataPer = array($Dni, $Nombre, $Apellido, $FecNaci, $Telefono, $Direccion, $Genero, $idsUsuCre);
-				$PerIds = $this->insertarPersona($con,  $arrDataPer);		
+				$PerIds = $this->insertarPersona($con, $arrDataPer);
 				$arrDataUsu = array($PerIds, $Correo, $Clave, $Alias, $idsUsuCre);
-				$UsuIds = $this->insertarUsuario($con,  $arrDataUsu);
+				$UsuIds = $this->insertarUsuario($con, $arrDataUsu);
 				$arrDataEmp = array($idsEmpresa, $UsuIds, $rol_id, $idsUsuCre);
 				//$UsuIds=$this->insertarEmpresaUsuario($con,$db_name,$arrDataEmp);
 				$con->commit();
@@ -66,7 +66,7 @@ class UsuariosModel extends Mysql
 
 	public function insertarPersona($con, $arrData)
 	{
-		$SqlQuery  = "INSERT INTO {$this->db_name}.persona ";
+		$SqlQuery = "INSERT INTO {$this->db_name}.persona ";
 		$SqlQuery .= "(per_cedula,per_nombre,per_apellido,per_fecha_nacimiento,per_telefono,per_direccion,per_genero,usuario_creacion,estado_logico) ";
 		$SqlQuery .= " VALUES(?,?,?,?,?,?,?,?,1) ";
 		$insert = $con->prepare($SqlQuery);
@@ -83,7 +83,7 @@ class UsuariosModel extends Mysql
 
 	public function insertarUsuario($con, $arrData)
 	{
-		$SqlQuery  = "INSERT INTO {$this->db_name}.usuario ";
+		$SqlQuery = "INSERT INTO {$this->db_name}.usuario ";
 		$SqlQuery .= "(per_id,usu_correo,usu_clave,usu_alias,usuario_creacion,estado_logico) ";
 		$SqlQuery .= " VALUES(?,?,?,?,?,1) ";
 		$insert = $con->prepare($SqlQuery);
@@ -101,8 +101,8 @@ class UsuariosModel extends Mysql
 	{
 		$busqueda = "";
 		/*if($idpersona != NULL){
-				$busqueda = " AND p.personaid =".$idpersona;
-			}*/
+					  $busqueda = " AND p.personaid =".$idpersona;
+				  }*/
 		//$empresa = 1;
 		$IdsEmpresa = $_SESSION['Emp_Id'];
 		$ObjEmp = new EmpresaModel;
@@ -157,29 +157,29 @@ class UsuariosModel extends Mysql
 		$request = $this->select_all($sql);
 		return $request;
 	}
-	
+
 	public function consultarDatos()
-    {
-        try {
-			$rolName=$_SESSION['usuarioData']['Rol_nombre'];
+	{
+		try {
+			$rolName = $_SESSION['usuarioData']['Rol_nombre'];
 			$sql = "SELECT a.usu_id Ids,a.per_id,a.usu_correo,a.usu_alias,a.usu_clave,p.per_cedula,p.per_nombre,p.per_apellido,a.estado_logico Estado  	";
 			$sql .= "	FROM {$this->db_name}.usuario a ";
 			$sql .= "		INNER JOIN {$this->db_name}.persona p ";
 			$sql .= "			ON a.per_id=p.per_id AND p.estado_logico!=0 	";
-			if($rolName!="admin"){//Diferente de rol administrador
+			if ($rolName != "admin") {//Diferente de rol administrador
 				$sql .= "	WHERE a.estado_logico!=0 ";
 			}
-            $resultado = $this->select_all($sql);
-            if ($resultado === false) {
-                logFileSystem("Consulta fallida consultarDatos", "WARNING");
-                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
-            }
-            return $resultado;
-        } catch (Exception $e) {
-            logFileSystem("Error en consultarProductosTiendaCheck: " . $e->getMessage(), "ERROR");
-            return []; // En caso de error, retornar un array vacío
-        }
-    }
+			$resultado = $this->select_all($sql);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida consultarDatos", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en consultarProductosTiendaCheck: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+	}
 
 	public function consultarRoles()
 	{
@@ -191,16 +191,26 @@ class UsuariosModel extends Mysql
 
 	public function consultarDatosId(int $Ids)
 	{
-		//$idsEmpresa = $_SESSION['Emp_Id'];
-		$sql = "SELECT distinct(a.usu_id) Ids,a.per_id,a.usu_correo,a.usu_alias Alias,p.per_cedula Dni,p.per_nombre Nombre,p.per_apellido Apellido,p.per_fecha_nacimiento FechaNac, ";
-		$sql .= "	p.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,p.per_telefono Telefono,p.per_direccion Direccion ";
-		$sql .= " FROM {$this->db_name}.usuario a ";
-		$sql .= "	INNER JOIN {$this->db_name}.persona p ";
-		$sql .= "		ON a.per_id=p.per_id ";
-		$sql .= " WHERE  a.usu_id={$Ids} ";
-		$request = $this->select($sql);
-		return $request;
+		try {
+			$sql = "SELECT distinct(a.usu_id) Ids,a.per_id,a.usu_correo,a.usu_alias Alias,p.per_cedula Dni,p.per_nombre Nombre,p.per_apellido Apellido,p.per_fecha_nacimiento FechaNac, ";
+			$sql .= "	p.per_genero Genero,a.estado_logico Estado,date(a.fecha_creacion) FechaIng,p.per_telefono Telefono,p.per_direccion Direccion ";
+			$sql .= " FROM {$this->db_name}.usuario a ";
+			$sql .= "	INNER JOIN {$this->db_name}.persona p ";
+			$sql .= "		ON a.per_id=p.per_id ";
+			$sql .= " WHERE  a.usu_id= :usu_id ";
+
+			$resultado = $this->select($sql,[":usu_id" => $Ids]);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida consultarDatosId", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en consultarDatosId: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
 	}
+
 
 
 	public function updateData(
@@ -232,7 +242,7 @@ class UsuariosModel extends Mysql
 		try {
 			$strClave = ($Clave != "") ? ",usu_clave='{$Clave}'" : "";
 			//Actualizar Usuario
-			$SqlQuery  = "UPDATE " . $db_name . ".usuario  ";
+			$SqlQuery = "UPDATE " . $db_name . ".usuario  ";
 			$SqlQuery .= "SET usu_alias = ?,usu_correo = ?, estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP(){$strClave}";
 			$SqlQuery .= " WHERE usu_id = '{$UsuId}' ";
 			$update = $con->prepare($SqlQuery);
@@ -241,7 +251,7 @@ class UsuariosModel extends Mysql
 			$update->execute($arrDataUsu);
 
 			//Actualizar Personas
-			$SqlQuery  = "UPDATE " . $db_name . ".persona  ";
+			$SqlQuery = "UPDATE " . $db_name . ".persona  ";
 			$SqlQuery .= "SET per_cedula = ?,per_nombre = ?,per_apellido = ?,per_fecha_nacimiento = ?,per_telefono = ?, ";
 			$SqlQuery .= " per_direccion = ?,per_genero=?,estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() ";
 			$SqlQuery .= " WHERE per_id = '{$per_id}' ";
@@ -271,7 +281,7 @@ class UsuariosModel extends Mysql
 		try {
 			$strClave = ($Clave != "") ? ",usu_clave={$Clave}" : "";
 			//Actualizar Usuario
-			$SqlQuery  = "UPDATE " . $db_name . ".usuario  ";
+			$SqlQuery = "UPDATE " . $db_name . ".usuario  ";
 			$SqlQuery .= "SET usu_alias = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP(){$strClave} ";
 			$SqlQuery .= " WHERE usu_id = {$UsuId} ";
 			$update = $con->prepare($SqlQuery);
@@ -279,7 +289,7 @@ class UsuariosModel extends Mysql
 			$update->execute($arrDataUsu);
 
 			//Actualizar Persona
-			$SqlQuery  = "UPDATE " . $db_name . ".persona  ";
+			$SqlQuery = "UPDATE " . $db_name . ".persona  ";
 			$SqlQuery .= "SET per_nombre = ?,per_apellido = ?,per_telefono = ?, ";
 			$SqlQuery .= " per_direccion = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() ";
 			$SqlQuery .= " WHERE per_id = {$per_id} ";
@@ -297,22 +307,40 @@ class UsuariosModel extends Mysql
 	}
 
 
+	/**
+	 * Desactiva lógicamente un usuario (soft delete).
+	 *
+	 * @param int $Ids ID del usuario a desactivar.
+	 * @return bool True si la operación fue exitosa, False en caso contrario.
+	 */
 	public function deleteUsuario(int $Ids)
 	{
-		$db_name = $this->getDbNameMysql();
-		//$idsUsuMod=1;
-		$idsUsuMod = $_SESSION['Usu_id'];
-		$sql = "UPDATE " . $db_name . ".usuario SET estado_logico = ?,usuario_modificacion=?,fecha_modificacion = CURRENT_TIMESTAMP() WHERE usu_id = {$Ids} ";
-		$arrData = array(0, $idsUsuMod);
-		$request = $this->update($sql, $arrData);
-		return $request;
+		if ($Ids <= 0) {
+			return false; // ID inválido
+		}
+
+		try {
+			$usuarioMod = retornaUser(); // Usuario que realiza la modificación
+			$sql = "UPDATE {$this->db_name}.usuario 
+                   SET estado_logico = ?, 
+                       usuario_modificacion = ?, 
+                       fecha_modificacion = CURRENT_TIMESTAMP() 
+                 WHERE usu_id = ?";
+
+			$arrData = [0, $usuarioMod, $Ids];
+			return $this->update($sql, $arrData);
+		} catch (Exception $e) {
+			logFileSystem("Error en deleteUsuario: " . $e->getMessage(), "ERROR");
+			return false;
+		}
 	}
 
 
 
+
 	public function consultarRolEmpresa()
-    {
-        try {
+	{
+		try {
 			$sql = "SELECT a.erol_id, a.rol_id Ids, b.rol_nombre Nombre   FROM 
 						{$this->db_name}.empresa_rol a
 							inner join {$this->db_name}.rol b  on a.rol_id=b.rol_id
@@ -322,46 +350,69 @@ class UsuariosModel extends Mysql
 			//	$sql .= "	WHERE a.estado_logico!=0 ";
 			//}
 			$arrParams = [":emp_id" => $this->EmpIds];
-            $resultado = $this->select_all($sql,$arrParams);
-            if ($resultado === false) {
-                logFileSystem("Consulta fallida consultarRolEmpresa", "WARNING");
-                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
-            }
-            return $resultado;
-        } catch (Exception $e) {
-            logFileSystem("Error en consultarProductosTiendaCheck: " . $e->getMessage(), "ERROR");
-            return []; // En caso de error, retornar un array vacío
-        }
-    }
+			$resultado = $this->select_all($sql, $arrParams);
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida consultarRolEmpresa", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en consultarProductosTiendaCheck: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+	}
 
 
 	public function retornarBuscarUsuario(string $parametro, int $limit = 10)
-    {
-        // Consulta SQL base con placeholders
-        $sql = "select art_id,cod_art,art_des_com as des_com,art_i_m_iva as i_m_iva,art_p_venta as p_venta"
-            . " from {$this->db_name}.articulo "
-            . "where art_est_log !=0 ";
+	{
+		// Consulta SQL base con placeholders
+		$sql = "select art_id,cod_art,art_des_com as des_com,art_i_m_iva as i_m_iva,art_p_venta as p_venta"
+			. " from {$this->db_name}.articulo "
+			. "where art_est_log !=0 ";
 
-        // Verificar si el parámetro es numérico o alfanumérico
-        if (!empty($parametro)) {
-            if (ctype_digit($parametro)) {
-                // Si el parámetro es numérico, buscar solo por código de artículo exacto
-                $sql .= " AND cod_art LIKE :parametro";
-                $params[':parametro'] = "%{$parametro}%";
-            } else {
-                // Si es alfanumérico, buscar en código y descripción
-                $sql .= " AND (cod_art LIKE :parametro OR art_des_com LIKE :parametro)";
-                $params[':parametro'] = "%{$parametro}%";
-            }
-        }
+		// Verificar si el parámetro es numérico o alfanumérico
+		if (!empty($parametro)) {
+			if (ctype_digit($parametro)) {
+				// Si el parámetro es numérico, buscar solo por código de artículo exacto
+				$sql .= " AND cod_art LIKE :parametro";
+				$params[':parametro'] = "%{$parametro}%";
+			} else {
+				// Si es alfanumérico, buscar en código y descripción
+				$sql .= " AND (cod_art LIKE :parametro OR art_des_com LIKE :parametro)";
+				$params[':parametro'] = "%{$parametro}%";
+			}
+		}
 
-        // Agregar límite de registros
-        $sql .= " LIMIT {$limit}";
-        //$params[':limit'] = (int) $limit; // Convertir explícitamente a entero por seguridad
-        // Ejecutar consulta y devolver resultados
-        return $this->select_all($sql, $params);
-    }
+		// Agregar límite de registros
+		$sql .= " LIMIT {$limit}";
+		//$params[':limit'] = (int) $limit; // Convertir explícitamente a entero por seguridad
+		// Ejecutar consulta y devolver resultados
+		return $this->select_all($sql, $params);
+	}
 
-	
-	
+	public function cambiarClave(int $Ids,string $clave)
+	{
+		if ($Ids <= 0) {
+			return false; // ID inválido
+		}
+		$nuevaClave=generaClave($clave);
+
+		try {
+			$usuarioMod = retornaUser(); // Usuario que realiza la modificación
+			$sql = "UPDATE {$this->db_name}.usuario 
+                   SET usu_clave = ?, 
+                       usuario_modificacion = ?, 
+                       fecha_modificacion = CURRENT_TIMESTAMP() 
+                 WHERE usu_id = ?";
+
+			$arrData = [$nuevaClave, $usuarioMod, $Ids];
+			return $this->update($sql, $arrData);
+		} catch (Exception $e) {
+			logFileSystem("Error en deleteUsuario: " . $e->getMessage(), "ERROR");
+			return false;
+		}
+	}
+
+
+
 }

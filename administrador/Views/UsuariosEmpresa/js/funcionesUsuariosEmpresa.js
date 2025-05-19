@@ -168,8 +168,26 @@ $(document).ready(function () {
         }
     });
 
+    $('#mostrar2').click(function () {
+        //Comprobamos que la cadena NO esté vacía.
+        if ($(this).hasClass('mdi-eye') && ($("#txt_Password2").val() != "")) {
+            $('#txt_Password2').removeAttr('type');
+            $('#mostrar2').addClass('mdi-eye-off').removeClass('mdi-eye');
+            $('.pwdtxt2').html("Ocultar contraseña");
+        }
+        else {
+            $('#txt_Password2').attr('type', 'password');
+            $('#mostrar2').addClass('mdi-eye').removeClass('mdi-eye-off');
+            $('.pwdtxt2').html("Mostrar contraseña");
+        }
+    });
+    
     $("#btn_guardar").click(function () {
         guardarUsuarioEmpresa();
+    });
+
+    $("#btn_CanbiarClave").click(function () {
+        cambiarClave();
     });
 
 });
@@ -212,6 +230,8 @@ function fntViewUsu(ids) {
 
 
 
+
+
 function fntEditUsu(ids) {
     document.querySelector('#titleModal').innerHTML = "Actualizar Datos";
     document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
@@ -229,7 +249,6 @@ function fntEditUsu(ids) {
             document.querySelector("#txth_perids").value = data.data.per_id;
             document.querySelector("#txth_eusuids").value = data.data.eusu_id;
             document.querySelector("#txt_dni").value = data.data.Dni;
-            $("#txt_dni").prop("readonly", true);
             document.querySelector("#dtp_fecha_nacimiento").value = data.data.FechaNac;
             document.querySelector("#txt_nombre").value = data.data.Nombre;
             document.querySelector("#txt_apellido").value = data.data.Apellido;
@@ -248,6 +267,10 @@ function fntEditUsu(ids) {
             } else {
                 document.querySelector("#cmb_estado").value = 2;
             }
+            $("#txt_dni").prop("readonly", true);
+            $("#txt_dni").prop("readonly", true);
+            document.getElementById("div_usaurio").classList.add("ocultaElemento");
+            document.getElementById("div_rol").classList.add("ocultaElemento");
             $('#cmb_estado').selectpicker('render');
             $('#modalFormUsu').modal('show');
         } else {
@@ -270,25 +293,20 @@ function fntDelUsu(ids) {
         closeOnCancel: true
     }, function (isConfirm) {
         if (isConfirm) {
-            var request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-            var ajaxUrl = base_url + '/Usuarios/delUsuario';
-            var strData = "Ids=" + ids;
-            request.open("POST", ajaxUrl, true);
-            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            request.send(strData);
-            request.onreadystatechange = function () {
-                if (request.readyState == 4 && request.status == 200) {
-                    var objData = JSON.parse(request.responseText);
-                    if (objData.status) {
-                        swal("Eliminar!", objData.msg, "success");
+            const url = base_url + '/UsuariosEmpresa/eliminarUsuario';
+            const metodo = 'POST';
+            const dataPost = { ids: ids };
+            peticionAjaxSSL(url, metodo, dataPost, function (data) {
+                if (data.status) {
+                    swal("Eliminar!", data.msg, "success");
                         tableUsuarios.api().ajax.reload(function () {
-
-                        });
-                    } else {
-                        swal("Atención!", objData.msg, "error");
-                    }
+                        });                    
+                } else {
+                    swal("Atención", data.msg, "error");
                 }
-            }
+            }, function (jqXHR, textStatus, errorThrown) {
+                console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+            });
         }
 
     });
@@ -300,11 +318,13 @@ function openModal() {
     rowTable = "";
     document.querySelector('#txth_ids').value = "";
     $("#txt_dni").prop("readonly", false);
+    document.getElementById("div_usaurio").classList.remove("ocultaElemento");
+    document.getElementById("div_rol").classList.remove("ocultaElemento");
     document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");
     document.querySelector('#btn_guardar').classList.replace("btn-info", "btn-primary");
     document.querySelector('#btnText').innerHTML = "Guardar";
     document.querySelector('#titleModal').innerHTML = "Nuevo Usuario";
-    //document.querySelector("#formUsu").reset();
+    document.querySelector("#formUsu").reset();
     $('#modalFormUsu').modal('show');
 }
 
@@ -423,6 +443,58 @@ function guardarUsuarioEmpresa() {
             swal("Atención", data.msg, "error");
         }
     }, function (jqXHR, textStatus, errorThrown) {
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+}
+
+
+function fntEditClave(ids) {
+    document.querySelector('#titleModal').innerHTML = "Cambiar Clave";
+    document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
+    document.querySelector('#btn_CanbiarClave').classList.replace("btn-primary", "btn-info");
+    document.querySelector('#btnText').innerHTML = "Cambiar";
+
+    const url = base_url + '/UsuariosEmpresa/getUsuarioEmpresa';
+    const metodo = 'POST';
+    const dataPost = { ids: ids };
+
+    peticionAjaxSSL(url, metodo, dataPost, function (data) {
+        if (data.status) {
+            document.querySelector("#txth_ids").value = data.data.Ids;
+            document.querySelector("#lbl_correo").innerHTML = data.data.usu_correo;
+            $('#txt_Password2').val("");
+            $('#modalClave').modal('show');
+        } else {
+            swal("Atención", data.msg, "error");
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+}
+
+
+function cambiarClave() {
+    let ids = $('#txth_ids').val();
+    let strPassword = $('#txt_Password2').val();
+    if (strPassword.length < 8 || strPassword.length > 16) {
+        swal("Atención", "La clave debe tener entre 8 y 16 caracteres.", "error");
+        return;
+    }
+    const url = base_url + '/UsuariosEmpresa/cambiarClave';
+    const metodo = 'POST';
+    const dataPost = { ids: ids,clave:strPassword };
+
+    peticionAjaxSSL(url, metodo, dataPost, function (data) {
+        // Manejar el éxito de la solicitud aquí
+        if (data.status) {
+            swal("Tienda", data.msg, "success");
+            //window.location = base_url + '/Tienda/tienda';
+        } else {
+            swal("Atención", data.msg, "error");
+        }
+
+    }, function (jqXHR, textStatus, errorThrown) {
+        // Manejar el error de la solicitud aquí
         console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
     });
 }
