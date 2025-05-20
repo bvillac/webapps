@@ -189,6 +189,9 @@ $(document).ready(function () {
     $("#btn_guardarRolesSelect").click(function () {
         fnt_saveEmpRolesSelect();
     });
+    $("#btn_guardarIndex").click(function () {
+        fnt_saveIndex();
+    });
 
 });
 
@@ -780,7 +783,6 @@ function fnt_saveEmpRolesSelect() {
         let arrayIds = result.map(function (objeto) {
             return objeto.ids;
         });
-        JSON.stringify(arrayIds);
         let url = base_url + '/Empresa/actualizarEmpresaRolesSelect';
         var metodo = 'POST';
         var datos = {
@@ -804,6 +806,41 @@ function fnt_saveEmpRolesSelect() {
         swal("Información", "Seleccionar un Empresa", "info");
     }
 
+}
+
+function fnt_saveIndex() {
+    let ErolId = ($('#cmb_empresa_modulo_roles').val() != 0) ? $('#cmb_empresa_modulo_roles').val() : 0;
+    const element = document.getElementById('list_EmpresaModulorolesSelect');
+
+    // Verifica que se haya seleccionado exactamente un módulo
+    const selectedOptions = Array.from(element.selectedOptions);
+    if (selectedOptions.length !== 1) {
+        swal("Información", "Debe seleccionar exactamente un módulo para establecer como índice.", "info");
+        return;
+    }
+
+    if (ErolId == 0) {
+        swal("Información", "Debe seleccionar un Rol de Empresa válido.", "info");
+        return;
+    }
+
+    const Emod_id = Number(selectedOptions[0].value); // Solo uno permitido
+
+    let url = base_url + '/Empresa/setModuloIndex';
+    let metodo = 'POST';
+    let dataPost = {
+        erol_id: ErolId,
+        emod_id: Emod_id
+    };
+    peticionAjaxSSL(url, metodo, dataPost, function (data) {
+        if (data.status) {
+            swal("Éxito", data.message, "success");
+        } else {
+            swal("Error", data.message, "error");
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
 }
 
 

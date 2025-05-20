@@ -47,7 +47,7 @@ adminMenu($data);
               <h5>Presione CTRL y haga clic para seleccionar varias opciones a la vez.</h5>
             </div>
             <div class="form-group col-md-2">
-              <button type="button" class="btn btn-dark" id="btn_guardarModulo"><i class="fa fa-fast-forward"
+              <button type="button" class="btn btn-dark" id="btn_guardarModulo"><i class="fa fa-floppy-o"
                   aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
               </button>
             </div>
@@ -118,7 +118,7 @@ adminMenu($data);
               <h5>Presione CTRL y haga clic para seleccionar varias opciones a la vez.</h5>
             </div>
             <div class="form-group col-md-2">
-              <button type="button" class="btn btn-dark" id="btn_guardarRoles"><i class="fa fa-fast-forward"
+              <button type="button" class="btn btn-dark" id="btn_guardarRoles"><i class="fa fa-floppy-o"
                   aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
               </button>
             </div>
@@ -189,9 +189,10 @@ adminMenu($data);
           </div>
           <div class="form-group col-md-4">
             <label></label>
-            <button type="button" class="btn btn-dark" id="btn_guardarRolesSelect"><i class="fa fa-fast-forward"
+            <button type="button" class="btn btn-dark" id="btn_guardarRolesSelect"><i class="fa fa-floppy-o"
                 aria-hidden="true">&nbsp;&nbsp;GUARDAR</i>
             </button>
+            
           </div>
         </div>
         <div class="tile-body">
@@ -228,6 +229,9 @@ adminMenu($data);
                 name="list_EmpresaModulorolesSelect" style="height: 300px;">
 
               </select>
+              <button type="button" class="btn btn-dark" id="btn_guardarIndex"><i class="fa fa-floppy-o"
+                aria-hidden="true">&nbsp;&nbsp;GUARDAR INDEX</i>
+            </button>
             </div>
           </div>
         </div>

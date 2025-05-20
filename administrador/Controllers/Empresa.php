@@ -471,6 +471,38 @@ class Empresa extends Controllers
         exit();
     }
 
+    public function setModuloIndex()
+{
+    try {
+        // Verificar que la solicitud sea POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            responseJson(['status' => false, 'msg' => 'Método no permitido.']);
+        }
+
+        $data = recibirData($_POST['data'] ?? null);
+      
+        if (empty($data) || !isset($data['erol_id'], $data['emod_id'])) {
+            responseJson(['status' => false, 'msg' => 'Faltan datos requeridos.']);
+        }
+
+        $ErolId = intval(strClean($data['erol_id']));
+        $EmodId = intval(strClean($data['emod_id']));
+
+        if ($ErolId <= 0 || $EmodId <= 0) {
+            responseJson(['status' => false, 'msg' => 'Los identificadores deben ser numéricos válidos.']);
+        }
+
+        // Lógica de negocio: asignar módulo index
+        $arrResponse = $this->model->setModuloIndex($EmodId, $ErolId);
+
+        responseJson($arrResponse);
+    } catch (Exception $e) {
+        logFileSystem("Error en setModuloIndex: " . $e->getMessage(), "ERROR");
+        responseJson(['status' => false, 'msg' => 'Ocurrió un error al intentar asignar el módulo index.']);
+    }
+}
+
+
 
 
 
