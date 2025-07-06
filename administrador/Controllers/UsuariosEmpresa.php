@@ -45,7 +45,7 @@ class UsuariosEmpresa extends Controllers
 		if ($_SESSION['permisosMod']['u']) {
 			$options .= '<button class="btn btn-primary  btn-sm btnEditUsu" onClick="fntEditUsu(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button> ';
 			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Cambiar Clave"><i class="fa fa-key"></i></button> ';
-			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Roles"><i class="fa fa-address-book"></i></button> ';
+			//$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Roles"><i class="fa fa-address-book"></i></button> ';
 			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntVerTienda(\'' . $id . '\')" title="Tiendas"><i class="fa fa-shopping-bag"></i></button> ';
 		}
 		if ($_SESSION['permisosMod']['d']) {

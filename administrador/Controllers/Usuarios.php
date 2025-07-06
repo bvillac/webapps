@@ -97,7 +97,7 @@ class Usuarios extends Controllers
 				$Direccion = strClean($_POST['txt_direccion']);
 				$Alias = strtolower(strClean($_POST['txt_alias']));
 				$Genero = strtoupper(strClean($_POST['cmb_genero']));
-				$rol_id = intval(strClean($_POST['cmb_rol']));
+				$rol_id = 4;//intval(strClean($_POST['cmb_rol']));//rol de usuario por defecto
 				$estado = intval(strClean($_POST['cmb_estado']));
 				if ($usu_id == 0) {
 					$option = 1;
@@ -136,8 +136,9 @@ class Usuarios extends Controllers
 						$per_id,
 						$eusu_id
 					);
-
 				}
+
+				putMessageLogFile($result);
 				if ($result["status"]) {
 					if ($option == 1) {
 						$arrResponse = array('status' => true, 'dato' => $result["numero"], 'msg' => 'Datos guardados correctamente.');

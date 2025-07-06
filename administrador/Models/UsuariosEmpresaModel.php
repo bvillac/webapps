@@ -29,7 +29,10 @@ class UsuariosEmpresaModel extends Mysql
 					CONCAT(p.per_nombre, ' ', p.per_apellido) AS Nombres,
 					a.estado_logico AS Estado,
 					(select  GROUP_CONCAT(b1.tie_nombre SEPARATOR ', ') from  db_pedidos.usuario_tienda a1 
-						inner join db_pedidos.tienda b1 on a1.tie_id=b1.tie_id where a1.usu_id=a.usu_id) as Tiendas
+						inner join db_pedidos.tienda b1 on a1.tie_id=b1.tie_id where a1.usu_id=a.usu_id) as Tiendas,
+					(select  GROUP_CONCAT(r.rol_nombre SEPARATOR ', ') from  db_administrador.empresa_usuario_rol m 
+						inner join (db_administrador.empresa_rol n inner join db_administrador.rol r on r.rol_id=n.rol_id) on n.erol_id=m.erol_id
+						where m.eusu_id=x.eusu_id) as RolEmpresa
 				FROM {$this->db_name}.empresa_usuario x
 				INNER JOIN {$this->db_name}.usuario a ON a.usu_id = x.usu_id
 				INNER JOIN {$this->db_name}.persona p ON a.per_id = p.per_id
