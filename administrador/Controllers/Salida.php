@@ -1,7 +1,7 @@
 <?php
 class Salida
 {
-    public function __construct(string $redirectPath = '/login')
+    public function __construct(string $redirectPath = '/loginPedido')
     {
         $this->logout($redirectPath);
     }
@@ -11,7 +11,7 @@ class Salida
      *
      * @param string $redirectPath Ruta relativa desde base_url (ej: '/loginAdmin')
      */
-    public function logout(string $redirectPath = '/login')
+    public function logout(string $redirectPath = '/loginPedido')
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();

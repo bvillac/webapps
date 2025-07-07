@@ -52,7 +52,7 @@ class Usuarios extends Controllers
 			$options .= " <button class='btn btn-danger btn-sm btnDelUsu' onClick='fntDelUsu($id)' title='Eliminar'><i class='fa fa-trash'></i></button> ";
 		}
 
-		$options .= " <a title='Evaluar Beneficiario' href='" . base_url() . "/Usuarios/rol/$id' class='btn btn-primary btn-sm'><i class='fa fa-list-alt'></i></a> ";
+		//$options .= " <a title='Evaluar Beneficiario' href='" . base_url() . "/Usuarios/rol/$id' class='btn btn-primary btn-sm'><i class='fa fa-list-alt'></i></a> ";
 		$options .= '<button class="btn btn-primary  btn-sm btnEmpresa" onClick="fntAsigEmpresa(\'' . $id . '\')" title="Asignar Empresa"><i class="fa fa-pencil"></i></button>';
 		return $options . '</div>';
 	}
