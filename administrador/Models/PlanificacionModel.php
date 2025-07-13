@@ -132,7 +132,7 @@ class PlanificacionModel extends MysqlAcademico
                     `tpla_estado`,                    
                     `tpla_usuario_creacion`,                   
                     `tpla_estado_logico`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
-                $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
+                $Ids = $this->insertConTrans($con, $SqlQuery, $arrData);
                 $con->commit();
                 $arroout["status"] = true;
                 $arroout["numero"] = 0;

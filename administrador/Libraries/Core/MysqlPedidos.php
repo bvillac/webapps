@@ -2,116 +2,132 @@
 
 class MysqlPedidos extends ConPedidos
 {
-    private $conexion;
-    private $db_name;
-    private $db_nameAdmin = DB_NAME;
+    private PDO $conexion;
+    private string $db_name;
+    private string $db_nameAdmin;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
         $this->conexion = $this->conect();
         $this->db_name = $this->getDbName();
+        $this->db_nameAdmin = DB_NAME;
     }
 
-    public function getConexion()
+    public function getConexion(): PDO
     {
         return $this->conexion;
     }
 
-    public function getDbNameMysql()
+    public function getDbNameMysql(): string
     {
         return $this->db_name;
     }
 
-    public function getDbNameMysqlAdmin()
+    public function getDbNameMysqlAdmin(): string
     {
         return $this->db_nameAdmin;
     }
 
-    // 🔹 Insertar un registro
-    public function insert(string $query, array $arrValues)
+    /**
+     * Inserta un registro y retorna el último ID insertado.
+     */
+    public function insert(string $query, array $arrValues): int
     {
         try {
             $stmt = $this->conexion->prepare($query);
             $stmt->execute($arrValues);
-            return $this->conexion->lastInsertId();
+            return (int)$this->conexion->lastInsertId();
         } catch (PDOException $e) {
-            putMessageLogFile("ERROR: " . $e->getMessage());
+            putMessageLogFile("ERROR [insert]: " . $e->getMessage());
             return 0;
         }
     }
 
-    // 🔹 Consultar un registro
-    public function select(string $query, array $params = [])
+    /**
+     * Consulta un solo registro.
+     */
+    public function select(string $query, array $params = []): ?array
     {
         try {
             $stmt = $this->conexion->prepare($query);
             $stmt->execute($params);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result !== false ? $result : null;
         } catch (PDOException $e) {
-            putMessageLogFile("ERROR: " . $e->getMessage());
+            putMessageLogFile("ERROR [select]: " . $e->getMessage());
             return null;
         }
     }
 
-    // 🔹 Consultar todos los registros
-    public function select_all(string $query, array $params = [])
+    /**
+     * Consulta todos los registros.
+     */
+    public function select_all(string $query, array $params = []): array
     {
         try {
             $stmt = $this->conexion->prepare($query);
             $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (PDOException $e) {
-            putMessageLogFile("ERROR: " . $e->getMessage());
+            putMessageLogFile("ERROR [select_all]: " . $e->getMessage());
             return [];
         }
     }
 
-    // 🔹 Actualizar registros
-    public function update(string $query, array $arrValues)
+    /**
+     * Actualiza registros.
+     */
+    public function update(string $query, array $arrValues): bool
     {
         try {
             $stmt = $this->conexion->prepare($query);
             return $stmt->execute($arrValues);
         } catch (PDOException $e) {
-            putMessageLogFile("ERROR: " . $e->getMessage());
+            putMessageLogFile("ERROR [update]: " . $e->getMessage());
             return false;
         }
     }
 
-    // 🔹 Eliminar un registro (actualiza el estado lógico en vez de hacer DELETE)
-    public function delete(string $query, array $params = [])
+    /**
+     * Elimina (lógicamente) un registro.
+     */
+    public function delete(string $query, array $params = []): bool
     {
         try {
             $stmt = $this->conexion->prepare($query);
             return $stmt->execute($params);
         } catch (PDOException $e) {
-            putMessageLogFile("ERROR: " . $e->getMessage());
+            putMessageLogFile("ERROR [delete]: " . $e->getMessage());
             return false;
         }
     }
 
-    // 🔹 Insertar con transacción
-    public function insertConTrans($con, string $query, array $arrValues)
+    /**
+     * Inserta un registro usando una conexión en transacción.
+     */
+    public function insertConTrans(PDO $con, string $query, array $arrValues): int
     {
         try {
             $stmt = $con->prepare($query);
             $stmt->execute($arrValues);
-            return $con->lastInsertId();
+            return (int)$con->lastInsertId();
         } catch (PDOException $e) {
-            putMessageLogFile("ERROR: " . $e->getMessage());
+            putMessageLogFile("ERROR [insertConTrans]: " . $e->getMessage());
             return 0;
         }
     }
 
-    // 🔹 Actualizar con transacción
-    public function updateConTrans($con, string $query, array $arrValues)
+    /**
+     * Actualiza registros usando una conexión en transacción.
+     */
+    public function updateConTrans(PDO $con, string $query, array $arrValues): bool
     {
         try {
             $stmt = $con->prepare($query);
             return $stmt->execute($arrValues);
         } catch (PDOException $e) {
-            putMessageLogFile("ERROR: " . $e->getMessage());
+            putMessageLogFile("ERROR [updateConTrans]: " . $e->getMessage());
             return false;
         }
     }

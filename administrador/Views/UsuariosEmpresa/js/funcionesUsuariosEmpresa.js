@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
             { "data": "Tiendas" },
             { "data": "RolEmpresa" },
             { "data": "Estado" },
-            { "data": "options" }
+            { "data": "options" },
+            { "data": "RolId", "visible": false } // Oculta la columna RolId
         ],
 
         'dom': 'lBfrtip',
@@ -154,6 +155,11 @@ $(document).ready(function () {
     $("#btn_GuardarEmpresa").click(function () {
         guardarAsignarUsuarioEmpresa();
     });
+
+    $("#btn_guardarTienda").click(function () {
+        guardarTiendasUsuario();
+    });
+    
 
     $('#mostrar').click(function () {
         //Comprobamos que la cadena NO esté vacía.
@@ -501,7 +507,7 @@ function cambiarClave() {
 }
 
 
-function fntVerTienda(ids) {
+function fntVerTienda(ids,rolId) {
     document.querySelector('#titleModal2').innerHTML = "Tiendas";
     document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
     document.querySelector('#btn_CanbiarClave').classList.replace("btn-primary", "btn-info");
@@ -515,9 +521,37 @@ function fntVerTienda(ids) {
         if (data.status) {
             document.querySelector("#txth_ids").value = data.data.Ids;
             document.querySelector("#lbl_correo2").innerHTML = data.data.usu_correo;
-
-            
+            document.querySelector("#txth_rol_id").value = rolId;
             $('#modalTiendas').modal('show');
+        } else {
+            swal("Atención", data.msg, "error");
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+}
+
+
+function guardarTiendasUsuario() {
+    const ids = document.querySelector("#txth_ids").value;
+    const rolId = document.querySelector("#txth_rol_id").value;
+    const select = document.getElementById('list_tiendas');
+    const tiendas = Array.from(select.selectedOptions).map(opt => opt.value);
+
+    if (tiendas.length === 0) {
+        swal("Atención", "Debe seleccionar al menos una tienda.", "error");
+        return;
+    }
+
+    const url = base_url + '/UsuariosEmpresa/guardarUsuarioTiendas';
+    const metodo = 'POST';
+    const dataPost = { ids: ids, tiendas: tiendas,rolId:rolId };
+
+    peticionAjaxSSL(url, metodo, dataPost, function (data) {
+        if (data.status) {
+            swal("Éxito", data.msg, "success");
+            $('#modalTiendas').modal('hide');
+            tableUsuarios.api().ajax.reload(function () {}); 
         } else {
             swal("Atención", data.msg, "error");
         }

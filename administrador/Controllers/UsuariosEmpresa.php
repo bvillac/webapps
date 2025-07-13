@@ -19,7 +19,7 @@ class UsuariosEmpresa extends Controllers
 		$data = getPageData("Usuarios Empresa", "usuariosempresa");
 		$data['empresa_rol'] = $this->model->consultarRolEmpresa();
 		$Cli_Id = retornarDataSesion("Cli_Id");
-		$data['tiendas']  = (new TiendaModel())->getClienteTiendas($Cli_Id);
+		$data['tiendas'] = (new TiendaModel())->getClienteTiendas($Cli_Id);
 		$this->views->getView($this, "usuariosempresa", $data);
 	}
 
@@ -30,13 +30,13 @@ class UsuariosEmpresa extends Controllers
 			$objData['Estado'] = $objData['Estado'] == 1
 				? '<span class="badge badge-success">Activo</span>'
 				: '<span class="badge badge-danger">Inactivo</span>';
-			$objData['options'] = $this->getArrayOptions($objData['Ids']);
+			$objData['options'] = $this->getArrayOptions($objData['Ids'], $objData['RolId']);
 		}
 		echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
 		exit();
 	}
 
-	private function getArrayOptions($id)
+	private function getArrayOptions($id,$RolId)
 	{
 		$options = '<div class="text-center">';
 		if ($_SESSION['permisosMod']['r']) {
@@ -46,7 +46,7 @@ class UsuariosEmpresa extends Controllers
 			$options .= '<button class="btn btn-primary  btn-sm btnEditUsu" onClick="fntEditUsu(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button> ';
 			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Cambiar Clave"><i class="fa fa-key"></i></button> ';
 			//$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Roles"><i class="fa fa-address-book"></i></button> ';
-			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntVerTienda(\'' . $id . '\')" title="Tiendas"><i class="fa fa-shopping-bag"></i></button> ';
+			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntVerTienda(\'' . $id . '\', \'' . $RolId . '\')" title="Tiendas"><i class="fa fa-shopping-bag"></i></button> ';
 		}
 		if ($_SESSION['permisosMod']['d']) {
 			$options .= " <button class='btn btn-danger btn-sm btnDelUsu' onClick='fntDelUsu($id)' title='Eliminar'><i class='fa fa-trash'></i></button> ";
@@ -241,7 +241,7 @@ class UsuariosEmpresa extends Controllers
 			$ids = intval(strClean($data['ids']));
 			$clave = $data['clave'];
 
-			$resultado = (new UsuariosModel())->cambiarClave($ids,$clave);
+			$resultado = (new UsuariosModel())->cambiarClave($ids, $clave);
 
 			if (!$resultado) {
 				$arrResponse = [
@@ -297,6 +297,58 @@ class UsuariosEmpresa extends Controllers
 			logFileSystem("Error en getUsuarioEmpresa: " . $e->getMessage(), "ERROR");
 			responseJson(['status' => false, 'msg' => 'Ocurrió un error al encontrar el usuario.']);
 		}
+		exit();
+	}
+
+
+
+	public function guardarUsuarioTiendas()
+	{
+		if ($_POST) {
+			$data = recibirData($_POST['data'] ?? null);
+
+			if (empty($data['ids']) || empty($data['rolId']) || empty($data['tiendas'])) {
+				$arrResponse = ['status' => false, 'msg' => 'No se recibieron todos los datos necesarios.'];
+				responseJson($arrResponse);
+			}
+			
+
+			$ids = $data['ids'];
+			$rolId = $data['rolId'];
+			$tiendas = $data['tiendas'];
+			$accion = 'Create';
+			$option = 0;
+			$request = [];
+			//putMessageLogFile("Guardar Usuario Tiendas: ids=" . json_encode($ids) . ", tiendas=" . json_encode($tiendas) . ", accion=" . $accion);
+			try {
+				if ($accion === "Create") {
+					checkPermission('w', 'usuariosempresa');
+					// Enviar el id de usuario y las tiendas seleccionadas al modelo
+					$request = (new TiendaModel())->asignarTiendasUsuario($ids,$rolId, $tiendas);
+					$option = 1;
+				} elseif ($accion === "Edit") {
+					//checkPermission('u', 'usuariosempresa');
+					//$request = $this->model->updateData($datos);
+					//$option = 2;
+				} else {
+					$arrResponse = ['status' => false, 'msg' => 'Acción no válida.'];
+					responseJson($arrResponse);
+				}
+
+				if (!empty($request["status"])) {
+					$msg = ($option === 1) ? 'Datos guardados correctamente.' : 'Datos actualizados correctamente.';
+					$arrResponse = ['status' => true, 'numero' => $request["numero"] ?? 0, 'msg' => $msg];
+				} else {
+					$arrResponse = ['status' => false, 'msg' => 'No fue posible almacenar los datos.'];
+				}
+			} catch (Exception $e) {
+				logFileSystem("Error en guardarUsuarioTiendas: " . $e->getMessage(), "ERROR");
+				$arrResponse = ['status' => false, 'msg' => 'Ocurrió un error inesperado al guardar los datos.'];
+			}
+
+			responseJson($arrResponse);
+		}
+
 		exit();
 	}
 

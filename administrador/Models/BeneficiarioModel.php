@@ -104,7 +104,7 @@ class BeneficiarioModel extends MysqlAcademico
         $SqlQuery = "UPDATE " . $this->db_name . ".aprendisaje SET 
                         paq_id=?,idi_id=?,mas_id=?,cat_id=?,apr_numero_meses=?,apr_numero_horas=?,apr_observaciones=?,apr_examen_internacional=?,
                         apr_usuario_modificacion=?,apr_fecha_modificacion = CURRENT_TIMESTAMP() WHERE ben_id = {$Ids} ";
-        return $this->updateConTrasn($con, $SqlQuery, $arrData);
+        return $this->updateConTrans($con, $SqlQuery, $arrData);
     }
 
 
@@ -112,7 +112,7 @@ class BeneficiarioModel extends MysqlAcademico
     {
         $SqlQuery = "UPDATE " . $this->db_name . ".beneficiario SET ben_tipo = ?,ben_usuario_modificacion=?,
                         ben_fecha_modificacion = CURRENT_TIMESTAMP() WHERE ben_id = {$Ids} ";
-        return $this->updateConTrasn($con, $SqlQuery, $arrData);
+        return $this->updateConTrans($con, $SqlQuery, $arrData);
     }
 
 

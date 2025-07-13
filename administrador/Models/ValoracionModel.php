@@ -62,7 +62,7 @@ class ValoracionModel extends MysqlAcademico
                     `sal_color`,
                     `sal_usuario_creacion`,                   
                     `sal_estado_logico`) VALUES(?,?,?,?,?,?,?) ";
-                $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
+                $Ids = $this->insertConTrans($con, $SqlQuery, $arrData);
                 $con->commit();
                 $arroout["status"] = true;
                 $arroout["numero"] = 0;

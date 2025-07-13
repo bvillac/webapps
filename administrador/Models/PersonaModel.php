@@ -146,7 +146,7 @@ class PersonaModel extends Mysql
 				$SqlQuery  = "INSERT INTO " . $this->db_name . ".persona 
 								(per_cedula, per_nombre, per_apellido, per_fecha_nacimiento,per_telefono,per_direccion,per_genero,usuario_creacion ,estado_logico) 
 								VALUES(?,?,?,?,?,?,?,?,?) ";
-				$Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
+				$Ids = $this->insertConTrans($con, $SqlQuery, $arrData);
 				$con->commit();
 				$arroout["status"] = true;
 				$arroout["numero"] = $Ids;

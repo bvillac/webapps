@@ -32,7 +32,7 @@ class UsuariosEmpresaModel extends Mysql
 						inner join db_pedidos.tienda b1 on a1.tie_id=b1.tie_id where a1.usu_id=a.usu_id) as Tiendas,
 					(select  GROUP_CONCAT(r.rol_nombre SEPARATOR ', ') from  db_administrador.empresa_usuario_rol m 
 						inner join (db_administrador.empresa_rol n inner join db_administrador.rol r on r.rol_id=n.rol_id) on n.erol_id=m.erol_id
-						where m.eusu_id=x.eusu_id) as RolEmpresa
+						where m.eusu_id=x.eusu_id) as RolEmpresa,'' AS RolId
 				FROM {$this->db_name}.empresa_usuario x
 				INNER JOIN {$this->db_name}.usuario a ON a.usu_id = x.usu_id
 				INNER JOIN {$this->db_name}.persona p ON a.per_id = p.per_id
@@ -50,13 +50,48 @@ class UsuariosEmpresaModel extends Mysql
 				logFileSystem("Consulta fallida en consultarDatos()", "WARNING");
 				return [];
 			}
-
+			foreach ($resultado as &$row) {
+				$row['RolId'] = $this->obtenerRolesConIds($row['RolEmpresa']);
+			}
+			unset($row);
 			return $resultado;
 		} catch (Exception $e) {
 			logFileSystem("Error en consultarDatos(): " . $e->getMessage(), "ERROR");
 			return [];
 		}
 	}
+
+
+	/**
+	 * Convierte una cadena de nombres de roles en un array de arrays con nombre e id de cada rol.
+	 * @param string $rolesString Cadena de nombres de roles separados por coma
+	 * @return array Array de arrays ['id' => ..., 'nombre' => ...]
+	 */
+
+	private function obtenerRolesConIds($rolesString)
+	{
+		if (!is_string($rolesString) || trim($rolesString) === '') {
+			return 0;
+		}
+		$roles = array_filter(array_map('trim', explode(',', (string)$rolesString)), function($r) { return $r !== ''; });
+		if (empty($roles)) {
+			return 0;
+		}
+		$placeholders = implode(',', array_fill(0, count($roles), '?'));
+
+		if (empty($placeholders) || count($roles) < 1) {
+			return 0;
+		}
+
+		$sql = "SELECT rol_id AS id FROM {$this->db_name}.rol WHERE rol_nombre IN ($placeholders) AND estado_logico != 0 LIMIT 1";
+		$result = $this->select($sql, array_values($roles));
+		if ($result === false || !isset($result['id'])) {
+			logFileSystem("Fallo al obtener ID de rol en obtenerRolesConIds", "WARNING");
+			return 0;
+		}
+		return $result['id'];
+	}
+
 
 	public function consultarRolEmpresa()
 	{
@@ -65,13 +100,13 @@ class UsuariosEmpresaModel extends Mysql
 			$empresaId = retornarDataSesion("Emp_Id");
 
 			$sql = "
-            SELECT 
-                a.erol_id AS Ids,
-                b.rol_nombre AS Nombre 
-            FROM {$this->db_name}.empresa_rol a
-            INNER JOIN {$this->db_name}.rol b ON a.rol_id = b.rol_id
-            WHERE a.emp_id = :emp_id AND a.estado_logico != 0
-        ";
+			SELECT 
+				a.erol_id AS Ids,
+				b.rol_nombre AS Nombre 
+			FROM {$this->db_name}.empresa_rol a
+			INNER JOIN {$this->db_name}.rol b ON a.rol_id = b.rol_id
+			WHERE a.emp_id = :emp_id AND a.estado_logico != 0
+		";
 
 			// Si el rol no es admin, podrías aplicar más filtros si lo deseas
 			// En este caso, no se requiere más condición ya que ya se filtra por estado_logico
@@ -180,7 +215,7 @@ class UsuariosEmpresaModel extends Mysql
 		$sqlInsert = "INSERT INTO {$this->db_name}.empresa_usuario 
 								(emp_id, usu_id,estado_logico,usuario_creacion, fecha_creacion) 
 								VALUES (?,?,?,?, CURRENT_TIMESTAMP)";
-		return $this->insertConTrasn($con, $sqlInsert, $arrData);
+		return $this->insertConTrans($con, $sqlInsert, $arrData);
 
 	}
 
@@ -189,7 +224,7 @@ class UsuariosEmpresaModel extends Mysql
 		$sqlInsert = "INSERT INTO {$this->db_name}.empresa_usuario_rol 
 								(eusu_id, erol_id,estado_logico,usuario_creacion, fecha_creacion) 
 								VALUES (?,?,?,?, CURRENT_TIMESTAMP)";
-		return $this->insertConTrasn($con, $sqlInsert, $arrData);
+		return $this->insertConTrans($con, $sqlInsert, $arrData);
 
 	}
 
@@ -325,17 +360,17 @@ class UsuariosEmpresaModel extends Mysql
 		}
 
 		$sql = "UPDATE {$this->db_name}.usuario 
-               SET usu_alias = ?, 
-                   usu_correo = ?, 
-                   estado_logico = ?, 
-                   usuario_modificacion = ?, 
-                   fecha_modificacion = CURRENT_TIMESTAMP()
-             WHERE usu_id = ?";
+			   SET usu_alias = ?, 
+				   usu_correo = ?, 
+				   estado_logico = ?, 
+				   usuario_modificacion = ?, 
+				   fecha_modificacion = CURRENT_TIMESTAMP()
+			 WHERE usu_id = ?";
 
 		// Agregamos el ID como último parámetro
 		$arrData[] = $UsuId;
 
-		return $this->updateConTrasn($con, $sql, $arrData);
+		return $this->updateConTrans($con, $sql, $arrData);
 	}
 
 	public function actualizarPersona($con, $PerId, $arrData)
@@ -345,26 +380,26 @@ class UsuariosEmpresaModel extends Mysql
 		}
 
 		$sql = "UPDATE {$this->db_name}.persona 
-               SET per_nombre = ?, 
-                   per_apellido = ?, 
-                   per_telefono = ?, 
-                   per_direccion = ?, 
+			   SET per_nombre = ?, 
+				   per_apellido = ?, 
+				   per_telefono = ?, 
+				   per_direccion = ?, 
 				   per_genero = ?, 
-                   usuario_modificacion = ?, 
-                   fecha_modificacion = CURRENT_TIMESTAMP()
-             WHERE per_id = ?";
+				   usuario_modificacion = ?, 
+				   fecha_modificacion = CURRENT_TIMESTAMP()
+			 WHERE per_id = ?";
 
 		// Añadir el ID como último parámetro
 		$arrData[] = $PerId;
 
-		return $this->updateConTrasn($con, $sql, $arrData);
+		return $this->updateConTrans($con, $sql, $arrData);
 	}
 
 	private function consultaUsuario(int $ids)
 	{
 		try {
 			$sql = "select * from {$this->db_name}.usuario 
-                        where usu_id=:usu_id";
+						where usu_id=:usu_id";
 			$arrParams = [":usu_id" => $ids];
 			$resultado = $this->select($sql, $arrParams);
 			if ($resultado === false) {
@@ -377,6 +412,8 @@ class UsuariosEmpresaModel extends Mysql
 			return []; // En caso de error, retornar un array vacío
 		}
 	}
+
+
 
 
 }

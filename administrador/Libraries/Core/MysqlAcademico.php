@@ -2,17 +2,17 @@
 
 class MysqlAcademico extends ConAcademico
 {
-	private $conexion;
-	private $strquery;
+	private $con;
+	private $strQuery;
 	private $arrValues;
-	private $db_name;
-	private $db_nameAdmin = DB_NAME;
+	private $dbName;
+	private $dbNameAdmin = DB_NAME;
 
-	function __construct()
+	public function __construct()
 	{
-		$this->con = new ConAcademico();
-		$this->db_name = $this->con->getDbName();
-		$this->con = $this->con->conect();
+		$conAcademico = new ConAcademico();
+		$this->dbName = $conAcademico->getDbName();
+		$this->con = $conAcademico->conect();
 	}
 
 	public function getConexion()
@@ -22,84 +22,71 @@ class MysqlAcademico extends ConAcademico
 
 	public function getDbNameMysql()
 	{
-		return $this->db_name;
+		return $this->dbName;
 	}
 
 	public function getDbNameMysqlAdmin()
 	{
-		return $this->db_nameAdmin;
+		return $this->dbNameAdmin;
 	}
 
-	//Insertar un registro
+	// Insertar un registro
 	public function insert(string $query, array $arrValues)
 	{
-		$this->strquery = $query;
-		$this->arrVAlues = $arrValues;
-		$insert = $this->con->prepare($this->strquery);
-		$resInsert = $insert->execute($this->arrVAlues);
-		if ($resInsert) {
-			$lastInsert = $this->con->lastInsertId();
-		} else {
-			$lastInsert = 0;
-		}
-		return $lastInsert;
+		$this->strQuery = $query;
+		$this->arrValues = $arrValues;
+		$insert = $this->con->prepare($this->strQuery);
+		$resInsert = $insert->execute($this->arrValues);
+		return $resInsert ? $this->con->lastInsertId() : 0;
 	}
-	//Busca un registro
-	public function select(string $query)
+
+	// Buscar un registro
+	public function select(string $query, array $arrValues = [])
 	{
-		$this->strquery = $query;
-		$result = $this->con->prepare($this->strquery);
-		$result->execute();
-		$data = $result->fetch(PDO::FETCH_ASSOC);
-		return $data;
+		$this->strQuery = $query;
+		$stmt = $this->con->prepare($this->strQuery);
+		$stmt->execute($arrValues);
+		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
-	//Devuelve todos los registros
-	public function select_all(string $query)
+
+	// Devolver todos los registros
+	public function select_all(string $query, array $arrValues = [])
 	{
-		$this->strquery = $query;
-		$result = $this->con->prepare($this->strquery);
-		$result->execute();
-		$data = $result->fetchall(PDO::FETCH_ASSOC);
-		return $data;
+		$this->strQuery = $query;
+		$stmt = $this->con->prepare($this->strQuery);
+		$stmt->execute($arrValues);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
-	//Actualiza registros
+
+	// Actualizar registros
 	public function update(string $query, array $arrValues)
 	{
-		$this->strquery = $query;
+		$this->strQuery = $query;
 		$this->arrValues = $arrValues;
-		$update = $this->con->prepare($this->strquery);
-		$resExecute = $update->execute($this->arrValues);
-		return $resExecute;
+		$update = $this->con->prepare($this->strQuery);
+		return $update->execute($this->arrValues);
 	}
-	//Eliminar un registros
-	public function delete(string $query)
+
+	// Eliminar un registro
+	public function delete(string $query, array $arrValues = [])
 	{
-		$this->strquery = $query;
-		$result = $this->con->prepare($this->strquery);
-		$del = $result->execute();
-		return $del;
+		$this->strQuery = $query;
+		$stmt = $this->con->prepare($this->strQuery);
+		return $stmt->execute($arrValues);
 	}
-	//Insertar Datos con la Conexion datos
-	public function insertConTrasn($con, string $query, array $arrValues)
+
+	// Insertar datos con una conexión externa (transacción)
+	public function insertConTrans($con, string $query, array $arrValues)
 	{
-		$this->strquery = $query;
-		$this->arrValues = $arrValues;
-		$insert = $con->prepare($this->strquery);
-		$resInsert = $insert->execute($this->arrValues);
-		if ($resInsert) {
-			$lastInsert = $con->lastInsertId();
-		} else {
-			$lastInsert = 0;
-		}
-		return $lastInsert;
+		$stmt = $con->prepare($query);
+		$resInsert = $stmt->execute($arrValues);
+		return $resInsert ? $con->lastInsertId() : 0;
 	}
-	//Actualiza registros Con Transaccion
-	public function updateConTrasn($con, string $query, array $arrValues)
+
+	// Actualizar registros con una conexión externa (transacción)
+	public function updateConTrans($con, string $query, array $arrValues)
 	{
-		$this->strquery = $query;
-		$this->arrValues = $arrValues;
-		$update = $con->prepare($this->strquery);
-		$resExecute = $update->execute($this->arrValues);
-		return $resExecute;
+		$stmt = $con->prepare($query);
+		return $stmt->execute($arrValues);
 	}
 }

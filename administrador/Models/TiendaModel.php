@@ -149,12 +149,14 @@ class TiendaModel extends MysqlPedidos
 
     public function consultarTiendaCliente(int $utie_id, int $cliIds)
     {
+        $this->rolName = retornarDataSesion("RolNombre");
         $sql = "SELECT DISTINCT a.tie_id AS Ids, b.tie_nombre AS Nombre
                     FROM {$this->db_name}.usuario_tienda a
                         INNER JOIN {$this->db_name}.tienda b ON a.tie_id = b.tie_id
                     WHERE a.utie_est_log != 0";
         $params = [];
-        if ($this->rolName === "admin") {
+putMessageLogFile($this->rolName);
+        if ($this->rolName === "admin" || $this->rolName === "admintienda") {
             $sql .= " AND a.cli_id = :cli_id";
             $params[":cli_id"] = $cliIds;
         } else {
@@ -163,7 +165,7 @@ class TiendaModel extends MysqlPedidos
         }
 
         $sql .= " ORDER BY b.tie_nombre ASC";
-
+        putMessageLogFile("Consultar Tienda Cliente: SQL = $sql, Params = " . json_encode($params), "DEBUG");
         return $this->select_all($sql, $params);
     }
 
@@ -325,6 +327,57 @@ class TiendaModel extends MysqlPedidos
 		}
 
 	}
+
+
+    
+	/**
+	 * Asigna tiendas a un usuario específico.
+	 *
+	 * @param int $ids ID del usuario al que se le asignarán las tiendas.
+	 * @param array $tiendas Array de IDs de tiendas a asignar.
+	 * @return array Resultado de la operación.
+	 */
+
+	public function asignarTiendasUsuario($ids,$rolid, $tiendas)
+	{
+		try {
+			
+			$con = $this->getConexion();
+			$con->beginTransaction();
+            $cliId= retornarDataSesion("Cli_Id");
+
+            // Obtener tiendas ya asignadas al usuario
+            $sqlSelect = "SELECT tie_id FROM {$this->db_name}.usuario_tienda WHERE usu_id = :usu_id";
+            $stmtSelect = $con->prepare($sqlSelect);
+            $stmtSelect->execute([':usu_id' => $ids]);
+            $tiendasExistentes = $stmtSelect->fetchAll(PDO::FETCH_COLUMN, 0);
+
+            // Insertar solo las tiendas que no estén ya asignadas
+            $sqlInsert = "INSERT INTO {$this->db_name}.usuario_tienda (usu_id, tie_id, cli_id, rol_id, utie_est_log, utie_fec_cre) 
+                          VALUES (:usu_id, :tie_id, :cli_id, :rol_id, 1, CURRENT_TIMESTAMP())";
+            $stmtInsert = $con->prepare($sqlInsert);
+
+            foreach ($tiendas as $tiendaId) {
+                if (!in_array($tiendaId, $tiendasExistentes)) {
+                    $stmtInsert->execute([
+                        ':usu_id' => $ids,
+                        ':tie_id' => $tiendaId,
+                        ':cli_id' => $cliId,
+                        ':rol_id' => $rolid
+                    ]);
+                }
+            }
+
+			$con->commit();
+			return ["status" => true, "message" => "Tiendas asignadas correctamente."];
+		} catch (Exception $e) {
+			if ($con) {
+				$con->rollBack();
+			}
+			logFileSystem("Error en asignarTiendasUsuario: " . $e->getMessage(), "ERROR");
+			return ["status" => false, "message" => "Error al asignar tiendas: " . $e->getMessage()];
+		}
+	}	
 
 
 

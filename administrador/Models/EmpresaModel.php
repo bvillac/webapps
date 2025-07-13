@@ -180,7 +180,7 @@ class EmpresaModel extends Mysql
 				  $con->beginTransaction();
 				  $arrData = array(0);
 				  $sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? WHERE emp_id={$Emp_id}";
-				  $request = $this->updateConTrasn($con, $sql, $arrData);
+				  $request = $this->updateConTrans($con, $sql, $arrData);
 				  if ($request) {//Si todo es correcto retorna True
 					  $arrayIds = explode(",", $data);
 					  $usuario = retornaUser();
@@ -189,7 +189,7 @@ class EmpresaModel extends Mysql
 					  //Actualiza todos los Ids
 					  $sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? 
 						  WHERE emp_id={$Emp_id} AND mod_id IN({$data})";
-					  $request = $this->updateConTrasn($con, $sql, $arrData);
+					  $request = $this->updateConTrans($con, $sql, $arrData);
 					  if ($request) {
 						  foreach ($arrayIds as $Mod_id) {
 							  $sql = "SELECT * FROM " . $this->db_name . ".empresa_modulo WHERE emp_id={$Emp_id} AND mod_id='{$Mod_id}'";
@@ -199,7 +199,7 @@ class EmpresaModel extends Mysql
 								  $arrData = array($Emp_id, $Mod_id, 1, $usuario);
 								  $SqlQuery = "INSERT INTO " . $this->db_name . ".empresa_modulo
 											  (`emp_id`,`mod_id`,`estado_logico`,`usuario_creacion`) VALUES (?,?,?,?) ";
-								  $request_insert = $this->insertConTrasn($con, $SqlQuery, $arrData);
+								  $request_insert = $this->insertConTrans($con, $SqlQuery, $arrData);
 								  if ($request_insert == 0) {//si es igual 0 no inserto nada
 									  $con->rollBack();
 									  $arroout["status"] = false;
@@ -244,7 +244,7 @@ class EmpresaModel extends Mysql
 
 			// Desactiva todos los módulos actuales
 			$sql = "UPDATE {$this->db_name}.empresa_modulo SET estado_logico = 0 WHERE emp_id = ?";
-			if (!$this->updateConTrasn($con, $sql, [$Emp_id])) {
+			if (!$this->updateConTrans($con, $sql, [$Emp_id])) {
 				throw new Exception("Error al desactivar los módulos actuales.");
 			}
 
@@ -254,7 +254,7 @@ class EmpresaModel extends Mysql
 				$sql = "UPDATE {$this->db_name}.empresa_modulo SET estado_logico = 1 
                     WHERE emp_id = ? AND mod_id IN ($placeholders)";
 				$params = array_merge([$Emp_id], $arrayIds);
-				if (!$this->updateConTrasn($con, $sql, $params)) {
+				if (!$this->updateConTrans($con, $sql, $params)) {
 					throw new Exception("Error al activar los módulos seleccionados.");
 				}
 
@@ -268,7 +268,7 @@ class EmpresaModel extends Mysql
 						$sqlInsert = "INSERT INTO {$this->db_name}.empresa_modulo
                                   (emp_id, mod_id, estado_logico, usuario_creacion) 
                                   VALUES (?, ?, ?, ?)";
-						$insertSuccess = $this->insertConTrasn($con, $sqlInsert, [$Emp_id, $mod_id, 1, $usuario]);
+						$insertSuccess = $this->insertConTrans($con, $sqlInsert, [$Emp_id, $mod_id, 1, $usuario]);
 						if ($insertSuccess === 0) {
 							throw new Exception("Error al insertar el módulo $mod_id.");
 						}
@@ -427,7 +427,7 @@ class EmpresaModel extends Mysql
 
 			// Desactiva todos los módulos actuales
 			$sql = "UPDATE {$this->db_name}.empresa_rol  SET estado_logico = 0 WHERE emp_id = ?";
-			if (!$this->updateConTrasn($con, $sql, [$Emp_id])) {
+			if (!$this->updateConTrans($con, $sql, [$Emp_id])) {
 				throw new Exception("Error al desactivar los módulos actuales.");
 			}
 
@@ -437,7 +437,7 @@ class EmpresaModel extends Mysql
 				$sql = "UPDATE {$this->db_name}.empresa_rol  SET estado_logico = 1 
                     WHERE emp_id = ? AND rol_id IN ($placeholders)";
 				$params = array_merge([$Emp_id], $arrayIds);
-				if (!$this->updateConTrasn($con, $sql, $params)) {
+				if (!$this->updateConTrans($con, $sql, $params)) {
 					throw new Exception("Error al activar los Roles seleccionados.");
 				}
 
@@ -451,7 +451,7 @@ class EmpresaModel extends Mysql
 						$sqlInsert = "INSERT INTO {$this->db_name}.empresa_rol 
                                   (emp_id, rol_id, estado_logico, usuario_creacion) 
                                   VALUES (?, ?, ?, ?)";
-						$insertSuccess = $this->insertConTrasn($con, $sqlInsert, [$Emp_id, $rol_id, 1, $usuario]);
+						$insertSuccess = $this->insertConTrans($con, $sqlInsert, [$Emp_id, $rol_id, 1, $usuario]);
 						if ($insertSuccess === 0) {
 							throw new Exception("Error al insertar el Roles $rol_id.");
 						}
@@ -483,7 +483,7 @@ class EmpresaModel extends Mysql
 
 			// Desactiva todos los módulos actuales
 			$sql = "UPDATE {$this->db_name}.empresa_modulo_rol  SET estado_logico = 0 WHERE erol_id = :erol_id ";
-			if (!$this->updateConTrasn($con, $sql, [":erol_id" => $erol_id])) {
+			if (!$this->updateConTrans($con, $sql, [":erol_id" => $erol_id])) {
 				throw new Exception("Error al desactivar los módulos y Roles actuales.");
 			}
 
@@ -493,7 +493,7 @@ class EmpresaModel extends Mysql
 				$sql = "UPDATE {$this->db_name}.empresa_modulo_rol  SET estado_logico = 1 
                     WHERE erol_id = ? AND emod_id IN ($placeholders)";
 				$params = array_merge([$erol_id], $arrayIds);
-				if (!$this->updateConTrasn($con, $sql, $params)) {
+				if (!$this->updateConTrans($con, $sql, $params)) {
 					throw new Exception("Error al activar los Roles y Modulos seleccionados.");
 				}
 
@@ -507,7 +507,7 @@ class EmpresaModel extends Mysql
 						$sqlInsert = "INSERT INTO {$this->db_name}.empresa_modulo_rol 
                                   (emod_id, erol_id, estado_logico, usuario_creacion) 
                                   VALUES (?, ?, ?, ?)";
-						$insertSuccess = $this->insertConTrasn($con, $sqlInsert, [$emod_id, $erol_id, 1, $usuario]);
+						$insertSuccess = $this->insertConTrans($con, $sqlInsert, [$emod_id, $erol_id, 1, $usuario]);
 						if ($insertSuccess === 0) {
 							throw new Exception("Error al insertar el Roles $emod_id.");
 						}
@@ -558,7 +558,7 @@ class EmpresaModel extends Mysql
                       SET emrol_index = 1 
                       WHERE emrol_id = :emrol_id";
 			$arrData = [":emrol_id" => $Emrol_id];
-			$this->updateConTrasn($con, $sqlUpdate, $arrData);
+			$this->updateConTrans($con, $sqlUpdate, $arrData);
 
 			$con->commit();
 
@@ -576,7 +576,7 @@ class EmpresaModel extends Mysql
                   SET emrol_index = 0 
                   WHERE erol_id = :erol_id";
 		$arrData = [":erol_id" => $Erol_id];
-		return $this->updateConTrasn($con, $sqlUpdate, $arrData);
+		return $this->updateConTrans($con, $sqlUpdate, $arrData);
 	}
 
 

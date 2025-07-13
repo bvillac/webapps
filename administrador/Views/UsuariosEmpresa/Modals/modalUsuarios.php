@@ -15,6 +15,7 @@
           <input type="hidden" id="txth_perids" name="txth_perids" value="">
           <input type="hidden" id="txth_eusuids" name="txth_eusuids" value="">
           <input type="hidden" id="txth_usu_id" name="txth_usu_id" value="">
+          <input type="hidden" id="txth_rol_id" name="txth_rol_id" value="">
           <p class="text-primary">Todos los campos son obligatorios.</p>
           <div class="form-row">
             <div class="form-group col-md-6">

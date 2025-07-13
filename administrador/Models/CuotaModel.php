@@ -97,7 +97,7 @@ class CuotaModel extends MysqlAcademico
                 $sql = "UPDATE " . $this->db_name . ".cobranza SET valor_cancelado = ?,estado_cancelado = ?,fecha_pago_debito = CURRENT_TIMESTAMP(),
                             usuario_modificacion='{$usuario}',fecha_modificacion = CURRENT_TIMESTAMP() WHERE cob_id = {$Ids} ";
                 $arrData = array($requestCob['Valor'],"C");
-                $request = $this->updateConTrasn($con,$sql, $arrData);
+                $request = $this->updateConTrans($con,$sql, $arrData);
                 $con->commit();
                 $arroout["status"] = true;
                 $arroout["numero"] = 0;

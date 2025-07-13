@@ -86,7 +86,7 @@ class ClienteMillerModel extends Mysql
                     `cli_ingreso_mensual`,
                     `estado_logico`,
                     `usuario_creacion`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
-                $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
+                $Ids = $this->insertConTrans($con, $SqlQuery, $arrData);
                 $con->commit();
                 $arroout["status"] = true;
                 $arroout["numero"] = $Ids;

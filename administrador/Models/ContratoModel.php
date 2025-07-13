@@ -170,7 +170,7 @@ class ContratoModel extends MysqlAcademico
                         `con_tipo_pago`,`con_forma_pago`,`con_valor`,`con_valor_cuota_inicial`,`con_numero_pagos`,`con_valor_cuota_mensual`,
                         `con_observacion`,`con_usuario_creacion`,`con_estado_logico`) ";
         $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
-        return $this->insertConTrasn($con, $SqlQuery, $arrData);        
+        return $this->insertConTrans($con, $SqlQuery, $arrData);        
     }
 
     private function insertarCobranza($con, $arrData)
@@ -180,7 +180,7 @@ class ContratoModel extends MysqlAcademico
                             `valor_debito`,`fecha_pago_debito`,`valor_cancelado`,`estado_cancelado`,`original_transaccion`,`original_documento`,
                             `usuario_ingreso`,`estado_logico`) ";
         $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
-        $this->insertConTrasn($con, $SqlQuery, $arrData);
+        $this->insertConTrans($con, $SqlQuery, $arrData);
     }
 
 
@@ -188,7 +188,7 @@ class ContratoModel extends MysqlAcademico
         $SqlQuery  = "INSERT INTO " . $this->db_name . ".beneficiario ";
         $SqlQuery .= "(`con_id`,`per_id`,`ben_tipo`,`ben_edad`,`ben_usuario_creacion`,`ben_estado_logico`) ";
         $SqlQuery .= " VALUES (?,?,?,?,?,?) ";
-        return $this->insertConTrasn($con, $SqlQuery, $arrDetalle);
+        return $this->insertConTrans($con, $SqlQuery, $arrDetalle);
     }
 
     private function insertarAprendisaje($con, $arrDetalle){ 
@@ -196,14 +196,14 @@ class ContratoModel extends MysqlAcademico
         $SqlQuery .= "(`ben_id`,`paq_id`,`idi_id`,`mas_id`,`cat_id`,`apr_numero_meses`,`apr_numero_horas`,`apr_observaciones`,
                        `apr_examen_internacional`,`apr_usuario_creacion`,`apr_estado_logico`) ";
         $SqlQuery .= " VALUES (?,?,?,?,?,?,?,?,?,?,?) ";
-        return $this->insertConTrasn($con, $SqlQuery, $arrDetalle);
+        return $this->insertConTrans($con, $SqlQuery, $arrDetalle);
     }
 
     private function insertarReferencia($con, $arrReferencia):void{//No retorna valor 
         $SqlQuery  = "INSERT INTO " . $this->db_name . ".referencia ";
         $SqlQuery .= "(`con_id`,`ref_nombre`,`ref_direccion`,`ref_telefono`,`ref_ciudad`,`ref_usuario_creacion`,`ref_estado_logico`) ";
         $SqlQuery .= " VALUES (?,?,?,?,?,?,?) ";
-        $this->insertConTrasn($con, $SqlQuery, $arrReferencia);
+        $this->insertConTrans($con, $SqlQuery, $arrReferencia);
     }
  
     public function updateData($dataObj)

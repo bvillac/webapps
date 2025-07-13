@@ -111,12 +111,12 @@ class AsistenciaModel extends MysqlAcademico
                     `cac_observacion`,
                     `cac_usuario_creacion`,                   
                     `cac_estado_logico`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ";
-                $Ids = $this->insertConTrasn($con, $SqlQuery, $arrData);
+                $Ids = $this->insertConTrans($con, $SqlQuery, $arrData);
                 //Acualizar Asistencia
                 $sql = "UPDATE " . $this->db_name . ".reservacion SET res_asistencia = ?,res_usuario_modificacion='{$usuario}',
                             res_fecha_modificacion = CURRENT_TIMESTAMP() WHERE res_id = {$Ids} ";
                 $arrData = array("A");
-                $request = $this->updateConTrasn($con,$sql, $arrData);
+                $request = $this->updateConTrans($con,$sql, $arrData);
 
                 $con->commit();
                 $arroout["status"] = true;

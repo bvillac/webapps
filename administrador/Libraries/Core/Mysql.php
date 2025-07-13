@@ -2,139 +2,160 @@
 
 class Mysql extends Conexion
 {
-	private $conexion;
+	/** @var PDO */
+	private $con;
+	/** @var string */
 	private $strquery;
+	/** @var array */
 	private $arrValues;
+	/** @var string */
 	private $db_name;
+	/** @var string */
 	private $db_nameAcad = DB_NAME_ACAD;
-	
 
-	function __construct()
+	public function __construct()
 	{
-		$this->con = new Conexion();
-		$this->db_name = $this->con->getDbName();
-		$this->con = $this->con->conect();
+		$conexion = new Conexion();
+		$this->db_name = $conexion->getDbName();
+		$this->con = $conexion->conect();
 	}
 
-	public function getConexion()
+	public function getConexion(): PDO
 	{
 		return $this->con;
 	}
 
-	public function getDbNameMysql()
+	public function getDbNameMysql(): string
 	{
 		return $this->db_name;
 	}
 
-	//Insertar un registro
-	public function insert(string $query, array $arrValues)
+	/**
+	 * Insertar un registro
+	 */
+	public function insert(string $query, array $arrValues): int
 	{
 		try {
 			$this->strquery = $query;
-			$this->arrVAlues = $arrValues;
+			$this->arrValues = $arrValues;
 			$insert = $this->con->prepare($this->strquery);
-			$resInsert = $insert->execute($this->arrVAlues);
-			if ($resInsert) {
-				$lastInsert = $this->con->lastInsertId();
-			} else {
-				$lastInsert = 0;
-			}
-			return $lastInsert;
+			$resInsert = $insert->execute($this->arrValues);
+			return $resInsert ? (int)$this->con->lastInsertId() : 0;
 		} catch (\Throwable $e) {
-			echo "Mensaje de Error: " . $e->getMessage();
-			putMessageLogFile("ERROR: " . $e->getMessage() . $e);
+			putMessageLogFile("ERROR: " . $e->getMessage());
+			return 0;
 		}
 	}
-	//Busca un registro
-	public function select(string $query,array $params = [])
+
+	/**
+	 * Busca un registro
+	 */
+	public function select(string $query, array $params = []): ?array
 	{
 		try {
 			$this->strquery = $query;
 			$result = $this->con->prepare($this->strquery);
-			if (!empty($params)) {
-				foreach ($params as $key => $value) {
-					$result->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
-				}
-			}
+			$this->bindParams($result, $params);
 			$result->execute();
 			$data = $result->fetch(PDO::FETCH_ASSOC);
-			return $data;
+			return $data !== false ? $data : null;
 		} catch (\Throwable $e) {
-			echo "Mensaje de Error: " . $e->getMessage();
-			putMessageLogFile("ERROR: " . $e->getMessage() . $e);
+			putMessageLogFile("ERROR: " . $e->getMessage());
+			return null;
 		}
 	}
-	//Devuelve todos los registros
-	public function select_all(string $query, array $params = [])
+
+	/**
+	 * Devuelve todos los registros
+	 */
+	public function select_all(string $query, array $params = []): array|false
 	{
 		try {
 			$this->strquery = $query;
 			$result = $this->con->prepare($this->strquery);
-			// Si hay parámetros, los enlazamos de forma segura
-			if (!empty($params)) {
-				foreach ($params as $key => $value) {
-					$result->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
-				}
-			}
+			$this->bindParams($result, $params);
 			$result->execute();
 			return $result->fetchAll(PDO::FETCH_ASSOC);
 		} catch (\Throwable $e) {
 			putMessageLogFile("ERROR: " . $e->getMessage());
-			return false; // Retornar false en caso de error
+			return false;
 		}
 	}
 
-
-
-	//Actualiza registros
-	public function update(string $query, array $arrValues)
+	/**
+	 * Actualiza registros
+	 */
+	public function update(string $query, array $arrValues): bool
 	{
 		try {
 			$this->strquery = $query;
-			$this->arrVAlues = $arrValues;
+			$this->arrValues = $arrValues;
 			$update = $this->con->prepare($this->strquery);
-			$resExecute = $update->execute($this->arrVAlues);
-			return $resExecute;
+			return $update->execute($this->arrValues);
 		} catch (\Throwable $e) {
-			echo "Mensaje de Error: " . $e->getMessage();
-			putMessageLogFile("ERROR: " . $e->getMessage() . $e);
+			putMessageLogFile("ERROR: " . $e->getMessage());
+			return false;
 		}
 	}
-	//Eliminar un registros
-	public function delete(string $query)
+
+	/**
+	 * Eliminar un registro
+	 */
+	public function delete(string $query, array $params = []): bool
 	{
 		try {
 			$this->strquery = $query;
 			$result = $this->con->prepare($this->strquery);
-			$del = $result->execute();
-			return $del;
+			$this->bindParams($result, $params);
+			return $result->execute();
 		} catch (\Throwable $e) {
-			echo "Mensaje de Error: " . $e->getMessage();
-			putMessageLogFile("ERROR: " . $e->getMessage() . $e);
+			putMessageLogFile("ERROR: " . $e->getMessage());
+			return false;
 		}
 	}
 
-	//Insertar Datos con la Conexion datos
-	public function insertConTrasn($con,string $query, array $arrValues){
-		$this->strquery = $query;
-		$this->arrValues = $arrValues;
-		$insert = $con->prepare($this->strquery);
-		$resInsert = $insert->execute($this->arrValues);
-		if($resInsert){
-			$lastInsert = $con->lastInsertId();
-		}else{
-			$lastInsert = 0;
-		}
-		return $lastInsert; 
-	}
-
-	//Actualiza registros Con Transaccion
-	public function updateConTrasn($con, string $query, array $arrValues)
+	/**
+	 * Insertar datos con la conexión pasada por parámetro (transacción)
+	 */
+	public function insertConTrans($con, string $query, array $arrValues): int
 	{
-		$this->strquery = $query;
-		$this->arrValues = $arrValues;
-		$update = $con->prepare($this->strquery);
-		$resExecute = $update->execute($this->arrValues);
-		return $resExecute;
+		try {
+			$stmt = $con->prepare($query);
+			$resInsert = $stmt->execute($arrValues);
+			return $resInsert ? (int)$con->lastInsertId() : 0;
+		} catch (\Throwable $e) {
+			putMessageLogFile("ERROR: " . $e->getMessage());
+			return 0;
+		}
+	}
+
+	/**
+	 * Actualiza registros con transacción
+	 */
+	public function updateConTrans($con, string $query, array $arrValues): bool
+	{
+		try {
+			$stmt = $con->prepare($query);
+			return $stmt->execute($arrValues);
+		} catch (\Throwable $e) {
+			putMessageLogFile("ERROR: " . $e->getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * Enlaza parámetros a un statement PDO
+	 */
+	private function bindParams($stmt, array $params): void
+	{
+		foreach ($params as $key => $value) {
+			$paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
+			// Si el key es numérico, usar posición, si es string, usar nombre
+			if (is_int($key)) {
+				$stmt->bindValue($key + 1, $value, $paramType); // PDO es 1-based para posiciones
+			} else {
+				$stmt->bindValue($key, $value, $paramType);
+			}
+		}
 	}
 }
