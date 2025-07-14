@@ -347,4 +347,28 @@ function limpiarSessionStorage() {
     //console.log("Sesión limpiada correctamente.");
 }
 
+
+function buscarDataTable(valorBuscado, campo, dataTableSelector) {
+    const table = $(dataTableSelector).DataTable();
+
+    // Validación temprana
+    if (!table || valorBuscado == null || !campo) {
+        console.warn("Parámetros inválidos o tabla no inicializada");
+        return null;
+    }
+
+    const filas = table.rows().data();
+
+    // Convertimos a array y usamos find para buscar por el campo dinámico
+    const fila = filas.toArray().find(row => String(row[campo]) === String(valorBuscado));
+
+    if (fila) {
+        return fila; // Retorna toda la fila si se encuentra
+    }
+
+    console.warn(`No se encontró una fila con ${campo} = ${valorBuscado}`);
+    return null;
+}
+
+
   

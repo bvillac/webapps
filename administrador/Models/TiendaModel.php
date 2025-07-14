@@ -167,7 +167,7 @@ class TiendaModel extends MysqlPedidos
         return $this->select_all($sql, $params);
     }
 
-    public function consultarTiendaPorCliente( int $cliIds)
+    public function consultarTiendaPorCliente(int $cliIds)
     {
         $sql = "SELECT tie_id Ids,tie_nombre Nombre FROM {$this->db_name}.tienda where tie_est_log!=0 and cli_id=:cli_id;";
         $params[":cli_id"] = $cliIds;
@@ -318,43 +318,43 @@ class TiendaModel extends MysqlPedidos
     }
 
     public function getClienteTiendas(int $Cli_id)
-	{
-		try {
-			$sql = "SELECT tie_id as Ids,tie_nombre as Nombre FROM {$this->db_name}.tienda where tie_est_log!=0 and cli_id= :cli_id";
-			$resultado = $this->select_all($sql, [":cli_id" => $Cli_id]);
-			if ($resultado === false) {
-				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
-			}
-			return $resultado;
-		} catch (Exception $e) {
-			logFileSystem("Error en getEmpresaRol: " . $e->getMessage(), "ERROR");
-			return []; // En caso de error, retornar un array vacío
-		}
+    {
+        try {
+            $sql = "SELECT tie_id as Ids,tie_nombre as Nombre FROM {$this->db_name}.tienda where tie_est_log!=0 and cli_id= :cli_id";
+            $resultado = $this->select_all($sql, [":cli_id" => $Cli_id]);
+            if ($resultado === false) {
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en getEmpresaRol: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
 
-	}
+    }
 
 
-    
-	/**
-	 * Asigna tiendas a un usuario específico.
-	 *
-	 * @param int $ids ID del usuario al que se le asignarán las tiendas.
-	 * @param array $tiendas Array de IDs de tiendas a asignar.
-	 * @return array Resultado de la operación.
-	 */
 
-	public function asignarTiendasUsuario($ids,$rolid, $tiendas)
-	{
-		try {
-			
-			$con = $this->getConexion();
-			$con->beginTransaction();
-            $cliId= retornarDataSesion("Cli_Id");
+    /**
+     * Asigna tiendas a un usuario específico.
+     *
+     * @param int $ids ID del usuario al que se le asignarán las tiendas.
+     * @param array $tiendas Array de IDs de tiendas a asignar.
+     * @return array Resultado de la operación.
+     */
+
+    public function asignarTiendasUsuario($usu_id, $rolid,$cliId, $tiendas)
+    {
+        try {
+
+            $con = $this->getConexion();
+            $con->beginTransaction();
+            //$cliId = retornarDataSesion("Cli_Id");
 
             // Obtener tiendas ya asignadas al usuario
             $sqlSelect = "SELECT tie_id FROM {$this->db_name}.usuario_tienda WHERE usu_id = :usu_id";
             $stmtSelect = $con->prepare($sqlSelect);
-            $stmtSelect->execute([':usu_id' => $ids]);
+            $stmtSelect->execute([':usu_id' => $usu_id]);
             $tiendasExistentes = $stmtSelect->fetchAll(PDO::FETCH_COLUMN, 0);
 
             // Insertar solo las tiendas que no estén ya asignadas
@@ -365,7 +365,7 @@ class TiendaModel extends MysqlPedidos
             foreach ($tiendas as $tiendaId) {
                 if (!in_array($tiendaId, $tiendasExistentes)) {
                     $stmtInsert->execute([
-                        ':usu_id' => $ids,
+                        ':usu_id' => $usu_id,
                         ':tie_id' => $tiendaId,
                         ':cli_id' => $cliId,
                         ':rol_id' => $rolid
@@ -373,16 +373,42 @@ class TiendaModel extends MysqlPedidos
                 }
             }
 
-			$con->commit();
-			return ["status" => true, "message" => "Tiendas asignadas correctamente."];
-		} catch (Exception $e) {
-			if ($con) {
-				$con->rollBack();
-			}
-			logFileSystem("Error en asignarTiendasUsuario: " . $e->getMessage(), "ERROR");
-			return ["status" => false, "message" => "Error al asignar tiendas: " . $e->getMessage()];
-		}
-	}	
+            $con->commit();
+            return ["status" => true, "message" => "Tiendas asignadas correctamente."];
+        } catch (Exception $e) {
+            if ($con) {
+                $con->rollBack();
+            }
+            logFileSystem("Error en asignarTiendasUsuario: " . $e->getMessage(), "ERROR");
+            return ["status" => false, "message" => "Error al asignar tiendas: " . $e->getMessage()];
+        }
+    }
+
+    public function consultarTiendaPorId(int $usu_id, int $cli_id, int $rol_id)
+    {
+        try {
+
+            $sql = "SELECT b.tie_id AS Ids, b.tie_nombre AS Nombre
+                FROM {$this->db_name}.usuario_tienda a
+                    INNER JOIN {$this->db_name}.tienda b ON a.tie_id = b.tie_id
+                WHERE a.usu_id = :usu_id AND a.cli_id = :cli_id AND a.rol_id = :rol_id AND a.utie_est_log != 0";
+            $params = [
+                ":usu_id" => $usu_id,
+                ":cli_id" => $cli_id,
+                ":rol_id" => $rol_id
+            ];
+
+            $resultado = $this->select_all($sql, $params);
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para consultarTiendaPorId", "WARNING");
+                return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarTiendaPorId: " . $e->getMessage(), "ERROR");
+            return []; // En caso de error, retornar un array vacío
+        }
+    }
 
 
 

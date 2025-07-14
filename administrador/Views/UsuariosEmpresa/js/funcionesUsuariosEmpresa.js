@@ -17,8 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
             "url": " " + base_url + "/UsuariosEmpresa/getUsuariosEmpresa",
             "dataSrc": ""
         },
-        
+
         "columns": [
+            { "data": "Ids", "visible": false }, // Oculta la columna Ids
             { "data": "per_cedula" },
             { "data": "Nombres" },
             { "data": "usu_correo" },
@@ -157,6 +158,16 @@ $(document).ready(function () {
         }
     });
 
+    $('#cmd_agregartienda').click(function () {
+        const $cmbTienda = $('#cmb_tienda');
+        const selectedValue = $cmbTienda.val();
+        if (selectedValue && selectedValue !== '0') {
+            agregarTienda();
+        } else {
+            swal("Atención", "Debe seleccionar una tienda.", "error");
+        }
+    });
+
     $("#txt_dni").blur(function () {
         let valor = document.querySelector('#txt_dni').value;
         /*if(!validarDocumento(valor)){
@@ -171,7 +182,7 @@ $(document).ready(function () {
     $("#btn_guardarTienda").click(function () {
         guardarTiendasUsuario();
     });
-    
+
 
     $('#mostrar').click(function () {
         //Comprobamos que la cadena NO esté vacía.
@@ -200,7 +211,7 @@ $(document).ready(function () {
             $('.pwdtxt2').html("Mostrar contraseña");
         }
     });
-    
+
     $("#btn_guardar").click(function () {
         guardarUsuarioEmpresa();
     });
@@ -318,8 +329,8 @@ function fntDelUsu(ids) {
             peticionAjaxSSL(url, metodo, dataPost, function (data) {
                 if (data.status) {
                     swal("Eliminar!", data.msg, "success");
-                        tableUsuarios.api().ajax.reload(function () {
-                        });                    
+                    tableUsuarios.api().ajax.reload(function () {
+                    });
                 } else {
                     swal("Atención", data.msg, "error");
                 }
@@ -501,7 +512,7 @@ function cambiarClave() {
     }
     const url = base_url + '/UsuariosEmpresa/cambiarClave';
     const metodo = 'POST';
-    const dataPost = { ids: ids,clave:strPassword };
+    const dataPost = { ids: ids, clave: strPassword };
 
     peticionAjaxSSL(url, metodo, dataPost, function (data) {
         // Manejar el éxito de la solicitud aquí
@@ -519,11 +530,15 @@ function cambiarClave() {
 }
 
 
-function fntVerTienda(ids,rolId) {
+function fntVerTienda(ids, rolId) {
     document.querySelector('#titleModal2').innerHTML = "Tiendas";
     document.querySelector('.modal-header').classList.replace("headerRegister", "headerUpdate");
     document.querySelector('#btn_CanbiarClave').classList.replace("btn-primary", "btn-info");
     document.querySelector('#btnText').innerHTML = "Guardar";
+
+    const fila = buscarDataTable(ids, "Ids", "#tableUsuarios");
+    const rolName= fila ? fila.RolEmpresa : "No encontrado";
+
 
     const url = base_url + '/UsuariosEmpresa/getTiendasEmpresa';
     const metodo = 'POST';
@@ -531,13 +546,18 @@ function fntVerTienda(ids,rolId) {
 
     peticionAjaxSSL(url, metodo, dataPost, function (data) {
         if (data.status) {
+            
             document.querySelector("#txth_ids").value = data.data.Ids;
             document.querySelector("#lbl_correo2").innerHTML = data.data.usu_correo;
             document.querySelector("#txth_rol_id").value = rolId;
+            document.querySelector("#lbl_rolName").innerHTML = rolName;
+
             $('#modalTiendas').modal('show');
+
         } else {
             swal("Atención", data.msg, "error");
         }
+
     }, function (jqXHR, textStatus, errorThrown) {
         console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
     });
@@ -547,8 +567,12 @@ function fntVerTienda(ids,rolId) {
 function guardarTiendasUsuario() {
     const ids = document.querySelector("#txth_ids").value;
     const rolId = document.querySelector("#txth_rol_id").value;
+    const cliId = document.querySelector("#cmb_Cliente").value;
     const select = document.getElementById('list_tiendas');
-    const tiendas = Array.from(select.selectedOptions).map(opt => opt.value);
+
+    //const tiendas = Array.from(select.selectedOptions).map(opt => opt.value);
+    const tiendas = Array.from(select.options).map(opt => opt.value);
+
 
     if (tiendas.length === 0) {
         swal("Atención", "Debe seleccionar al menos una tienda.", "error");
@@ -557,13 +581,13 @@ function guardarTiendasUsuario() {
 
     const url = base_url + '/UsuariosEmpresa/guardarUsuarioTiendas';
     const metodo = 'POST';
-    const dataPost = { ids: ids, tiendas: tiendas,rolId:rolId };
+    const dataPost = { ids: ids, tiendas: tiendas, rolId: rolId, cliId: cliId };
 
     peticionAjaxSSL(url, metodo, dataPost, function (data) {
         if (data.status) {
             swal("Éxito", data.msg, "success");
             $('#modalTiendas').modal('hide');
-            tableUsuarios.api().ajax.reload(function () {}); 
+            tableUsuarios.api().ajax.reload(function () { });
         } else {
             swal("Atención", data.msg, "error");
         }
@@ -574,21 +598,25 @@ function guardarTiendasUsuario() {
 
 
 function fetchTiendas(idsCliente) {
-    
-    const $cmbTienda  = $('#cmb_tienda');
+    const $cmbTienda = $('#cmb_tienda');
+    const $listTienda = $('#list_tiendas');
+    const idsUser = $('#txth_ids').val();
+    const idsRol = $('#txth_rol_id').val();
     // Mostrar estado “cargando”
     $cmbTienda
         .prop('disabled', true)
         .empty()
         .append('<option value="0">CARGANDO...</option>');
+    $listTienda
+        .prop('disabled', true)
+        .empty();
 
     let url = base_url + '/Tienda/retornarTiendaCLienteGen';
     var metodo = 'POST';
-    var datos = { ids: idsCliente };
+    var datos = { ids: idsCliente, idsUser: idsUser, idsRol: idsRol };
     peticionAjaxSSL(url, metodo, datos, function (data) {
-
         if (data.status) {
-            const tiendas = data.data;
+            const tiendas = data.data.tiendas;
             $cmbTienda
                 .prop('disabled', false)
                 .empty()
@@ -601,6 +629,13 @@ function fetchTiendas(idsCliente) {
                 return { ids: t.Ids, Nombre: t.Nombre, Color: t.Color };
             });
             $cmbTienda.selectpicker('refresh');
+
+            const tiendasCliente = data.data.tiendasCliente;
+            tiendasCliente.map(t => {
+                $listTienda.empty().append(
+                    `<option value="${t.Ids}">${t.Nombre}</option>`
+                );
+            });
             //sessionStorage.setItem('dts_TiendaCliente', JSON.stringify(storeList));
         } else {
             swal('Error', 'No se pudieron cargar las tiendas', 'error');
@@ -615,6 +650,46 @@ function fetchTiendas(idsCliente) {
 
 
 }
+
+function resetTienda() {
+    var listTiendas = $('#list_tiendas');
+
+    if (listTiendas.length) {
+        listTiendas.empty();
+    }
+}
+
+function agregarTienda() {
+    const $cmbTienda = $('#cmb_tienda');
+    const $listTienda = $('#list_tiendas');
+    const selectedValue = $cmbTienda.val();
+    if (selectedValue && selectedValue !== '0') {
+        const optionText = $cmbTienda.find('option:selected').text();
+        if (!$listTienda.find(`option[value="${selectedValue}"]`).length) {
+            $listTienda.append(`<option value="${selectedValue}">${optionText}</option>`);
+            //$listTienda.selectpicker('refresh');
+        } else {
+            swal("Atención", "La tienda ya está agregada.", "warning");
+        }
+    } else {
+        swal("Atención", "Debe seleccionar una tienda.", "error");
+    }
+}
+
+function obtenerRolEmpresaPorId(idBuscado) {
+    var table = $('#tableUsuarios').DataTable(); // Asegúrate de usar la instancia de DataTables correctamente
+
+    var data = table.rows().data(); // obtener todos los datos de las filas
+
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].Ids == idBuscado) {
+            return data[i].RolEmpresa; // retorna el RolEmpresa de esa fila
+        }
+    }
+
+    return null; // si no se encuentra
+}
+
 
 
 

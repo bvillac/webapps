@@ -30,6 +30,7 @@
                     <table class="table table-hover table-bordered" id="tableUsuarios">
                       <thead>
                         <tr>
+                          <th>Ids</th>
                           <th>Identificación Dni</th>
                           <th>Nombres</th>
                           <th>Correo Electrónico</th>

@@ -311,6 +311,10 @@
               <td id="lbl_correo2"></td>
             </tr>
             <tr>
+              <td>Rol:</td>
+              <td id="lbl_rolName"></td>
+            </tr>
+            <tr>
               <td>Cliente:</td>
               <td>
                 <select class="form-control" data-live-search="true" id="cmb_Cliente" name="cmb_Cliente" required="">
@@ -333,7 +337,8 @@
                   <?php
                   echo '<option value="0">SELECCIONAR</option>';
                   ?>
-                </select>
+                </select><br>
+                <button id="cmd_agregartienda" class="btn btn-primary" type="button"><i class="fa fa-plus"></i> Agregar</button>
               </td>
             </tr>
             <tr>
@@ -341,10 +346,10 @@
               <td>
                 <select class="form-select " multiple id="list_tiendas" style="height: 300px;width: 300px;" >
                   <?php
-                  foreach ($data['tiendas'] as $opcion) {
-                    $seleted = 0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
-                    echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
-                  }
+                  // foreach ($data['tiendas'] as $opcion) {
+                  //   $seleted = 0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
+                  //   echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
+                  // }
                   ?>
                 </select>
               </td>

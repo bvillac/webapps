@@ -22,7 +22,6 @@ class UsuariosEmpresa extends Controllers
 		$Cli_Id = retornarDataSesion("Cli_Id");
 		$data['cli_id'] = $Cli_Id ;
 		$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
-
 		$data['tiendas'] = (new TiendaModel())->getClienteTiendas($Cli_Id);
 		$this->views->getView($this, "usuariosempresa", $data);
 	}
@@ -49,7 +48,6 @@ class UsuariosEmpresa extends Controllers
 		if ($_SESSION['permisosMod']['u']) {
 			$options .= '<button class="btn btn-primary  btn-sm btnEditUsu" onClick="fntEditUsu(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button> ';
 			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Cambiar Clave"><i class="fa fa-key"></i></button> ';
-			//$options .= '<button class="btn btn-primary  btn-sm " onClick="fntEditClave(\'' . $id . '\')" title="Roles"><i class="fa fa-address-book"></i></button> ';
 			$options .= '<button class="btn btn-primary  btn-sm " onClick="fntVerTienda(\'' . $id . '\', \'' . $RolId . '\')" title="Tiendas"><i class="fa fa-shopping-bag"></i></button> ';
 		}
 		if ($_SESSION['permisosMod']['d']) {
@@ -311,7 +309,7 @@ class UsuariosEmpresa extends Controllers
 		if ($_POST) {
 			$data = recibirData($_POST['data'] ?? null);
 
-			if (empty($data['ids']) || empty($data['rolId']) || empty($data['tiendas'])) {
+			if (empty($data['ids']) || empty($data['cliId']) || empty($data['rolId']) || empty($data['tiendas'])) {
 				$arrResponse = ['status' => false, 'msg' => 'No se recibieron todos los datos necesarios.'];
 				responseJson($arrResponse);
 			}
@@ -319,6 +317,7 @@ class UsuariosEmpresa extends Controllers
 
 			$ids = $data['ids'];
 			$rolId = $data['rolId'];
+			$cliId = $data['cliId'];
 			$tiendas = $data['tiendas'];
 			$accion = 'Create';
 			$option = 0;
@@ -328,7 +327,7 @@ class UsuariosEmpresa extends Controllers
 				if ($accion === "Create") {
 					checkPermission('w', 'usuariosempresa');
 					// Enviar el id de usuario y las tiendas seleccionadas al modelo
-					$request = (new TiendaModel())->asignarTiendasUsuario($ids,$rolId, $tiendas);
+					$request = (new TiendaModel())->asignarTiendasUsuario($ids,$rolId,$cliId, $tiendas);
 					$option = 1;
 				} elseif ($accion === "Edit") {
 					//checkPermission('u', 'usuariosempresa');

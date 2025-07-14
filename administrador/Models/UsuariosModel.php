@@ -198,8 +198,8 @@ class UsuariosModel extends Mysql
 			$sql .= "	INNER JOIN {$this->db_name}.persona p ";
 			$sql .= "		ON a.per_id=p.per_id ";
 			$sql .= " WHERE  a.usu_id= :usu_id ";
-
 			$resultado = $this->select($sql,[":usu_id" => $Ids]);
+
 			if ($resultado === false) {
 				logFileSystem("Consulta fallida consultarDatosId", "WARNING");
 				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista

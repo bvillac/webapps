@@ -54,6 +54,7 @@ class UsuariosEmpresaModel extends Mysql
 				$row['RolId'] = $this->obtenerRolesConIds($row['RolEmpresa']);
 			}
 			unset($row);
+			putMessageLogFile("Resultado de consultarDatos(): " . json_encode($resultado), "DEBUG");
 			return $resultado;
 		} catch (Exception $e) {
 			logFileSystem("Error en consultarDatos(): " . $e->getMessage(), "ERROR");

@@ -261,11 +261,14 @@ class Tienda extends Controllers
 		//dep($_POST);
 		if($_POST){
 			$data=recibirData($_POST['data']);            
-			if(empty($data['ids']) ){
+            if (empty($data['ids']) || empty($data['idsUser']) || empty($data['idsRol'])) {
 				$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
 			}else{
 				$cliIds = intval(strClean($data['ids']));
-                $arrData = (new TiendaModel())->consultarTiendaPorCliente($cliIds);
+                $idsUser = intval(strClean($data['idsUser']));
+                $idsRol = intval(strClean($data['idsRol']));
+                $arrData['tiendas'] = (new TiendaModel())->consultarTiendaPorCliente($cliIds);
+                $arrData['tiendasCliente'] = (new TiendaModel())->consultarTiendaPorId($idsUser,$cliIds,$idsRol);
 				if(empty($arrData)){
 					$arrResponse = array('status' => false, 'msg' => 'La tienda no tiene items asignados.' ); 
 				}else{	
