@@ -2,6 +2,7 @@
 use Spipu\Html2Pdf\Html2Pdf;
 require 'vendor/autoload.php';
 require_once("Models/TiendaModel.php");
+require_once("Models/ClientePedidoModel.php");
 
 class UsuariosEmpresa extends Controllers
 {
@@ -19,6 +20,9 @@ class UsuariosEmpresa extends Controllers
 		$data = getPageData("Usuarios Empresa", "usuariosempresa");
 		$data['empresa_rol'] = $this->model->consultarRolEmpresa();
 		$Cli_Id = retornarDataSesion("Cli_Id");
+		$data['cli_id'] = $Cli_Id ;
+		$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
+
 		$data['tiendas'] = (new TiendaModel())->getClienteTiendas($Cli_Id);
 		$this->views->getView($this, "usuariosempresa", $data);
 	}

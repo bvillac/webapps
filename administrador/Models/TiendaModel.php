@@ -164,7 +164,13 @@ class TiendaModel extends MysqlPedidos
         }
 
         $sql .= " ORDER BY b.tie_nombre ASC";
-        putMessageLogFile("Consultar Tienda Cliente: SQL = $sql, Params = " . json_encode($params), "DEBUG");
+        return $this->select_all($sql, $params);
+    }
+
+    public function consultarTiendaPorCliente( int $cliIds)
+    {
+        $sql = "SELECT tie_id Ids,tie_nombre Nombre FROM {$this->db_name}.tienda where tie_est_log!=0 and cli_id=:cli_id;";
+        $params[":cli_id"] = $cliIds;
         return $this->select_all($sql, $params);
     }
 

@@ -257,6 +257,27 @@ class Tienda extends Controllers
 	}
 
 
+    public function retornarTiendaCLienteGen(){
+		//dep($_POST);
+		if($_POST){
+			$data=recibirData($_POST['data']);            
+			if(empty($data['ids']) ){
+				$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
+			}else{
+				$cliIds = intval(strClean($data['ids']));
+                $arrData = (new TiendaModel())->consultarTiendaPorCliente($cliIds);
+				if(empty($arrData)){
+					$arrResponse = array('status' => false, 'msg' => 'La tienda no tiene items asignados.' ); 
+				}else{	
+					$arrResponse = array('status' => true, 'data' => $arrData);
+				}
+			}
+			echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+		}
+		exit();
+	}
+
+
 
 
         

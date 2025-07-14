@@ -144,6 +144,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //Se ejecuta en los eventos de Controles
 $(document).ready(function () {
+    $('#cmb_Cliente').selectpicker();
+
+    $('#cmb_Cliente').change(function () {
+        const $cmbCliente = $('#cmb_Cliente');
+        const clienteId = $cmbCliente.val();
+        if (clienteId && clienteId !== '0') {
+            fetchTiendas(clienteId);
+        } else {
+            swal('Error', 'Debe seleccionar un cliente', 'error');
+            resetTienda();
+        }
+    });
 
     $("#txt_dni").blur(function () {
         let valor = document.querySelector('#txt_dni').value;
@@ -560,6 +572,49 @@ function guardarTiendasUsuario() {
     });
 }
 
+
+function fetchTiendas(idsCliente) {
+    
+    const $cmbTienda  = $('#cmb_tienda');
+    // Mostrar estado “cargando”
+    $cmbTienda
+        .prop('disabled', true)
+        .empty()
+        .append('<option value="0">CARGANDO...</option>');
+
+    let url = base_url + '/Tienda/retornarTiendaCLienteGen';
+    var metodo = 'POST';
+    var datos = { ids: idsCliente };
+    peticionAjaxSSL(url, metodo, datos, function (data) {
+
+        if (data.status) {
+            const tiendas = data.data;
+            $cmbTienda
+                .prop('disabled', false)
+                .empty()
+                .append('<option value="0">SELECCIONAR TIENDA</option>');
+
+            const storeList = tiendas.map(t => {
+                $cmbTienda.append(
+                    `<option value="${t.Ids}">${t.Nombre}</option>`
+                );
+                return { ids: t.Ids, Nombre: t.Nombre, Color: t.Color };
+            });
+            $cmbTienda.selectpicker('refresh');
+            //sessionStorage.setItem('dts_TiendaCliente', JSON.stringify(storeList));
+        } else {
+            swal('Error', 'No se pudieron cargar las tiendas', 'error');
+            resetTienda();
+        }
+
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('AJAX Error:', textStatus, errorThrown);
+        swal('Error', 'No se pudieron cargar las tiendas', 'error');
+        resetTienda();
+    });
+
+
+}
 
 
 

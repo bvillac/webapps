@@ -219,7 +219,7 @@
                 <select class="form-select valid" multiple data-live-search="true" id="multiple-select2" required="">
                   <?php
                   foreach ($data['empresas'] as $opcion) {
-                    $seleted = 0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
+                    $seleted = 0; //($opcion['Ids']==$data['CentroId'])?'selected':'';
                     echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
                   }
                   ?>
@@ -311,11 +311,34 @@
               <td id="lbl_correo2"></td>
             </tr>
             <tr>
+              <td>Cliente:</td>
+              <td>
+                <select class="form-control" data-live-search="true" id="cmb_Cliente" name="cmb_Cliente" required="">
+                  <?php
+                  // Recorre el array y genera las opciones del select
+                  echo '<option value="0">SELECCIONAR</option>';
+                  foreach ($data['cliente'] as $opcion) {
+                    $seleted =0 ;//($opcion['Ids'] == $data['cli_id']) ? 'selected' : '0';
+                    echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
+                  }
+                  ?>
+                </select>
+              </td>
+            </tr>
+            <tr>
               <td>Tiendas:</td>
               <td>
-                <span> Presione CTRL y haga clic para seleccionar varias<br>
-                  opciones a la vez.:</span>
-             
+                <select class="form-control selectpicker" data-live-search="true" id="cmb_tienda" name="cmb_tienda"
+                  data-none-selected-text="SELECCIONAR TIENDA" title="SELECCIONAR TIENDA" required="">
+                  <?php
+                  echo '<option value="0">SELECCIONAR</option>';
+                  ?>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Lista Tiendas:</td>
+              <td>
                 <select class="form-select " multiple id="list_tiendas" style="height: 300px;width: 300px;" >
                   <?php
                   foreach ($data['tiendas'] as $opcion) {
@@ -325,7 +348,6 @@
                   ?>
                 </select>
               </td>
-
             </tr>
           </tbody>
         </table>
