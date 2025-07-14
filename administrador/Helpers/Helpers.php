@@ -336,14 +336,14 @@ function sessionStart()
         session_regenerate_id(true);
         $_SESSION['created'] = time();
     }
-
+    require_once("Controllers/Salida.php");
     // 4. Control de inactividad (timeout)
     $inactiveLimit = TIMESESSION; // define en segundos (p.ej. 1800 = 30 min)
     if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $inactiveLimit) {
         // Sesión inactiva: destruir y forzar logout
         session_unset();
         session_destroy();
-        header('Location: ' . base_url() . '/Logout');
+        new Salida('/loginPedido'); // Puedes redirigir a cualquier ruta
         exit;
     }
     $_SESSION['last_activity'] = time();
@@ -351,7 +351,7 @@ function sessionStart()
     // 5. Verificar estado de login
     if (empty($_SESSION['loginEstado'])) {
         // No está logueado: forzar login
-        header('Location: ' . base_url() . '/login');
+        new Salida('/loginPedido'); // Puedes redirigir a cualquier ruta
         exit;
     }
 }
@@ -550,7 +550,6 @@ function getGenerarMenu()
     $menu .= '<li><a class="app-menu__item" href="' . base_url() . '/salida">
                 <i class="app-menu__icon fa fa-sign-out"></i>
                 <span class="app-menu__label">Salir</span></a></li>';
-
     $menu .= '</ul>';
     echo $menu;
 }

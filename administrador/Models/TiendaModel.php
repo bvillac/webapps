@@ -155,7 +155,6 @@ class TiendaModel extends MysqlPedidos
                         INNER JOIN {$this->db_name}.tienda b ON a.tie_id = b.tie_id
                     WHERE a.utie_est_log != 0";
         $params = [];
-putMessageLogFile($this->rolName);
         if ($this->rolName === "admin" || $this->rolName === "admintienda") {
             $sql .= " AND a.cli_id = :cli_id";
             $params[":cli_id"] = $cliIds;

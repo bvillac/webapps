@@ -9,7 +9,6 @@ $(document).ready(function () {
 	});
 	$("#btn_loginPedido").click(function () {
 		window.location = base_url+'/LoginPedido';
-
 	});
 });
 

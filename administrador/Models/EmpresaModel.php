@@ -139,7 +139,7 @@ class EmpresaModel extends Mysql
 	public function consultarEmpresaEstPunto(int $Ids)
 	{
 		$sql = "SELECT a.emp_id EmpIds,a.emp_ruc Ruc,a.emp_nombre_comercial NombreComercial,b.est_id EstableId,
-						c.pemi_id PuntoEmisId,a.emp_ruta_logo Logo,a.emp_correo Correo,a.emp_direccion Direccion 
+						c.pemi_id PuntoEmisId,a.emp_ruta_logo Logo,a.emp_correo Correo,a.emp_direccion Direccion,a.emp_login LoginEMP
 						FROM " . $this->db_name . ".empresa a 
 							inner join (" . $this->db_name . ".establecimiento b 
 									inner join " . $this->db_name . ".punto_emision c 
