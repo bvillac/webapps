@@ -44,6 +44,8 @@ class UsuariosEmpresaModel extends Mysql
 				$sql .= " AND x.estado_logico != 0 ";
 			}
 
+			putMessageLogFile("SQL consultarDatos: " . $sql, "DEBUG");	
+
 			$resultado = $this->select_all($sql, [":emp_id" => $empresaId]);
 
 			if ($resultado === false) {
@@ -54,7 +56,6 @@ class UsuariosEmpresaModel extends Mysql
 				$row['RolId'] = $this->obtenerRolesConIds($row['RolEmpresa']);
 			}
 			unset($row);
-			putMessageLogFile("Resultado de consultarDatos(): " . json_encode($resultado), "DEBUG");
 			return $resultado;
 		} catch (Exception $e) {
 			logFileSystem("Error en consultarDatos(): " . $e->getMessage(), "ERROR");
