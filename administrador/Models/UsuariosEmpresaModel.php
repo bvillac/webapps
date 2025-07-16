@@ -234,7 +234,7 @@ class UsuariosEmpresaModel extends Mysql
 	{
 		try {
 			$sql = " SELECT b.emod_id,b.mod_id 
-						FROM {$this->db_name}.empresa_modulo_rol a 
+						FROM {$this->db_name}.permiso a 
 							inner join {$this->db_name}.empresa_modulo b 
 							on a.emod_id=b.emod_id
 						where a.estado_logico!=0 and a.erol_id=:erol_id and b.emp_id=:emp_id";

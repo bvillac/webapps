@@ -471,62 +471,15 @@ class EmpresaModel extends Mysql
 	}
 
 
-	/*public function insertDataEmpRolSelect(string $data, string $erol_id): array
-	{
-		$arroout = ["status" => false, "message" => "Operación fallida."];
-		try {
-			$con = $this->getConexion();
-			$con->beginTransaction();
 
-			$usuario = retornaUser();
-			$arrayIds = array_filter(explode(",", $data)); // Limpia valores vacíos
 
-			// Desactiva todos los módulos actuales
-			$sql = "UPDATE {$this->db_name}.empresa_modulo_rol  SET estado_logico = 0 WHERE erol_id = :erol_id ";
-			if (!$this->updateConTrans($con, $sql, [":erol_id" => $erol_id])) {
-				throw new Exception("Error al desactivar los módulos y Roles actuales.");
-			}
-
-			if (!empty($arrayIds)) {
-				// Activa los módulos seleccionados
-				$placeholders = implode(',', array_fill(0, count($arrayIds), '?'));
-				$sql = "UPDATE {$this->db_name}.empresa_modulo_rol  SET estado_logico = 1 
-					WHERE erol_id = ? AND emod_id IN ($placeholders)";
-				$params = array_merge([$erol_id], $arrayIds);
-				if (!$this->updateConTrans($con, $sql, $params)) {
-					throw new Exception("Error al activar los Roles y Modulos seleccionados.");
-				}
-
-				// Inserta módulos nuevos que no existan aún
-				foreach ($arrayIds as $emod_id) {
-					$sqlCheck = "SELECT 1 FROM {$this->db_name}.empresa_modulo_rol  
-							 WHERE erol_id = :erol_id AND emod_id = :emod_id ";
-					$exists = $this->select($sqlCheck, [":erol_id" => $erol_id, ":emod_id" => $emod_id]);
-
-					if (empty($exists)) {
-						$sqlInsert = "INSERT INTO {$this->db_name}.empresa_modulo_rol 
-								  (emod_id, erol_id, estado_logico, usuario_creacion) 
-								  VALUES (?, ?, ?, ?)";
-						$insertSuccess = $this->insertConTrans($con, $sqlInsert, [$emod_id, $erol_id, 1, $usuario]);
-						if ($insertSuccess === 0) {
-							throw new Exception("Error al insertar el Roles $emod_id.");
-						}
-					}
-				}
-			}
-
-			$con->commit();
-			$arroout["status"] = true;
-			$arroout["message"] = "Módulos actualizados correctamente.";
-		} catch (Exception $e) {
-			putMessageLogFile($e);
-			$con->rollBack();
-			$arroout["message"] = "Fallo: " . $e->getMessage();
-		}
-
-		return $arroout;
-	}*/
-
+	/**
+	 * Inserta o actualiza los módulos y roles de un usuario en una empresa.
+	 *
+	 * @param string $data Datos de los módulos separados por comas.
+	 * @param string $erol_id ID del rol a actualizar.
+	 * @return array Resultado de la operación con estado y mensaje.
+	 */
 	public function insertDataEmpRolSelect(string $data, string $erol_id): array
 	{
 		$arroout = ["status" => false, "message" => "Operación fallida."];
@@ -536,6 +489,8 @@ class EmpresaModel extends Mysql
 
 			$usuario = retornaUser();
 			$arrayIds = array_filter(explode(",", $data)); // Limpia valores vacíos
+
+			
 
 			// Desactiva todos los módulos actuales
 			$sql = "UPDATE {$this->db_name}.permiso  SET estado_logico = 0 WHERE erol_id = :erol_id ";
@@ -553,17 +508,19 @@ class EmpresaModel extends Mysql
 					throw new Exception("Error al activar los Roles y Modulos seleccionados.");
 				}
 
+				 $privilegio  = (new UsuariosEmpresaModel())->retornarPrivilegioRol($erol_id);
+
 				// Inserta módulos nuevos que no existan aún
 				foreach ($arrayIds as $emod_id) {
 					$sqlCheck = "SELECT 1 FROM {$this->db_name}.permiso  
                              WHERE erol_id = :erol_id AND emod_id = :emod_id ";
 					$exists = $this->select($sqlCheck, [":erol_id" => $erol_id, ":emod_id" => $emod_id]);
-
+					//agrega lo que no existen 
 					if (empty($exists)) {
 						$sqlInsert = "INSERT INTO {$this->db_name}.permiso 
-                                  (emod_id, erol_id, estado_logico, usuario_creacion) 
-                                  VALUES (?, ?, ?, ?)";
-						$insertSuccess = $this->insertConTrans($con, $sqlInsert, [$emod_id, $erol_id, 1, $usuario]);
+                                  (emod_id,erol_id,r,w,u,d,estado_logico,usuario_creacion)
+                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+						$insertSuccess = $this->insertConTrans($con, $sqlInsert, [$emod_id, $erol_id, $privilegio['r'], $privilegio['w'], $privilegio['u'], $privilegio['d'], 1, $usuario]);
 						if ($insertSuccess === 0) {
 							throw new Exception("Error al insertar el Roles $emod_id.");
 						}
@@ -596,7 +553,7 @@ class EmpresaModel extends Mysql
 			$usuarioMod = retornaUser(); // Usuario que realiza la modificación
 
 			// Verificar si existe el módulo-rol
-			$sqlCheck = "SELECT emrol_id FROM {$this->db_name}.empresa_modulo_rol 
+			$sqlCheck = "SELECT perm_id FROM {$this->db_name}.permiso 
                      WHERE estado_logico != 0 AND emod_id = :emod_id AND erol_id = :erol_id";
 			$paramsCheck = [":emod_id" => $Emod_id, ":erol_id" => $Erol_id];
 			$result = $this->select($sqlCheck, $paramsCheck);
@@ -609,11 +566,11 @@ class EmpresaModel extends Mysql
 			$this->desactivarIndexModulo($con, $Erol_id);
 
 			// Activar el index para el módulo seleccionado
-			$Emrol_id = $result['emrol_id'];
-			$sqlUpdate = "UPDATE {$this->db_name}.empresa_modulo_rol 
+			$perm_id = $result['perm_id'];
+			$sqlUpdate = "UPDATE {$this->db_name}.permiso 
                       SET emrol_index = 1 
-                      WHERE emrol_id = :emrol_id";
-			$arrData = [":emrol_id" => $Emrol_id];
+                      WHERE perm_id = :perm_id";
+			$arrData = [":perm_id" => $perm_id];
 			$this->updateConTrans($con, $sqlUpdate, $arrData);
 
 			$con->commit();
@@ -628,7 +585,7 @@ class EmpresaModel extends Mysql
 
 	private function desactivarIndexModulo($con, int $Erol_id)
 	{
-		$sqlUpdate = "UPDATE {$this->db_name}.empresa_modulo_rol 
+		$sqlUpdate = "UPDATE {$this->db_name}.permiso 
                   SET emrol_index = 0 
                   WHERE erol_id = :erol_id";
 		$arrData = [":erol_id" => $Erol_id];

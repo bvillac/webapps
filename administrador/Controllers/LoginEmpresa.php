@@ -99,7 +99,6 @@ class LoginEmpresa extends Controllers
 				$_SESSION['usuarioData']['Rol_nombre'] = strtolower(str_replace(' ', '', $resulRol[0]['rol_nombre']));
 				//DATOS PERMISO MODULO
 				$_SESSION['menuData'] = $modelLoguin->permisosModulo($Eusu_id,$resulRol[0]['erol_id']);
-
 			}else{
 				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa ");
 				require_once("Controllers/Error.php");

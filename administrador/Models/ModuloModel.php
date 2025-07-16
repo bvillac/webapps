@@ -137,7 +137,7 @@ class ModuloModel extends Mysql
 	public function getModuloRolEmpresa(int $Emod_id, int $Erol_id)
 	{
 		$sql = "SELECT a.emod_id,CONCAT(RPAD(c.mod_id, 20-LENGTH(c.mod_id), ' '),c.mod_nombre) Nombre  ";
-		$sql .= "	FROM (" . $this->db_name . ".empresa_modulo_rol a ";
+		$sql .= "	FROM (" . $this->db_name . ".permiso a ";
 		$sql .= "		INNER JOIN (db_administrador.empresa_modulo b ";
 		$sql .= "				INNER JOIN " . $this->db_name . ".modulo c  ";
 		$sql .= "					ON  c.mod_id=b.mod_id)  ";
@@ -151,7 +151,7 @@ class ModuloModel extends Mysql
 	{
 		try {
 			$sql = "SELECT  a.emod_id as Ids,CONCAT(RPAD(b.mod_id, 20-LENGTH(b.mod_id), ' '),c.mod_nombre) Nombre
-						FROM {$this->db_name}.empresa_modulo_rol a
+						FROM {$this->db_name}.permiso a
 							inner join ({$this->db_name}.empresa_modulo b 
 								inner join {$this->db_name}.modulo c on c.mod_id=b.mod_id)
 							on b.emod_id=a.emod_id

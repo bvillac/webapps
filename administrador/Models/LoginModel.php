@@ -103,6 +103,7 @@ class LoginModel extends Mysql
 		return $request;
 	}
 
+	
 	public function permisosModulo(int $Eusu_id, int $Erol_id)
 	{
 		// Consulta SQL optimizada con parámetros preparados
@@ -111,11 +112,13 @@ class LoginModel extends Mysql
                 SUBSTRING(c.mod_id, 1, LENGTH(c.mod_id) - 2) AS idPadre,  
                 c.mod_nombre, c.mod_url, c.mod_icono, 
                 a.r, a.w, a.u, a.d   
-            FROM {$this->db_name}.permiso a 
-            INNER JOIN {$this->db_name}.modulo c ON a.mod_id = c.mod_id 
-            WHERE a.estado_logico != 0 AND a.eusu_id = :Eusu_id AND a.erol_id = :Erol_id ORDER BY  c.mod_id";
+            FROM ({$this->db_name}.permiso a 
+				 INNER JOIN ({$this->db_name}.empresa_modulo b 
+					INNER JOIN {$this->db_name}.modulo c ON b.mod_id = c.mod_id )
+                 ON b.emod_id=a.emod_id)
+            WHERE a.estado_logico != 0  AND a.erol_id = :Erol_id ORDER BY  c.mod_id";
 		// Ejecutar la consulta con parámetros preparados
-		$request = $this->select_all($sql, [":Eusu_id" => $Eusu_id,":Erol_id" => $Erol_id]);
+		$request = $this->select_all($sql, [":Erol_id" => $Erol_id]);
 
 		// Construir el menú en base a los resultados
 		return $this->construirMenu($request, "");

@@ -2,6 +2,7 @@
 require_once("Models/EmpresaModel.php");
 require_once("Models/RolesModel.php");
 require_once("Models/ModuloModel.php");
+require_once("Models/UsuariosEmpresaModel.php");
 class Empresa extends Controllers
 {
 
