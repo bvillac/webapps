@@ -100,7 +100,7 @@ class LoginEmpresa extends Controllers
 				//DATOS PERMISO MODULO
 				$_SESSION['menuData'] = $modelLoguin->permisosModulo($Eusu_id,$resulRol[0]['erol_id']);
 			}else{
-				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa ");
+				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa loginEMPRE ");
 				require_once("Controllers/Error.php");
 			} 
 

@@ -55,6 +55,7 @@ class LoginTienda extends Controllers
 	}
 
 	private function datosSession(int $Emp_Id,int $Utie_id,int $Cli_id){
+		putMessageLogFile("Datos de Session Empresa: Emp_Id:{$Emp_Id}, Utie_id:{$Utie_id}, Cli_id:{$Cli_id}");
 		$modelLoguin=new LoginModel();
 		$modelEmpresa=new EmpresaModel();
 		$usuId=retornarDataSesion('Usu_id');
@@ -84,7 +85,7 @@ class LoginTienda extends Controllers
 				$_SESSION['menuData'] = $modelLoguin->permisosModulo($Eusu_id,$resulRol[0]['erol_id']);
 
 			}else{
-				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa ");
+				putMessageLogFile("EmpresaUsuarioRol no Existe roles a empresa LoginTienda");
 				require_once("Controllers/Error.php");
 			} 
 

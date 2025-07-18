@@ -167,7 +167,9 @@ class ClienteModel extends Mysql
 			//$IdsEmpresa=retornarDataSesion('Emp_Id');
 			$sql = "SELECT cli_id as Ids,cli_razon_social as Nombre 
 						FROM  {$this->db_name}.cliente where estado_logico!=0 and  emp_id=:emp_id ";
+					
 			$resultado = $this->select_all($sql, [":emp_id" => $IdsEmpresa]);
+			
 			if ($resultado === false) {
 				logFileSystem("Consulta fallida para consultarEmpresaCliente: $IdsEmpresa", "WARNING");
 				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
