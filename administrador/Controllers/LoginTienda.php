@@ -55,7 +55,6 @@ class LoginTienda extends Controllers
 	}
 
 	private function datosSession(int $Emp_Id,int $Utie_id,int $Cli_id){
-		putMessageLogFile("Datos de Session Empresa: Emp_Id:{$Emp_Id}, Utie_id:{$Utie_id}, Cli_id:{$Cli_id}");
 		$modelLoguin=new LoginModel();
 		$modelEmpresa=new EmpresaModel();
 		$usuId=retornarDataSesion('Usu_id');

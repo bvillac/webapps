@@ -44,7 +44,6 @@ class UsuariosEmpresaModel extends Mysql
 				$sql .= " AND x.estado_logico != 0 ";
 			}
 
-			putMessageLogFile("SQL consultarDatos: " . $sql, "DEBUG");	
 
 			$resultado = $this->select_all($sql, [":emp_id" => $empresaId]);
 
@@ -134,6 +133,7 @@ class UsuariosEmpresaModel extends Mysql
 		$usuarioModel = new UsuariosModel();
 		$idsUsuCre = retornaUser();
 		$idsEmpresa = retornarDataSesion('Emp_Id');
+		$IdCliente = $dataObj['cliente'] ?? 0; // Cliente opcional, si no se envía, será 0
 
 		try {
 			$con->beginTransaction();
@@ -181,7 +181,7 @@ class UsuariosEmpresaModel extends Mysql
 			$usuId = $usuarioModel->insertarUsuario($con, $arrDataUsu);
 
 			// Relación con empresa
-			$arrDataEmp = [$idsEmpresa, $usuId, 1, $idsUsuCre];
+			$arrDataEmp = [$idsEmpresa, $usuId, $IdCliente, 1, $idsUsuCre];
 			$eusuId = $this->insertarEmpresaUsuario($con, $arrDataEmp);
 
 			// Rol
@@ -215,8 +215,8 @@ class UsuariosEmpresaModel extends Mysql
 	public function insertarEmpresaUsuario($con, $arrData)
 	{
 		$sqlInsert = "INSERT INTO {$this->db_name}.empresa_usuario 
-								(emp_id, usu_id,estado_logico,usuario_creacion, fecha_creacion) 
-								VALUES (?,?,?,?, CURRENT_TIMESTAMP)";
+								(emp_id, usu_id,cli_id,estado_logico,usuario_creacion, fecha_creacion) 
+								VALUES (?,?,?,?,?, CURRENT_TIMESTAMP)";
 		return $this->insertConTrans($con, $sqlInsert, $arrData);
 
 	}

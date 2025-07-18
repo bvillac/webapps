@@ -4,6 +4,7 @@
      //filelang(Setlanguage,"general") 
     //getModal("Views/Usuarios/Modals/",'modalUsuarios',$data);
     require_once "Views/UsuariosEmpresa/Modals/modalUsuarios.php"; 
+    require_once "Views/UsuariosEmpresa/Modals/modalPersona.php"; 
 ?>
     <main class="app-content">
       <div class="app-title">

@@ -20,7 +20,12 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="txt_dni">Identificación Dni</label>
-              <input type="text" class="form-control valid validarNumber " id="txt_dni" name="txt_dni" required="">
+              <div class="input-group">
+                <!-- <input class="form-control" id="txtCodigoPersona" name="txtCodigoPersona" type="text" required="" placeholder="Buscar"> -->
+                <input type="text" class="form-control valid validarNumber " id="txt_dni" name="txt_dni" required="">
+                <button id="cmd_buscarDatos" class="btn btn-primary" onclick="openModalBuscarPersona();" type="button"><i class=" fa fa-search-plus"></i></button>
+              </div>
+              
             </div>
 
 

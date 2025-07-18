@@ -417,11 +417,12 @@ function guardarUsuarioEmpresa() {
     const strEmail = document.querySelector('#txt_correo').value.trim();
     const intEstado = document.querySelector('#cmb_estado').value.trim();
     const intTipoRol = document.querySelector('#cmb_rol').value.trim();
+    const intCliente = document.querySelector('#cmb_Cliente').value.trim();
     const strPassword = document.querySelector('#txt_Password').value;
 
     if (accion == "Create") {
         // Validar campos obligatorios
-        if ([strDni, strFecNac, strNombre, strApellido, strTelefono, strDireccion, strAlias, strGenero, strEmail, intTipoRol].includes('')) {
+        if ([strDni, strFecNac, strNombre, strApellido, strTelefono, strDireccion, strAlias, strGenero, strEmail, intTipoRol,intCliente].includes('')) {
             swal("Atención", "Todos los campos son obligatorios.", "error");
             return;
         }
@@ -457,6 +458,7 @@ function guardarUsuarioEmpresa() {
         email: strEmail,
         estado: intEstado,
         rol: intTipoRol,
+        cliente: intCliente,
         password: strPassword
     };
 
@@ -688,5 +690,48 @@ function obtenerRolEmpresaPorId(idBuscado) {
     }
 
     return null; // si no se encuentra
+}
+
+
+
+function mostrarListaPersona() {
+    tablePersonaBuscar = $('#tablePersonas').dataTable({
+        "aProcessing": true,
+        "aServerSide": true,
+        "language": {
+            "url": cdnTable
+        },
+        "ajax": {
+            "url": " " + base_url + "/Persona/getPersonabuscar",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "Cedula" },
+            { "data": "Nombre" },
+            { "data": "Apellido" },
+            { "data": "options" }
+
+        ],
+        "columnDefs": [
+            //{ 'className': "textcenter", "targets": [3] },//Agregamos la clase que va a tener la columna
+            //{ 'className': "textright", "targets": [4] },
+            // { 'className': "textcenter", "targets": [ 5 ] }
+        ],
+        "resonsieve": "true",
+        "bDestroy": true,
+        "iDisplayLength": 10,
+        "order": [[0, "desc"]]
+    });
+
+}
+
+
+function openModalBuscarPersona() {
+    rowTable = "";
+    mostrarListaPersona();
+    //document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");
+    document.querySelector('#titleModal').innerHTML = "Buscar Personas";
+    //document.querySelector("#formProductos").reset();
+    $('#modalViewPersona').modal('show');
 }
 

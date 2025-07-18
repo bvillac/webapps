@@ -64,6 +64,15 @@ class UsuariosModel extends Mysql
 		}
 	}
 
+	public function insertarEmpresaUsuario($con, $arrData)
+	{
+		$sqlInsert = "INSERT INTO {$this->db_name}.empresa_usuario 
+								(emp_id, usu_id,cli_id,estado_logico,usuario_creacion, fecha_creacion) 
+								VALUES (?,?,?,?,?, CURRENT_TIMESTAMP)";
+		return $this->insertConTrans($con, $sqlInsert, $arrData);
+
+	}
+
 	public function insertarPersona($con, $arrData)
 	{
 		$SqlQuery = "INSERT INTO {$this->db_name}.persona ";
