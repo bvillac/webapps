@@ -148,14 +148,14 @@ $(document).ready(function () {
     $('#cmb_Cliente').selectpicker();
 
     $('#cmb_Cliente').change(function () {
-        const $cmbCliente = $('#cmb_Cliente');
-        const clienteId = $cmbCliente.val();
-        if (clienteId && clienteId !== '0') {
-            fetchTiendas(clienteId);
-        } else {
-            swal('Error', 'Debe seleccionar un cliente', 'error');
-            resetTienda();
-        }
+        // const $cmbCliente = $('#cmb_Cliente');
+        // const clienteId = $cmbCliente.val();
+        // if (clienteId && clienteId !== '0') {
+        //     fetchTiendas(clienteId);
+        // } else {
+        //     swal('Error', 'Debe seleccionar un cliente', 'error');
+        //     resetTienda();
+        // }
     });
 
     $('#cmd_agregartienda').click(function () {
@@ -689,9 +689,4 @@ function obtenerRolEmpresaPorId(idBuscado) {
 
     return null; // si no se encuentra
 }
-
-
-
-
-
 

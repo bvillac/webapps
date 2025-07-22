@@ -87,6 +87,19 @@
           </div>
 
           <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="cmb_Cliente">Cliente</label>
+              <select class="form-control" data-live-search="true" id="cmb_Cliente" name="cmb_Cliente" required="">
+                <?php
+                // Recorre el array y genera las opciones del select
+                echo '<option value="0">SELECCIONAR</option>';
+                foreach ($data['cliente'] as $opcion) {
+                  $seleted = 0; //($opcion['Ids']==$data['CentroId'])?'selected':'';
+                  echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
+                }
+                ?>
+              </select>
+            </div>
             <div class="form-group col-md-6" id="div_rol">
               <label for="cmb_rol">Rol Asignado</label>
               <select class="form-control" data-live-search="true" id="cmb_rol" name="cmb_rol" required="">
@@ -99,6 +112,11 @@
                 ?>
               </select>
             </div>
+
+
+
+          </div>
+          <div class="form-row">
             <div class="form-group col-md-6">
               <label for="cmb_estado">Estado</label>
               <select class="form-control" id="cmb_estado" name="cmb_estado" required="">
@@ -106,7 +124,6 @@
                 <option value="2">Inactivo</option>
               </select>
             </div>
-
           </div>
 
 
@@ -322,7 +339,7 @@
                   // Recorre el array y genera las opciones del select
                   echo '<option value="0">SELECCIONAR</option>';
                   foreach ($data['cliente'] as $opcion) {
-                    $seleted =0 ;//($opcion['Ids'] == $data['cli_id']) ? 'selected' : '0';
+                    $seleted = 0; //($opcion['Ids'] == $data['cli_id']) ? 'selected' : '0';
                     echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
                   }
                   ?>
@@ -344,7 +361,7 @@
             <tr>
               <td>Lista Tiendas:</td>
               <td>
-                <select class="form-select " multiple id="list_tiendas" style="height: 300px;width: 300px;" >
+                <select class="form-select " multiple id="list_tiendas" style="height: 300px;width: 300px;">
                   <?php
                   // foreach ($data['tiendas'] as $opcion) {
                   //   $seleted = 0;//($opcion['Ids']==$data['CentroId'])?'selected':'';
