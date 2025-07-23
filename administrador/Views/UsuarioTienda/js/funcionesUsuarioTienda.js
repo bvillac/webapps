@@ -324,6 +324,48 @@ function fntViewTienda(ids){
 }
 
 
+function mostrarListaPersona() {
+    tablePersonaBuscar = $('#tablePersonas').dataTable({
+        "aProcessing": true,
+        "aServerSide": true,
+        "language": {
+            "url": cdnTable
+        },
+        "ajax": {
+            "url": " " + base_url + "/Persona/getPersonabuscar",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "Cedula" },
+            { "data": "Nombre" },
+            { "data": "Apellido" },
+            { "data": "options" }
+
+        ],
+        "columnDefs": [
+            //{ 'className': "textcenter", "targets": [3] },//Agregamos la clase que va a tener la columna
+            //{ 'className': "textright", "targets": [4] },
+            // { 'className': "textcenter", "targets": [ 5 ] }
+        ],
+        "resonsieve": "true",
+        "bDestroy": true,
+        "iDisplayLength": 10,
+        "order": [[0, "desc"]]
+    });
+
+}
+
+
+function openModalBuscarPersona() {
+    rowTable = "";
+    mostrarListaPersona();
+    //document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");
+    document.querySelector('#titleModal').innerHTML = "Buscar Personas";
+    //document.querySelector("#formProductos").reset();
+    $('#modalViewPersona').modal('show');
+}
+
+
 
 
 
