@@ -16,6 +16,7 @@
           <input type="hidden" id="txth_eusuids" name="txth_eusuids" value="">
           <input type="hidden" id="txth_usu_id" name="txth_usu_id" value="">
           <input type="hidden" id="txth_rol_id" name="txth_rol_id" value="">
+          <input type="hidden" id="txth_validador" name="txth_validador" value="">
           <p class="text-primary">Todos los campos son obligatorios.</p>
           <div class="form-row">
             <div class="form-group col-md-6">
@@ -23,7 +24,7 @@
               <div class="input-group">
                 <!-- <input class="form-control" id="txtCodigoPersona" name="txtCodigoPersona" type="text" required="" placeholder="Buscar"> -->
                 <input type="text" class="form-control valid validarNumber " id="txt_dni" name="txt_dni" required="">
-                <button id="cmd_buscarDatos" class="btn btn-primary" onclick="openModalBuscarPersona();" type="button"><i class=" fa fa-search-plus"></i></button>
+                <button id="cmd_buscarDatos" class="btn btn-primary" onclick="openModalGenBuscarPersona();" type="button"><i class=" fa fa-search-plus"></i></button>
               </div>
               
             </div>
@@ -339,7 +340,7 @@
             <tr>
               <td>Cliente:</td>
               <td>
-                <select class="form-control" data-live-search="true" id="cmb_Cliente" name="cmb_Cliente" required="">
+                <select class="form-control" data-live-search="true" id="cmb_ClienteTienda" name="cmb_ClienteTienda" required="">
                   <?php
                   // Recorre el array y genera las opciones del select
                   echo '<option value="0">SELECCIONAR</option>';

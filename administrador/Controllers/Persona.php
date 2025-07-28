@@ -1,4 +1,5 @@
 <?php
+require_once("Models/UsuariosModel.php");
 class Persona extends Controllers
 {
 	public function __construct()
@@ -218,6 +219,70 @@ class Persona extends Controllers
 			echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
 		}
 		die();
+	}
+
+
+	/**
+	 * Consultar Persona Generico
+	 * @return void
+	 */
+	
+	public function getGenPersonabuscar()
+	{
+		//$arrData = $arrData = $this->model->consultarDatos();
+		$arrData = (new UsuariosModel())->consultarGenUsuarioPersonaDatos();
+		for ($i = 0; $i < count($arrData); $i++) {
+			$btnOpciones = "";
+			$btnOpciones .= '<button class="btn btn-info btn-sm btnView" onClick="buscarGenPersonaDni(\'' . $arrData[$i]['Ids'] . '\')" title="Agregar"><i class="fa fa-plus"></i></button>';
+			$arrData[$i]['options'] = '<div class="text-center">' . $btnOpciones . '</div>';
+		}
+		//dep($arrData);
+		echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+		die();
+	}
+
+
+	/**
+	 * Consultar Persona por ID o Dni Generico
+	 * @return void
+	 */
+
+	public function consultarPersonaIdDni()
+	{
+		try {
+			if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+				responseJson(['status' => false, 'msg' => 'Método no permitido.']);
+			}
+
+			$data = recibirData($_POST['data']);
+
+			if (empty($data['codigo']) || !is_numeric($data['codigo'])) {
+				responseJson(['status' => false, 'msg' => 'ID o Codigo inválido o faltante.']);
+			}
+
+			$Codigo = intval(strClean($data['codigo']));
+
+			$resultado = (new UsuariosModel())->consultarDatosId($Codigo);
+			//$resultado = $this->model->consultarDatosIdCedula($Codigo);
+			if (empty($resultado)) {
+				$arrResponse = [
+					'status' => false,
+					'msg' => 'No se pudo encontrar el Registro. Verifica si el ID es correcto.'
+				];
+			} else {
+				$arrResponse = [
+					'status' => true,
+					'data' => $resultado
+				];
+			}
+
+			responseJson($arrResponse);
+		} catch (Exception $e) {
+			//logFileSystem("Error en consultarPersonaIdDni: " . $e->getMessage(), "ERROR");
+			responseJson(['status' => false, 'msg' => 'Ocurrió un error al encontrar el Registro.']);
+		}
+		exit();
+
 	}
 
 

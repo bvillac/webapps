@@ -74,7 +74,8 @@ class UsuariosEmpresaModel extends Mysql
 		if (!is_string($rolesString) || trim($rolesString) === '') {
 			return 0;
 		}
-		$roles = array_filter(array_map('trim', explode(',', (string)$rolesString)), function($r) { return $r !== ''; });
+		$roles = array_filter(array_map('trim', explode(',', (string) $rolesString)), function ($r) {
+			return $r !== ''; });
 		if (empty($roles)) {
 			return 0;
 		}
@@ -190,8 +191,8 @@ class UsuariosEmpresaModel extends Mysql
 			$this->insertarEmpresaUsuarioRol($con, $arrDataUsuRol);
 
 			// Permisos
-			$modulos = $this->retornarModuloRolEmpresa($idsEmpresa, $rolId);
-			$this->insertarPermisoEmpresaUsuario($con, $modulos, $eusuId, $rolId, $idsUsuCre);
+			//$modulos = $this->retornarModuloRolEmpresa($idsEmpresa, $rolId);
+			//$this->insertarPermisoEmpresaUsuario($con, $modulos, $eusuId, $rolId, $idsUsuCre);
 
 			$con->commit();
 
@@ -414,6 +415,52 @@ class UsuariosEmpresaModel extends Mysql
 			return []; // En caso de error, retornar un array vacío
 		}
 	}
+
+
+	public function insertDataEmpUsuRol(array $dataObj)
+	{
+		$con = $this->getConexion();
+		$usuarioModel = new UsuariosModel();
+		$idsUsuCre = retornaUser();
+		$idsEmpresa = retornarDataSesion('Emp_Id');
+		$IdCliente = $dataObj['cliente'] ?? 0; // Cliente opcional, si no se envía, será 0
+
+		try {
+			$con->beginTransaction();
+			$perId = $dataObj['perId'];
+			$usuId = $dataObj['usuId'];
+
+			// Relación con empresa
+			$arrDataEmp = [$idsEmpresa, $usuId, $IdCliente, 1, $idsUsuCre];
+			$eusuId = $this->insertarEmpresaUsuario($con, $arrDataEmp);
+
+			// Rol
+			$rolId = $dataObj['rol'];
+			$arrDataUsuRol = [$eusuId, $rolId, 1, $idsUsuCre];
+			$this->insertarEmpresaUsuarioRol($con, $arrDataUsuRol);
+
+			// Permisos
+			//$modulos = $this->retornarModuloRolEmpresa($idsEmpresa, $rolId);
+			//$this->insertarPermisoEmpresaUsuario($con, $modulos, $eusuId, $rolId, $idsUsuCre);
+
+			$con->commit();
+
+			return [
+				"status" => true,
+				"numero" => $usuId,
+				"message" => "Usuario registrado correctamente."
+			];
+		} catch (Exception $e) {
+			$con->rollBack();
+			logFileSystem("Error en insertData: " . $e->getMessage(), "ERROR");
+
+			return [
+				"status" => false,
+				"message" => "Error al guardar el usuario: " . $e->getMessage()
+			];
+		}
+	}
+
 
 
 

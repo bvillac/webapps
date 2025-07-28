@@ -422,6 +422,28 @@ class UsuariosModel extends Mysql
 		}
 	}
 
+	public function consultarGenUsuarioPersonaDatos()
+	{
+		try {
+			$sql = "SELECT a.usu_id Ids,a.per_id PerId, ";
+			$sql .= " p.per_cedula Cedula,p.per_nombre Nombre,p.per_apellido Apellido  	";
+			$sql .= "	FROM {$this->db_name}.usuario a ";
+			$sql .= "		INNER JOIN {$this->db_name}.persona p ";
+			$sql .= "			ON a.per_id=p.per_id AND p.estado_logico!=0 	";
+	
+			$resultado = $this->select_all($sql);	
+			// Verificar si la consulta fue exitosa
+			if ($resultado === false) {
+				logFileSystem("Consulta fallida consultarGenUsuarioPersonaDatos", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en consultarGenUsuarioPersonaDatos: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
+	}
+
 
 
 }

@@ -164,11 +164,14 @@ class ClienteModel extends Mysql
 	{
 		try {
 			//$IdsEmpresa = $_SESSION['Emp_Id'];
-			//$IdsEmpresa=retornarDataSesion('Emp_Id');
-			$sql = "SELECT cli_id as Ids,cli_razon_social as Nombre 
-						FROM  {$this->db_name}.cliente where estado_logico!=0 and  emp_id=:emp_id ";
-					
-			$resultado = $this->select_all($sql, [":emp_id" => $IdsEmpresa]);
+			$Usu_id=retornarDataSesion('Usu_id');
+			//$sql = "SELECT cli_id as Ids,cli_razon_social as Nombre 
+			//			FROM  {$this->db_name}.cliente where estado_logico!=0 and  emp_id=:emp_id ";
+			$sql = "SELECT a.cli_id as Ids,b.cli_razon_social as Nombre 
+						FROM {$this->db_name}.empresa_usuario a 
+							inner join {$this->db_name}.cliente b  on a.cli_id=b.cli_id 
+						where a.estado_logico!=0 and  a.emp_id=:emp_id and a.usu_id=:usu_id ";
+			$resultado = $this->select_all($sql, [":emp_id" => $IdsEmpresa,":usu_id" => $Usu_id]);
 			
 			if ($resultado === false) {
 				logFileSystem("Consulta fallida para consultarEmpresaCliente: $IdsEmpresa", "WARNING");

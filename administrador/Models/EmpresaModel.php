@@ -173,63 +173,7 @@ class EmpresaModel extends Mysql
 		//return 0;
 	}
 
-	/*public function insertDataEmpModulo(string $data, string $Emp_id)
-		  {
-			  try {
-				  $con = $this->getConexion();
-				  $con->beginTransaction();
-				  $arrData = array(0);
-				  $sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? WHERE emp_id={$Emp_id}";
-				  $request = $this->updateConTrans($con, $sql, $arrData);
-				  if ($request) {//Si todo es correcto retorna True
-					  $arrayIds = explode(",", $data);
-					  $usuario = retornaUser();
-					  //01,02,0203,0204,0205,0206,0207,03,0301
-					  $arrData = array(1);
-					  //Actualiza todos los Ids
-					  $sql = "UPDATE " . $this->db_name . ".empresa_modulo SET estado_logico=? 
-						  WHERE emp_id={$Emp_id} AND mod_id IN({$data})";
-					  $request = $this->updateConTrans($con, $sql, $arrData);
-					  if ($request) {
-						  foreach ($arrayIds as $Mod_id) {
-							  $sql = "SELECT * FROM " . $this->db_name . ".empresa_modulo WHERE emp_id={$Emp_id} AND mod_id='{$Mod_id}'";
-							  $requestSel = $this->select($sql);//usuario_modificacion
-							  if (empty($requestSel)) {
-								  //Inserta un nuevo modulo
-								  $arrData = array($Emp_id, $Mod_id, 1, $usuario);
-								  $SqlQuery = "INSERT INTO " . $this->db_name . ".empresa_modulo
-											  (`emp_id`,`mod_id`,`estado_logico`,`usuario_creacion`) VALUES (?,?,?,?) ";
-								  $request_insert = $this->insertConTrans($con, $SqlQuery, $arrData);
-								  if ($request_insert == 0) {//si es igual 0 no inserto nada
-									  $con->rollBack();
-									  $arroout["status"] = false;
-									  $arroout["message"] = "Error al insertar Empresa Modulo!.";
-								  }
-								  //$return = $request_insert;//Retorna el Ultimo IDS(0) No inserta y si es >0 si inserto
 
-							  }
-						  }
-					  } else {
-						  $con->rollBack();
-						  $arroout["status"] = false;
-						  $arroout["message"] = "Error al Actualizar Empresa Modulo!.";
-					  }
-					  $con->commit();
-					  $arroout["status"] = true;
-				  } else {
-					  $con->rollBack();
-					  $arroout["status"] = false;
-					  $arroout["message"] = "Error al Eliminar los modulos!.";
-				  }
-				  return $arroout;
-			  } catch (Exception $e) {
-				  $con->rollBack();
-				  //throw $e;
-				  $arroout["status"] = false;
-				  $arroout["message"] = "Fallo: " . $e->getMessage();
-				  return $arroout;
-			  }
-		  }*/
 
 	public function insertDataEmpModulo(string $data, string $Emp_id): array
 	{
@@ -532,7 +476,6 @@ class EmpresaModel extends Mysql
 			$arroout["status"] = true;
 			$arroout["message"] = "Módulos actualizados correctamente.";
 		} catch (Exception $e) {
-			putMessageLogFile($e);
 			$con->rollBack();
 			$arroout["message"] = "Fallo: " . $e->getMessage();
 		}

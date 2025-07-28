@@ -146,16 +146,19 @@ document.addEventListener('DOMContentLoaded', function () {
 //Se ejecuta en los eventos de Controles
 $(document).ready(function () {
     $('#cmb_Cliente').selectpicker();
+    $('#cmb_ClienteTienda').selectpicker();
 
-    $('#cmb_Cliente').change(function () {
-        // const $cmbCliente = $('#cmb_Cliente');
-        // const clienteId = $cmbCliente.val();
-        // if (clienteId && clienteId !== '0') {
-        //     fetchTiendas(clienteId);
-        // } else {
-        //     swal('Error', 'Debe seleccionar un cliente', 'error');
-        //     resetTienda();
-        // }
+
+
+    $('#cmb_ClienteTienda').change(function () {   
+        const $cmbCliente = $('#cmb_ClienteTienda');
+        const clienteId = $cmbCliente.val();
+        if (clienteId && clienteId !== '0') {
+            fetchTiendas(clienteId);
+        } else {
+            swal('Error', 'Debe seleccionar un cliente', 'error');
+            resetTienda();
+        }
     });
 
     $('#cmd_agregartienda').click(function () {
@@ -403,7 +406,7 @@ function guardarAsignarUsuarioEmpresa() {
 
 
 function guardarUsuarioEmpresa() {
-    const accion = ($('#btnText').html() === "Guardar") ? 'Create' : 'Edit';
+    let accion = ($('#btnText').html() === "Guardar") ? 'Create' : 'Edit';
 
     const strIds = document.querySelector('#txth_ids').value.trim();
     const strDni = document.querySelector('#txt_dni').value.trim();
@@ -419,6 +422,9 @@ function guardarUsuarioEmpresa() {
     const intTipoRol = document.querySelector('#cmb_rol').value.trim();
     const intCliente = document.querySelector('#cmb_Cliente').value.trim();
     const strPassword = document.querySelector('#txt_Password').value;
+    const intPerId = document.querySelector('#txth_perids').value.trim();
+    const intUsuId = document.querySelector('#txth_usu_id').value.trim();
+    const strValidador = document.querySelector('#txth_validador').value.trim();
 
     if (accion == "Create") {
         // Validar campos obligatorios
@@ -443,6 +449,9 @@ function guardarUsuarioEmpresa() {
             return;
         }
     }
+    if (strValidador === 'OK') {
+        accion = 'CreateEdit';
+    }
 
     // Construir objeto de datos
     const dataObj = {
@@ -459,6 +468,8 @@ function guardarUsuarioEmpresa() {
         estado: intEstado,
         rol: intTipoRol,
         cliente: intCliente,
+        perId: intPerId,
+        usuId: intUsuId,
         password: strPassword
     };
 
@@ -569,7 +580,7 @@ function fntVerTienda(ids, rolId) {
 function guardarTiendasUsuario() {
     const ids = document.querySelector("#txth_ids").value;
     const rolId = document.querySelector("#txth_rol_id").value;
-    const cliId = document.querySelector("#cmb_Cliente").value;
+    const cliId = document.querySelector("#cmb_ClienteTienda").value;
     const select = document.getElementById('list_tiendas');
 
     //const tiendas = Array.from(select.selectedOptions).map(opt => opt.value);
@@ -693,45 +704,24 @@ function obtenerRolEmpresaPorId(idBuscado) {
 }
 
 
-
-function mostrarListaPersona() {
-    tablePersonaBuscar = $('#tablePersonas').dataTable({
-        "aProcessing": true,
-        "aServerSide": true,
-        "language": {
-            "url": cdnTable
-        },
-        "ajax": {
-            "url": " " + base_url + "/Persona/getPersonabuscar",
-            "dataSrc": ""
-        },
-        "columns": [
-            { "data": "Cedula" },
-            { "data": "Nombre" },
-            { "data": "Apellido" },
-            { "data": "options" }
-
-        ],
-        "columnDefs": [
-            //{ 'className': "textcenter", "targets": [3] },//Agregamos la clase que va a tener la columna
-            //{ 'className': "textright", "targets": [4] },
-            // { 'className': "textcenter", "targets": [ 5 ] }
-        ],
-        "resonsieve": "true",
-        "bDestroy": true,
-        "iDisplayLength": 10,
-        "order": [[0, "desc"]]
-    });
-
+function mostrarPersona(objData) {
+    $('#txt_dni').val(objData['Dni']);
+    $('#txth_ids').val(objData['Ids']);
+    $('#txth_usu_id').val(objData['Ids']);
+    $('#txth_perids').val(objData['per_id']);
+    $('#txt_nombre').val(objData['Nombre']);
+    $('#txt_apellido').val(objData['Apellido']);
+    $('#txt_telefono').val(objData['Telefono']);
+    $('#txt_direccion').val(objData['Direccion']);
+    $('#dtp_fecha_nacimiento').val(objData['FechaNac']);
+    $('#txt_alias').val(objData['Alias']);
+    $('#txt_correo').val(objData['usu_correo']);
+    $('#txth_validador').val('OK');
 }
 
 
-function openModalBuscarPersona() {
-    rowTable = "";
-    mostrarListaPersona();
-    //document.querySelector('.modal-header').classList.replace("headerUpdate", "headerRegister");
-    document.querySelector('#titleModal').innerHTML = "Buscar Personas";
-    //document.querySelector("#formProductos").reset();
-    $('#modalViewPersona').modal('show');
-}
+
+
+
+
 

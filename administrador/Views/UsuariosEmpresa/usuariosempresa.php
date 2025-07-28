@@ -4,7 +4,7 @@
      //filelang(Setlanguage,"general") 
     //getModal("Views/Usuarios/Modals/",'modalUsuarios',$data);
     require_once "Views/UsuariosEmpresa/Modals/modalUsuarios.php"; 
-    require_once "Views/UsuariosEmpresa/Modals/modalPersona.php"; 
+    require_once "Views/Generico/Modals/modalGenBuscarPersona.php"; 
 ?>
     <main class="app-content">
       <div class="app-title">
@@ -12,10 +12,7 @@
             <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
               <?php //if($_SESSION['permisosMod']['w']){ ?>
                 <button class="btn btn-primary" type="button" onclick="openModal();" ><i class="fa fa-plus"></i> Nuevo</button>
-                <button class="btn btn-primary" type="button" onclick="openModalBuscarPersona();" ><i class="fa fa-plus"></i> Agregar</button>
               <?php //} ?>
-         
-   
             </h1>
         </div>
      

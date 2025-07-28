@@ -124,16 +124,19 @@ class UsuariosEmpresa extends Controllers
 					checkPermission('u', 'usuariosempresa');
 					$request = $this->model->updateData($datos);
 					$option = 2;
+				} elseif ($accion === "CreateEdit") {
+					checkPermission('w', redirect: 'usuariosempresa');
+					$request = $this->model->insertDataEmpUsuRol($datos);
+					$option = 1;
 				} else {
 					$arrResponse = ['status' => false, 'msg' => 'Acción no válida.'];
 					responseJson($arrResponse);
 				}
-
 				if (!empty($request["status"])) {
 					$msg = ($option === 1) ? 'Datos guardados correctamente.' : 'Datos actualizados correctamente.';
 					$arrResponse = ['status' => true, 'numero' => $request["numero"] ?? 0, 'msg' => $msg];
 				} else {
-					$arrResponse = ['status' => false, 'msg' => 'No fue posible almacenar los datos.'];
+					$arrResponse = ['status' => false, 'msg' => 'No fue posible almacenar los datos. '. $request["message"]];
 				}
 			} catch (Exception $e) {
 				logFileSystem("Error en guardarUsuarioEmpresa: " . $e->getMessage(), "ERROR");

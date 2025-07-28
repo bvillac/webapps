@@ -371,4 +371,61 @@ function buscarDataTable(valorBuscado, campo, dataTableSelector) {
 }
 
 
+function mostrarListaPersona() {
+    tablePersonaBuscar = $('#tablePersonas').dataTable({
+        "aProcessing": true,
+        "aServerSide": true,
+        "language": {
+            "url": cdnTable
+        },
+        "ajax": {
+            "url": " " + base_url + "/Persona/getGenPersonabuscar",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "Cedula" },
+            { "data": "Nombre" },
+            { "data": "Apellido" },
+            { "data": "options" }
+
+        ],
+        "columnDefs": [
+            //{ 'className': "textcenter", "targets": [3] },//Agregamos la clase que va a tener la columna
+            //{ 'className': "textright", "targets": [4] },
+            // { 'className': "textcenter", "targets": [ 5 ] }
+        ],
+        "resonsieve": "true",
+        "bDestroy": true,
+        "iDisplayLength": 10,
+        "order": [[0, "desc"]]
+    });
+
+}
+
+function openModalGenBuscarPersona() {
+    rowTable = "";
+    mostrarListaPersona();
+    document.querySelector('#titleModal').innerHTML = "Buscar Personas";
+    $('#modalViewGenPersona').modal('show');
+}
+
+function buscarGenPersonaDni(codigo) {
+    const url = base_url + '/Persona/consultarPersonaIdDni';
+    const metodo = 'POST';
+    const dataPost = { codigo: codigo };
+    peticionAjaxSSL(url, metodo, dataPost, function (data) {
+        if (data.status) {
+            mostrarPersona(data.data);
+            $('#modalViewGenPersona').modal('hide');
+        } else {
+            swal("Atención", data.msg, "error");
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+    });
+}
+
+
+
+
   
