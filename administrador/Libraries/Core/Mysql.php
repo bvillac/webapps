@@ -27,7 +27,7 @@ class Mysql extends Conexion
 
 	public function getDbNameMysql(): string
 	{
-		return $this->dbName ?? '';
+		return $this->db_name ?? '';
 	}
 
 	/**

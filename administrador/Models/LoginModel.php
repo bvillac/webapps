@@ -16,10 +16,13 @@ class LoginModel extends Mysql
 
 	public function loginData(string $usuario, string $clave): ?array
 	{
+		putMessageLogFile("LoginModel: loginData called with user: $usuario");
+		putMessageLogFile("LoginModel: loginData called with password: $clave");
 		try {
 			$sql = "SELECT usu_id, per_id, usu_alias, estado_logico AS Estado
 				FROM {$this->db_name}.usuario
 				WHERE usu_correo = :usu_correo AND usu_clave = :usu_clave AND estado_logico != 0";
+				putMessageLogFile("Executing SQL: $sql with user: $usuario and password: $clave");
 
 			$resultado = $this->select($sql, [ ":usu_correo" => $usuario,":usu_clave" => $clave]);
 			if ($resultado === false) {
