@@ -3,6 +3,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 require 'vendor/autoload.php';
 require_once("Models/TiendaModel.php");
 require_once("Models/ClientePedidoModel.php");
+require_once("Models/EmpresaModel.php");
 class PedidoWeb extends Controllers
 {
     public function __construct()
@@ -29,34 +30,34 @@ class PedidoWeb extends Controllers
     {
         checkPermission('r', 'dashboard');
         $arrData = $this->model->consultarDatos();
-        $RolNombre=retornarDataSesion('RolNombre');
+        $RolNombre = retornarDataSesion('RolNombre');
         foreach ($arrData as &$objData) {
             $estadoTexto = estadoPedidos($objData['Estado']);
-            $EstadoDoc=$objData['Estado'];
+            $EstadoDoc = $objData['Estado'];
             $claseBadge = ($objData['Estado'] != 4) ? 'badge-success' : 'badge-danger';
 
             $objData['Estado'] = "<span class='badge {$claseBadge}'>{$estadoTexto}</span>";
-            $objData['options'] = $this->getArrayOptions($objData['Ids'],$RolNombre,$EstadoDoc);
+            $objData['options'] = $this->getArrayOptions($objData['Ids'], $RolNombre, $EstadoDoc);
         }
         echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
         exit();
     }
 
-    private function getArrayOptions($id,$RolNombre,$EstadoDoc)
+    private function getArrayOptions($id, $RolNombre, $EstadoDoc)
     {
-        
+
         $options = '<div class="text-center">';
         if ($_SESSION['permisosMod']['r']) {
             //$options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
         }
-        if ($_SESSION['permisosMod']['u'] && $EstadoDoc==1) {
+        if ($_SESSION['permisosMod']['u'] && $EstadoDoc == 1) {
             //$options .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
             $options .= " <a title='Catálogo' href='" . base_url() . "/pedidoWeb/editar/$id' class='btn btn-primary btn-sm'><i class='fa fa-pencil'></i></a> ";
         }
-        if ($_SESSION['permisosMod']['r'] && $EstadoDoc==1 && $RolNombre=='supervisortienda') {
+        if ($_SESSION['permisosMod']['r'] && $EstadoDoc == 1 && $RolNombre == 'supervisortienda') {
             $options .= " <button class='btn btn-success btn-sm btnDelLinea' onClick='fntAutorizarPedido($id)' title='Autorizar'><i class='fa fa-check-circle-o'></i></button> ";
         }
-        if ($_SESSION['permisosMod']['d'] && $EstadoDoc==1) {
+        if ($_SESSION['permisosMod']['d'] && $EstadoDoc == 1) {
             $options .= " <button class='btn btn-danger btn-sm btnDelLinea' onClick='fntAnularPedido($id)' title='Anular'><i class='fa fa-trash'></i></button> ";
         }
         if ($_SESSION['permisosMod']['r']) {
@@ -69,7 +70,7 @@ class PedidoWeb extends Controllers
     public function nuevo()
     {
         checkPermission('r', 'dashboard');
-        
+
         $data = getPageData("Nuevo Pedido Web", "pedidoWeb");
         $cliIds = retornarDataSesion("Cli_Id");
         $Utieid = retornarDataSesion("Utie_id");
@@ -140,52 +141,43 @@ class PedidoWeb extends Controllers
                 if ($request["status"]) {
                     $idPedido = $request["numero"];
 
-
-                    // Ejecutar script externo en segundo plano
-                    /*$pedido = [
-                        ['codigo' => 'P001', 'nombre' => 'Lápiz', 'cantidad' => 10, 'precio' => 0.5, 'total' => 5.0],
-                        ['codigo' => 'P002', 'nombre' => 'Cuaderno', 'cantidad' => 5, 'precio' => 2.0, 'total' => 10.0],
-                    ];
-                    $dataExec = [
-                        'destinatario' => 'byron_villacresesf@hotmail.com',
-                        'asunto' => 'Confirmación de Pedido',
-                        'pedido' => $pedido,  // array con los productos
-                        'bcc' => 'admin@correo.com',
-                        'cli_id' =>1
-                    ];
-                    //$rutaScript = __DIR__ . "/EnviarMail.php";
-                    $rutaScript = "EnviarMail.php";
-                    putMessageLogFile($rutaScript);
-                    $comando = "php " . escapeshellarg($rutaScript) . " " . escapeshellarg(json_encode($dataExec)) . " > /dev/null 2>&1 &";
-                    exec($comando); // Sin esperar respuesta*/
-
                     //Recupera infor de CabTemp  para enviar info al supervisor de tienda
                     $CabPed = $this->model->sendMailPedidosTemp($idPedido);
+                    //putMessageLogFile($CabPed);
                     $cliId = retornarDataSesion('Cli_Id');
                     //$objUser=$this->model->recuperarUserCorreoTiendaSUP($idTienda,16,$cliId);//Recupera Usuairos Superviswor
-                    $CabPed[0]["correouser"] = 'byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
-                    $CabPed[0]["nombreuser"] = 'Byron Villacreses';//$objUser["usu_nombre"];
+                    //$CabPed[0]["correouser"] = 'byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
+                    //$CabPed[0]["nombreuser"] = 'Byron Villacreses';//$objUser["usu_nombre"];
                     $cliIds = retornarDataSesion("Cli_Id");
                     $Cliente = (new ClientePedidoModel())->consultarDatosId($cliIds);
+                    $Server = (new EmpresaModel())->consultarEmpresaServerMail(retornarDataSesion('Emp_Id'));
+                    putMessageLogFile($Server);
+                    putMessageLogFile($Server["usuario"]);
+                    
                     $nombreCliente = $Cliente["Nombre"];
                     $TotalPedido = formatMoney($CabPed[0]["valorneto"], 2);
 
 
-                    $CabPed[0]["web_empresa"] = WEB_EMPRESA;
+                    $CabPed[0]["web_empresa"] = retornarDataSesion('SitioWeb');
                     $CabPed[0]["empresa"] = $nombreCliente;//TITULO_EMPRESA;
                     $CabPed[0]["base_url"] = BASE_URL;
 
                     $htmlMail = getFile("Template/Email/email_notificaPedido", $CabPed[0]);
-
                     $arrParams = [
                         'destinatario' => 'byron_villacresesf@hotmail.com',
                         'asunto' => "({$nombreCliente}) {$TotalPedido} Confirmación de pedido",
                         'html' => $htmlMail,
                         'pdf' => '',//$pdfPath,
-                        'bcc' => 'byronvillacreses@gmail.com',
+                        'bcc' => retornarDataSesion('Emp_mail'),//'byronvillacreses@gmail.com',
                         'borrarPDF' => true
                     ];
-                    $mailer = new MailSystem();
+
+                    $mailer = new MailSystem(
+                        host:  $Server["smtp_servidor"],//'smtp.gmail.com',
+                        port: $Server["smtp_puerto"],//587,
+                        username: $Server["usuario"],//retornarDataSesion('Emp_mail'),
+                        password: $Server["clave"]//'wftd aqkb uonh fusa' // 
+                    );
                     $resultado = $mailer->enviarNotificacion($arrParams);
 
                     if ($option == 1) {
@@ -202,7 +194,7 @@ class PedidoWeb extends Controllers
         exit();
     }
 
-    
+
     public function editar($id)
     {
         if (!is_numeric($id))
@@ -292,8 +284,8 @@ class PedidoWeb extends Controllers
                 $ids = isset($data['ids']) ? filter_var($data['ids'], FILTER_VALIDATE_INT) : 0;
                 $request = $this->model->autorizarPedidoTemp($ids);
                 if ($request["status"]) {
-                    $numero=$request["numero"];
-                    $this->enviarCorreo($numero,"Autorización de pedido");
+                    $numero = $request["numero"];
+                    $this->enviarCorreo($numero, "Autorización de pedido");
 
                     $arrResponse = array('status' => true, 'msg' => 'Registro Autorizado correctamente');
                 } else {
@@ -310,7 +302,8 @@ class PedidoWeb extends Controllers
         exit();
     }
 
-    private function enviarCorreo(int $idPedido,string $asunto){
+    private function enviarCorreo(int $idPedido, string $asunto)
+    {
         //Recupera infor de CabTemp  para enviar info al supervisor de tienda
         $CabPed = $this->model->sendMailPedidosTemp($idPedido);
         $cliId = retornarDataSesion('Cli_Id');
@@ -340,7 +333,7 @@ class PedidoWeb extends Controllers
         $mailer = new MailSystem();
         $resultado = $mailer->enviarNotificacion($arrParams);
 
-   }
+    }
 
 
 

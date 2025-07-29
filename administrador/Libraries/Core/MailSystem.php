@@ -8,29 +8,32 @@ class MailSystem
 {
     private $mailer;
 
-    public function __construct()
+    public function __construct(string $host = 'smtp.gmail.com', int $port = 587, string $username = '', string $password = ''  )
     {
         $this->mailer = new PHPMailer(true);
 
         // Configuración del servidor SMTP
         $this->mailer->isSMTP();
-        $this->mailer->Host = 'smtp.gmail.com';
+        $this->mailer->Host = $host;//'smtp.gmail.com';
         $this->mailer->SMTPAuth = true;
         //$this->mailer->Username = 'no-responder@solucionesvillacreses.com';
-        $this->mailer->Username = 'byronvillacreses@gmail.com';
-        $this->mailer->Password = 'vrjw taas gjmj vvno';
+        //$this->mailer->Username = 'byronvillacreses@gmail.com';
+        //$this->mailer->Password = 'vrjw taas gjmj vvno';
+        $this->mailer->Username = $username;//'docelectronicoscomputics@gmail.com';
+        $this->mailer->Password = $password;//'wftd aqkb uonh fusa';
         $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $this->mailer->Port = 587;//587;465
+        $this->mailer->Port = $port;//587;//587;465
 
         //$this->mailer->setFrom('no-responder@solucionesvillacreses.com', 'Byron Prueba');
-        $this->mailer->setFrom('no-responder@solucionesvillacreses.com', 'SolucionesVillacreses.com');
+        //$this->mailer->setFrom('no-responder@solucionesvillacreses.com', 'SolucionesVillacreses.com');
+        $this->mailer->setFrom('no-responder@computic.com', 'Computic.com');
         $this->mailer->isHTML(true);
 
         //$this->mailer->SMTPDebug = 3; // O 3 para más detalle
         //$this->mailer->Debugoutput = 'html';
     }
 
-    public function enviarPedido(string $destinatario, string $asunto, array $pedido, string $pdfPath = '', string $bcc = ''): array
+    /*public function enviarPedido(string $destinatario, string $asunto, array $pedido, string $pdfPath = '', string $bcc = ''): array
     {
         try {
             $this->mailer->addAddress($destinatario);
@@ -74,7 +77,7 @@ class MailSystem
         } catch (Exception $e) {
             return ['status' => false, 'message' => 'Error al enviar el correo: ' . $e->getMessage()];
         }
-    }
+    }*/
 
 
     public function enviarNotificacion(array $params): array {

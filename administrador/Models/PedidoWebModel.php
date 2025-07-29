@@ -129,7 +129,6 @@ class PedidoWebModel extends MysqlPedidos
     public function listarItemsTiendas(int $ids, int $cli_id)
     {
         try {
-
             $sql = "select a.artie_id,a.pcli_id,b.art_id,c.cod_art codigo, c.art_des_com nombre,b.pcli_p_venta precio,
                         '0' cantidad,'0' total,c.art_i_m_iva iva,'' observacion,a.artie_est_log estado
                         from {$this->db_name}.articulo_tienda a
@@ -139,7 +138,6 @@ class PedidoWebModel extends MysqlPedidos
                             on a.pcli_id=b.pcli_id and b.pcli_est_log=1
                     where a.artie_est_log=1 and a.tie_id= :tie_id and b.cli_id = :cli_id ";
             $sql .= " order by c.art_des_com desc limit " . LIMIT_SQL;
-
             $resultado = $this->select_all($sql, [':tie_id' => $ids, ':cli_id' => $cli_id]);
 
             if ($resultado === false) {

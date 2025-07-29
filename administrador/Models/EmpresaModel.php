@@ -139,7 +139,7 @@ class EmpresaModel extends Mysql
 	public function consultarEmpresaEstPunto(int $Ids)
 	{
 		$sql = "SELECT a.emp_id EmpIds,a.emp_ruc Ruc,a.emp_nombre_comercial NombreComercial,b.est_id EstableId,
-						c.pemi_id PuntoEmisId,a.emp_ruta_logo Logo,a.emp_correo Correo,a.emp_direccion Direccion,a.emp_login LoginEMP
+						c.pemi_id PuntoEmisId,a.emp_ruta_logo Logo,a.emp_direccion Direccion,a.emp_login LoginEMP
 						FROM " . $this->db_name . ".empresa a 
 							inner join (" . $this->db_name . ".establecimiento b 
 									inner join " . $this->db_name . ".punto_emision c 
@@ -434,7 +434,7 @@ class EmpresaModel extends Mysql
 			$usuario = retornaUser();
 			$arrayIds = array_filter(explode(",", $data)); // Limpia valores vacíos
 
-			
+
 
 			// Desactiva todos los módulos actuales
 			$sql = "UPDATE {$this->db_name}.permiso  SET estado_logico = 0 WHERE erol_id = :erol_id ";
@@ -452,7 +452,7 @@ class EmpresaModel extends Mysql
 					throw new Exception("Error al activar los Roles y Modulos seleccionados.");
 				}
 
-				 $privilegio  = (new UsuariosEmpresaModel())->retornarPrivilegioRol($erol_id);
+				$privilegio = (new UsuariosEmpresaModel())->retornarPrivilegioRol($erol_id);
 
 				// Inserta módulos nuevos que no existan aún
 				foreach ($arrayIds as $emod_id) {
@@ -533,6 +533,23 @@ class EmpresaModel extends Mysql
                   WHERE erol_id = :erol_id";
 		$arrData = [":erol_id" => $Erol_id];
 		return $this->updateConTrans($con, $sqlUpdate, $arrData);
+	}
+
+
+	public function consultarEmpresaServerMail(int $ids)
+	{
+		try {
+			$sql = "SELECT * FROM {$this->db_name}.servidor_correo where estado_logico!=0 and  emp_id=:ids";
+			$resultado = $this->select($sql, [":ids" => $ids]);
+			if ($resultado === false) {
+				//logFileSystem("Consulta fallida para consultarEmpresaServerMail : $ids", "WARNING");
+				return []; // Retornar un array vacío en lugar de false para evitar errores en la vista
+			}
+			return $resultado;
+		} catch (Exception $e) {
+			logFileSystem("Error en consultarEmpresaServerMail: " . $e->getMessage(), "ERROR");
+			return []; // En caso de error, retornar un array vacío
+		}
 	}
 
 

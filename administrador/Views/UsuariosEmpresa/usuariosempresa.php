@@ -34,6 +34,7 @@
                           <th>Nombres</th>
                           <th>Correo Electrónico</th>
                           <th>Tiendas</th>
+                          <th>Cliente</th>
                           <th>Nombre Rol</th>
                           <th>Estado</th>
                           <th>Acciones</th>

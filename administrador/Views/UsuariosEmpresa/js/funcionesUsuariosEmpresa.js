@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
             { "data": "Nombres" },
             { "data": "usu_correo" },
             { "data": "Tiendas" },
+            { "data": "CliEmpresa" },
             { "data": "RolEmpresa" },
             { "data": "Estado" },
             { "data": "options" },
