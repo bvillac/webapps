@@ -23,69 +23,28 @@ class MailSystem
         $this->mailer->Password = $password;//'wftd aqkb uonh fusa';
         $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $this->mailer->Port = $port;//587;//587;465
-
-        //$this->mailer->setFrom('no-responder@solucionesvillacreses.com', 'Byron Prueba');
-        //$this->mailer->setFrom('no-responder@solucionesvillacreses.com', 'SolucionesVillacreses.com');
-        $this->mailer->setFrom('no-responder@computic.com', 'Computic.com');
-        $this->mailer->isHTML(true);
-
+      
         //$this->mailer->SMTPDebug = 3; // O 3 para más detalle
         //$this->mailer->Debugoutput = 'html';
     }
 
-    /*public function enviarPedido(string $destinatario, string $asunto, array $pedido, string $pdfPath = '', string $bcc = ''): array
-    {
-        try {
-            $this->mailer->addAddress($destinatario);
-            $this->mailer->Subject = $asunto;
 
-            // Agregar copia oculta si se indicó
-            if (!empty($bcc)) {
-                $this->mailer->addBCC($bcc);
-            }
-
-            // Construir cuerpo del mensaje HTML
-            $body = "<h3>Resumen del pedido</h3><table border='1' cellpadding='5'>";
-            $body .= "<tr><th>Código</th><th>Nombre</th><th>Cantidad</th><th>Precio</th><th>Total</th></tr>";
-
-            $totalGeneral = 0;
-            foreach ($pedido as $item) {
-                $body .= "<tr>
-                            <td>{$item['codigo']}</td>
-                            <td>{$item['nombre']}</td>
-                            <td>{$item['cantidad']}</td>
-                            <td>\${$item['precio']}</td>
-                            <td>\$" . number_format($item['total'], 2) . "</td>
-                          </tr>";
-                $totalGeneral += $item['total'];
-            }
-
-            $body .= "<tr><td colspan='4'><strong>Total General</strong></td><td><strong>\$" . number_format($totalGeneral, 2) . "</strong></td></tr>";
-            $body .= "</table>";
-
-            $this->mailer->Body = $body;
-
-            // Adjuntar PDF si se especificó
-            if (!empty($pdfPath) && file_exists($pdfPath)) {
-                $this->mailer->addAttachment($pdfPath);
-            }
-
-            $this->mailer->send();
-
-
-            return ['status' => true, 'message' => 'Correo enviado correctamente'];
-        } catch (Exception $e) {
-            return ['status' => false, 'message' => 'Error al enviar el correo: ' . $e->getMessage()];
-        }
-    }*/
-
+    /**
+     * Enviar notificación por correo electrónico.
+     *
+     * @param array $params Parámetros del correo, incluyendo destinatario, asunto, cuerpo HTML, ruta del PDF, CC y BCC.
+     * @return array Resultado del envío con estado y mensaje.
+     */
 
     public function enviarNotificacion(array $params): array {
         try {
             $destinatario = $params['destinatario'] ?? '';
+            $nombreEmpresa = $params['nombreEmpresa'] ?? '';
+            $no_responder = $params['no_responder'] ?? '';
             $asunto = $params['asunto'] ?? '';
             $htmlMail = $params['html'] ?? '';
             $pdfPath = $params['pdf'] ?? '';
+            $cc = $params['cc'] ?? '';
             $bcc = $params['bcc'] ?? '';
             $borrarPDF = $params['borrarPDF'] ?? false;
             // Reinicia el estado del mailer para evitar acumulación de direcciones o adjuntos
@@ -93,12 +52,17 @@ class MailSystem
             $this->mailer->clearAttachments();
     
             // Configuración del correo
+            $this->mailer->setFrom( $no_responder, $nombreEmpresa);
             $this->mailer->isHTML(true);
             $this->mailer->CharSet = 'UTF-8';
             $this->mailer->addAddress($destinatario);
             $this->mailer->Subject = $asunto;
             $this->mailer->Body = $htmlMail;
-    
+
+             // Copia opcional
+            if (!empty($cc)) {
+                $this->mailer->addBCC($cc);
+            }
             // Copia oculta opcional
             if (!empty($bcc)) {
                 $this->mailer->addBCC($bcc);

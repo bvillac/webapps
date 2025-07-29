@@ -358,7 +358,7 @@ class PedidoWebModel extends MysqlPedidos
     {
         try {
             $sql = "select a.tcped_id pedid,concat(repeat( '0', 9 - length(a.tcped_id) ),a.tcped_id) numero,
-                        a.tcped_total valorneto,date(a.tcped_fec_cre) fechapedido,b.tie_nombre nombretienda,
+                        a.tcped_total valorneto,a.tcped_fec_cre fechapedido,b.tie_nombre nombretienda,
                         concat(e.per_nombre,' ',e.per_apellido) nombrepersona,d.usu_correo correopersona,
                         concat(h.per_nombre,' ',h.per_apellido) nombreuser,g.usu_correo correouser
                         from {$this->db_name}.temp_cab_pedido a

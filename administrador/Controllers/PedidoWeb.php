@@ -115,7 +115,6 @@ class PedidoWeb extends Controllers
     {
         if ($_POST) {
             $data = recibirData($_POST['data']);
-            //if (empty($data['productos']) || empty($data['accion']) || empty($data['tienda_id'])) {
             if (empty($data['productos']) || empty($data['accion'])) {
                 $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
             } else {
@@ -143,7 +142,6 @@ class PedidoWeb extends Controllers
 
                     //Recupera infor de CabTemp  para enviar info al supervisor de tienda
                     $CabPed = $this->model->sendMailPedidosTemp($idPedido);
-                    //putMessageLogFile($CabPed);
                     $cliId = retornarDataSesion('Cli_Id');
                     //$objUser=$this->model->recuperarUserCorreoTiendaSUP($idTienda,16,$cliId);//Recupera Usuairos Superviswor
                     //$CabPed[0]["correouser"] = 'byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
@@ -151,32 +149,34 @@ class PedidoWeb extends Controllers
                     $cliIds = retornarDataSesion("Cli_Id");
                     $Cliente = (new ClientePedidoModel())->consultarDatosId($cliIds);
                     $Server = (new EmpresaModel())->consultarEmpresaServerMail(retornarDataSesion('Emp_Id'));
-                    putMessageLogFile($Server);
-                    putMessageLogFile($Server["usuario"]);
                     
                     $nombreCliente = $Cliente["Nombre"];
                     $TotalPedido = formatMoney($CabPed[0]["valorneto"], 2);
 
 
-                    $CabPed[0]["web_empresa"] = retornarDataSesion('SitioWeb');
+                    $CabPed[0]["web_empresa"] = $Server["dominio_empresa"];
                     $CabPed[0]["empresa"] = $nombreCliente;//TITULO_EMPRESA;
                     $CabPed[0]["base_url"] = BASE_URL;
 
                     $htmlMail = getFile("Template/Email/email_notificaPedido", $CabPed[0]);
+
                     $arrParams = [
-                        'destinatario' => 'byron_villacresesf@hotmail.com',
+                        'destinatario' =>  $CabPed[0]["correopersona"],//'byron_villacresesf@hotmail.com',
                         'asunto' => "({$nombreCliente}) {$TotalPedido} Confirmación de pedido",
+                        'nombreEmpresa' => $Server["nombre_mostrar"],
+                        'no_responder' => $Server["mail"],
                         'html' => $htmlMail,
                         'pdf' => '',//$pdfPath,
-                        'bcc' => retornarDataSesion('Emp_mail'),//'byronvillacreses@gmail.com',
+                        'cc' => $Server["correo_admin"],//copia
+                        //'bcc' => $Server["correo_admin"],//copia oculta
                         'borrarPDF' => true
                     ];
 
                     $mailer = new MailSystem(
-                        host:  $Server["smtp_servidor"],//'smtp.gmail.com',
-                        port: $Server["smtp_puerto"],//587,
-                        username: $Server["usuario"],//retornarDataSesion('Emp_mail'),
-                        password: $Server["clave"]//'wftd aqkb uonh fusa' // 
+                        host:  $Server["smtp_servidor"],
+                        port: $Server["smtp_puerto"],
+                        username: $Server["usuario"],
+                        password: base64_decode($Server["clave"])
                     );
                     $resultado = $mailer->enviarNotificacion($arrParams);
 
