@@ -27,7 +27,7 @@ class Mysql extends Conexion
 
 	public function getDbNameMysql(): string
 	{
-		return $this->db_name;
+		return $this->dbName ?? '';
 	}
 
 	/**
@@ -68,7 +68,8 @@ class Mysql extends Conexion
 	/**
 	 * Devuelve todos los registros
 	 */
-	public function select_all(string $query, array $params = []): array|false
+	//public function select_all(string $query, array $params = []): array|false
+	public function select_all(string $query, array $params = [])
 	{
 		try {
 			$this->strquery = $query;
