@@ -45,7 +45,7 @@ class LoginTienda extends Controllers
 				$arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
 			} else {
 				$idsCliente = intval(strClean($data['Cliente']));
-				$idsUsuTienda = intval(value: strClean($data['Tienda']));
+				$idsUsuTienda = intval( strClean($data['Tienda']));
 				$this->datosSession(3,$idsUsuTienda,$idsCliente);//Acceso Computic								
 				$arrResponse = array('status' => true, 'msg' => 'ok');
 			}

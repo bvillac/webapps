@@ -173,10 +173,10 @@ class PedidoWeb extends Controllers
                     ];
 
                     $mailer = new MailSystem(
-                        host:  $Server["smtp_servidor"],
-                        port: $Server["smtp_puerto"],
-                        username: $Server["usuario"],
-                        password: base64_decode($Server["clave"])
+                          $Server["smtp_servidor"],
+                         $Server["smtp_puerto"],
+                         $Server["usuario"],
+                         base64_decode($Server["clave"])
                     );
                     $resultado = $mailer->enviarNotificacion($arrParams);
 

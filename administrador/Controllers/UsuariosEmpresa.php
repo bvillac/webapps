@@ -125,7 +125,7 @@ class UsuariosEmpresa extends Controllers
 					$request = $this->model->updateData($datos);
 					$option = 2;
 				} elseif ($accion === "CreateEdit") {
-					checkPermission('w', redirect: 'usuariosempresa');
+					checkPermission('w',  'usuariosempresa');
 					$request = $this->model->insertDataEmpUsuRol($datos);
 					$option = 1;
 				} else {

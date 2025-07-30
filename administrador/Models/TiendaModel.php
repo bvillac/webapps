@@ -142,7 +142,7 @@ class TiendaModel extends MysqlPedidos
             //":usuario" => retornaUser()
         ];
 
-        return $this->update($sql, arrValues: $params);
+        return $this->update($sql,  $params);
     }
 
 
