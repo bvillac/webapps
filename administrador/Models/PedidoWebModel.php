@@ -69,8 +69,10 @@ class PedidoWebModel extends MysqlPedidos
             INNER JOIN {$this->db_nameAdmin}.usuario d ON c.usu_id = d.usu_id
             INNER JOIN {$this->db_nameAdmin}.persona e ON d.per_id = e.per_id
             WHERE " . implode(" AND ", $where) . "
-            ORDER BY a.tcped_id DESC
-            LIMIT " . LIMIT_SQL;
+            ORDER BY a.tcped_id DESC";
+            //LIMIT " . LIMIT_SQL;
+
+            //putMessageLogFile("SQL consultarDatos: " . $sql . " Params: " . json_encode($params));  
 
 
             $resultado = $this->select_all($sql, $params);

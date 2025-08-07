@@ -20,6 +20,9 @@ class PedidoWeb extends Controllers
     {
         checkPermission('r', 'dashboard');
         $data = getPageData("Pedido Web", "pedidoWeb");
+        $Utie_id = retornarDataSesion("Utie_id");
+        $data['ValFechas'] = (new TiendaModel())->validarFechasTienda( $Utie_id);
+        //putMessageLogFile("Validación de fechas para tienda: {$Utie_id} - Resultado: " . json_encode($data['ValFechas']));
         //$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
         $this->views->getView($this, "pedidoweb", $data);
     }
@@ -51,19 +54,17 @@ class PedidoWeb extends Controllers
             //$options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
         }
         if ($_SESSION['permisosMod']['u'] && $EstadoDoc == 1) {
-            //$options .= '<button class="btn btn-primary  btn-sm btnEditLinea" onClick="editarTienda(\'' . $id . '\')" title="Editar Datos"><i class="fa fa-pencil"></i></button>';
-            $options .= " <a title='Catálogo' href='" . base_url() . "/pedidoWeb/editar/$id' class='btn btn-primary btn-sm'><i class='fa fa-pencil'></i></a> ";
+            $options .= " <a title='Editar' href='" . base_url() . "/pedidoWeb/editar/$id' class='btn btn-primary btn-sm'><i class='fa fa-pencil'></i></a> ";
         }
-        if ($_SESSION['permisosMod']['r'] && $EstadoDoc == 1 && $RolNombre == 'supervisortienda') {
+        if ($_SESSION['permisosMod']['r'] && $EstadoDoc == 1 && ($RolNombre == 'supervisortienda' || $RolNombre == 'clientetienda')) {
             $options .= " <button class='btn btn-success btn-sm btnDelLinea' onClick='fntAutorizarPedido($id)' title='Autorizar'><i class='fa fa-check-circle-o'></i></button> ";
         }
-        if ($_SESSION['permisosMod']['d'] && $EstadoDoc == 1) {
+        if ($_SESSION['permisosMod']['d'] && $EstadoDoc == 1 ) {
             $options .= " <button class='btn btn-danger btn-sm btnDelLinea' onClick='fntAnularPedido($id)' title='Anular'><i class='fa fa-trash'></i></button> ";
         }
         if ($_SESSION['permisosMod']['r']) {
             $options .= ' <a title="Generar PDF" href="' . base_url() . '/pedidoWeb/generarPedidoPDF/' . $id . '" target="_blanck" class="btn btn-primary btn-sm"> <i class="fa fa-file-pdf-o"></i> </a> ';
         }
-        //$options .= " <a title='Catálogo' href='" . base_url() . "/tienda/catalogo/$id' class='btn btn-primary btn-sm'><i class='fa fa-list'></i></a> ";
         return $options . '</div>';
     }
 

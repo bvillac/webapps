@@ -142,7 +142,7 @@ class TiendaModel extends MysqlPedidos
             //":usuario" => retornaUser()
         ];
 
-        return $this->update($sql,  $params);
+        return $this->update($sql, $params);
     }
 
 
@@ -343,7 +343,7 @@ class TiendaModel extends MysqlPedidos
      * @return array Resultado de la operación.
      */
 
-    public function asignarTiendasUsuario($usu_id, $rolid,$cliId, $tiendas)
+    public function asignarTiendasUsuario($usu_id, $rolid, $cliId, $tiendas)
     {
         try {
 
@@ -409,6 +409,49 @@ class TiendaModel extends MysqlPedidos
             return []; // En caso de error, retornar un array vacío
         }
     }
+
+
+
+    public function validarFechasTienda(int $utie_id): bool
+    {
+        try {
+            $sql = "SELECT 
+                    b.fec_ini_ped AS DiaIni, 
+                    b.fec_fin_ped AS DiaFin
+                FROM {$this->db_name}.usuario_tienda a
+                INNER JOIN {$this->db_name}.tienda b 
+                    ON a.tie_id = b.tie_id
+                WHERE a.utie_est_log != 0 AND a.utie_id = :utie_id";
+
+            $params = [":utie_id" => $utie_id];
+            $resultado = $this->select($sql, $params); // asumimos que solo retorna un registro
+
+            if (!$resultado || empty($resultado['DiaIni']) || empty($resultado['DiaFin'])) {
+                logFileSystem("Fechas inválidas o no encontradas", "WARNING");
+                return false;
+            }
+
+            // Día actual del servidor (solo el número del día)
+            $diaActual = (int) date('j'); // Ej: 6
+
+            $diaIni = (int) $resultado['DiaIni']; // Ej: 1
+            $diaFin = (int) $resultado['DiaFin']; // Ej: 5 o 10
+
+            // Asegurar que el rango esté en el orden correcto
+            if ($diaIni > $diaFin) {
+                [$diaIni, $diaFin] = [$diaFin, $diaIni]; // intercambiar
+            }
+
+            // Verificar si el día actual está dentro del rango
+            return ($diaActual >= $diaIni && $diaActual <= $diaFin);
+
+        } catch (Exception $e) {
+            logFileSystem("Error en validarFechasTienda: " . $e->getMessage(), "ERROR");
+            return false;
+        }
+    }
+
+
 
 
 

@@ -653,9 +653,7 @@ function retornarDataSesion(string $param = "rolNombre")
         "Emp_Id" => isset($_SESSION['Emp_Id']) ?$_SESSION['Emp_Id']:0, // Created     
         "Utie_id" => isset($_SESSION['Utie_id']) ?$_SESSION['Utie_id']:0, // Created    
         "Usu_id" => isset($_SESSION['Usu_id']) ?$_SESSION['Usu_id']:0, // Created    
-        "Cli_Id" => isset($_SESSION['Cli_id']) ?$_SESSION['Cli_id']:0, // Created  
-        //"Emp_mail" => isset($_SESSION['empresaData']['Correo']) ?$_SESSION['empresaData']['Correo']:'', // Created   
-        //"SitioWeb" => isset($_SESSION['empresaData']['SitioWeb']) ?$_SESSION['empresaData']['SitioWeb']:WEB_EMPRESA, // Created    
+        "Cli_Id" => isset($_SESSION['Cli_id']) ?$_SESSION['Cli_id']:0, // Created     
         "" => null // Internal Server Error
     ];
     return $errorMessages[$param] ?? "Error Session desconocido";

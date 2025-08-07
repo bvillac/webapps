@@ -78,8 +78,6 @@ class LoginTienda extends Controllers
 				$_SESSION['usuarioData']['Erol_id'] = $resulRol[0]['erol_id'];
 				$_SESSION['usuarioData']['Rol_id'] = $Rol_id;//$tienda[0]['rol_id'];
 				$_SESSION['usuarioData']['Rol_nombre'] = strtolower(str_replace(' ', '', $tienda[0]['rol_nombre']));
-				//$_SESSION['usuarioData']['Rol_id'] = $resulRol[0]['rol_id'];
-				//$_SESSION['usuarioData']['Rol_nombre'] = strtolower(str_replace(' ', '', $resulRol[0]['rol_nombre']));
 				//DATOS PERMISO MODULO
 				$_SESSION['menuData'] = $modelLoguin->permisosModulo($Eusu_id,$resulRol[0]['erol_id']);
 

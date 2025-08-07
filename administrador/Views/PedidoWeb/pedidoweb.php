@@ -9,8 +9,15 @@ require_once "Views/Tienda/Modals/modalTienda.php";
   <div class="app-title">
     <div>
       <h1><i class="fas fa-user-tag"></i> <?= $data['page_title'] ?>
-        <?php if ($_SESSION['permisosMod']['w']) { ?>
-          <button class="btn btn-primary" type="button" id="btn_nuevopedido" ><i class="fa fa-plus"></i> Nuevo</button>
+        <?php if ($_SESSION['permisosMod']['w'] && !empty($data['ValFechas']) && $data['ValFechas'] === true) { ?>
+          <button class="btn btn-primary" type="button" id="btn_nuevopedido">
+            <i class="fa fa-plus"></i> Nuevo
+          </button>
+        <?php } else { ?>
+          <div class="alert alert-warning mt-2">
+            <i class="fa fa-exclamation-triangle"></i>
+            No tiene permitido hacer pedidos ya que los pedidos del mes se encuentran cerrados.
+          </div>
         <?php } ?>
       </h1>
     </div>
