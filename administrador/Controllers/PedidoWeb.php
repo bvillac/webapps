@@ -1,4 +1,6 @@
 <?php
+
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 use Spipu\Html2Pdf\Html2Pdf;
 require 'vendor/autoload.php';
 require_once("Models/TiendaModel.php");
@@ -6,12 +8,15 @@ require_once("Models/ClientePedidoModel.php");
 require_once("Models/EmpresaModel.php");
 class PedidoWeb extends Controllers
 {
+    private int $utie_id;
+    private bool $valFechas;
     public function __construct()
     {
         parent::__construct();
         sessionStart();
         getPermisos();
-
+        $this->utie_id = retornarDataSesion("Utie_id");
+        $this->valFechas = (new TiendaModel())->validarFechasTienda($this->utie_id);
 
     }
 
@@ -20,9 +25,9 @@ class PedidoWeb extends Controllers
     {
         checkPermission('r', 'dashboard');
         $data = getPageData("Pedido Web", "pedidoWeb");
-        $Utie_id = retornarDataSesion("Utie_id");
-        $data['ValFechas'] = (new TiendaModel())->validarFechasTienda( $Utie_id);
-        //putMessageLogFile("Validación de fechas para tienda: {$Utie_id} - Resultado: " . json_encode($data['ValFechas']));
+        //putMessageLogFile("Validación de fechas para tienda: {$this->utie_id} - Resultado: " . json_encode($this->valFechas));
+
+        $data['ValFechas'] = $this->valFechas;
         //$data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
         $this->views->getView($this, "pedidoweb", $data);
     }
@@ -53,13 +58,13 @@ class PedidoWeb extends Controllers
         if ($_SESSION['permisosMod']['r']) {
             //$options .= '<button class="btn btn-info btn-sm btnViewLinea" onClick="fntViewTienda(\'' . $id . '\')" title="Ver Datos"><i class="fa fa-eye"></i></button>';
         }
-        if ($_SESSION['permisosMod']['u'] && $EstadoDoc == 1) {
+        if ($_SESSION['permisosMod']['u'] && $EstadoDoc == 1 && $this->valFechas) {
             $options .= " <a title='Editar' href='" . base_url() . "/pedidoWeb/editar/$id' class='btn btn-primary btn-sm'><i class='fa fa-pencil'></i></a> ";
         }
-        if ($_SESSION['permisosMod']['r'] && $EstadoDoc == 1 && ($RolNombre == 'supervisortienda' || $RolNombre == 'clientetienda')) {
+        if ($_SESSION['permisosMod']['r'] && $EstadoDoc == 1 && $this->valFechas && ($RolNombre == 'supervisortienda' || $RolNombre == 'clientetienda')) {
             $options .= " <button class='btn btn-success btn-sm btnDelLinea' onClick='fntAutorizarPedido($id)' title='Autorizar'><i class='fa fa-check-circle-o'></i></button> ";
         }
-        if ($_SESSION['permisosMod']['d'] && $EstadoDoc == 1 ) {
+        if ($_SESSION['permisosMod']['d'] && $EstadoDoc == 1 && $this->valFechas) {
             $options .= " <button class='btn btn-danger btn-sm btnDelLinea' onClick='fntAnularPedido($id)' title='Anular'><i class='fa fa-trash'></i></button> ";
         }
         if ($_SESSION['permisosMod']['r']) {
@@ -139,52 +144,13 @@ class PedidoWeb extends Controllers
                 }
                 //$request["status"]=true;
                 if ($request["status"]) {
-                    $idPedido = $request["numero"];
-
-                    //Recupera infor de CabTemp  para enviar info al supervisor de tienda
-                    $CabPed = $this->model->sendMailPedidosTemp($idPedido);
-                    $cliId = retornarDataSesion('Cli_Id');
-                    //$objUser=$this->model->recuperarUserCorreoTiendaSUP($idTienda,16,$cliId);//Recupera Usuairos Superviswor
-                    //$CabPed[0]["correouser"] = 'byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
-                    //$CabPed[0]["nombreuser"] = 'Byron Villacreses';//$objUser["usu_nombre"];
-                    $cliIds = retornarDataSesion("Cli_Id");
-                    $Cliente = (new ClientePedidoModel())->consultarDatosId($cliIds);
-                    $Server = (new EmpresaModel())->consultarEmpresaServerMail(retornarDataSesion('Emp_Id'));
-                    
-                    $nombreCliente = $Cliente["Nombre"];
-                    $TotalPedido = formatMoney($CabPed[0]["valorneto"], 2);
-
-
-                    $CabPed[0]["web_empresa"] = $Server["dominio_empresa"];
-                    $CabPed[0]["empresa"] = $nombreCliente;//TITULO_EMPRESA;
-                    $CabPed[0]["base_url"] = BASE_URL;
-
-                    $htmlMail = getFile("Template/Email/email_notificaPedido", $CabPed[0]);
-
-                    $arrParams = [
-                        'destinatario' =>  $CabPed[0]["correopersona"],//'byron_villacresesf@hotmail.com',
-                        'asunto' => "({$nombreCliente}) {$TotalPedido} Confirmación de pedido",
-                        'nombreEmpresa' => $Server["nombre_mostrar"],
-                        'no_responder' => $Server["mail"],
-                        'html' => $htmlMail,
-                        'pdf' => '',//$pdfPath,
-                        'cc' => $Server["correo_admin"],//copia
-                        //'bcc' => $Server["correo_admin"],//copia oculta
-                        'borrarPDF' => true
-                    ];
-
-                    $mailer = new MailSystem(
-                          $Server["smtp_servidor"],
-                         $Server["smtp_puerto"],
-                         $Server["usuario"],
-                         base64_decode($Server["clave"])
-                    );
-                    $resultado = $mailer->enviarNotificacion($arrParams);
+                    $idSolicitud = $request["numero"];
+                    //$restultado=$this->enviarCorreoNotificacion( $idSolicitud, '', "Autorización de pedido");
 
                     if ($option == 1) {
-                        $arrResponse = array('status' => true, 'numero' => add_ceros($idPedido, 9), 'msg' => 'Datos guardados correctamente.');
+                        $arrResponse = array('status' => true, 'numero' => add_ceros($idSolicitud, 9), 'msg' => 'Datos guardados correctamente.');
                     } else {
-                        $arrResponse = array('status' => true, 'numero' => add_ceros($idPedido, 9), 'msg' => 'Datos actualizados correctamente.');
+                        $arrResponse = array('status' => true, 'numero' => add_ceros($idSolicitud, 9), 'msg' => 'Datos actualizados correctamente.');
                     }
                 } else {
                     $arrResponse = array("status" => false, "msg" => $request["message"]);
@@ -260,6 +226,7 @@ class PedidoWeb extends Controllers
         if (!is_numeric($id))
             exit("Dato no válido");
         checkPermission('r', 'pedidoWeb');
+        
         $cliIds = retornarDataSesion("Cli_Id");
         $data['cabData'] = $this->model->cabeceraPedidoTemp($id);
         $data['detData'] = $this->model->detallePedidoTemp($id);
@@ -267,6 +234,8 @@ class PedidoWeb extends Controllers
         $numeroSecuencia = $data['cabData'][0]['numero'];
         $tie_id = $data['cabData'][0]['tieid'];
         $data['Tienda'] = (new TiendaModel())->consultarDatosId($tie_id);
+        $Server = (new EmpresaModel())->consultarEmpresaServerMail(retornarDataSesion('Emp_Id'));
+        $data['correo_admin']=$Server["correo_admin"];
         ob_end_clean();
         //$html =getFile("Template/Modals/ordenCompraPDF",$data);
         $html = getFile("PedidoWeb/pedidoPDF", $data);
@@ -285,9 +254,8 @@ class PedidoWeb extends Controllers
                 $ids = isset($data['ids']) ? filter_var($data['ids'], FILTER_VALIDATE_INT) : 0;
                 $request = $this->model->autorizarPedidoTemp($ids);
                 if ($request["status"]) {
-                    $numero = $request["numero"];
-                    $this->enviarCorreo($numero, "Autorización de pedido");
-
+                    $numeroPedido = $request["numero"];
+                    $restultado=$this->enviarCorreoNotificacion($ids, $numeroPedido, "Autorización de pedido");
                     $arrResponse = array('status' => true, 'msg' => 'Registro Autorizado correctamente');
                 } else {
                     $arrResponse = array('status' => false, 'msg' => 'Error al Autorizar el Registro.');
@@ -303,37 +271,47 @@ class PedidoWeb extends Controllers
         exit();
     }
 
-    private function enviarCorreo(int $idPedido, string $asunto)
+    private function enviarCorreoNotificacion(int $idSolicitud, $idPedido,string $asunto)
     {
         //Recupera infor de CabTemp  para enviar info al supervisor de tienda
-        $CabPed = $this->model->sendMailPedidosTemp($idPedido);
-        $cliId = retornarDataSesion('Cli_Id');
-        //$objUser=$this->model->recuperarUserCorreoTiendaSUP($idTienda,16,$cliId);//Recupera Usuairos Superviswor
-        $CabPed[0]["correouser"] = 'byron_villacresesf@hotmail.com';//$objUser["usu_correo"];
-        $CabPed[0]["nombreuser"] = 'Byron Villacreses';//$objUser["usu_nombre"];
+        $CabPed = $this->model->sendMailPedidosTemp($idSolicitud);
         $cliIds = retornarDataSesion("Cli_Id");
         $Cliente = (new ClientePedidoModel())->consultarDatosId($cliIds);
+        $Server = (new EmpresaModel())->consultarEmpresaServerMail(retornarDataSesion('Emp_Id'));
+
         $nombreCliente = $Cliente["Nombre"];
         $TotalPedido = formatMoney($CabPed[0]["valorneto"], 2);
 
-
-        $CabPed[0]["web_empresa"] = WEB_EMPRESA;
+        $CabPed[0]["web_empresa"] = $Server["dominio_empresa"];
         $CabPed[0]["empresa"] = $nombreCliente;//TITULO_EMPRESA;
+        $CabPed[0]["numero_pedido"] = $idPedido;
         $CabPed[0]["base_url"] = BASE_URL;
 
         $htmlMail = getFile("Template/Email/email_notificaPedido", $CabPed[0]);
 
         $arrParams = [
-            'destinatario' => 'byron_villacresesf@hotmail.com',
-            'asunto' => "({$nombreCliente}) {$TotalPedido} {$asunto}",
+            'destinatario' => $CabPed[0]["correopersona"],//'byron_villacresesf@hotmail.com',
+            'asunto' => "({$nombreCliente}) {$TotalPedido} Confirmación de pedido",
+            'nombreEmpresa' => $Server["nombre_mostrar"],
+            'no_responder' => $Server["mail"],
             'html' => $htmlMail,
             'pdf' => '',//$pdfPath,
-            'bcc' => 'byronvillacreses@gmail.com',
+            'cc' => $Server["correo_admin"],//copia
+            //'bcc' => $Server["correo_admin"],//copia oculta
             'borrarPDF' => true
         ];
-        $mailer = new MailSystem();
-        $resultado = $mailer->enviarNotificacion($arrParams);
 
+        $mailer = new MailSystem(
+            $Server["smtp_servidor"],
+            $Server["smtp_puerto"],
+            $Server["usuario"],
+            base64_decode($Server["clave"])
+        );
+        $resultado = $mailer->enviarNotificacion($arrParams);
+         if (!$resultado["status"]) {
+            logFileSystem("Error al enviarNotificacion Pedido: {$idPedido}-{$nombreCliente}" , "ERROR");
+         }
+        return $resultado; // Retorna el resultado del envío de correo
     }
 
 

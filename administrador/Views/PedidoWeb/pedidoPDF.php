@@ -96,7 +96,8 @@ $tienda = $data['Tienda'];
 				<td class="text-right wd33">
 					<p>
 					<h4>DETALLE PEDIDO</h4><br>
-					No. Pedido <strong><?= $cabCompra['numero'] ?></strong><br>
+					No. Solicitud <strong><?= $cabCompra['numero'] ?></strong><br>
+					No. Orden <strong></strong><br>
 					Fecha: <?= $cabCompra['fechapedido'] ?> <br>
 					</p>
 				</td>
@@ -160,7 +161,7 @@ $tienda = $data['Tienda'];
 	</table>
 	<div class="text-center">
 		<p>Si tienes preguntas sobre tu pedido, <br> pongase en contacto con nombre, teléfono y Email a
-			<?= $empresa['Correo'] ?></p>
+			<?= $data['correo_admin'] ?></p>
 		<h4>¡Gracias por tu Pedido!</h4>
 	</div>
 </body>

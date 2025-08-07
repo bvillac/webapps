@@ -389,10 +389,6 @@ function guardarPedido() {
         // Manejar el éxito de la solicitud aquí
         if (data.status) {
             swal("Pedido N°: " + data.numero, data.msg, "success");
-            //tableTienda.api().ajax.reload();
-            //window.location = base_url + '/pedidoWeb';
-            //mostrarAlertaCupo("Datos guardados correctamente.", "success");
-            //         // opcional: limpiar tabla, recargar datos, etc.
         } else {
             swal("Atención", data.msg, "error");
         }
@@ -464,10 +460,8 @@ function fntAutorizarPedido(ids) {
             peticionAjaxSSL(url, metodo, dataPost, function (data) {
                 // Manejar el éxito de la solicitud aquí
                 if (data.status) {
-                    swal("Anular!", data.msg, "success");
-                        tableTienda.api().ajax.reload(function () {
-
-                                                });
+                    swal("Autorizado!", data.msg, "success");
+                        tableTienda.api().ajax.reload(function () {           });
                 } else {
                     swal("Atención", data.msg, "error");
                 }

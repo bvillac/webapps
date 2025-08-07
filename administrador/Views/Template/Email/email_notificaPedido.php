@@ -96,7 +96,8 @@
 					
 					<div style="text-align: left;">
 						<p>Bienvenido a nuestra tienda de pedidos en línea.</p>
-						<p>N° Pedido: <strong><?= $data['numero']; ?></strong></p>						
+						<p>N° Solicitud: <strong><?= $data['numero']; ?></strong></p>
+						<p>N° Orden Compra: <strong><?= $data['numero_pedido']; ?></strong></p>						
 						<p>Tienda: <strong><?= $data['nombretienda']; ?></strong></p>
 						<p>Total Pedido: <strong><?= formatMoney($data['valorneto'],2); ?></strong></p>
 						<p>Fecha Pedido: <strong><?= $data['fechapedido']; ?></strong></p>

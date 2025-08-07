@@ -53,7 +53,7 @@ class PedidoWebModel extends MysqlPedidos
                 a.tcped_total AS total,
                 DATE(a.tcped_fec_cre) AS fechapedido,
                 (
-                    SELECT MAX(m.cped_id)
+                    SELECT LPAD(MAX(m.cped_id), 9, '0')
                     FROM {$this->db_name}.cab_pedido m
                     WHERE m.tcped_id = a.tcped_id
                 ) AS cped_id,

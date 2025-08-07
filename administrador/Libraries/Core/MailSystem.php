@@ -86,6 +86,7 @@ class MailSystem
             return ['status' => true, 'message' => 'Correo enviado correctamente'];
     
         } catch (Exception $e) {
+            logFileSystem("Error al enviarNotificacion: " . $e->getMessage(), "ERROR");
             return [
                 'status' => false,
                 'message' => 'Error al enviar el correo: ' . $this->mailer->ErrorInfo,
