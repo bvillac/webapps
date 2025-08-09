@@ -27,9 +27,9 @@ require_once "Views/Tienda/Modals/modalTienda.php";
             <table class="table table-hover table-bordered" id="tableTienda">
               <thead>
                 <tr>
-                  <th>N°</th>
+                  <th>N° Solicitud</th>
                   <th>Fecha</th>
-                  <th>O.Pedido</th>
+                  <th>O.Compra</th>
                   <th>Departamento/Tienda</th>
                   <th>Usuario</th>
                   <th>Total</th>

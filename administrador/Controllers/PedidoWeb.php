@@ -241,7 +241,7 @@ class PedidoWeb extends Controllers
         $html = getFile("PedidoWeb/pedidoPDF", $data);
         $html2pdf = new Html2Pdf('p', 'A4', 'es', 'true', 'UTF-8');
         $html2pdf->writeHTML($html);
-        $html2pdf->output('PEDIDO_' . $numeroSecuencia . '.pdf');
+        $html2pdf->output('Solicitud_' . $numeroSecuencia . '.pdf');
     }
 
 

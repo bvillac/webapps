@@ -14,14 +14,19 @@ class PedidoWebModel extends MysqlPedidos
     {
         try {
             $idsTie = $this->recuperarIdsTienda();
+            $this->rolName = retornarDataSesion("RolNombre");
 
             $params = [];
             $where = ["a.tcped_est_log <> 4"]; // Excluir anulados
 
-            // Tiendas disponibles para el usuario
-            if (!empty($idsTie)) {
-                $idsTie = implode(",", $idsTie);
-                $where[] = "a.tie_id IN ($idsTie)";
+            if ($this->rolName === "admin" || $this->rolName === "admintienda") {
+                // Si es admin o admintienda, no filtrar por tienda
+            }else{
+                // Tiendas disponibles para el usuario
+                if (!empty($idsTie)) {
+                    $idsTie = implode(",", $idsTie);
+                    $where[] = "a.tie_id IN ($idsTie)";
+                }
             }
 
             // Extraer filtros del array
@@ -722,19 +727,6 @@ class PedidoWebModel extends MysqlPedidos
             $stmt = $con->prepare($sql);
 
             foreach ($detFact as $detalle) {
-                //  if (empty($detalle['art_id']) || empty($detalle['tdped_can_ped']) || empty($detalle['tdped_p_venta'])) {
-                //      throw new Exception("Faltan datos obligatorios para insertar el detalle.");
-                //  }
-
-                // $sql = "INSERT INTO {$this->db_name}.det_pedido (
-                //         cped_id, art_id, tie_id, dped_can_ped, dped_p_venta, dped_i_m_iva, 
-                //         dped_val_des, dped_por_des, dped_t_venta, dped_observa, 
-                //         dped_fec_cre, dped_est_log, cli_id
-                //         ($idCab,
-                //      '" . $detalle['art_id'] . "','" . $detalle['tie_id'] . "','" . $detalle['tdped_can_ped'] . "',
-                //      '" . $detalle['tdped_p_venta'] . "','0','0','0',
-                //      '" . $detalle['tdped_t_venta'] . "','" . $detalle['tdped_observa'] . "',CURRENT_TIMESTAMP(),'1','$cliId');";
-
                 $stmt->execute([
                     ':cped_id' => $idCab,
                     ':art_id' => $detalle['art_id'],

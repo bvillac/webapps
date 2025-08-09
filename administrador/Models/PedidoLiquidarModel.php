@@ -3,26 +3,35 @@ class PedidoLiquidarModel extends MysqlPedidos
 {
     private $db_name;
     private $db_nameAdmin;
+    private $rolName;
 
     public function __construct()
     {
         parent::__construct();
         $this->db_name = $this->getDbNameMysql();
         $this->db_nameAdmin = $this->getDbNameMysqlAdmin();
+       
     }
     public function consultarDatos(array $criterio = [])
     {
         try {
             $idsTie = $this->recuperarIdsTienda();
-
+            $this->rolName = retornarDataSesion("RolNombre");
+  
             $params = [];
             $where = ["a.cped_est_ped <> 4"]; // Excluir anulados
 
-            // Tiendas disponibles para el usuario
-            if (!empty($idsTie)) {
-                $idsTie = implode(",", $idsTie);
-                $where[] = "a.tie_id IN ($idsTie)";
+            if ($this->rolName === "admin" || $this->rolName === "admintienda") {
+                // Si es admin o admintienda, no filtrar por tienda
+            }else{
+                // Tiendas disponibles para el usuario
+                if (!empty($idsTie)) {
+                    $idsTie = implode(",", $idsTie);
+                    $where[] = "a.tie_id IN ($idsTie)";
+                }
+
             }
+            
 
             // Extraer filtros del array
             $filtros = $criterio[0] ?? [];
@@ -52,7 +61,7 @@ class PedidoLiquidarModel extends MysqlPedidos
                 a.tie_id AS tieid,
                 a.cped_val_net AS total,
                 DATE(a.cped_fec_ped) AS fechapedido,
-                a.tcped_id AS tcped_id,
+                LPAD(a.tcped_id, 9, '0') AS tcped_id,
                 b.tie_nombre AS nombretienda,
                 b.tie_direccion AS direcciontienda,
                 concat(e.per_nombre,' ',e.per_apellido)  AS nombrepersona,
@@ -65,9 +74,8 @@ class PedidoLiquidarModel extends MysqlPedidos
             INNER JOIN {$this->db_nameAdmin}.usuario d ON c.usu_id = d.usu_id
             INNER JOIN {$this->db_nameAdmin}.persona e ON d.per_id = e.per_id
             WHERE " . implode(" AND ", $where) . "
-            ORDER BY a.cped_id DESC
-            LIMIT " . LIMIT_SQL;
-
+            ORDER BY a.cped_id DESC";
+            //LIMIT " . LIMIT_SQL;
 
 
             $resultado = $this->select_all($sql, $params);
@@ -134,7 +142,7 @@ class PedidoLiquidarModel extends MysqlPedidos
     {
         try {
             $sql = "select a.cped_id pedid,concat(repeat( '0', 9 - length(a.cped_id) ),a.cped_id) numero,b.tie_id tieid,
-                        a.cped_val_net total,date(a.cped_fec_ped) fechapedido,b.tie_nombre nombretienda, '' receptor
+                        a.cped_val_net total,date(a.cped_fec_ped) fechapedido,b.tie_nombre nombretienda, '' receptor,LPAD(a.tcped_id, 9, '0') AS numeroSolicitud
                         from {$this->db_name}.cab_pedido a
                                 inner join {$this->db_name}.tienda b
                                         on a.tie_id=b.tie_id

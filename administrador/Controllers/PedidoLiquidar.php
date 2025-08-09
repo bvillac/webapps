@@ -3,6 +3,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 require 'vendor/autoload.php';
 require_once("Models/TiendaModel.php");
 require_once("Models/ClientePedidoModel.php");
+require_once("Models/EmpresaModel.php");
 class PedidoLiquidar extends Controllers
 {
     public function __construct()
@@ -67,12 +68,14 @@ class PedidoLiquidar extends Controllers
         $numeroSecuencia = $data['cabData'][0]['numero'];
         $tie_id = $data['cabData'][0]['tieid'];
         $data['Tienda'] = (new TiendaModel())->consultarDatosId($tie_id);
+        $Server = (new EmpresaModel())->consultarEmpresaServerMail(retornarDataSesion('Emp_Id'));
+        $data['correo_admin']=$Server["correo_admin"];
         ob_end_clean();
         //$html =getFile("Template/Modals/ordenCompraPDF",$data);
         $html = getFile("PedidoLiquidar/pedidoPDF", $data);
         $html2pdf = new Html2Pdf('p', 'A4', 'es', 'true', 'UTF-8');
         $html2pdf->writeHTML($html);
-        $html2pdf->output('PEDIDO_' . $numeroSecuencia . '.pdf');
+        $html2pdf->output('Orden_Compra_' . $numeroSecuencia . '.pdf');
     }
 
 
