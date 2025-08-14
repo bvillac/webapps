@@ -184,6 +184,82 @@ class PedidoLiquidarModel extends MysqlPedidos
     }
 
 
+    public function consultarDatosReporte(array $criterio = [])
+    {
+        try {
+
+            // putMessageLogFile("consultarDatosReporte Fecha Inicio: " . $criterio['f_ini']);
+            // putMessageLogFile("consultarDatosReporte Fecha Fin: " . $criterio['f_fin']);
+            // putMessageLogFile("consultarDatosReporte Tienda: " . $criterio['tie_id']);
+            // putMessageLogFile("consultarDatosReporte Cliente: " . $criterio['cliente']);
+
+            $Cli_id = retornarDataSesion("Cli_id");
+  
+            $params = [];
+            $where = ["a.dped_est_log <> 0"]; // Excluir anulados
+            $where[] = "a.cli_id = :cli_id";
+            $params[':cli_id'] = 3;//$Cli_id;
+            
+
+            // Extraer filtros del array
+            //$filtros = $criterio[0] ?? [];
+            $filtros = $criterio ?? [];
+
+            if (!empty($filtros)) {
+                // if (!empty($filtros['est_log']) && $filtros['est_log'] !== "0") {
+                //     $where[] = "a.cped_est_ped = :est_log";
+                //     $params[':est_log'] = $filtros['est_log'];
+                // }
+
+                if (!empty($filtros['tie_id']) && (int) $filtros['tie_id'] > 0) {
+                    $where[] = "a.tie_id = :tie_id";
+                    $params[':tie_id'] = $filtros['tie_id'];
+                }
+
+                if (!empty($filtros['f_ini']) && !empty($filtros['f_fin'])) {
+                    $where[] = "DATE(a.dped_fec_cre) BETWEEN :f_ini AND :f_fin";
+                    $params[':f_ini'] = date('Y-m-d', strtotime($filtros['f_ini']));
+                    $params[':f_fin'] = date('Y-m-d', strtotime($filtros['f_fin']));
+                }
+            }
+
+            // Construcción del SQL
+            $sql = "SELECT LPAD(a.cped_id, 9, '0') AS Orden,
+                        LPAD(b.tcped_id, 9, '0') AS Solicitud,
+                        d.tie_nombre Tienda,
+                        c.cod_art codigo,
+                        c.art_des_com nombre,
+                        sum(a.dped_can_ped) can_ped,
+                        sum(a.dped_t_venta) t_venta
+                    FROM ({$this->db_name}.det_pedido a 
+                        inner join {$this->db_name}.articulo c on a.art_id=c.art_id)
+                    inner join {$this->db_name}.cab_pedido b on a.cped_id=b.cped_id
+                    inner join {$this->db_name}.tienda d on a.tie_id=b.tie_id
+                    WHERE " . implode(" AND ", $where) . "
+                    GROUP BY a.art_id,a.tie_id  
+                    ORDER BY a.tie_id DESC ";
+            
+
+
+            $resultado = $this->select_all($sql, $params);
+            // putMessageLogFile("consultarDatosReporte SQL: " . $sql);
+            // putMessageLogFile("consultarDatosReporte Params: " . print_r($params, true));
+            // putMessageLogFile("consultarDatosReporte Resultado: " . print_r($resultado, true));
+  
+
+
+            if ($resultado === false) {
+                logFileSystem("Consulta fallida para consultarDatosReporte", "WARNING");
+                return [];
+            }
+            return $resultado;
+        } catch (Exception $e) {
+            logFileSystem("Error en consultarDatosReporte: " . $e->getMessage(), "ERROR");
+            return [];
+        }
+    }
+
+
 
 
 

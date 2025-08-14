@@ -25,17 +25,30 @@ document.addEventListener('DOMContentLoaded', function () {
             { "data": "options" }
         ],
         "columnDefs": [
-            { 'className': "textleft", "targets": [0] },
-            { 'className': "textleft", "targets": [1] },//Agregamos la clase que va a tener la columna
-            { 'className': "textleft", "targets": [2] },
-            { 'className': "textleft", "targets": [3] },
-            { 'className': "textleft", "targets": [4] },
-            { 'className': "textcenter", "targets": [5] },
-            { 'className': "textcenter", "targets": [6] },
-            { 'className': "textcenter", "targets": [7] }
+            { 'className': "textleft", "targets": [0, 1, 2, 3, 4] },
+            { 'className': "textcenter", "targets": [5, 6, 7] }
         ],
         'dom': 'lBfrtip',
-        'buttons': [],
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: '<i class="fas fa-file-excel"></i> Excel',
+                titleAttr: 'Exportar a Excel',
+                className: 'btn btn-success'
+            },
+            {
+                extend: 'pdfHtml5',
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                titleAttr: 'Exportar a PDF',
+                className: 'btn btn-danger'
+            },
+            // {
+            //     extend: 'csvHtml5',
+            //     text: '<i class="fas fa-file-csv"></i> CSV',
+            //     titleAttr: 'Exportar a CSV',
+            //     className: 'btn btn-info'
+            // }
+        ],
         "resonsieve": "true",
         "bDestroy": true,
         "iDisplayLength": numPaginado,//Numero Items Retornados

@@ -29,33 +29,33 @@ class PedidoLiquidar extends Controllers
     {
         checkPermission('r', 'dashboard');
         $arrData = $this->model->consultarDatos();
-        $RolNombre=retornarDataSesion('RolNombre');
+        $RolNombre = retornarDataSesion('RolNombre');
         foreach ($arrData as &$objData) {
             $estadoTexto = estadoPedidos($objData['Estado']);
-            $EstadoDoc=$objData['Estado'];
+            $EstadoDoc = $objData['Estado'];
             $claseBadge = ($objData['Estado'] != 4) ? 'badge-success' : 'badge-danger';
 
             $objData['Estado'] = "<span class='badge {$claseBadge}'>{$estadoTexto}</span>";
-            $objData['options'] = $this->getArrayOptions($objData['Ids'],$RolNombre,$EstadoDoc);
+            $objData['options'] = $this->getArrayOptions($objData['Ids'], $RolNombre, $EstadoDoc);
         }
         echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
         exit();
     }
 
-    private function getArrayOptions($id,$RolNombre,$EstadoDoc)
+    private function getArrayOptions($id, $RolNombre, $EstadoDoc)
     {
         $options = '<div class="text-center">';
-        if ($_SESSION['permisosMod']['r'] && $EstadoDoc==2 ) {
+        if ($_SESSION['permisosMod']['r'] && $EstadoDoc == 2) {
             $options .= " <button class='btn btn-success btn-sm btnDelLinea' onClick='fntFacturarPedido($id)' title='Facturado'><i class='fa fa-usd'></i></button> ";
         }
-     
+
         if ($_SESSION['permisosMod']['r']) {
             $options .= ' <a title="Generar PDF" href="' . base_url() . '/pedidoLiquidar/generarPedidoPDF/' . $id . '" target="_blanck" class="btn btn-primary btn-sm"> <i class="fa fa-file-pdf-o"></i> </a> ';
         }
         return $options . '</div>';
     }
 
-    
+
     public function generarPedidoPDF($id)
     {
         if (!is_numeric($id))
@@ -69,7 +69,7 @@ class PedidoLiquidar extends Controllers
         $tie_id = $data['cabData'][0]['tieid'];
         $data['Tienda'] = (new TiendaModel())->consultarDatosId($tie_id);
         $Server = (new EmpresaModel())->consultarEmpresaServerMail(retornarDataSesion('Emp_Id'));
-        $data['correo_admin']=$Server["correo_admin"];
+        $data['correo_admin'] = $Server["correo_admin"];
         ob_end_clean();
         //$html =getFile("Template/Modals/ordenCompraPDF",$data);
         $html = getFile("PedidoLiquidar/pedidoPDF", $data);
@@ -96,6 +96,39 @@ class PedidoLiquidar extends Controllers
             } catch (Exception $e) {
                 // Registrar error en log
                 logFileSystem("Error en consutla facturarPedido: " . $e->getMessage(), "ERROR");
+                exit;
+            }
+
+        }
+        exit();
+    }
+
+
+    public function reporteliquidados()
+    {
+        checkPermission('r', 'dashboard');
+        $data = getPageData("Pedido Liquidar", "pedidoliquidar");
+        $this->views->getView($this, "Reporte/reporteliquidados", $data);
+    }
+
+    public function consultarDatosReporte()
+    {
+        if ($_POST) {
+            //putMessageLogFile("consultarDatosReporte POST: " . print_r($_POST, true));
+
+            try {
+                checkPermission('r', 'dashboard');
+                $criterio = [
+                    'f_ini' => isset($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : '',
+                    'f_fin' => isset($_POST['fecha_fin']) ? $_POST['fecha_fin'] : '',
+                    'tie_id' => isset($_POST['tienda']) ? $_POST['tienda'] : '',
+                    'cliente' => isset($_POST['cliente']) ? $_POST['cliente'] : ''
+                ];
+                $arrData = $this->model->consultarDatosReporte($criterio);
+                echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
+            } catch (Exception $e) {
+                // Registrar error en log
+                logFileSystem("Error en consutla consultarDatosReporte: " . $e->getMessage(), "ERROR");
                 exit;
             }
 

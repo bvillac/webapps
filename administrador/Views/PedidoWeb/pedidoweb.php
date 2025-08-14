@@ -33,7 +33,7 @@ require_once "Views/Tienda/Modals/modalTienda.php";
       <div class="tile">
         <div class="tile-body">
           <div class="table-responsive">
-            <table class="table table-hover table-bordered" id="tableTienda">
+            <table class="table table-hover table-bordered" id="tableTienda" style="width:100%">
               <thead>
                 <tr>
                   <th>N° Solicitud</th>
