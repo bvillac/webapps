@@ -22,19 +22,29 @@ adminMenu($data);
     <div class="col-md-12">
       <div class="tile">
 
-        <div class="row mb-2">          
+        <div class="row mb-2">
           <div class="col-md-3">
             <label>Cliente</label>
-            <select id="filtroCliente" class="form-control">
-              <option value="">Todos</option>
-              <option value="Pendiente">cliente 1</option>
-              <option value="Procesado">cliente 2</option>
-              <option value="Cancelado">cliente 3</option>
+            <select class="form-control" data-live-search="true" id="filtroCliente" name="filtroCliente">
+              <?php
+              // Recorre el array y genera las opciones del select
+              echo '<option value="0">SELECCIONAR</option>';
+              foreach ($data['cliente'] as $opcion) {
+                $seleted = 0; //($opcion['Ids']==$data['CentroId'])?'selected':'';
+                echo '<option value="' . $opcion['Ids'] . '" ' . $seleted . ' >' . $opcion['Nombre'] . '</option>';
+              }
+              ?>
             </select>
           </div>
           <div class="col-md-3">
             <label>Tienda</label>
-            <input type="text" id="filtroTienda" class="form-control" placeholder="Nombre tienda">
+            <!-- <input type="text" id="filtroTienda" class="form-control" placeholder="Nombre tienda"> -->
+            <select class="form-control" data-live-search="true" id="filtroTienda" name="filtroTienda"
+                  data-none-selected-text="SELECCIONAR TIENDA" title="SELECCIONAR TIENDA" >
+                  <?php
+                  echo '<option value="0">TODOS</option>';
+                  ?>
+                </select>
           </div>
           <div class="col-md-3">
             <label>Fecha Inicio</label>
@@ -44,11 +54,11 @@ adminMenu($data);
             <label>Fecha Fin</label>
             <input type="date" id="filtroFechaFin" class="form-control" placeholder="Fecha fin">
           </div>
-          
-         
+
+
         </div>
         <div class="row mb-3">
-          
+
           <div class="col-md-3">
             <button id="btnFiltrar" class="btn btn-primary w-100">Buscar</button>
           </div>

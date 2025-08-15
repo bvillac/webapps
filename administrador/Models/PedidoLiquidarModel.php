@@ -188,21 +188,13 @@ class PedidoLiquidarModel extends MysqlPedidos
     {
         try {
 
-            // putMessageLogFile("consultarDatosReporte Fecha Inicio: " . $criterio['f_ini']);
-            // putMessageLogFile("consultarDatosReporte Fecha Fin: " . $criterio['f_fin']);
-            // putMessageLogFile("consultarDatosReporte Tienda: " . $criterio['tie_id']);
-            // putMessageLogFile("consultarDatosReporte Cliente: " . $criterio['cliente']);
-
-            $Cli_id = retornarDataSesion("Cli_id");
-  
             $params = [];
             $where = ["a.dped_est_log <> 0"]; // Excluir anulados
             $where[] = "a.cli_id = :cli_id";
-            $params[':cli_id'] = 3;//$Cli_id;
+            $params[':cli_id'] = $criterio['cliente'] ?? 0;
             
 
             // Extraer filtros del array
-            //$filtros = $criterio[0] ?? [];
             $filtros = $criterio ?? [];
 
             if (!empty($filtros)) {
@@ -242,8 +234,8 @@ class PedidoLiquidarModel extends MysqlPedidos
 
 
             $resultado = $this->select_all($sql, $params);
-            // putMessageLogFile("consultarDatosReporte SQL: " . $sql);
-            // putMessageLogFile("consultarDatosReporte Params: " . print_r($params, true));
+            //putMessageLogFile("consultarDatosReporte SQL: " . $sql);
+            //putMessageLogFile("consultarDatosReporte Params: " . print_r($params, true));
             // putMessageLogFile("consultarDatosReporte Resultado: " . print_r($resultado, true));
   
 

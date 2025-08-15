@@ -242,7 +242,6 @@ class Tienda extends Controllers
 				$arrResponse = array('status' => false, 'msg' => 'Error de datos' );
 			}else{
 				$cliIds = intval(strClean($data['ids']));
-                //$cliIds = retornarDataSesion("Cli_Id");
                 $Utieid = retornarDataSesion("Utie_id");
                 $arrData = (new TiendaModel())->consultarTiendaCliente($Utieid,$cliIds);
 				if(empty($arrData)){

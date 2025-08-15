@@ -60,7 +60,65 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Botón Filtrar
     $('#btnFiltrar').on('click', function () {
+        let cliente = $('#filtroCliente').val();
+        if (cliente == null || cliente === '0') {
+            swal('Falta seleccionar cliente', 'Debe seleccionar un cliente antes de filtrar.', "warning");
+            return;
+        }
         tableReporte.ajax.reload();
     });
 
+    $('#filtroCliente').selectpicker();
+
+    $('#filtroCliente').change(function () {
+        const $cmbCliente = $('#filtroCliente');
+        const clienteId = $cmbCliente.val();
+        if (clienteId && clienteId !== '0') {
+            fetchTiendas(clienteId);
+        } else {
+            swal('Error', 'Debe seleccionar un cliente', 'error');
+
+        }
+    });
+
+
 });
+
+
+function fetchTiendas(idsCliente) {
+    const $cmbTienda = $('#filtroTienda');
+    // Mostrar estado “cargando”
+    $cmbTienda
+        .prop('disabled', true)
+        .empty()
+        .append('<option value="0">CARGANDO...</option>');
+        
+    let url = base_url + '/Tienda/retornarTiendaporCliente';
+    var metodo = 'POST';
+    var datos = { ids: idsCliente };
+    peticionAjaxSSL(url, metodo, datos, function (data) {
+        if (data.status) {
+            const tiendas = data.data;
+            $cmbTienda
+                .prop('disabled', false)
+                .empty()
+                .append('<option value="0">TODO</option>');
+
+            tiendas.forEach(t => {
+                $cmbTienda.append(
+                    `<option value="${t.Ids}">${t.Nombre}</option>`
+                );
+            });
+            $cmbTienda.selectpicker('refresh');
+
+        } else {
+            swal('Error', 'No se pudieron cargar las tiendas', 'error');
+        }
+
+    }, function (jqXHR, textStatus, errorThrown) {
+        console.error('AJAX Error:', textStatus, errorThrown);
+        swal('Error', 'No se pudieron cargar las tiendas', 'error');
+    });
+
+
+}

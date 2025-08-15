@@ -108,6 +108,7 @@ class PedidoLiquidar extends Controllers
     {
         checkPermission('r', 'dashboard');
         $data = getPageData("Pedido Liquidar", "pedidoliquidar");
+        $data['cliente'] = (new ClientePedidoModel())->consultarClienteTienda();
         $this->views->getView($this, "Reporte/reporteliquidados", $data);
     }
 

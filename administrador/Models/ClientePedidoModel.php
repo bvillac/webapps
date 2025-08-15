@@ -198,20 +198,13 @@ class ClientePedidoModel extends Mysql
 
 
     public function consultarClienteTienda() {
-        $idsEmpresa=$_SESSION['Emp_Id'];
+        $idsEmpresa = retornarDataSesion("Emp_Id");
         $sql = "SELECT a.cli_id as Ids,a.cli_razon_social as Nombre "; 
         $sql .= "    FROM " . $this->db_name . ".cliente a ";
         $sql .= "   where  a.estado_logico!=0 and a.emp_id= :idsEmpresa  ";
         $sql .= "   ORDER BY a.cli_razon_social ASC";
         $arrParams = [":idsEmpresa" => $idsEmpresa]; 
         return $this->select_all($sql, $arrParams);
-        /*$resultado = $this->select_all($sql, $arrParams);
-        if ($resultado !== false) {
-            return $resultado;
-        } else {
-            logFileSystem("Error en la Consulta");
-            //echo "Error en la consulta.";
-        }*/
     }
 
     
