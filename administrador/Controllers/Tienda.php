@@ -143,15 +143,15 @@ class Tienda extends Controllers
             $data=getPageData("Catálogo de Productos", "tienda");
             // Consultar datos del cliente
             $data = $this->model->consultarDatosId($ids);
-            $cliIds = $data['Cli_Ids'];
+            $cliIds = $data['Cli_Ids'];//recuperar el ID del cliente
             $Utieid = retornarDataSesion("Utie_id");
     
             // Consultar productos del cliente
             $data['TiendaId']=$ids;
-            $data['tiendas'] = $this->model->consultarTiendaCliente($Utieid,$cliIds);
+            //$data['tiendas'] = $this->model->consultarTiendaCliente($Utieid,$cliIds);
+            $data['tiendas'] = $this->model->consultarTiendaPorCliente($cliIds);
             $data['ClienteProducto'] = (new ArticuloModel())->consultarProductosCliente($cliIds);
-            $data['ProductoCheck'] = (new ArticuloModel())->consultarProductosTiendaCheck($ids);
-            
+            $data['ProductoCheck'] = (new ArticuloModel())->consultarProductosTiendaCheck($ids);            
             $data['nombreCliente'] = htmlspecialchars($data['RazonSocial'], ENT_QUOTES, 'UTF-8');
             $data = array_merge($data, getPageData("Catálogo de Productos", "tienda"));
             // Cargar vista

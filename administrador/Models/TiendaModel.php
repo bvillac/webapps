@@ -164,6 +164,7 @@ class TiendaModel extends MysqlPedidos
         }
 
         $sql .= " ORDER BY b.tie_nombre ASC";
+      
         return $this->select_all($sql, $params);
     }
 

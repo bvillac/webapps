@@ -331,13 +331,16 @@ function guardarPedido() {
     let accion = ($('#btnText').html() == "Guardar") ? 'Create' : 'Edit';
     let CabIds = document.querySelector('#txth_ids').value;
     const cmbTienda = document.getElementById("cmb_tienda");
-    const tiendaSeleccionada = cmbTienda ? cmbTienda.value : "0";
+    let tiendaSeleccionada = cmbTienda ? cmbTienda.value : "0";
 
     if (accion === "Create") {
         if (!tiendaSeleccionada || tiendaSeleccionada === "0") {
             mostrarAlertaCupo("Debe seleccionar una tienda antes de guardar.", "warning");
             return;
         }
+    }else {
+        // Si es edición, obtenemos el ID de la tienda del campo oculto
+        tiendaSeleccionada = document.querySelector('#txth_tie_id').value;
     }
 
 

@@ -40,6 +40,7 @@ $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTiend
         <input type="hidden" id="txth_ids" name="txth_ids" value="<?= (int) $data['CabPed'][0]['numero'] ?>">
         <input type="hidden" id="txth_art_id" name="txth_art_id" value="">
         <input type="hidden" id="txth_cod_art" name="txth_cod_art" value="0">
+         <input type="hidden" id="txth_tie_id" name="txth_tie_id" value="<?= (int) $data['CabPed'][0]['tieid'] ?>">
 
         <div class="col-md-3">
             <div class="card card-primary">

@@ -19,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         "columns": [
-            { "data": "Orden" },
-            { "data": "Solicitud" },
             { "data": "Tienda" },
             { "data": "codigo" },
             { "data": "nombre" },
@@ -28,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
             { "data": "t_venta" }
         ],
         "columnDefs": [
-            { 'className': "textleft", "targets": [0, 1, 2, 3, 4] },
-            { 'className': "textcenter", "targets": [5, 6] }
+            { 'className': "textleft", "targets": [0, 1, 2] },
+            { 'className': "textcenter", "targets": [3, 4] }
         ],
         'dom': 'lBfrtip',
         buttons: [

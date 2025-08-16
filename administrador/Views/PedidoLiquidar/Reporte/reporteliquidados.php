@@ -70,8 +70,8 @@ adminMenu($data);
             <table class="table table-hover table-bordered" id="tableReporteLiquidar" style="width:100%">
               <thead>
                 <tr>
-                  <th>O.Compra</th>
-                  <th>N° Solicitud</th>
+                  <!-- <th>O.Compra</th>
+                  <th>N° Solicitud</th> -->
                   <th>Tienda</th>
                   <th>Codigo</th>
                   <th>Nombre</th>
