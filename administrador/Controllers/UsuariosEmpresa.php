@@ -17,7 +17,7 @@ class UsuariosEmpresa extends Controllers
 	{
 		//control de Acceso por Roles
 		checkPermission('r', 'dashboard');
-		$data = getPageData("Usuarios Empresa", "usuariosempresa");
+		$data = getPageData("Usuarios Cliente", "usuariosempresa");
 		$data['empresa_rol'] = $this->model->consultarRolEmpresa();
 		$Cli_Id = retornarDataSesion("Cli_Id");
 		$data['cli_id'] = $Cli_Id ;

@@ -64,7 +64,7 @@ class ClientePedidoModel extends Mysql
                     $dataObj['cli_referencia_bancaria'],
                     $dataObj['cli_cargo'],
                     $dataObj['cli_antiguedad'],
-                    $dataObj['ocupacion'],
+                    0,
                     $dataObj['cli_ingreso_mensual'],
                     1, $idsUsuario
                 );

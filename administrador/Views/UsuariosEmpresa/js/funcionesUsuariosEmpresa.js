@@ -567,6 +567,8 @@ function fntVerTienda(ids, rolId) {
             document.querySelector("#lbl_rolName").innerHTML = rolName;
 
             $('#modalTiendas').modal('show');
+            document.getElementById('list_tiendas').innerHTML = '';//Borrar opciones previas
+
 
         } else {
             swal("Atención", data.msg, "error");
