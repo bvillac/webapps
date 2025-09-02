@@ -78,7 +78,8 @@ class UsuariosEmpresaModel extends Mysql
 			return 0;
 		}
 		$roles = array_filter(array_map('trim', explode(',', (string) $rolesString)), function ($r) {
-			return $r !== ''; });
+			return $r !== '';
+		});
 		if (empty($roles)) {
 			return 0;
 		}
@@ -159,6 +160,21 @@ class UsuariosEmpresaModel extends Mysql
 				$con->rollBack();
 				return ["status" => false, "message" => "El usuario ya existe con esa cédula, nombre y apellido."];
 			}
+
+			// Verificar si ya existe el usuario por correo
+			/*$sqlCheckUsuario = "SELECT 1 
+									FROM {$this->db_name}.usuario 
+									WHERE usu_correo = :correo";
+
+			$stmtCheckUsuario = $con->prepare($sqlCheckUsuario);
+			$stmtCheckUsuario->execute([
+				':correo' => $dataObj['email']
+			]);
+
+			if ($stmtCheckUsuario->fetch()) {
+				$con->rollBack();
+				return ["status" => false, "message" => "Ya existe un usuario con ese correo."];
+			}*/
 
 			// Insertar en persona
 			$arrDataPer = [
