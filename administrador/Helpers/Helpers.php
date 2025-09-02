@@ -309,9 +309,59 @@ function datosEmpresaEstablePunto(int $IdEmpresa)
 }
 
 
-
-
 function sessionStart()
+{
+    // 1. Parámetros de la cookie de sesión
+    session_set_cookie_params([
+        'lifetime' => TIMESESSION,
+        'path'     => '/',
+        'domain'   => $_SERVER['HTTP_HOST'] ?? '',
+        'secure'   => isset($_SERVER['HTTPS']),
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+
+    // 2. Iniciar sesión
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // 3. Regenerar ID cada X segundos
+    if (!isset($_SESSION['regen_time'])) {
+        $_SESSION['regen_time'] = time();
+    } elseif (time() - $_SESSION['regen_time'] > REGENERATE_INTERVAL) {// define en segundos (p.ej. 1800 = 30 min)
+        session_regenerate_id(true);
+        $_SESSION['regen_time'] = time();
+    }
+
+    require_once("Controllers/Salida.php");
+
+    // 4. Control de inactividad
+    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > TIMESESSION) {
+        // Borrar cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+        session_unset();
+        session_destroy();
+        new Salida('/loginPedido');
+        exit;
+    }
+    $_SESSION['last_activity'] = time();
+
+    // 5. Verificar login
+    if (empty($_SESSION['loginEstado'])) {
+        new Salida('/loginPedido');
+        exit;
+    }
+}
+
+
+/*function sessionStart()
 {
     // 1. Parámetros de la cookie de sesión (ajusta según tus necesidades)
     session_set_cookie_params([
@@ -329,7 +379,7 @@ function sessionStart()
     }
 
     // 3. Regenerar ID de sesión cada X segundos (ej: 5 minutos)
-    $regenerateInterval = 300; // segundos
+    $regenerateInterval = REGENERATE_INTERVAL; // segundos
     if (!isset($_SESSION['created'])) {
         $_SESSION['created'] = time();
     } elseif (time() - $_SESSION['created'] > $regenerateInterval) {
@@ -354,7 +404,7 @@ function sessionStart()
         new Salida('/loginPedido'); // Puedes redirigir a cualquier ruta
         exit;
     }
-}
+}*/
 
 
 function uploadImage(array $data, string $name)
