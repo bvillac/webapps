@@ -165,8 +165,8 @@ function actualizarTabla() {
                     <td>${producto.nombre}</td>
                     <td>
                         <input type="number" 
-                            value="${parseFloat(producto.cantidad).toFixed(N2decimal)}" 
-                            min="0" step="0.01"
+                            value="${parseInt(producto.cantidad)}" 
+                            min="0" step="1"
                             data-index="${index}" 
                             class="form-control text-end cantidad-input" 
                             style="width: auto; min-width: 30px; text-align: right;" />
@@ -209,16 +209,16 @@ function procesarCambioCantidad(input) {
     const index = parseInt(input.dataset.index);
     const productos = obtenerProductosGuardados();
 
-    let nuevaCantidad = parseFloat(input.value);
+    let nuevaCantidad = parseInt(input.value);
     if (isNaN(nuevaCantidad) || nuevaCantidad < 0) nuevaCantidad = 0;
 
     // Formatear y asignar al input
-    nuevaCantidad = parseFloat(nuevaCantidad).toFixed(N2decimal);
+    nuevaCantidad = parseInt(nuevaCantidad);
     input.value = nuevaCantidad;
 
     // Actualizar en el objeto de sessionStorage
-    productos[index].cantidad = parseFloat(nuevaCantidad);
-    productos[index].total = parseFloat(nuevaCantidad) * parseFloat(productos[index].precio);
+    productos[index].cantidad = parseInt(nuevaCantidad);
+    productos[index].total = parseInt(nuevaCantidad) * parseFloat(productos[index].precio);
 
     // Actualizar fila
     const row = input.closest("tr");

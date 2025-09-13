@@ -55,13 +55,13 @@ $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTiend
                     <strong><i class="fas fa-map-marker-alt mr-1"></i> Información de Tienda</strong>
                     <ul class="text-muted list-group list-group-unbordered mb-3">
                         <li class="list-group-item">
-                            <b>Cupo Otorgado</b> <a class="float-right"><label id="lbl_cupo"><?= $data['Tienda']['Cupo'] ?></label></a>
+                            <b>Presupuesto Otorgado</b> <a class="float-right"><label id="lbl_cupo"><?= $data['Tienda']['Cupo'] ?></label></a>
                         </li>
                         <li class="list-group-item">
-                            <b>Cupo Usado</b> <a class="float-right"><label id="lbl_cupoUsado"><?= floatval($data['SaldoTienda'] ?? 0) ?></label></a>
+                            <b>Presupuesto Usado</b> <a class="float-right"><label id="lbl_cupoUsado"><?= floatval($data['SaldoTienda'] ?? 0) ?></label></a>
                         </li>
                         <li class="list-group-item">
-                            <b>Cupo Saldo</b> <a class="float-right"><label id="lbl_cupoSaldo"><?= $saldoCupo ?></label></a>
+                            <b>Presupuesto Saldo</b> <a class="float-right"><label id="lbl_cupoSaldo"><?= $saldoCupo ?></label></a>
                         </li>
                         <li class="list-group-item">
                             <b>Contacto</b> <a class="float-right"><label id="lbl_contacto"><?= $data['Tienda']['ContactoTienda'] ?></label></a>

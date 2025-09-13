@@ -336,8 +336,9 @@ function sessionStart()
 
     require_once("Controllers/Salida.php");
 
-    // 4. Control de inactividad
-    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > TIMESESSION) {
+    // 4. Control de inactividad REGENERATE_INTERVAL
+    //if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > TIMESESSION) {
+    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > REGENERATE_INTERVAL) {// define en segundos (p.ej. 1800 = 30 min)
         // Borrar cookie
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
