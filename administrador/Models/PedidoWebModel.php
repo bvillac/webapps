@@ -144,7 +144,7 @@ class PedidoWebModel extends MysqlPedidos
                                     on c.art_id=b.art_id)
                             on a.pcli_id=b.pcli_id and b.pcli_est_log=1
                     where a.artie_est_log=1 and a.tie_id= :tie_id and b.cli_id = :cli_id ";
-            $sql .= " order by c.art_des_com desc limit " . LIMIT_SQL;
+            $sql .= " order by c.art_des_com desc " ;
             $resultado = $this->select_all($sql, [':tie_id' => $ids, ':cli_id' => $cli_id]);
 
             if ($resultado === false) {

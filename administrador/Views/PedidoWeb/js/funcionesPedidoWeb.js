@@ -175,7 +175,7 @@ function actualizarTabla() {
                     <td class="total">${(producto.cantidad * producto.precio).toFixed(N2decimal)}</td>
                     <td>
                         <img src="${finalImgPath}" alt="Producto" width="50" class="img-thumbnail"
-                            onclick="abrirGaleria(['${producto.codigo}_G-01.jpg', '${producto.codigo}_G-02.jpg', '${producto.codigo}_G-03.jpg'])">
+                            onclick="abrirGaleria(['${producto.codigo}_G-01.jpg'])">
                     </td>
                 `;
                 tbody.appendChild(row);

@@ -31,9 +31,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${producto.des_com}</td>
                         <td>
                             <img src="${finalImgPath}" alt="Producto" width="50" class="img-thumbnail"
-                                onclick="abrirGaleria(['${producto.cod_art}_G-01.jpg', '${producto.cod_art}_G-02.jpg', '${producto.cod_art}_G-03.jpg'])">
+                                onclick="abrirGaleria(['${producto.cod_art}_G-01.jpg'])">
                         </td>
                     `;
+                    //onclick="abrirGaleria(['${producto.cod_art}_G-01.jpg', '${producto.cod_art}_G-02.jpg', '${producto.cod_art}_G-03.jpg'])">
                     tbody.appendChild(row);
     
                     // Recuperar el checkbox recién agregado
