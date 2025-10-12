@@ -4,22 +4,15 @@ adminMenu($data);
 //filelang(Setlanguage,"general") 
 require_once "Views/PedidoWeb/Modals/modalGaleria.php";
 //putMessageLogFile($data);
-$nombretienda=htmlspecialchars($data['CabPed'][0]['nombretienda'], ENT_QUOTES, 'UTF-8');
-$nombreCliente=$data['Cliente']['Nombre'];
+$nombretienda = htmlspecialchars($data['CabPed'][0]['nombretienda'], ENT_QUOTES, 'UTF-8');
+$nombreCliente = $data['Cliente']['Nombre'];
 $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTienda'] ?? 0);
-
-   //guardarProductosEnStorage(data.data.Items);
-   //         actualizarTabla();
-
 ?>
 
 
 <script>
-    //limpiarSessionStorage();
     const productos = <?php echo json_encode($data['Items']); ?>;
     sessionStorage.setItem('dts_PrecioListaItems', JSON.stringify(productos));
-    //guardarProductosEnStorage(productos);
-    //actualizarTabla();
 </script>
 <div id="contentAjax"></div>
 <main class="app-content">
@@ -40,7 +33,7 @@ $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTiend
         <input type="hidden" id="txth_ids" name="txth_ids" value="<?= (int) $data['CabPed'][0]['numero'] ?>">
         <input type="hidden" id="txth_art_id" name="txth_art_id" value="">
         <input type="hidden" id="txth_cod_art" name="txth_cod_art" value="0">
-         <input type="hidden" id="txth_tie_id" name="txth_tie_id" value="<?= (int) $data['CabPed'][0]['tieid'] ?>">
+        <input type="hidden" id="txth_tie_id" name="txth_tie_id" value="<?= (int) $data['CabPed'][0]['tieid'] ?>">
 
         <div class="col-md-3">
             <div class="card card-primary">
@@ -49,7 +42,7 @@ $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTiend
                     <h5 class="card-title">Tienda: <?= $nombretienda ?></h5>
                 </div>
 
-             
+
 
                 <div class="card-body">
                     <strong><i class="fas fa-map-marker-alt mr-1"></i> Información de Tienda</strong>
@@ -86,11 +79,15 @@ $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTiend
             <div class="tile">
                 <div id="list_tables">
                     <h3 class="tile-title">Pedido N°:<?= $data['CabPed'][0]['numero'] ?></h3>
-                    
+
                 </div>
                 <br>
 
-            
+                <div id="alerta-data" class="alert alert-info alert-dismissible fade show" role="alert"
+                    style="position: sticky; top: 0; z-index: 1000;">
+                    <i class="fa fa-info-circle me-2"></i>
+                    <strong>Información:</strong> Para el cálculo del presupuesto usado solo se considera únicamente documentos autorizados (estado "Autorizado").
+                </div>
 
                 <div id="alerta-cupo" class="alert alert-dismissible fade show d-none" role="alert"
                     style="position: sticky; top: 0; z-index: 1000;">
@@ -118,7 +115,7 @@ $saldoCupo = floatval($data['Tienda']['Cupo'] ?? 0) - floatval($data['SaldoTiend
 
 
 
-                    
+
 
                 </div>
                 <br>

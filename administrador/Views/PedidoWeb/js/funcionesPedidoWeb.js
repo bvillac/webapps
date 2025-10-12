@@ -2,6 +2,7 @@ let tableTienda;
 const tGrid = "TbG_ListaItems";
 const storageKey = "dts_PrecioListaItems";
 let alertaTimeout;
+let modoAccion; // Variable para almacenar el modo (Nuevo o Editar)
 
 document.addEventListener('DOMContentLoaded', function () {
     tableTienda = $('#tableTienda').dataTable({
@@ -58,6 +59,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 $(document).ready(function () {
     $('#cmb_tienda').selectpicker();
+    
+    // Inicializar estado del botón guardar
+    deshabilitarBotonGuardar();
+    
     //Nueva Orden
     $("#btn_nuevopedido").click(function () {
         //eliminarStores();
@@ -73,11 +78,13 @@ $(document).ready(function () {
     });
 
     $('#cmb_tienda').change(function () {
-        if ($('#cmb_tiendas').val() != 0) {
+        const tiendaSeleccionada = $(this).val();
+        if (tiendaSeleccionada && tiendaSeleccionada !== '0' && tiendaSeleccionada !== '') {
             obtenerInfoTienda();
         } else {
-            //$('#txt_numero_horas').val("0");
-            swal("Error", "Selecione una Tienda", "error");
+            limpiarDatosTienda();
+            deshabilitarBotonGuardar();
+            mostrarAlertaCupo("Debe seleccionar una tienda para continuar.", "warning");
         }
     });
 
@@ -91,32 +98,62 @@ $(document).ready(function () {
 
 function obtenerInfoTienda() {
     let idsTienda = $('#cmb_tienda').val();
+    
+    // Validar que se haya seleccionado una tienda
+    if (!idsTienda || idsTienda === '0' || idsTienda === '') {
+        swal("Error", "Debe seleccionar una tienda", "error");
+        // Limpiar datos y deshabilitar botón guardar
+        limpiarDatosTienda();
+        deshabilitarBotonGuardar();
+        return;
+    }
+    
     let url = base_url + '/pedidoWeb/retornarDatosTienda';
     var metodo = 'POST';
     var datos = { ids: idsTienda };
+    
     peticionAjaxSSL(url, metodo, datos, function (data) {
-        data.data.SaldoTienda
         if (data.status) {
             let saldoCupo = parseFloat(data.data.Cupo) - parseFloat(data.data.SaldoTienda);
+            
+            // Actualizar elementos de la interfaz
             $('#lbl_cupo').text(data.data.Cupo);
             $('#lbl_contacto').text(data.data.ContactoTienda);
             $('#lbl_direccion').text(data.data.Direccion);
             $('#lbl_telefono').text(data.data.Telefono);
             $('#lbl_cupoSaldo').text(saldoCupo.toFixed(N2decimal));
             $('#lbl_cupoUsado').text((data.data.SaldoTienda).toFixed(N2decimal));
-            guardarProductosEnStorage(data.data.Items);
-            actualizarTabla();
-
-            //eliminarClavesSessionStorage('seleccionados');
+            
+            // Verificar si hay saldo disponible
+            if (saldoCupo <= 0) {
+                mostrarAlertaCupo("No tiene cupo disponible. No podrá realizar pedidos.", "danger");
+                deshabilitarBotonGuardar();
+            } else {
+                habilitarBotonGuardar();
+                mostrarAlertaCupo(`Cupo disponible: $${saldoCupo.toFixed(N2decimal)}`, "info");
+            }
+            
+            // Guardar productos y actualizar tabla solo si hay items
+            if (data.data.Items && data.data.Items.length > 0) {
+                guardarProductosEnStorage(data.data.Items);
+                actualizarTabla();
+            } else {
+                mostrarAlertaCupo("No hay productos disponibles para esta tienda.", "warning");
+                limpiarTablaProductos();
+            }
 
         } else {
             swal("Atención", data.msg, "error");
+            limpiarDatosTienda();
+            deshabilitarBotonGuardar();
         }
 
     }, function (jqXHR, textStatus, errorThrown) {
         console.log('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+        swal("Error", "Error al conectar con el servidor", "error");
+        limpiarDatosTienda();
+        deshabilitarBotonGuardar();
     });
-
 }
 
 function obtenerProductosGuardados() {
@@ -245,20 +282,27 @@ function actualizarTotalGeneral() {
     }
 
     // Comparar contra el cupo asignado
-    //const lblCupo = document.getElementById("lbl_cupo");//Otorgado
     const lblCupo = document.getElementById("lbl_cupoSaldo");//Saldo a la fecha
-    const cupoOtorgado = parseFloat(lblCupo?.textContent || 0);
+    const cupoDisponible = parseFloat(lblCupo?.textContent || 0);
 
-    if (totalGeneral > cupoOtorgado) {
-        const excedido = (totalGeneral - cupoOtorgado).toFixed(N2decimal);
-        mostrarAlertaCupo(`Has sobrepasado el cupo asignado en <strong>$${excedido}</strong>.`, "danger");
+    if (totalGeneral > cupoDisponible) {
+        const excedido = (totalGeneral - cupoDisponible).toFixed(N2decimal);
+        mostrarAlertaCupo(`Has sobrepasado el cupo disponible en <strong>$${excedido}</strong>.`, "danger");
+        deshabilitarBotonGuardar();
 
-    } else if (totalGeneral === cupoOtorgado) {
-        mostrarAlertaCupo(`Has alcanzado exactamente tu cupo asignado.`, "warning");
+    } else if (totalGeneral === cupoDisponible && cupoDisponible > 0) {
+        mostrarAlertaCupo(`Has alcanzado exactamente tu cupo disponible.`, "warning");
+        habilitarBotonGuardar();
 
-    } else {
-        const restante = (cupoOtorgado - totalGeneral).toFixed(N2decimal);
+    } else if (cupoDisponible > 0) {
+        const restante = (cupoDisponible - totalGeneral).toFixed(N2decimal);
         mostrarAlertaCupo(`Tienes un cupo disponible de <strong>$${restante}</strong>.`, "info");
+        habilitarBotonGuardar();
+        
+    } else {
+        // Sin cupo disponible
+        mostrarAlertaCupo(`No tienes cupo disponible para realizar pedidos.`, "danger");
+        deshabilitarBotonGuardar();
     }
 }
 
@@ -338,11 +382,10 @@ function guardarPedido() {
             mostrarAlertaCupo("Debe seleccionar una tienda antes de guardar.", "warning");
             return;
         }
-    }else {
+    } else {
         // Si es edición, obtenemos el ID de la tienda del campo oculto
         tiendaSeleccionada = document.querySelector('#txth_tie_id').value;
     }
-
 
     const productos = obtenerProductosGuardados(); // Función que retorna el array original
     const filas = document.querySelectorAll(`#${tGrid} tbody tr`);
@@ -367,11 +410,17 @@ function guardarPedido() {
         }
     });
 
-    const cupoOtorgado = parseFloat(document.getElementById("lbl_cupo").textContent) || 0;
+    // Validar cupo disponible
+    const cupoDisponible = parseFloat(document.getElementById("lbl_cupoSaldo").textContent) || 0;
 
-    if (totalGeneral > cupoOtorgado) {
-        const excedido = (totalGeneral - cupoOtorgado).toFixed(N2decimal);
-        mostrarAlertaCupo(`No se puede guardar. El total supera el cupo en $${excedido}.`, "danger");
+    if (cupoDisponible <= 0) {
+        mostrarAlertaCupo("No tiene cupo disponible. No se puede guardar el pedido.", "danger");
+        return;
+    }
+
+    if (totalGeneral > cupoDisponible) {
+        const excedido = (totalGeneral - cupoDisponible).toFixed(N2decimal);
+        mostrarAlertaCupo(`No se puede guardar. El total supera el cupo disponible en $${excedido}.`, "danger");
         return;
     }
 
@@ -379,6 +428,7 @@ function guardarPedido() {
         mostrarAlertaCupo("Debe ingresar al menos una cantidad válida mayor a cero para guardar.", "warning");
         return;
     }
+
     let url = base_url + '/pedidoWeb/ingresarPedidoTemp';
     var metodo = 'POST';
     var dataPost = {
@@ -388,6 +438,7 @@ function guardarPedido() {
         productos: productosModificados,
         total: totalGeneral
     };
+    
     peticionAjaxSSL(url, metodo, dataPost, function (data) {
         // Manejar el éxito de la solicitud aquí
         if (data.status) {
@@ -399,8 +450,8 @@ function guardarPedido() {
     }, function (jqXHR, textStatus, errorThrown) {
         // Manejar el error de la solicitud aquí
         console.log('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
+        swal("Error", "Error al procesar el pedido", "error");
     });
-
 }
 
 
@@ -478,6 +529,64 @@ function fntAutorizarPedido(ids) {
     });
 
 }
+
+// Funciones auxiliares para manejar el estado de la interfaz
+function deshabilitarBotonGuardar() {
+    const btnGuardar = document.getElementById("btnGuardar");
+    if (btnGuardar) {
+        btnGuardar.disabled = true;
+        btnGuardar.classList.add('disabled');
+        btnGuardar.setAttribute('title', 'No se puede guardar: sin cupo disponible o sin tienda seleccionada');
+    }
+}
+
+function habilitarBotonGuardar() {
+    const btnGuardar = document.getElementById("btnGuardar");
+    if (btnGuardar) {
+        btnGuardar.disabled = false;
+        btnGuardar.classList.remove('disabled');
+        btnGuardar.removeAttribute('title');
+    }
+}
+
+function limpiarDatosTienda() {
+    $('#lbl_cupo').text('0.00');
+    $('#lbl_contacto').text('');
+    $('#lbl_direccion').text('');
+    $('#lbl_telefono').text('');
+    $('#lbl_cupoSaldo').text('0.00');
+    $('#lbl_cupoUsado').text('0.00');
+    limpiarTablaProductos();
+    ocultarAlertaCupo();
+}
+
+function limpiarTablaProductos() {
+    const tbody = document.querySelector(`#${tGrid} tbody`);
+    if (tbody) {
+        tbody.innerHTML = "";
+    }
+    sessionStorage.removeItem(storageKey);
+    
+    // Limpiar total general
+    const lblTotalGeneral = document.getElementById("lblTotalGeneral");
+    if (lblTotalGeneral) {
+        lblTotalGeneral.textContent = "Total General: 0.00";
+    }
+}
+
+// Si se abre la pantalla en modo "Nuevo" o "Actualizar", validar y cargar items según el botón.
+document.addEventListener('DOMContentLoaded', function () {
+    const btnText = document.getElementById('btnText');
+    modoAccion = btnText ? btnText.textContent.trim().toLowerCase() : '';
+    if (modoAccion === 'guardar') {
+        limpiarDatosTienda();
+        deshabilitarBotonGuardar();
+
+    }else if (modoAccion === 'actualizar') {
+
+    }
+
+});
 
 
 

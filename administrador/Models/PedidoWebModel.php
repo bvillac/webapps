@@ -171,37 +171,6 @@ class PedidoWebModel extends MysqlPedidos
         try {
             $con->beginTransaction();
 
-            // Verificar si ya existe una cabecera de pedido activa
-            /*$sqlCheckCab = "SELECT tcped_id FROM {$this->db_name}.temp_cab_pedido
-                        WHERE tie_id = :tie_id AND cli_id = :cli_id AND tcped_est_log = 1";
-            $stmtCheckCab = $con->prepare($sqlCheckCab);
-            $stmtCheckCab->execute([
-                ":tie_id" => $tienda_id,
-                ":cli_id" => $cliId
-            ]);
-            $cabeceraExistente = $stmtCheckCab->fetch(PDO::FETCH_ASSOC);
-
-            if ($cabeceraExistente) {
-                $idcab = $cabeceraExistente['tcped_id'];
-
-                // Actualizar total en la cabecera
-                $sqlUpdateCab = "UPDATE {$this->db_name}.temp_cab_pedido
-                             SET tcped_total = :total, tcped_fec_mod = CURRENT_TIMESTAMP
-                             WHERE tcped_id = :id";
-                $stmtUpdateCab = $con->prepare($sqlUpdateCab);
-                $stmtUpdateCab->execute([
-                    ":total" => $total,
-                    ":id" => $idcab
-                ]);
-            } else {
-                // Insertar nueva cabecera
-                $request = $this->InsertarCabListPedTemp($con, $tienda_id, $utieId, $cliId, $total, $Usuario);
-                if ($request["status"] == false) {
-                    return ["status" => false, "numero" => 0, "message" => $request["message"]];
-                }
-                $idcab = $request["numero"];
-            }*/
-
             // Insertar nueva cabecera
             $request = $this->InsertarCabListPedTemp($con, $tienda_id, $utieId, $cliId, $total, $Usuario);
             if ($request["status"] == false) {
@@ -213,58 +182,6 @@ class PedidoWebModel extends MysqlPedidos
             foreach ($productos as $producto) {
                 if ((float) $producto['cantidad'] <= 0)
                     continue;
-
-                /*$sqlCheckDet = "SELECT tdped_id FROM {$this->db_name}.temp_det_pedido
-                            WHERE tcped_id = :tcped_id AND art_id = :art_id AND cli_id = :cli_id";
-                $stmtCheckDet = $con->prepare($sqlCheckDet);
-                $stmtCheckDet->execute([
-                    ":tcped_id" => $idcab,
-                    ":art_id" => $producto['art_id'],
-                    ":cli_id" => $cliId
-                ]);
-                $detalleExistente = $stmtCheckDet->fetch(PDO::FETCH_ASSOC);
-
-                if ($detalleExistente) {
-                    // Actualizar detalle existente
-                    $sqlUpdateDet = "UPDATE {$this->db_name}.temp_det_pedido SET
-                                 tdped_can_ped = :cantidad,
-                                 tdped_p_venta = :precio,
-                                 tdped_t_venta = :total,
-                                 tdped_i_m_iva = :iva,
-                                 tdped_est_log = 1,
-                                 tdped_fec_mod = CURRENT_TIMESTAMP
-                                 WHERE tdped_id = :tdped_id";
-                    $stmtUpdateDet = $con->prepare($sqlUpdateDet);
-                    $stmtUpdateDet->execute([
-                        ":cantidad" => $producto['cantidad'],
-                        ":precio" => $producto['precio'],
-                        ":total" => $producto['total'],
-                        ":iva" => $producto['iva'],
-                        ":tdped_id" => $detalleExistente['tdped_id']
-                    ]);
-                } else {
-                    // Insertar nuevo detalle
-                    $sqlInsert = "INSERT INTO {$this->db_name}.temp_det_pedido (
-                                tcped_id, artie_id, art_id, tdped_can_ped, tdped_p_venta,
-                                tdped_t_venta, tdped_i_m_iva, tdped_est_aut, tdped_observa,
-                                tdped_est_log, tdped_fec_cre, cli_id, tie_id
-                              ) VALUES (
-                                :tcped_id, :artie_id, :art_id, :cantidad, :precio,
-                                :total, :iva, 1, '', 1, CURRENT_TIMESTAMP, :cli_id, :tie_id
-                              )";
-                    $stmtInsert = $con->prepare($sqlInsert);
-                    $stmtInsert->execute([
-                        ":tcped_id" => $idcab,
-                        ":artie_id" => $producto['artie_id'],
-                        ":art_id" => $producto['art_id'],
-                        ":cantidad" => $producto['cantidad'],
-                        ":precio" => $producto['precio'],
-                        ":total" => $producto['total'],
-                        ":iva" => $producto['iva'],
-                        ":cli_id" => $cliId,
-                        ":tie_id" => $tienda_id
-                    ]);
-                }*/
 
                 // Insertar nuevo detalle
                 $sqlInsert = "INSERT INTO {$this->db_name}.temp_det_pedido (
@@ -342,15 +259,18 @@ class PedidoWebModel extends MysqlPedidos
     }
 
     public function recuperarSaldoTienda(int $idTienda, int $idCliente): float
-    {
-        $sql = "SELECT SUM(tcped_total) AS Total 
-                FROM {$this->db_name}.temp_cab_pedido 
-                WHERE cli_id = :cli_id 
+    {   //AND tcped_est_log <> 4
+        // Recuperar saldo de la tienda para el cliente y mes actual sin incluir anulados
+        $sql = "SELECT COALESCE(SUM(tcped_total), 0) AS Total
+                FROM {$this->db_name}.temp_cab_pedido
+                WHERE cli_id = :cli_id
                   AND tie_id = :tie_id
+                  AND tcped_est_log = 2
                   AND MONTH(tcped_fec_cre) = MONTH(CURRENT_DATE())
                   AND YEAR(tcped_fec_cre) = YEAR(CURRENT_DATE())";
 
         $rows = $this->select_all($sql, [':cli_id' => $idCliente, ':tie_id' => $idTienda]);
+        //putMessageLogFile("SQL recuperarSaldoTienda: " . $sql . " Params: " . json_encode([':cli_id' => $idCliente, ':tie_id' => $idTienda]) . " Result: " . json_encode($rows));
 
         if (!empty($rows) && isset($rows[0]['Total'])) {
             return (float) $rows[0]['Total'];

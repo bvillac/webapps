@@ -2,6 +2,7 @@
 
 use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 use Spipu\Html2Pdf\Html2Pdf;
+
 require 'vendor/autoload.php';
 require_once("Models/TiendaModel.php");
 require_once("Models/ClientePedidoModel.php");
@@ -17,7 +18,6 @@ class PedidoWeb extends Controllers
         getPermisos();
         $this->utie_id = retornarDataSesion("Utie_id");
         $this->valFechas = (new TiendaModel())->validarFechasTienda($this->utie_id);
-
     }
 
 
@@ -84,8 +84,6 @@ class PedidoWeb extends Controllers
         $data['Cliente'] = (new ClientePedidoModel())->consultarDatosId($cliIds);
         $data['nombreCliente'] = htmlspecialchars($data['Cliente']['Nombre'], ENT_QUOTES, 'UTF-8');
         $this->views->getView($this, "nuevo", $data);
-
-
     }
 
     public function retornarDatosTienda()
@@ -124,6 +122,18 @@ class PedidoWeb extends Controllers
             if (empty($data['productos']) || empty($data['accion'])) {
                 $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
             } else {
+                //putMessageLogFile("Datos recibidos en ingresarPedidoTemp: " . json_encode($data));
+                $cliIds = retornarDataSesion("Cli_Id");
+                $SaldoTienda = $this->model->recuperarSaldoTienda($data['tienda_id'], $cliIds);
+                // validar cupo/saldo de tienda
+                $totalPedido = isset($data['total']) ? floatval(str_replace([',', ' '], ['.', ''], $data['total'])) : 0.0;
+                if ($SaldoTienda < $totalPedido) {
+                    $arrResponse = array('status' => false, 'msg' => 'El total del pedido excede el saldo disponible de la tienda. Saldo disponible: ' . formatMoney($SaldoTienda, 2));
+                    echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+                    exit();
+                }
+                //putMessageLogFile("Saldo de tienda recuperado: " . json_encode($SaldoTienda));
+
                 $datos = $data['productos'];
                 $idTienda = $data['tienda_id'];
                 $total = $data['total'];
@@ -216,7 +226,6 @@ class PedidoWeb extends Controllers
                 logFileSystem("Error en consutla anularPedidoTemp: " . $e->getMessage(), "ERROR");
                 exit;
             }
-
         }
         exit();
     }
@@ -226,7 +235,7 @@ class PedidoWeb extends Controllers
         if (!is_numeric($id))
             exit("Dato no válido");
         checkPermission('r', 'pedidoWeb');
-        
+
         $cliIds = retornarDataSesion("Cli_Id");
         $data['cabData'] = $this->model->cabeceraPedidoTemp($id);
         $data['detData'] = $this->model->detallePedidoTemp($id);
@@ -235,7 +244,7 @@ class PedidoWeb extends Controllers
         $tie_id = $data['cabData'][0]['tieid'];
         $data['Tienda'] = (new TiendaModel())->consultarDatosId($tie_id);
         $Server = (new EmpresaModel())->consultarEmpresaServerMail(retornarDataSesion('Emp_Id'));
-        $data['correo_admin']=$Server["correo_admin"];
+        $data['correo_admin'] = $Server["correo_admin"];
         ob_end_clean();
         //$html =getFile("Template/Modals/ordenCompraPDF",$data);
         $html = getFile("PedidoWeb/pedidoPDF", $data);
@@ -245,6 +254,57 @@ class PedidoWeb extends Controllers
     }
 
 
+
+
+    private function validarSaldoTienda($ids)
+    {
+        $result = [
+            'Estado' => true,
+            'Saldo'  => 0
+        ];
+
+        // Obtener cabecera del pedido temporal
+        $cabData = $this->model->cabeceraPedidoTemp($ids);
+        if (empty($cabData) || !isset($cabData[0]['tieid'])) {
+            return ['Estado' => false, 'Saldo' => 0, 'Mensaje' => 'Pedido no encontrado.'];
+        }
+
+        $clienteId = retornarDataSesion("Cli_Id");
+        $tiendaId  = $cabData[0]['tieid'];
+
+        // Recuperar datos de la tienda
+        $tienda = (new TiendaModel())->consultarDatosId($tiendaId);
+        $cupo   = floatval($tienda['Cupo'] ?? 0);
+
+        // Recuperar saldo actual
+        $saldoActual = floatval($this->model->recuperarSaldoTienda($tiendaId, $clienteId));
+
+        // Calcular total del pedido
+        $totalPedido = isset($cabData[0]['total'])
+            ? floatval(str_replace([',', ' '], ['.', ''], $cabData[0]['total']))
+            : 0.0;
+
+        // Validar disponibilidad de cupo
+        $nuevoSaldo = $saldoActual + $totalPedido;
+
+        if ($nuevoSaldo > $cupo) {
+            $saldoDisponible = $cupo - $saldoActual;
+            $result['Estado'] = false;
+            $result['Saldo']  = $saldoDisponible;
+            $result['Mensaje'] = "Pedido NO autorizado: El total del pedido excede el cupo disponible. Saldo disponible: " . formatMoney($saldoDisponible, 2);
+            return $result;
+        }
+
+        $result['Saldo'] = $cupo - $nuevoSaldo;
+        $result['Mensaje'] = "Pedido autorizado. Saldo restante: " . formatMoney($result['Saldo'], 2);
+
+        return $result;
+    }
+
+
+
+
+
     public function autorizarPedidoTemp()
     {
         if ($_POST) {
@@ -252,10 +312,23 @@ class PedidoWeb extends Controllers
                 checkPermission('r', 'pedidoWeb');
                 $data = recibirData($_POST['data']);
                 $ids = isset($data['ids']) ? filter_var($data['ids'], FILTER_VALIDATE_INT) : 0;
+
+                // Validar saldo de tienda usando el método reutilizable
+                $validacion = $this->validarSaldoTienda($ids);
+                if (!$validacion['Estado']) {
+                    $msg = $validacion['Mensaje'] ?? 'El pedido excede el cupo disponible.';
+                    echo json_encode([
+                        'status' => false,
+                        'msg' => $msg,
+                        'saldo' => $validacion['Saldo'] ?? 0
+                    ], JSON_UNESCAPED_UNICODE);
+                    exit();
+                }
+
                 $request = $this->model->autorizarPedidoTemp($ids);
                 if ($request["status"]) {
                     $numeroPedido = $request["numero"];
-                    $restultado=$this->enviarCorreoNotificacion($ids, $numeroPedido, "Autorización de pedido");
+                    //$restultado = $this->enviarCorreoNotificacion($ids, $numeroPedido, "Autorización de pedido");
                     $arrResponse = array('status' => true, 'msg' => 'Registro Autorizado correctamente');
                 } else {
                     $arrResponse = array('status' => false, 'msg' => 'Error al Autorizar el Registro.');
@@ -266,12 +339,11 @@ class PedidoWeb extends Controllers
                 logFileSystem("Error en consutla autorizarPedidoTemp: " . $e->getMessage(), "ERROR");
                 exit;
             }
-
         }
         exit();
     }
 
-    private function enviarCorreoNotificacion(int $idSolicitud, $idPedido,string $asunto)
+    private function enviarCorreoNotificacion(int $idSolicitud, $idPedido, string $asunto)
     {
         //Recupera infor de CabTemp  para enviar info al supervisor de tienda
         $CabPed = $this->model->sendMailPedidosTemp($idSolicitud);
@@ -283,20 +355,20 @@ class PedidoWeb extends Controllers
         $TotalPedido = formatMoney($CabPed[0]["valorneto"], 2);
 
         $CabPed[0]["web_empresa"] = $Server["dominio_empresa"];
-        $CabPed[0]["empresa"] = $nombreCliente;//TITULO_EMPRESA;
+        $CabPed[0]["empresa"] = $nombreCliente; //TITULO_EMPRESA;
         $CabPed[0]["numero_pedido"] = $idPedido;
         $CabPed[0]["base_url"] = BASE_URL;
 
         $htmlMail = getFile("Template/Email/email_notificaPedido", $CabPed[0]);
 
         $arrParams = [
-            'destinatario' => $CabPed[0]["correopersona"],//'byron_villacresesf@hotmail.com',
+            'destinatario' => $CabPed[0]["correopersona"], //'byron_villacresesf@hotmail.com',
             'asunto' => "({$nombreCliente}) {$TotalPedido} Confirmación de pedido",
             'nombreEmpresa' => $Server["nombre_mostrar"],
             'no_responder' => $Server["mail"],
             'html' => $htmlMail,
-            'pdf' => '',//$pdfPath,
-            'cc' => $Server["correo_admin"],//copia
+            'pdf' => '', //$pdfPath,
+            'cc' => $Server["correo_admin"], //copia
             //'bcc' => $Server["correo_admin"],//copia oculta
             'borrarPDF' => true
         ];
@@ -308,17 +380,9 @@ class PedidoWeb extends Controllers
             base64_decode($Server["clave"])
         );
         $resultado = $mailer->enviarNotificacion($arrParams);
-         if (!$resultado["status"]) {
-            logFileSystem("Error al enviarNotificacion Pedido: {$idPedido}-{$nombreCliente}" , "ERROR");
-         }
+        if (!$resultado["status"]) {
+            logFileSystem("Error al enviarNotificacion Pedido: {$idPedido}-{$nombreCliente}", "ERROR");
+        }
         return $resultado; // Retorna el resultado del envío de correo
     }
-
-
-
-
-
-
-
-
 }
