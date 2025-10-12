@@ -5,7 +5,8 @@ adminMenu($data);
 require_once "Views/PedidoWeb/Modals/modalGaleria.php";
 ?>
 <script>
-    //const productos = <?php //echo json_encode($data['ClienteProducto']); ?>;
+    //const productos = <?php //echo json_encode($data['ClienteProducto']); 
+                        ?>;
     //sessionStorage.setItem('dts_precioTienda', JSON.stringify(productos));
 </script>
 <div id="contentAjax"></div>
@@ -83,11 +84,15 @@ require_once "Views/PedidoWeb/Modals/modalGaleria.php";
             <div class="tile">
                 <div id="list_tables">
                     <h3 class="tile-title">Pedido N°:</h3>
-                    
+
                 </div>
                 <br>
 
-            
+                <div id="alerta-data" class="alert alert-info alert-dismissible fade show" role="alert"
+                    style="position: sticky; top: 0; z-index: 1000;">
+                    <i class="fa fa-info-circle me-2"></i>
+                    <strong>Información:</strong> Para el cálculo del presupuesto usado solo se considera únicamente documentos autorizados (estado "Autorizado").
+                </div>
 
                 <div id="alerta-cupo" class="alert alert-dismissible fade show d-none" role="alert"
                     style="position: sticky; top: 0; z-index: 1000;">
@@ -115,7 +120,7 @@ require_once "Views/PedidoWeb/Modals/modalGaleria.php";
 
 
 
-                    
+
 
                 </div>
                 <br>
