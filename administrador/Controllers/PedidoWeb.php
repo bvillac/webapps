@@ -328,7 +328,7 @@ class PedidoWeb extends Controllers
                 $request = $this->model->autorizarPedidoTemp($ids);
                 if ($request["status"]) {
                     $numeroPedido = $request["numero"];
-                    $restultado = $this->enviarCorreoNotificacion($ids, $numeroPedido, "Autorización de pedido");
+                    //$restultado = $this->enviarCorreoNotificacion($ids, $numeroPedido, "Autorización de pedido");
                     $arrResponse = array('status' => true, 'msg' => 'Registro Autorizado correctamente');
                 } else {
                     $arrResponse = array('status' => false, 'msg' => 'Error al Autorizar el Registro.');

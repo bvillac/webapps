@@ -31,13 +31,17 @@ document.addEventListener('DOMContentLoaded', function () {
             { 'className': "textleft", "targets": [2] },
             { 'className': "textleft", "targets": [3] },
             { 'className': "textleft", "targets": [4] },
-            { 'className': "textcenter", "targets": [5] },
+            { 'className': "textcenter", "targets": [5], "render": function(data, type, row) {
+                    var val = parseFloat(data);
+                    return isNaN(val) ? data : val.toFixed(2);
+                }
+            },
             { 'className': "textcenter", "targets": [6] },
             { 'className': "textcenter", "targets": [7] }
         ],
         'dom': 'lBfrtip',
         'buttons': [],
-        "resonsieve": "true",
+        "responsive": true,
         "bDestroy": true,
         "iDisplayLength": numPaginado,//Numero Items Retornados
         "order": [[1, orderBy]]  //Orden por defecto 1 columna
@@ -183,7 +187,7 @@ function filtrarTabla() {
 
 
 
-function actualizarTabla() {
+/*function actualizarTabla() {
     const tbody = document.querySelector(`#${tGrid} tbody`);
     tbody.innerHTML = "";
     const productos = obtenerProductosGuardados();
@@ -226,7 +230,107 @@ function actualizarTabla() {
             }
         });
     });
+}*/
+
+/*function actualizarTabla() {
+    const tbody = document.querySelector(`#${tGrid} tbody`);
+    tbody.innerHTML = "";
+    const productos = obtenerProductosGuardados();
+    let imgDefault = "/imagenes/no_image.jpg"; // Imagen por defecto si no existe
+
+    productos.forEach((producto, index) => {
+        let imgPath = `/imagenes/${producto.codigo}_G-01.jpg`;
+
+        verificarImagen(imgPath, (existe) => {
+            let finalImgPath = existe ? imgPath : imgDefault;
+
+            try {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${producto.codigo}</td>
+                    <td>${producto.nombre}</td>
+                    <td>
+                        <input type="text" 
+                            value="${parseInt(producto.cantidad)}" 
+                            inputmode="numeric" pattern="[0-9]*"
+                            data-index="${index}" 
+                            class="form-control text-end cantidad-input" 
+                            style="width: auto; min-width: 30px; text-align: right;" />
+                    </td>
+                    <td class="precio">${parseFloat(producto.precio).toFixed(N2decimal)}</td>
+                    <td class="total">${(producto.cantidad * producto.precio).toFixed(N2decimal)}</td>
+                    <td>
+                        <img src="${finalImgPath}" alt="Producto" width="50" class="img-thumbnail"
+                            onclick="abrirGaleria(['${producto.codigo}_G-01.jpg'])">
+                    </td>
+                `;
+                tbody.appendChild(row);
+            } catch (error) {
+                console.log("Error al agregar la fila a la tabla:", error);
+            }
+
+            if (index === productos.length - 1) {
+                asignarEventosCantidad();
+                actualizarTotalGeneral();
+            }
+        });
+    });
+}*/
+
+async function actualizarTabla() {
+    const tbody = document.querySelector(`#${tGrid} tbody`);
+    tbody.innerHTML = "";
+
+    const productos = obtenerProductosGuardados();
+    const imgDefault = "/imagenes/no_image.jpg"; // Imagen por defecto
+
+    for (const [index, producto] of productos.entries()) {
+        const imgPath = `/imagenes/${producto.codigo}_G-01.jpg`;
+        const existe = await verificarImagenAsync(imgPath);
+        const finalImgPath = existe ? imgPath : imgDefault;
+
+        try {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${producto.codigo}</td>
+                <td>${producto.nombre}</td>
+                <td>
+                    <input type="text" 
+                            value="${parseInt(producto.cantidad)}" 
+                            inputmode="numeric" pattern="[0-9]*"
+                            data-index="${index}" 
+                            class="form-control text-end cantidad-input" 
+                            style="width: auto; min-width: 30px; text-align: right;" />
+                </td>
+                <td class="precio text-end">${parseFloat(producto.precio).toFixed(N2decimal)}</td>
+                <td class="total text-end">${(producto.cantidad * producto.precio).toFixed(N2decimal)}</td>
+                <td class="text-center">
+                    <img src="${finalImgPath}" alt="Producto" width="50" height="50" 
+                        class="img-thumbnail" 
+                        style="cursor: pointer;"
+                        onclick="abrirGaleria(['${producto.codigo}_G-01.jpg'])">
+                </td>
+            `;
+            tbody.appendChild(row);
+        } catch (error) {
+            console.error("Error al agregar la fila a la tabla:", error);
+        }
+    }
+
+    // Asignar eventos una vez generada toda la tabla
+    asignarEventosCantidad();
+    actualizarTotalGeneral();
 }
+function verificarImagenAsync(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
+}
+
+
 
 function asignarEventosCantidad() {
     const inputs = document.querySelectorAll(".cantidad-input");
@@ -438,13 +542,27 @@ function guardarPedido() {
         productos: productosModificados,
         total: totalGeneral
     };
-    
+    deshabilitarBotonGuardar();
     peticionAjaxSSL(url, metodo, dataPost, function (data) {
         // Manejar el éxito de la solicitud aquí
-        if (data.status) {
+        if (data.status) {  
             swal("Pedido N°: " + data.numero, data.msg, "success");
+            deshabilitarBotonGuardar();
+            if (accion === 'Create') {
+                limpiarDatosTienda();
+                limpiarCombotienda();
+            } else {
+                // Si es edición, actualizar el campo oculto de tienda
+                limpiarTablaProductos();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+
+            
         } else {
             swal("Atención", data.msg, "error");
+            habilitarBotonGuardar();
         }
 
     }, function (jqXHR, textStatus, errorThrown) {
@@ -452,6 +570,16 @@ function guardarPedido() {
         console.log('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
         swal("Error", "Error al procesar el pedido", "error");
     });
+}
+
+function limpiarCombotienda() {
+    const cmbTienda = document.getElementById("cmb_tienda");
+    if (cmbTienda) {
+        cmbTienda.value = "0";
+        if (typeof $(cmbTienda).selectpicker === 'function') {
+            $(cmbTienda).selectpicker('refresh');
+        }
+    }
 }
 
 

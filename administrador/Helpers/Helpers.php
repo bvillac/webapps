@@ -692,7 +692,7 @@ function getPageData($title, $back)
     $data['page_tag']=$title;
     $data['page_name']=$title;
     $nombreEmpresa = $_SESSION['empresaData']['NombreComercial'] ?? TITULO_EMPRESA;
-    $data['page_title']="$title " . htmlspecialchars($nombreEmpresa, ENT_QUOTES, 'UTF-8') . "";
+    $data['page_title']="$title <small> " . htmlspecialchars($nombreEmpresa, ENT_QUOTES, 'UTF-8') . "</small>";
     $data['page_back']=$back;
     return $data;
 }

@@ -425,6 +425,31 @@ function buscarGenPersonaDni(codigo) {
     });
 }
 
+// Spinner controller
+var spinner = {
+  start: function() {
+    $("#spinner-overlay")
+      .removeClass("d-none")  // lo muestra
+      .css("display", "flex"); // asegura visibilidad
+  },
+  stop: function() {
+    $("#spinner-overlay")
+      .fadeOut(200, function() {
+        $(this).addClass("d-none").css("display", "none");
+      });
+  }
+};
+
+function procesar() {
+  spinner.start(); // Mostrar spinner
+
+  setTimeout(() => {
+    spinner.stop(); // Ocultar spinner
+    alert("Proceso completado");
+  }, 2000);
+}
+
+
 
 
 
