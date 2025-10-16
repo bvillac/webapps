@@ -622,7 +622,7 @@ function fntAnularPedido(ids) {
 
 }
 
-function fntAutorizarPedido(ids) {
+/*function fntAutorizarPedido(ids) {
     swal({
         title: "Autorizar Registro",
         text: "¿Realmente quiere Autorizar el Registro?",
@@ -656,7 +656,55 @@ function fntAutorizarPedido(ids) {
 
     });
 
+}*/
+
+function fntAutorizarPedido(ids) {
+    swal({
+        title: "Autorizar Registro",
+        text: "¿Realmente quiere autorizar el registro?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, Autorizar!",
+        cancelButtonText: "No, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: true,
+        showLoaderOnConfirm: true // muestra un loader nativo de sweetalert
+    }, function (isConfirm) {
+        if (!isConfirm) return;
+
+        // 🔒 Evitar múltiples clics deshabilitando el botón
+        const confirmButton = document.querySelector('.confirm');
+        if (confirmButton) confirmButton.disabled = true;
+
+        const url = base_url + '/pedidoWeb/autorizarPedidoTemp';
+        const metodo = 'POST';
+        const dataPost = { ids };
+
+        peticionAjaxSSL(url, metodo, dataPost, function (data) {
+            // ✅ Éxito
+            if (data.status) {
+                swal({
+                    title: "Autorizado!",
+                    text: data.msg,
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                tableTienda.api().ajax.reload(null, false);
+            } else {
+                swal("Atención", data.msg, "error");
+                if (confirmButton) confirmButton.disabled = false;
+            }
+
+        }, function (jqXHR, textStatus, errorThrown) {
+            // ❌ Error
+            console.error('Error en la solicitud:', textStatus, errorThrown);
+            swal("Error", "Ocurrió un error al autorizar el pedido.", "error");
+            if (confirmButton) confirmButton.disabled = false;
+        });
+    });
 }
+
 
 // Funciones auxiliares para manejar el estado de la interfaz
 function deshabilitarBotonGuardar() {
