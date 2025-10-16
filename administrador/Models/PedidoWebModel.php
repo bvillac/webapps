@@ -258,7 +258,7 @@ class PedidoWebModel extends MysqlPedidos
         }
     }
 
-    public function recuperarSaldoTienda(int $idTienda, int $idCliente): float
+    public function recuperarConsumoTienda(int $idTienda, int $idCliente): float
     {   //AND tcped_est_log <> 4
         // Recuperar saldo de la tienda para el cliente y mes actual sin incluir anulados
         $sql = "SELECT COALESCE(SUM(tcped_total), 0) AS Total
@@ -270,7 +270,7 @@ class PedidoWebModel extends MysqlPedidos
                   AND YEAR(tcped_fec_cre) = YEAR(CURRENT_DATE())";
 
         $rows = $this->select_all($sql, [':cli_id' => $idCliente, ':tie_id' => $idTienda]);
-        //putMessageLogFile("SQL recuperarSaldoTienda: " . $sql . " Params: " . json_encode([':cli_id' => $idCliente, ':tie_id' => $idTienda]) . " Result: " . json_encode($rows));
+        //putMessageLogFile("SQL recuperarConsumoTienda: " . $sql . " Params: " . json_encode([':cli_id' => $idCliente, ':tie_id' => $idTienda]) . " Result: " . json_encode($rows));
 
         if (!empty($rows) && isset($rows[0]['Total'])) {
             return (float) $rows[0]['Total'];

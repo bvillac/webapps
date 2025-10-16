@@ -98,7 +98,7 @@ class PedidoWeb extends Controllers
                 $arrData = (new TiendaModel())->consultarDatosId($ids);
                 $cliIds = retornarDataSesion("Cli_Id");
                 $arrData['Items'] = $this->model->listarItemsTiendas($ids, $cliIds);
-                $arrData['SaldoTienda'] = $this->model->recuperarSaldoTienda($ids, $cliIds);
+                $arrData['SaldoTienda'] = $this->model->recuperarConsumoTienda($ids, $cliIds);
                 if (empty($arrData)) {
                     $arrResponse = array('status' => false, 'msg' => 'La tienda no Existe.');
                 } else {
@@ -112,6 +112,31 @@ class PedidoWeb extends Controllers
 
 
 
+    private function consumoTiendaPedido($tiendaId,$totalPedido = 0)
+    {
+        $result = [
+            'Estado' => true,
+            'Saldo'  => 0
+        ];
+        $clienteId = retornarDataSesion("Cli_Id");
+        // Recuperar datos de la tienda
+        $tienda = (new TiendaModel())->consultarDatosId($tiendaId);
+        $cupo   = floatval($tienda['Cupo'] ?? 0);
+        // Recuperar consumo actual
+        $consumoActual = floatval($this->model->recuperarConsumoTienda($tiendaId, $clienteId));
+        // Validar disponibilidad de cupo
+        $nuevoSaldo = $consumoActual + $totalPedido;
+        if ($nuevoSaldo > $cupo) {
+            $saldoDisponible = $cupo - $consumoActual;
+            $result['Estado'] = false;
+            $result['Saldo']  = $saldoDisponible;
+            $result['Mensaje'] = "Registro NO guardado: El total del pedido excede el cupo disponible. Saldo disponible: " . formatMoney($saldoDisponible, 2);
+            return $result;
+        }
+        $result['Saldo'] = $cupo - $nuevoSaldo;
+        $result['Mensaje'] = "Registro guardado. Saldo restante: " . formatMoney($result['Saldo'], 2);
+        return $result;
+    }
 
 
 
@@ -123,16 +148,14 @@ class PedidoWeb extends Controllers
                 $arrResponse = array('status' => false, 'msg' => 'Error no se recibieron todos los datos necesarios');
             } else {
                 //putMessageLogFile("Datos recibidos en ingresarPedidoTemp: " . json_encode($data));
-                $cliIds = retornarDataSesion("Cli_Id");
-                $SaldoTienda = $this->model->recuperarSaldoTienda($data['tienda_id'], $cliIds);
-                // validar cupo/saldo de tienda
                 $totalPedido = isset($data['total']) ? floatval(str_replace([',', ' '], ['.', ''], $data['total'])) : 0.0;
-                if ($SaldoTienda < $totalPedido) {
-                    $arrResponse = array('status' => false, 'msg' => 'El total del pedido excede el saldo disponible de la tienda. Saldo disponible: ' . formatMoney($SaldoTienda, 2));
+                $validacionSaldo = $this->consumoTiendaPedido($data['tienda_id'], $totalPedido);
+                //putMessageLogFile("Validación de saldo para tienda {$data['tienda_id']} con total pedido {$totalPedido}: " . json_encode($validacionSaldo));
+                if (!$validacionSaldo['Estado']) {
+                    $arrResponse = array('status' => false, 'msg' => $validacionSaldo['Mensaje'] ?? 'El total del pedido excede el cupo disponible.', 'saldo' => $validacionSaldo['Saldo'] ?? 0);
                     echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
                     exit();
-                }
-                //putMessageLogFile("Saldo de tienda recuperado: " . json_encode($SaldoTienda));
+                }   
 
                 $datos = $data['productos'];
                 $idTienda = $data['tienda_id'];
@@ -185,7 +208,7 @@ class PedidoWeb extends Controllers
         $data['Tienda'] = (new TiendaModel())->consultarDatosId($tie_id);
         $data['Items'] = $this->model->listarItemsTiendas($tie_id, $cliIds);
         $data['Items'] = $this->actualizarItems($data['Items'], $data['DetPed']);
-        $data['SaldoTienda'] = $this->model->recuperarSaldoTienda($tie_id, $cliIds);
+        $data['SaldoTienda'] = $this->model->recuperarConsumoTienda($tie_id, $cliIds);
         $data = array_merge($data, getPageData("Editar Pedido", "pedidoWeb"));
         $this->views->getView($this, "editar", $data);
     }
@@ -276,8 +299,8 @@ class PedidoWeb extends Controllers
         $tienda = (new TiendaModel())->consultarDatosId($tiendaId);
         $cupo   = floatval($tienda['Cupo'] ?? 0);
 
-        // Recuperar saldo actual
-        $saldoActual = floatval($this->model->recuperarSaldoTienda($tiendaId, $clienteId));
+        // Recuperar consumo actual
+        $consumoActual = floatval($this->model->recuperarConsumoTienda($tiendaId, $clienteId));
 
         // Calcular total del pedido
         $totalPedido = isset($cabData[0]['total'])
@@ -285,10 +308,10 @@ class PedidoWeb extends Controllers
             : 0.0;
 
         // Validar disponibilidad de cupo
-        $nuevoSaldo = $saldoActual + $totalPedido;
+        $nuevoSaldo = $consumoActual + $totalPedido;
 
         if ($nuevoSaldo > $cupo) {
-            $saldoDisponible = $cupo - $saldoActual;
+            $saldoDisponible = $cupo - $consumoActual;
             $result['Estado'] = false;
             $result['Saldo']  = $saldoDisponible;
             $result['Mensaje'] = "Pedido NO autorizado: El total del pedido excede el cupo disponible. Saldo disponible: " . formatMoney($saldoDisponible, 2);
