@@ -186,97 +186,6 @@ function filtrarTabla() {
 }
 
 
-
-/*function actualizarTabla() {
-    const tbody = document.querySelector(`#${tGrid} tbody`);
-    tbody.innerHTML = "";
-    const productos = obtenerProductosGuardados();
-    let imgDefault = "/imagenes/no_image.jpg"; // Imagen por defecto si no existe
-
-    productos.forEach((producto, index) => {
-        let imgPath = `/imagenes/${producto.codigo}_G-01.jpg`;
-
-        verificarImagen(imgPath, (existe) => {
-            let finalImgPath = existe ? imgPath : imgDefault;
-
-            try {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${producto.codigo}</td>
-                    <td>${producto.nombre}</td>
-                    <td>
-                        <input type="number" 
-                            value="${parseInt(producto.cantidad)}" 
-                            min="0" step="1"
-                            data-index="${index}" 
-                            class="form-control text-end cantidad-input" 
-                            style="width: auto; min-width: 30px; text-align: right;" />
-                    </td>
-                    <td class="precio">${parseFloat(producto.precio).toFixed(N2decimal)}</td>
-                    <td class="total">${(producto.cantidad * producto.precio).toFixed(N2decimal)}</td>
-                    <td>
-                        <img src="${finalImgPath}" alt="Producto" width="50" class="img-thumbnail"
-                            onclick="abrirGaleria(['${producto.codigo}_G-01.jpg'])">
-                    </td>
-                `;
-                tbody.appendChild(row);
-            } catch (error) {
-                console.log("Error al agregar la fila a la tabla:", error);
-            }
-
-            if (index === productos.length - 1) {
-                asignarEventosCantidad();
-                actualizarTotalGeneral();
-            }
-        });
-    });
-}*/
-
-/*function actualizarTabla() {
-    const tbody = document.querySelector(`#${tGrid} tbody`);
-    tbody.innerHTML = "";
-    const productos = obtenerProductosGuardados();
-    let imgDefault = "/imagenes/no_image.jpg"; // Imagen por defecto si no existe
-
-    productos.forEach((producto, index) => {
-        let imgPath = `/imagenes/${producto.codigo}_G-01.jpg`;
-
-        verificarImagen(imgPath, (existe) => {
-            let finalImgPath = existe ? imgPath : imgDefault;
-
-            try {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${producto.codigo}</td>
-                    <td>${producto.nombre}</td>
-                    <td>
-                        <input type="text" 
-                            value="${parseInt(producto.cantidad)}" 
-                            inputmode="numeric" pattern="[0-9]*"
-                            data-index="${index}" 
-                            class="form-control text-end cantidad-input" 
-                            style="width: auto; min-width: 30px; text-align: right;" />
-                    </td>
-                    <td class="precio">${parseFloat(producto.precio).toFixed(N2decimal)}</td>
-                    <td class="total">${(producto.cantidad * producto.precio).toFixed(N2decimal)}</td>
-                    <td>
-                        <img src="${finalImgPath}" alt="Producto" width="50" class="img-thumbnail"
-                            onclick="abrirGaleria(['${producto.codigo}_G-01.jpg'])">
-                    </td>
-                `;
-                tbody.appendChild(row);
-            } catch (error) {
-                console.log("Error al agregar la fila a la tabla:", error);
-            }
-
-            if (index === productos.length - 1) {
-                asignarEventosCantidad();
-                actualizarTotalGeneral();
-            }
-        });
-    });
-}*/
-
 async function actualizarTabla() {
     const tbody = document.querySelector(`#${tGrid} tbody`);
     tbody.innerHTML = "";
@@ -622,41 +531,7 @@ function fntAnularPedido(ids) {
 
 }
 
-/*function fntAutorizarPedido(ids) {
-    swal({
-        title: "Autorizar Registro",
-        text: "¿Realmente quiere Autorizar el Registro?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Si, Autorizar!",
-        cancelButtonText: "No, Cancelar!",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    }, function (isConfirm) {
-        if (isConfirm) {
-            let url = base_url + '/pedidoWeb/autorizarPedidoTemp';
-            var metodo = 'POST';
-            var dataPost = {
-                ids: ids
-            };
-            peticionAjaxSSL(url, metodo, dataPost, function (data) {
-                // Manejar el éxito de la solicitud aquí
-                if (data.status) {
-                    swal("Autorizado!", data.msg, "success");
-                        tableTienda.api().ajax.reload(function () {           });
-                } else {
-                    swal("Atención", data.msg, "error");
-                }
 
-            }, function (jqXHR, textStatus, errorThrown) {
-                // Manejar el error de la solicitud aquí
-                console.log('Error en la solicitud. Estado:', textStatus, 'Error:', errorThrown);
-            });
-        }
-
-    });
-
-}*/
 
 function fntAutorizarPedido(ids) {
     swal({

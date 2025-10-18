@@ -216,27 +216,30 @@ class PedidoLiquidarModel extends MysqlPedidos
             }
 
             // Construcción del SQL
-            $sql = "SELECT LPAD(a.cped_id, 9, '0') AS Orden,
-                        LPAD(b.tcped_id, 9, '0') AS Solicitud,
-                        d.tie_nombre Tienda,
-                        c.cod_art codigo,
-                        c.art_des_com nombre,
-                        sum(a.dped_can_ped) can_ped,
-                        sum(a.dped_t_venta) t_venta
-                    FROM ({$this->db_name}.det_pedido a 
-                        inner join {$this->db_name}.articulo c on a.art_id=c.art_id)
-                    inner join {$this->db_name}.cab_pedido b on a.cped_id=b.cped_id
-                    inner join {$this->db_name}.tienda d on a.tie_id=b.tie_id
-                    WHERE " . implode(" AND ", $where) . "
-                    GROUP BY a.art_id,a.tie_id  
-                    ORDER BY a.tie_id DESC ";
-            
+            $sql = "SELECT 
+                            LPAD(a.cped_id, 9, '0') AS Orden,
+                            LPAD(b.tcped_id, 9, '0') AS Solicitud,
+                            d.tie_nombre AS Tienda,
+                            c.cod_art AS codigo,
+                            c.art_des_com AS nombre,
+                            SUM(a.dped_can_ped) AS can_ped,
+                            SUM(a.dped_t_venta) AS t_venta
+                        FROM 
+                            db_pedidos.det_pedido a
+                            INNER JOIN db_pedidos.cab_pedido b ON a.cped_id = b.cped_id
+                            INNER JOIN db_pedidos.tienda d ON b.tie_id = d.tie_id 
+                            LEFT JOIN db_pedidos.articulo c ON a.art_id = c.art_id
+                        WHERE " . implode(" AND ", $where) . "
+                        GROUP BY 
+                            a.art_id, b.tie_id, d.tie_nombre
+                        ORDER BY 
+                            d.tie_nombre ASC;";
 
 
             $resultado = $this->select_all($sql, $params);
             //putMessageLogFile("consultarDatosReporte SQL: " . $sql);
             //putMessageLogFile("consultarDatosReporte Params: " . print_r($params, true));
-            // putMessageLogFile("consultarDatosReporte Resultado: " . print_r($resultado, true));
+            //putMessageLogFile("consultarDatosReporte Resultado: " . print_r($resultado, true));
   
 
 
