@@ -346,7 +346,7 @@ class PedidoWebModel extends MysqlPedidos
     public function cabeceraPedidoTemp($ids)
     {
         try {
-            $sql = "select a.tcped_id pedid,concat(repeat( '0', 9 - length(a.tcped_id) ),a.tcped_id) numero,b.tie_id tieid,
+            $sql = "select a.tcped_id pedid,a.cli_id Cliente,concat(repeat( '0', 9 - length(a.tcped_id) ),a.tcped_id) numero,b.tie_id tieid,
                         a.tcped_total total,date(a.tcped_fec_cre) fechapedido,b.tie_nombre nombretienda, a.tcped_receptor receptor
                         from {$this->db_name}.temp_cab_pedido a
                                 inner join {$this->db_name}.tienda b

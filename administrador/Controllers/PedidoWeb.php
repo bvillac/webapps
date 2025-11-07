@@ -258,11 +258,12 @@ class PedidoWeb extends Controllers
         if (!is_numeric($id))
             exit("Dato no válido");
         checkPermission('r', 'pedidoWeb');
-
-        $cliIds = retornarDataSesion("Cli_Id");
         $data['cabData'] = $this->model->cabeceraPedidoTemp($id);
-        $data['detData'] = $this->model->detallePedidoTemp($id);
+        $data['detData'] = $this->model->detallePedidoTemp($id);    
+        //$cliIds = retornarDataSesion("Cli_Id");  
+        $cliIds = $data['cabData'][0]['Cliente'];
         $data['Cliente'] = (new ClientePedidoModel())->consultarDatosId($cliIds);
+        //putMessageLogFile("Generando PDF para pedido ID: {$id} - Datos: " . json_encode($data));
         $numeroSecuencia = $data['cabData'][0]['numero'];
         $tie_id = $data['cabData'][0]['tieid'];
         $data['Tienda'] = (new TiendaModel())->consultarDatosId($tie_id);
